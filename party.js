@@ -18,37 +18,158 @@
     DEALINGS IN THE SOFTWARE.
 */
 
-// Runs the initialization and exports the public functions.
-// "Private" members, such as utility functions will not be exported.
+/**
+ * Runs the initialization and exports the public functions.
+ * "Private" members, such as utility functions will not be exported.
+ */
 const party = (function () {
+
     // Define the default configuration. This will be used widely throughout runtime.
     // Values defined here should only be changed with care between versions.
     const config = {
-        maxParticles: 3000,
+        maxParticles: 1000,
         gravityPixels: 800,
         applyLighting: true
     };
+
+    // Define the helper 'types' used for runtime.
+
+    /**
+     * Creates a new vector with specified xyz components, which default to 0.
+     * Also offers basic vector math functionality.
+     * @returns {object} A vector with respective xyz components.
+     */
+    const Vector = function (x, y, z) {
+        return {
+            x: x || 0, y: y || 0, z: z || 0,
+            /**
+             * Returns a new vector, which is the sum of the current vector and the supplied vector.
+             */
+            add: function (v) {
+                if (v.x == undefined || v.y == undefined || v.z == undefined) {
+                    return console.error("Invalid vector supplied to add operation.");
+                }
+                return Vector(this.x + v.x, this.y + v.y, this.z + v.z);
+            },
+            /**
+             * Returns a new vector, which is the product of the current vector and the supplied scale.
+             */
+            scale: function (s) {
+                if (typeof s !== 'number') {
+                    return console.error("Invalid scale supplied to scale operation.");
+                }
+                return Vector(this.x * s, this.y * s, this.z * s);
+            }
+        };
+    };
+    /** 
+     * A uniform vector. 
+     **/
+    Vector.one = Vector(1, 1, 1);
+    /**
+     * Generates a new vector from the specified factory method.
+     * This can be, for example, used to generate random vectors.
+     * @param {function} factory The method to use for component generation.
+     * @returns {object} The generated vector.
+     */
+    Vector.generate = function(factory) {
+        if (typeof factory !== 'function') {
+            return console.error("Invalid factory function for generated vector.");
+        }
+        return Vector(factory(), factory(), factory());
+    };
+    
+    /**
+     * Creates a new transform, which holds position, rotation and scale, all in the form of vectors.
+     * @returns {object} The resulting transform.
+     */
+    const Transform = function (position, rotation, scale) {
+        return {
+            position: position || Vector(),
+            rotation: rotation || Vector(),
+            scale: scale || Vector(),
+
+            applyDelta: function (transform, delta) {
+                if (typeof delta !== 'number') {
+                    return console.error("Invalid delta supplied to transform.");
+                }
+                return Transform(
+                    this.position.add(transform.position.scale(delta)),
+                    this.rotation.add(transform.rotation.scale(delta)),
+                    this.scale.add(transform.scale.scale(delta))
+                );
+            }
+        };
+    };
+    /**
+     * Creates a new closed polygon from the specified array of points.
+     * @param {Array} points The array of vectors denoting the polygon vertices.
+     * @returns {object} The resulting polygon.
+     */
+    const Polygon = function (points) {
+        if (!Array.isArray(points)) {
+            return console.error("Invalid points definition.");
+        }
+        return {
+            points: points,
+
+            /**
+             * Transforms the polygon using the specified transform.
+             * @param {object} transform The transformation to apply to the polygon.
+             */
+            applyTransform: function (transform) {
+                return new Polygon(this.points.map(p => {
+                    let x = p.x * transform.scale.x, y = p.y * transform.scale.y;
+                    return Vector(
+                        // Basic orthographic transformation
+                        transform.position.x + (x * Math.cos(transform.rotation.z) - y * Math.sin(transform.rotation.z)) * Math.cos(transform.rotation.y),
+                        transform.position.y + (x * Math.sin(transform.rotation.z) + y * Math.cos(transform.rotation.z)) * Math.cos(transform.rotation.x)
+                    );
+                }));
+            },
+            /**
+             * Draws the polygon to the specified canvas context.
+             * @param {object} context The context to draw the points to.
+             */
+            draw: function (context) {
+                ctx.beginPath();
+                for (let i = 0; i < this.points.length; i++) {
+                    let x = this.points[i].x - window.scrollX,
+                        y = this.points[i].y - window.scrollY;
+
+                    (i == 0 ? context.moveTo : context.lineTo).apply(context, [x, y]);
+                }
+                ctx.closePath();
+                ctx.fill();
+            }
+        };
+    };
+    /**
+     * Uniform quad, with the origin (0, 0) as a center.
+     */
+    Polygon.quad = Polygon([
+        Vector(-0.5, 0.5),
+        Vector(0.5, 0.5),
+        Vector(0.5, -0.5),
+        Vector(-0.5, -0.5)
+    ]);
 
     // Create the canvas element and align it with the screen.
     const canvas = document.createElement("canvas");
     canvas.id = "party-js-canvas";
     canvas.style = "position: fixed; left: 0; top: 0; pointer-events: none;";
+    // The context used for drawing on the canvas.
     const ctx = canvas.getContext("2d");
 
-    // Uniform quad, with the origin (0, 0) as a center.
-    const quad = [
-        { x: -0.5, y: 0.5 },
-        { x: 0.5, y: 0.5 },
-        { x: 0.5, y: -0.5 },
-        { x: -0.5, y: -0.5 }
-    ];
-
-    // Attach it to the DOM on load.
-    window.addEventListener("load", () => document.body.appendChild(canvas));
+    // Attach it to the DOM when the document body is ready.
+    document.body ? document.body.appendChild(canvas) : window.addEventListener("load", () => document.body.appendChild(canvas));
 
     // Stores the particles needed throughout runtime.
     var particles = [];
 
+    // Define conversions between radians and degrees
+    const rad2deg = (180 / Math.PI);
+    const deg2rad = (Math.PI / 180);
     /**
      * Returns a random number from 0 to 1.
      */
@@ -136,7 +257,7 @@ const party = (function () {
         function d2h(d) { return d.toString(16); }
         function h2d(h) { return parseInt(h, 16); }
 
-        weight = weight != undefined ? weight : .5;
+        weight = weight != undefined ? weight : 0.5;
 
         var color = "#";
 
@@ -152,7 +273,16 @@ const party = (function () {
         }
 
         return color;
-    };
+    }
+
+    /**
+     * Calculates the lighting for a surface with a specified transformation.
+     * 1 means fully lit, 0 is fully in shadow.
+     * @param {object} transform The transformation of the object.
+     */
+    function calculateLighting(transform) {
+        return Math.abs(Math.cos(transform.rotation.x) * Math.cos(transform.rotation.y));
+    }
 
     /**
      * Returns an option by its key from the specified set.
@@ -162,9 +292,7 @@ const party = (function () {
      * @param {any} def The default value to use in case of an undefined option.
      */
     function getOption(options, key, def) {
-        return (options && options[key] != undefined)
-            ? options[key]
-            : def;
+        return (options && options[key] != undefined) ? options[key] : def;
     }
     /**
      * Overrides an undefined option by its key in the specified set.
@@ -184,41 +312,9 @@ const party = (function () {
      */
     function overrideUndefinedOptions(options, overrides) {
         for (var key in overrides) {
-            overrideUndefinedOption(options, key, overrides[key]);
-        }
-    }
-
-    /**
-     * Calculates the lighting for a surface with a specified transformation.
-     * 1 means fully lit, 0 is fully in shadow.
-     * @param {*} t The transformation of the object.
-     */
-    function calculateLighting(t) {
-        return Math.abs(Math.cos(t.rx) * Math.cos(t.ry));
-    }
-    /**
-     * Transforms the specified point using location, rotation and scale.
-     * @param {object} p The point to transform, with specified x and y components.
-     * @param {object} s The scale to transform the point by.
-     * @param {object} t The transform to use on the point.
-     */
-    function transformPoint(p, s, t) {
-        let x = p.x * s.w, y = p.y * s.h;
-        return {
-            x: t.px + (x * Math.cos(t.rz) - y * Math.sin(t.rz)) * Math.cos(t.ry),//x * Math.cos(t.rz) - y * Math.sin(t.rz) + x * Math.cos(t.ry),
-            y: t.py + (x * Math.sin(t.rz) + y * Math.cos(t.rz)) * Math.cos(t.rx)//x * Math.sin(t.rz) + y * Math.cos(t.rz) + y * Math.cos(t.rx)
-        };
-    }
-    /**
-     * Draws the polygon made of the specified points to the canvas.
-     * @param {Array} points The points to draw, in viewport space.
-     */
-    function drawPolygon(points) {
-        for (let i = 0; i < points.length; i++) {
-            let x = points[i].x + window.scrollX,
-                y = points[i].y - window.scrollY;
-
-            i == 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+            if (overrides.hasOwnProperty(key)) {
+                overrideUndefinedOption(options, key, overrides[key]);
+            }
         }
     }
 
@@ -230,80 +326,63 @@ const party = (function () {
      */
     function emitFromArea(area, useScroll, options) {
         let count = applyRelativeVariation(getOption(options, "count", 1), getOption(options, "countVariation", 0));
-
         let angleSpan = getOption(options, "angleSpan", 0);
 
-        let yVelocity = getOption(options, "yVelocity", 0);
-        let yYelocityVariation = getOption(options, "yVelocityVariation", 0);
         let rotationVelocityLimit = getOption(options, "rotationVelocityLimit", 0);
 
         let scaleVariation = getOption(options, "scaleVariation", 0);
 
         for (let i = 0; i < count; i++) {
-            let angle = applyAbsoluteVariation(0, angleSpan) * (Math.PI / 180);
-            let initialVelocityY = applyRelativeVariation(yVelocity, yYelocityVariation);
-            let width = applyRelativeVariation(5, scaleVariation);
+            let angle = applyAbsoluteVariation(0, angleSpan) * deg2rad;
+            let initialVelocityY = applyRelativeVariation(getOption(options, "yVelocity", 0), getOption(options, "yVelocityVariation", 0));
+            let width = applyRelativeVariation(getOption(options, "width", 5), scaleVariation);
 
             createParticle({
-                a: {
-                    px: 0, py: config.gravityPixels,
-                    rx: 0, ry: 0, rz: 0
-                },
-                v: {
-                    px: Math.sin(angle) * initialVelocityY, py: Math.cos(angle) * initialVelocityY,
-                    rx: rotationVelocityLimit * rand(), ry: rotationVelocityLimit * rand(), rz: rotationVelocityLimit * rand()
-                },
-                t: {
-                    px: (area.left || 0) + applyRelativeVariation((area.width || 0) / 2, getOption(options, "randomizePosition", true) ? 2 : 0) + (useScroll ? window.scrollX : 0),
-                    py: (area.top || 0) + applyRelativeVariation((area.height || 0) / 2, getOption(options, "randomizePosition", true) ? 2 : 0) + (useScroll ? window.scrollY : 0),
-                    rx: Math.PI * (getOption(options, "randomizeRotation", true) ? 1 : 0) * rand(),
-                    ry: Math.PI * (getOption(options, "randomizeRotation", true) ? 1 : 0) * rand(),
-                    rz: Math.PI * (getOption(options, "randomizeRotation", true) ? 1 : 0) * rand()
-                },
-                s: { w: width, h: width * 3 },
-                lifetime: 0,
+                acceleration: Transform(
+                    Vector(0, getOption(options, "gravity", true) * config.gravityPixels),
+                    Vector()
+                ),
+                velocity: Transform(
+                    Vector(Math.sin(angle) * initialVelocityY, Math.cos(angle) * initialVelocityY),
+                    Vector.generate(() => rotationVelocityLimit * rand())
+                ),
+                transform: Transform(
+                    Vector(
+                        (area.left || 0) + applyRelativeVariation((area.width || 0) / 2, getOption(options, "randomizePosition", true) * 2) + (useScroll ? window.scrollX : 0),
+                        (area.top || 0) + applyRelativeVariation((area.height || 0) / 2, getOption(options, "randomizePosition", true) * 2) + (useScroll ? window.scrollY : 0)
+                    ),
+                    Vector.generate(() => Math.PI * getOption(options, "randomizeRotation", true) * rand()),
+                    Vector(width, width * getOption(options, "heightFactor", 3))
+                ),
                 color: getOption(options, "color", getOption(options, "colorFunction", () => hslToHex(rand() * 360, 100, 70))()),
+                lifetime: 0,
 
                 /**
                  * Renders the particle to the global canvas context.
                  */
                 draw: function () {
-                    ctx.beginPath();
                     // Apply lighting to the color, if enabled.
                     ctx.fillStyle = config.applyLighting
-                        ? mix('#000000', this.color, 1 - 0.5 * calculateLighting(this.t))
+                        ? mix('#000000', this.color, 0.25 + 0.75 * calculateLighting(this.transform))
                         : this.color;
 
                     // Lets the particle grow to its size over time, so it doesn't spawn out of nowhere.
                     const maxSizeAt = 0.2;
                     let sm = this.lifetime > maxSizeAt ? 1 : this.lifetime / maxSizeAt;
-                    let s = { w: this.s.w * sm, h: this.s.h * sm };
 
                     // Transform the quad to fit the transform of the particle.
-                    points = quad.map(pt => transformPoint(pt, s, this.t));
-
-                    drawPolygon(points);
-
-                    ctx.closePath();
-                    ctx.fill();
+                    Polygon.quad
+                        .applyTransform(Transform(0, 0, Vector.one.scale(sm)))
+                        .applyTransform(this.transform)
+                        .draw(ctx);
                 },
                 /**
                  * Apply the physics transformations to the particle.
                  * @param {number} delta The time in seconds that has elapsed since the last update.
                  */
-                update: function(delta) {
-                    function applyDelta(source, dest, delta) {
-                        return {
-                            px: dest.px + source.px * delta,
-                            py: dest.py + source.py * delta,
-                            rx: dest.rx + source.rx * delta,
-                            ry: dest.ry + source.ry * delta,
-                            rz: dest.rz + source.rz * delta
-                        };
-                    }
-        
-                    this.v = applyDelta(this.a, this.v, delta);
-                    this.t = applyDelta(this.v, this.t, delta);
+                update: function (delta) {
+                    this.velocity = this.velocity.applyDelta(this.acceleration, delta);
+                    this.transform = this.transform.applyDelta(this.velocity, delta);
                     this.lifetime += delta;
                 }
             });
@@ -326,9 +405,10 @@ const party = (function () {
      */
     function update(delta) {
         particles.forEach(p => p.update(delta));
+
         // Filter out the particles that are no longer in the document.
         let despawnY = Math.max(document.documentElement.offsetHeight, window.innerHeight);
-        particles = particles.filter(p => p.t.py <= despawnY);
+        particles = particles.filter(p => p.transform.position.y <= despawnY);
     }
     /**
      * Renders all particles to the canvas.
@@ -340,8 +420,6 @@ const party = (function () {
 
         // Clear the canvas.
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-
-
 
         particles.forEach(p => p.draw());
     }
@@ -375,8 +453,8 @@ const party = (function () {
                 count: 40,
                 countVariation: 0.5,
                 angleSpan: 80,
-                yVelocity: -200,
-                yVelocityVariation: 0.4,
+                yVelocity: -300,
+                yVelocityVariation: 1,
                 rotationVelocityLimit: 6,
                 scaleVariation: 0.8
             });
@@ -411,6 +489,10 @@ const party = (function () {
          * @param {object} options The set of options for spawning the particles.
          */
         cursor: function (options) {
+            let event = window.event;
+            if (event.clientX == undefined || event.clientY == undefined) {
+                return console.error("Calling 'party.cursor()' with no current mouse event is not allowed.");
+            }
             this.position(window.event.clientX, window.event.clientY, options);
         },
         /**
@@ -434,5 +516,5 @@ const party = (function () {
             };
             emitFromArea(area, true, options);
         }
-    }
+    };
 })();

@@ -1,4 +1,4 @@
-# party.js 🎉
+# party.js 🎉 [![DeepScan grade](https://deepscan.io/api/teams/11458/projects/14332/branches/265225/badge/grade.svg)](https://deepscan.io/dashboard#view=project&tid=11458&pid=14332&bid=265225)
 
 A JavaScript library to brighten up your user's site experience with visual effects!
 
