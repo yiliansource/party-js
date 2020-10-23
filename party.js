@@ -32,127 +32,152 @@ const party = (function () {
         applyLighting: true
     };
 
-    // Define the helper 'types' used for runtime.
-
     /**
-     * Creates a new vector with specified xyz components, which default to 0.
+     * Represents a 3-dimensional vector with xyz components.
      * Also offers basic vector math functionality.
-     * @returns {object} A vector with respective xyz components.
      */
-    const Vector = function (x, y, z) {
-        return {
-            x: x || 0, y: y || 0, z: z || 0,
-            /**
-             * Returns a new vector, which is the sum of the current vector and the supplied vector.
-             */
-            add: function (v) {
-                if (v.x == undefined || v.y == undefined || v.z == undefined) {
-                    return console.error("Invalid vector supplied to add operation.");
-                }
-                return Vector(this.x + v.x, this.y + v.y, this.z + v.z);
-            },
-            /**
-             * Returns a new vector, which is the product of the current vector and the supplied scale.
-             */
-            scale: function (s) {
-                if (typeof s !== 'number') {
-                    return console.error("Invalid scale supplied to scale operation.");
-                }
-                return Vector(this.x * s, this.y * s, this.z * s);
-            }
-        };
-    };
-    /** 
-     * A uniform vector. 
-     **/
-    Vector.one = Vector(1, 1, 1);
-    /**
-     * Generates a new vector from the specified factory method.
-     * This can be, for example, used to generate random vectors.
-     * @param {function} factory The method to use for component generation.
-     * @returns {object} The generated vector.
-     */
-    Vector.generate = function(factory) {
-        if (typeof factory !== 'function') {
-            return console.error("Invalid factory function for generated vector.");
+    class Vector {
+        constructor(x, y, z) {
+            this.x = x || 0;
+            this.y = y || 0;
+            this.z = z || 0;
         }
-        return Vector(factory(), factory(), factory());
-    };
-    
-    /**
-     * Creates a new transform, which holds position, rotation and scale, all in the form of vectors.
-     * @returns {object} The resulting transform.
-     */
-    const Transform = function (position, rotation, scale) {
-        return {
-            position: position || Vector(),
-            rotation: rotation || Vector(),
-            scale: scale || Vector(),
 
-            applyDelta: function (transform, delta) {
-                if (typeof delta !== 'number') {
-                    return console.error("Invalid delta supplied to transform.");
-                }
-                return Transform(
-                    this.position.add(transform.position.scale(delta)),
-                    this.rotation.add(transform.rotation.scale(delta)),
-                    this.scale.add(transform.scale.scale(delta))
+        /**
+         * Returns a new vector, which is the sum of the current vector and the supplied vector.
+         * @param {Vector} vector The vector to add to the current one.
+         */
+        add(vector) {
+            if (!(vector instanceof Vector)) {
+                throw new TypeError("Invalid vector supplied to add operation.");
+            }
+            return new Vector(this.x + vector.x, this.y + vector.y, this.z + vector.z);
+        }
+        /**
+         * Returns a new vector, which is the product of the current vector and the supplied scale.
+         * @param {Number} scalar The value to scale the vector by.
+         */
+        scale(scalar) {
+            if (typeof scalar !== 'number') {
+                throw new TypeError("Invalid scale supplied to scale operation.");
+            }
+            return new Vector(this.x * scalar, this.y * scalar, this.z * scalar);
+        }
+
+        static get zero() {
+            return new Vector();
+        }
+        static get one() {
+            return new Vector(1, 1, 1);
+        }
+
+        /**
+         * Generates a new vector from the specified factory method.
+         * This can be, for example, used to generate random vectors.
+         * @param {function} factory The method to use for component generation.
+         */
+        static generate(factory) {
+            if (typeof factory !== 'function') {
+                return new TypeError("Invalid factory function for generated vector.");
+            }
+            return new Vector(factory(), factory(), factory());
+        }
+    }
+    /**
+     * Represents a transform, which holds position, rotation and scale, all in the form of vectors.
+     */
+    class Transform {
+        constructor(position, rotation, scale) {
+            this.position = position || Vector.zero;
+            this.rotation = rotation || Vector.zero;
+            this.scale = scale || Vector.zero;
+        }
+
+        /**
+         * Applies the specified transform to the current one, scaled by the specified delta.
+         * @param {Transform} transform The transform to apply.
+         * @param {Number} delta The delta to scale the transform by.
+         */
+        applyDelta(transform, delta) {
+            if (!(transform instanceof Transform)) {
+                throw new TypeError("Invalid transform.");
+            }
+            if (typeof delta !== "number") {
+                throw new TypeError("Invalid delta supplied to transformation.");
+            }
+            return new Transform(
+                this.position.add(transform.position.scale(delta)),
+                this.rotation.add(transform.rotation.scale(delta)),
+                this.scale.add(transform.scale.scale(delta))
+            );
+        }
+    }
+
+    class Shape {
+        applyTransform(transform) {
+            throw new Error("The shape object needs to implement the applyTransform method.");
+        }
+        draw(context) {
+            throw new Error("The shape object needs to implement the draw method.");
+        }
+
+        static transformPoints(points, transform) {
+            if (!Array.isArray(points)) {
+                throw new TypeError("Non-array was supplied as points array.");
+            }
+            if (!(transform instanceof Transform)) {
+                throw new TypeError("Invalid transform supplied to transformation");
+            }
+            return points.map(p => {
+                let x = p.x * transform.scale.x,
+                    y = p.y * transform.scale.y;
+                return new Vector(
+                    // Basic orthographic transformation
+                    transform.position.x + (x * Math.cos(transform.rotation.z) - y * Math.sin(transform.rotation.z)) * Math.cos(transform.rotation.y),
+                    transform.position.y + (x * Math.sin(transform.rotation.z) + y * Math.cos(transform.rotation.z)) * Math.cos(transform.rotation.x)
                 );
-            }
-        };
-    };
-    /**
-     * Creates a new closed polygon from the specified array of points.
-     * @param {Array} points The array of vectors denoting the polygon vertices.
-     * @returns {object} The resulting polygon.
-     */
-    const Polygon = function (points) {
-        if (!Array.isArray(points)) {
-            return console.error("Invalid points definition.");
+            });
         }
-        return {
-            points: points,
-
-            /**
-             * Transforms the polygon using the specified transform.
-             * @param {object} transform The transformation to apply to the polygon.
-             */
-            applyTransform: function (transform) {
-                return new Polygon(this.points.map(p => {
-                    let x = p.x * transform.scale.x, y = p.y * transform.scale.y;
-                    return Vector(
-                        // Basic orthographic transformation
-                        transform.position.x + (x * Math.cos(transform.rotation.z) - y * Math.sin(transform.rotation.z)) * Math.cos(transform.rotation.y),
-                        transform.position.y + (x * Math.sin(transform.rotation.z) + y * Math.cos(transform.rotation.z)) * Math.cos(transform.rotation.x)
-                    );
-                }));
-            },
-            /**
-             * Draws the polygon to the specified canvas context.
-             * @param {object} context The context to draw the points to.
-             */
-            draw: function (context) {
-                ctx.beginPath();
-                for (let i = 0; i < this.points.length; i++) {
-                    let x = this.points[i].x - window.scrollX,
-                        y = this.points[i].y - window.scrollY;
-
-                    (i == 0 ? context.moveTo : context.lineTo).apply(context, [x, y]);
-                }
-                ctx.closePath();
-                ctx.fill();
-            }
-        };
-    };
+    }
     /**
-     * Uniform quad, with the origin (0, 0) as a center.
+     * Represents a closed polygon from a specified array of points.
      */
-    Polygon.quad = Polygon([
-        Vector(-0.5, 0.5),
-        Vector(0.5, 0.5),
-        Vector(0.5, -0.5),
-        Vector(-0.5, -0.5)
-    ]);
+    class Polygon extends Shape {
+        constructor(points) {
+            super();
+            if (!Array.isArray(points)) {
+                throw new TypeError("Invalid points definition.");
+            }
+            this.points = points;
+        }
+
+        /**
+         * Transforms the polygon using the specified transform.
+         * @param {Transform} transform The transformation to apply to the polygon.
+         */
+        applyTransform(transform) {
+            return new Polygon(Shape.transformPoints(this.points, transform));
+        }
+        /**
+         * Draws the polygon to the specified canvas context.
+         * @param {CanvasRenderingContext2D} context The context to draw the points to.
+         */
+        draw(context) {
+            if (!(context instanceof CanvasRenderingContext2D)) {
+                throw new TypeError("Invalid rendering context.");
+            }
+
+            ctx.beginPath();
+            for (let i = 0; i < this.points.length; i++) {
+                let x = this.points[i].x - window.scrollX,
+                    y = this.points[i].y - window.scrollY;
+
+                (i == 0 ? context.moveTo : context.lineTo).apply(context, [x, y]);
+            }
+            ctx.closePath();
+            ctx.fill();
+        }
+    }
 
     // Create the canvas element and align it with the screen.
     const canvas = document.createElement("canvas");
@@ -168,9 +193,9 @@ const party = (function () {
     var particles = [];
 
     // Stores the shapes the particles can take.
-    var shapes = {
-        square: Polygon.quad,
-        rectangle: Polygon.quad.applyTransform(Transform(Vector(), Vector(), Vector(0.6, 2, 1)))
+    const shapes = {
+        square: new Polygon([new Vector(-0.5, 0.5), new Vector(0.5, 0.5), new Vector(0.5, -0.5), new Vector(-0.5, -0.5)]),
+        rectangle: new Polygon([new Vector(-0.3, 1), new Vector(0.3, 1), new Vector(0.3, -1), new Vector(-0.3, -1)])
     };
 
     // Define conversions between radians and degrees
@@ -183,18 +208,13 @@ const party = (function () {
         return Math.random();
     }
     /**
-     * Returns a random value from a to b.
-     * @param {number} a The lower bound of the range (inclusive).
-     * @param {number} b The upper bound of the range (inclusive).
+     * Returns a random value from a to b, both inclusive.
      */
     function randRange(a, b) {
         return lerp(a, b, rand());
     }
     /**
      * Linearly interpolates from a to b by t. Unclamped.
-     * @param {number} a The "start" of the interpolation.
-     * @param {number} b The "end" of the interpolation.
-     * @param {number} t The percentage of interpolation.
      */
     function lerp(a, b, t) {
         return (1 - t) * a + t * b;
@@ -260,8 +280,12 @@ const party = (function () {
      * @see https://gist.github.com/jedfoster/7939513
      */
     function mix(color1, color2, weight) {
-        function d2h(d) { return d.toString(16); }
-        function h2d(h) { return parseInt(h, 16); }
+        function d2h(d) {
+            return d.toString(16);
+        }
+        function h2d(h) {
+            return parseInt(h, 16);
+        }
 
         weight = weight != undefined ? weight : 0.5;
 
@@ -273,7 +297,9 @@ const party = (function () {
 
                 val = d2h(Math.floor(lerp(v1, v2, weight)));
 
-            while (val.length < 2) { val = '0' + val; }
+            while (val.length < 2) {
+                val = '0' + val;
+            }
 
             color += val;
         }
@@ -284,9 +310,12 @@ const party = (function () {
     /**
      * Calculates the lighting for a surface with a specified transformation.
      * 1 means fully lit, 0 is fully in shadow.
-     * @param {object} transform The transformation of the object.
+     * @param {Transform} transform The transformation of the object.
      */
     function calculateLighting(transform) {
+        if (!(transform instanceof Transform)) {
+            throw new TypeError("Invalid transform supplied to lighting calculation.");
+        }
         return Math.abs(Math.cos(transform.rotation.x) * Math.cos(transform.rotation.y));
     }
 
@@ -345,16 +374,16 @@ const party = (function () {
 
             createParticle({
                 shape: getOption(options, "shape", "square"),
-                acceleration: Transform(
-                    Vector(0, getOption(options, "gravity", true) * config.gravityPixels),
-                    Vector()
+                acceleration: new Transform(
+                    new Vector(0, getOption(options, "gravity", true) * config.gravityPixels),
+                    Vector.zero
                 ),
-                velocity: Transform(
-                    Vector(Math.sin(angle) * initialVelocityY, Math.cos(angle) * initialVelocityY),
+                velocity: new Transform(
+                    new Vector(Math.sin(angle) * initialVelocityY, Math.cos(angle) * initialVelocityY),
                     Vector.generate(() => rotationVelocityLimit * rand())
                 ),
-                transform: Transform(
-                    Vector(
+                transform: new Transform(
+                    new Vector(
                         (area.left || 0) + applyRelativeVariation((area.width || 0) / 2, getOption(options, "randomizePosition", true) * 2) + (useScroll ? window.scrollX : 0),
                         (area.top || 0) + applyRelativeVariation((area.height || 0) / 2, getOption(options, "randomizePosition", true) * 2) + (useScroll ? window.scrollY : 0)
                     ),
@@ -367,25 +396,26 @@ const party = (function () {
                 /**
                  * Renders the particle to the global canvas context.
                  */
-                draw: function () {
+                draw: function (context) {
                     // Apply lighting to the color, if enabled.
-                    ctx.fillStyle = config.applyLighting
-                        ? mix('#000000', this.color, 0.25 + 0.75 * calculateLighting(this.transform))
-                        : this.color;
+                    context.fillStyle = config.applyLighting ?
+                        mix('#000000', this.color, 0.25 + 0.75 * calculateLighting(this.transform)) :
+                        this.color;
 
                     // Lets the particle grow to its size over time, so it doesn't spawn out of nowhere.
                     const maxSizeAt = 0.2;
                     let sm = this.lifetime > maxSizeAt ? 1 : this.lifetime / maxSizeAt;
 
-                    if (shapes[this.shape] == undefined) {
+                    let definedShape = shapes[this.shape];
+                    if (!definedShape) {
                         throw Error(`Unknown shape '${this.shape}'.`);
                     }
 
                     // Transform the quad to fit the transform of the particle.
-                    shapes[this.shape]
-                        .applyTransform(Transform(0, 0, Vector.one.scale(sm)))
+                    definedShape
+                        .applyTransform(new Transform(0, 0, Vector.one.scale(sm)))
                         .applyTransform(this.transform)
-                        .draw(ctx);
+                        .draw(context);
                 },
                 /**
                  * Apply the physics transformations to the particle.
@@ -432,7 +462,7 @@ const party = (function () {
         // Clear the canvas.
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        particles.forEach(p => p.draw());
+        particles.forEach(p => p.draw(ctx));
     }
     /**
      * Processes an animation frame.
@@ -533,29 +563,29 @@ const party = (function () {
          * @param {string} name The name of the new shape.
          * @param {any} shape The shape to add. This can be either an array of vectors, or an SVG document.
          */
-        registerShape: function(name, shape) {
+        registerShape: function (name, shape) {
             // Arrays are interpreted as point collections
             if (Array.isArray(shape)) {
-                shapes[name] = Polygon(shape);
+                shapes[name] = new Polygon(shape);
             }
             // Strings are interpreted as SVG graphics
             else if (typeof shape === 'string') {
                 let parser = new DOMParser();
                 let doc = parser.parseFromString(shape, "application/xml");
-                
+
                 let polygon = doc.getElementsByTagName("polygon")[0];
                 if (polygon != undefined) {
                     let pointData = polygon.getAttribute("points");
                     let pointExtractor = /(\d+(\.\d+)?)/g;
                     let matches = pointData.match(pointExtractor);
-                    
+
                     let points = [];
                     for (let i = 0; i < matches.length; i += 2) {
-                        points.push(Vector(parseFloat(matches[i]), parseFloat(matches[i + 1])));
+                        points.push(new Vector(parseFloat(matches[i]), parseFloat(matches[i + 1])));
                     }
 
                     function findExtrema(arr, att, isMin) {
-                        return arr.reduce(function(prev, curr) {
+                        return arr.reduce(function (prev, curr) {
                             return (isMin ? prev[att] < curr[att] : prev[att] > curr[att]) ? prev : curr;
                         })
                     }
@@ -568,12 +598,12 @@ const party = (function () {
                     };
                     viewBox.width = viewBox.xmax - viewBox.xmin;
                     viewBox.height = viewBox.ymax - viewBox.ymin;
-                    
+
                     points = points.map(p => {
-                        return Vector((p.x - viewBox.xmin - viewBox.width / 2) / viewBox.width, (p.y - viewBox.ymin - viewBox.height / 2) / viewBox.height);
+                        return new Vector((p.x - viewBox.xmin - viewBox.width / 2) / viewBox.width, (p.y - viewBox.ymin - viewBox.height / 2) / viewBox.height);
                     })
 
-                    shapes[name] = Polygon(points);
+                    shapes[name] = new Polygon(points);
                 }
             }
         }
