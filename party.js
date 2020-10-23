@@ -167,6 +167,12 @@ const party = (function () {
     // Stores the particles needed throughout runtime.
     var particles = [];
 
+    // Stores the shapes the particles can take.
+    var shapes = {
+        square: Polygon.quad,
+        rectangle: Polygon.quad.applyTransform(Transform(Vector(), Vector(), Vector(0.6, 2, 1)))
+    };
+
     // Define conversions between radians and degrees
     const rad2deg = (180 / Math.PI);
     const deg2rad = (Math.PI / 180);
@@ -335,9 +341,10 @@ const party = (function () {
         for (let i = 0; i < count; i++) {
             let angle = applyAbsoluteVariation(0, angleSpan) * deg2rad;
             let initialVelocityY = applyRelativeVariation(getOption(options, "yVelocity", 0), getOption(options, "yVelocityVariation", 0));
-            let width = applyRelativeVariation(getOption(options, "width", 5), scaleVariation);
+            let size = applyRelativeVariation(getOption(options, "size", 8), scaleVariation);
 
             createParticle({
+                shape: getOption(options, "shape", "square"),
                 acceleration: Transform(
                     Vector(0, getOption(options, "gravity", true) * config.gravityPixels),
                     Vector()
@@ -352,7 +359,7 @@ const party = (function () {
                         (area.top || 0) + applyRelativeVariation((area.height || 0) / 2, getOption(options, "randomizePosition", true) * 2) + (useScroll ? window.scrollY : 0)
                     ),
                     Vector.generate(() => Math.PI * getOption(options, "randomizeRotation", true) * rand()),
-                    Vector(width, width * getOption(options, "heightFactor", 3))
+                    Vector.one.scale(size)
                 ),
                 color: getOption(options, "color", getOption(options, "colorFunction", () => hslToHex(rand() * 360, 100, 70))()),
                 lifetime: 0,
@@ -370,8 +377,12 @@ const party = (function () {
                     const maxSizeAt = 0.2;
                     let sm = this.lifetime > maxSizeAt ? 1 : this.lifetime / maxSizeAt;
 
+                    if (shapes[this.shape] == undefined) {
+                        throw Error(`Unknown shape '${this.shape}'.`);
+                    }
+
                     // Transform the quad to fit the transform of the particle.
-                    Polygon.quad
+                    shapes[this.shape]
                         .applyTransform(Transform(0, 0, Vector.one.scale(sm)))
                         .applyTransform(this.transform)
                         .draw(ctx);
@@ -515,6 +526,56 @@ const party = (function () {
                 height: -window.innerHeight
             };
             emitFromArea(area, true, options);
+        },
+
+        /**
+         * Registers a new shape under a given name.
+         * @param {string} name The name of the new shape.
+         * @param {any} shape The shape to add. This can be either an array of vectors, or an SVG document.
+         */
+        registerShape: function(name, shape) {
+            // Arrays are interpreted as point collections
+            if (Array.isArray(shape)) {
+                shapes[name] = Polygon(shape);
+            }
+            // Strings are interpreted as SVG graphics
+            else if (typeof shape === 'string') {
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(shape, "application/xml");
+                
+                let polygon = doc.getElementsByTagName("polygon")[0];
+                if (polygon != undefined) {
+                    let pointData = polygon.getAttribute("points");
+                    let pointExtractor = /(\d+(\.\d+)?)/g;
+                    let matches = pointData.match(pointExtractor);
+                    
+                    let points = [];
+                    for (let i = 0; i < matches.length; i += 2) {
+                        points.push(Vector(parseFloat(matches[i]), parseFloat(matches[i + 1])));
+                    }
+
+                    function findExtrema(arr, att, isMin) {
+                        return arr.reduce(function(prev, curr) {
+                            return (isMin ? prev[att] < curr[att] : prev[att] > curr[att]) ? prev : curr;
+                        })
+                    }
+
+                    let viewBox = {
+                        xmin: findExtrema(points, 'x', true).x,
+                        xmax: findExtrema(points, 'x', false).x,
+                        ymin: findExtrema(points, 'y', true).y,
+                        ymax: findExtrema(points, 'y', false).y
+                    };
+                    viewBox.width = viewBox.xmax - viewBox.xmin;
+                    viewBox.height = viewBox.ymax - viewBox.ymin;
+                    
+                    points = points.map(p => {
+                        return Vector((p.x - viewBox.xmin - viewBox.width / 2) / viewBox.width, (p.y - viewBox.ymin - viewBox.height / 2) / viewBox.height);
+                    })
+
+                    shapes[name] = Polygon(points);
+                }
+            }
         }
     };
 })();
