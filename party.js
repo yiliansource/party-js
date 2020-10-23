@@ -420,7 +420,7 @@ const party = (function () {
         screen: function (options) {
             options = options || {};
             overrideUndefinedOptions(options, {
-                count: 500,
+                count: 500 * (window.innerWidth / 1980),
                 countVariation: 0.5,
                 angleSpan: 0,
                 yVelocity: -100,
