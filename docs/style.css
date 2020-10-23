@@ -1,0 +1,98 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    color: black;
+    background: linear-gradient(-0.15turn, #e66977, #f9b7b1, #f2c1a1);
+    font: 16px 'Roboto', 'Arial', sans-serif;
+    font-weight: 300;
+
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    min-height: 90vh;
+    padding-bottom: 10vh;
+}
+
+h1, h2, h3 {
+    margin: 0;
+}
+h1 {
+    font-weight: 100;
+}
+h2 {
+    font-weight: 300;
+}
+
+main {
+    margin: auto;
+    text-align: center;
+}
+main h1 {
+    font-size: 5em;
+    margin-bottom: 0.2em;
+}
+main h2 {
+    font-size: 1.2em;
+    margin-bottom: 0.5em;
+}
+
+footer {
+    position: fixed;
+    bottom: 0;
+    right: 1em;
+    text-align: center;
+    font-size: 0.8em;
+}
+
+[onclick] {
+    cursor: pointer;
+}
+
+code.hljs {
+    padding: 0.8em 1.2em;
+    border-radius: 5px;
+    box-sizing: border-box;
+    max-width: 95vw;
+    margin: auto;
+}
+
+.controls {
+    margin: 2em 0 0;
+}
+.button {
+    background-color: rgb(255, 255, 255, 0.6);
+    color: black;
+    text-decoration: none;
+    box-shadow: 0 -2px inset rgb(0, 0, 0, 0.3);
+    padding: 6px 12px 8px;
+    margin: 2px;
+    display: inline-block;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+.button:hover {
+    background-color: rgb(255, 255, 255, 0.8);
+}
+.button[disabled] {
+    opacity: 0.5;
+    pointer-events: none;
+}
+.button[soon]:after {
+    content: "(coming soon!)";
+    margin-left: 0.2em;
+    font-size: 0.75em;
+}
+
+.sp-button {
+    font-size: 1em;
+    border-radius: 8px;
+    padding: 15px 25px;
+}

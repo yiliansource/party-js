@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>party.js - Demo</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;500&display=swap" rel="stylesheet">
+    <link href="./style.css" rel="stylesheet">
+
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/styles/rainbow.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.3.1/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <script src="../party.js"></script>
+</head>
+<body>
+    <main class="page">
+        <h1><span onclick="party.cursor()">party.js</span></h1>
+        <h2>
+            A JS library to brighten up your user's<br>
+            site experience with visual effects!
+        </h2>
+        <a class="button sp-button" onclick="party.screen()">Make it rain confetti!</a>
+        <div>
+            <pre><code class="lang-html">&lt;a class="button" onclick="party.screen()"&gt;Make it rain confetti!&lt;/a&gt;</code></pre>
+        </div>
+        <div class="controls">
+            <div class="row">
+                <a class="button" onclick="party.element(this)" disabled soon>Download</a>
+                <a class="button" href="https://www.github.com/yiliansource/partyjs" disabled soon>View on GitHub</a>
+            </div>
+            <a class="button" onclick="" disabled soon>Quick Start Guide</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>Copyright &copy; 2020 YilianSource</p>
+    </footer>
+</body>
+</html>
