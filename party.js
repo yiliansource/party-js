@@ -32,127 +32,487 @@ const party = (function () {
         applyLighting: true
     };
 
-    // Define the helper 'types' used for runtime.
+    // Define re-usable errors the library can produce.
+    const errors = {
+        typeCheckFailed: "Invalid '{0}' supplied to method.",
+        abstractMethodNotImplemented: "The type is required to implement the '{0}' method.",
+        invalidPathNode: "Invalid node '{0}' detected in SVG path.",
+        malformedPathNode: "Malformed node '{0}' detected in SVG path."
+    };
 
     /**
-     * Creates a new vector with specified xyz components, which default to 0.
+     * Provides functionality to iterate over a collection.
+     */
+    class Iterator {
+        constructor(items) {
+            this.index = 0;
+            this.items = items;
+        }
+
+        /**
+         * Resets the iterator and returns the first item.
+         */
+        first() {
+            this.reset();
+            return this.next();
+        }
+        /**
+         * Returns the next item and moves the index forward.
+         */
+        next() {
+            return this.items[this.index++];
+        }
+        /**
+         * Checks if the iterator has a next item.
+         */
+        hasNext() {
+            return this.index < this.items.length;
+        }
+        /**
+         * Resets the internal index of the iterator.
+         */
+        reset() {
+            this.index = 0;
+        }
+        /**
+         * Iterates over all elements, applying the specified callback to each element.
+         * @param {function} callback The function to apply to each element.
+         */
+        each(callback) {
+            for (let item = this.first(); this.hasNext(); item = this.next()) {
+                callback(item);
+            }
+        }
+    }
+
+    /**
+     * Represents a 3-dimensional vector with xyz components.
      * Also offers basic vector math functionality.
-     * @returns {object} A vector with respective xyz components.
      */
-    const Vector = function (x, y, z) {
-        return {
-            x: x || 0, y: y || 0, z: z || 0,
-            /**
-             * Returns a new vector, which is the sum of the current vector and the supplied vector.
-             */
-            add: function (v) {
-                if (v.x == undefined || v.y == undefined || v.z == undefined) {
-                    return console.error("Invalid vector supplied to add operation.");
-                }
-                return Vector(this.x + v.x, this.y + v.y, this.z + v.z);
-            },
-            /**
-             * Returns a new vector, which is the product of the current vector and the supplied scale.
-             */
-            scale: function (s) {
-                if (typeof s !== 'number') {
-                    return console.error("Invalid scale supplied to scale operation.");
-                }
-                return Vector(this.x * s, this.y * s, this.z * s);
-            }
-        };
-    };
-    /** 
-     * A uniform vector. 
-     **/
-    Vector.one = Vector(1, 1, 1);
-    /**
-     * Generates a new vector from the specified factory method.
-     * This can be, for example, used to generate random vectors.
-     * @param {function} factory The method to use for component generation.
-     * @returns {object} The generated vector.
-     */
-    Vector.generate = function(factory) {
-        if (typeof factory !== 'function') {
-            return console.error("Invalid factory function for generated vector.");
+    class Vector {
+        constructor(x, y, z) {
+            this.x = x || 0;
+            this.y = y || 0;
+            this.z = z || 0;
         }
-        return Vector(factory(), factory(), factory());
-    };
-    
-    /**
-     * Creates a new transform, which holds position, rotation and scale, all in the form of vectors.
-     * @returns {object} The resulting transform.
-     */
-    const Transform = function (position, rotation, scale) {
-        return {
-            position: position || Vector(),
-            rotation: rotation || Vector(),
-            scale: scale || Vector(),
 
-            applyDelta: function (transform, delta) {
-                if (typeof delta !== 'number') {
-                    return console.error("Invalid delta supplied to transform.");
-                }
-                return Transform(
-                    this.position.add(transform.position.scale(delta)),
-                    this.rotation.add(transform.rotation.scale(delta)),
-                    this.scale.add(transform.scale.scale(delta))
-                );
+        /**
+         * Returns a new vector, which is the sum of the current vector and the supplied vector.
+         * @param {Vector} vector The vector to add to the current one.
+         */
+        add(vector) {
+            if (!(vector instanceof Vector)) {
+                throw new TypeError(errors.typeCheckFailed.format("Vector"));
             }
-        };
-    };
-    /**
-     * Creates a new closed polygon from the specified array of points.
-     * @param {Array} points The array of vectors denoting the polygon vertices.
-     * @returns {object} The resulting polygon.
-     */
-    const Polygon = function (points) {
-        if (!Array.isArray(points)) {
-            return console.error("Invalid points definition.");
+            return new Vector(this.x + vector.x, this.y + vector.y, this.z + vector.z);
         }
-        return {
-            points: points,
-
-            /**
-             * Transforms the polygon using the specified transform.
-             * @param {object} transform The transformation to apply to the polygon.
-             */
-            applyTransform: function (transform) {
-                return new Polygon(this.points.map(p => {
-                    let x = p.x * transform.scale.x, y = p.y * transform.scale.y;
-                    return Vector(
-                        // Basic orthographic transformation
-                        transform.position.x + (x * Math.cos(transform.rotation.z) - y * Math.sin(transform.rotation.z)) * Math.cos(transform.rotation.y),
-                        transform.position.y + (x * Math.sin(transform.rotation.z) + y * Math.cos(transform.rotation.z)) * Math.cos(transform.rotation.x)
-                    );
-                }));
-            },
-            /**
-             * Draws the polygon to the specified canvas context.
-             * @param {object} context The context to draw the points to.
-             */
-            draw: function (context) {
-                ctx.beginPath();
-                for (let i = 0; i < this.points.length; i++) {
-                    let x = this.points[i].x - window.scrollX,
-                        y = this.points[i].y - window.scrollY;
-
-                    (i == 0 ? context.moveTo : context.lineTo).apply(context, [x, y]);
-                }
-                ctx.closePath();
-                ctx.fill();
+        /**
+         * Returns a new vector, which is scaled by either a supplied scalar or another vector.
+         * @param {Number} scalar The number or vector to scale by.
+         */
+        scale(s) {
+            if (typeof s === 'number') {
+                return new Vector(this.x * s, this.y * s, this.z * s);
             }
-        };
-    };
+            else if (s instanceof Vector) {
+                return new Vector(this.x * s.x, this.y * s.y, this.z * s.z);
+            }
+            else {
+                throw new TypeError(errors.typeCheckFailed.format("Number/Vector"));
+            }
+        }
+
+        static get zero() {
+            return new Vector();
+        }
+        static get one() {
+            return new Vector(1, 1, 1);
+        }
+
+        /**
+         * Generates a new vector from the specified factory method.
+         * This can be, for example, used to generate random vectors.
+         * @param {function} factory The method to use for component generation.
+         */
+        static generate(factory) {
+            if (typeof factory !== 'function') {
+                throw new TypeError(errors.typeCheckFailed.format("Function"));
+            }
+            return new Vector(factory(), factory(), factory());
+        }
+    }
     /**
-     * Uniform quad, with the origin (0, 0) as a center.
+     * Represents a transform, which holds position, rotation and scale, all in the form of vectors.
      */
-    Polygon.quad = Polygon([
-        Vector(-0.5, 0.5),
-        Vector(0.5, 0.5),
-        Vector(0.5, -0.5),
-        Vector(-0.5, -0.5)
-    ]);
+    class Transform {
+        constructor(position, rotation, scale) {
+            this.position = position || Vector.zero;
+            this.rotation = rotation || Vector.zero;
+            this.scale = scale || Vector.zero;
+        }
+
+        /**
+         * Applies the specified transform to the current one, scaled by the specified delta.
+         * @param {Transform} transform The transform to apply.
+         * @param {Number} delta The delta to scale the transform by.
+         */
+        applyDelta(transform, delta) {
+            if (!(transform instanceof Transform)) {
+                throw new TypeError(errors.typeCheckFailed.format("Transform"));
+            }
+            if (typeof delta !== "number") {
+                throw new TypeError(errors.typeCheckFailed.format("Number"));
+            }
+            return new Transform(
+                this.position.add(transform.position.scale(delta)),
+                this.rotation.add(transform.rotation.scale(delta)),
+                this.scale.add(transform.scale.scale(delta))
+            );
+        }
+        apply(point) {
+            if (!(point instanceof Vector)) {
+                throw new TypeError(errors.typeCheckFailed.format("Vector"));
+            }
+            let x = point.x * this.scale.x,
+                y = point.y * this.scale.y;
+            return new Vector(
+                // Basic orthographic transformation
+                this.position.x + (x * Math.cos(this.rotation.z) - y * Math.sin(this.rotation.z)) * Math.cos(this.rotation.y),
+                this.position.y + (x * Math.sin(this.rotation.z) + y * Math.cos(this.rotation.z)) * Math.cos(this.rotation.x)
+            );
+        }
+    }
+    /**
+     * Represents the bounds of a shape.
+     */
+    class Bounds {
+        constructor(xmin, ymin, xmax, ymax) {
+            this.xmin = xmin;
+            this.ymin = ymin;
+            this.xmax = xmax;
+            this.ymax = ymax;
+        }
+
+        /**
+         * Calculates the bounds from a set of vertices. Assumes atleast one contained element.
+         * @param {Vector[]} vertices The vertices to use for the bounds calculation.
+         */
+        static fromVertices(vertices) {
+            let bounds = new Bounds(Infinity, Infinity, 0, 0);
+            for (let i = 0; i < vertices.length; i++) {
+                let p = vertices[i];
+                bounds.xmin = Math.min(p.x, bounds.xmin);
+                bounds.ymin = Math.min(p.y, bounds.ymin);
+                bounds.xmax = Math.max(p.x, bounds.xmax);
+                bounds.ymax = Math.max(p.y, bounds.ymax);
+            }
+            return bounds;
+        }
+    }
+    /**
+     * Represents a viewbox used for normalizing objects.
+     */
+    class ViewBox {
+        /**
+         * Creates a new viewbox with the specified dimensions.
+         * Also allows to specify if the viewbox should be square-shaped or not.
+         */
+        constructor(xmin, ymin, width, height, isNonSquare) {
+            this.xmin = xmin;
+            this.ymin = ymin;
+            this.width = isNonSquare ? width : Math.max(width, height);
+            this.height = isNonSquare ? height : Math.max(width, height);
+        }
+
+        /**
+         * Normalizes the specified X coordinate using the current viewbox.
+         */
+        transformX(x) {
+            return (x - this.xmin - this.width / 2) / this.width;
+        }
+        /**
+         * Normalizes the specified Y coordinate using the current viewbox.
+         */
+        transformY(y) {
+            return (y - this.ymin - this.height / 2) / this.height;
+        }
+        /**
+         * Normalizes the specified point using the current viewbox.
+         */
+        transformPoint(p) {
+            return new Vector(this.transformX(p.x), this.transformY(p.y));
+        }
+
+        /**
+         * Calculates a viewbox from the given bounds.
+         * @param {Bounds} bounds The bounds to use for the viewbox.
+         */
+        static fromBounds(bounds) {
+            return new ViewBox(bounds.xmin, bounds.ymin, bounds.xmax - bounds.xmin, bounds.ymax - bounds.ymin);
+        }
+    }
+
+    /**
+     * Represents a shape that can be rendered to the canvas.
+     */
+    class Shape {
+        /**
+         * Assigns the specified transform to the shape, using it for rendering.
+         */
+        withTransform(transform) {
+            if (!(transform instanceof Transform)) {
+                throw new TypeError(errors.typeCheckFailed.format("Transform"));
+            }
+            this.transform = transform;
+            return this;
+        }
+
+        /**
+         * Abstract; returns the bounds of the shape.
+         */
+        getBounds() {
+            throw new Error(errors.abstractMethodNotImplemented.format("getBounds()"));
+        }
+        /**
+         * Abstract; normalizes the shape using the specified viewbox.
+         */
+        normalize(viewBox) {
+            throw new Error(errors.abstractMethodNotImplemented.format("normalize(viewBox)"));
+        }
+        /**
+         * Abstract; renders the specified shape to the given context.
+         */
+        draw(context) {
+            throw new Error(errors.abstractMethodNotImplemented.format("draw(context)"));
+        }
+    }
+    /**
+     * Represents a closed polygon from a specified array of points.
+     */
+    class Polygon extends Shape {
+        constructor(points) {
+            super();
+            if (!Array.isArray(points)) {
+                throw new TypeError(errors.typeCheckFailed.format("Array"));
+            }
+            this.points = points;
+        }
+
+        /**
+         * Returns the bounds for the polygon.
+         */
+        getBounds() {
+            return Bounds.fromVertices(this.points);
+        }
+        /**
+         * Normalizes the polygon's vertices using the given viewbox.
+         */
+        normalize(viewBox) {
+            viewBox = viewBox || ViewBox.fromBounds(this.getBounds());
+            if (!(viewBox instanceof ViewBox)) {
+                throw new TypeError(errors.typeCheckFailed.format("ViewBox"));
+            }
+            this.points = this.points.map(p => viewBox.transformPoint(p));
+        }
+
+        /**
+         * Draws the polygon to the specified canvas context.
+         * @param {CanvasRenderingContext2D} context The context to draw the points to.
+         */
+        draw(context) {
+            if (!(context instanceof CanvasRenderingContext2D)) {
+                throw new TypeError(errors.typeCheckFailed.format("CanvasRenderingContext2D"));
+            }
+
+            context.beginPath();
+            for (let i = 0; i < this.points.length; i++) {
+                let p = this.transform ? this.transform.apply(this.points[i]) : this.points[i];
+                (i == 0 ? context.moveTo : context.lineTo).apply(context, [p.x - window.scrollX, p.y - window.scrollY]);
+            }
+            context.closePath();
+            context.fill();
+        }
+    }
+    /**
+     * Represents an SVG path.
+     */
+    class Path extends Shape {
+        constructor(nodes) {
+            super();
+            this.nodes = [];
+
+            // In order to reduce rendering complexity, transform the SVG commands into a more distinct format.
+            let cursor = new Vector();
+            let iterator = new Iterator(nodes);
+            while (iterator.hasNext()) {
+                let node = iterator.next();
+                if (typeof node != "string") {
+                    /** 
+                     * If the node is not a command, interpret it as the same type as the last processed command, unless its a move command.
+                     * @see https://www.w3.org/TR/SVG/paths.html
+                     */
+                    node = nodes.slice(0, iterator.index).reverse().find(n => typeof n == "string");
+                    if (node.toLowerCase() == "m") {
+                        node = (node.toLowerCase() == node) ? "l" : "L";
+                    }
+                    iterator.index--;
+                }
+
+                let isRelative = node.toLowerCase() == node;
+                let offset = isRelative ? new Vector(cursor.x, cursor.y) : new Vector();
+                let type, args;
+                switch (node.toLowerCase()) {
+                    case "m":
+                        type = "move";
+                        args = [offset.x + iterator.next(), offset.y + iterator.next()];
+                        cursor.x = args[0];
+                        cursor.y = args[1];
+                        break;
+                    case "l":
+                        type = "line";
+                        args = [offset.x + iterator.next(), offset.y + iterator.next()];
+                        cursor.x = args[0];
+                        cursor.y = args[1];
+                        break;
+                    case "h":
+                        type = "line";
+                        args = [offset.x + iterator.next(), cursor.y];
+                        cursor.x = args[0];
+                        break;
+                    case "v":
+                        type = "line";
+                        args = [cursor.x, offset.y + iterator.next()];
+                        cursor.y = args[1];
+                        break;
+                    case "z":
+                        type = "line";
+                        let origin = this.nodes.find(n => n.type == "move").getResultingCursor();
+                        args = [origin.x, origin.y];
+                        cursor.x = origin.x;
+                        cursor.y = origin.y;
+                        break;
+                    case "c":
+                        type = "bezier";
+                        args = [];
+                        for (let i = 0; i < 3; i++) {
+                            args.push(offset.x + iterator.next());
+                            args.push(offset.y + iterator.next());
+                        }
+                        cursor.x = args[args.length - 2];
+                        cursor.y = args[args.length - 1];
+                        break;
+                    case "s":
+                        type = "bezier";
+
+                        let previousNode = this.nodes[this.nodes.length - 1];
+                        if (previousNode.type != "bezier") {
+                            throw new Error(errors.malformedPathNode.format(node));
+                        }
+
+                        // This command infers its first control point from the previous bezier curve.
+                        let x1 = cursor.x + (previousNode.args[4] - previousNode.args[2]);
+                        let x2 = cursor.y + (previousNode.args[5] - previousNode.args[3]);
+                        args = [x1, x2];
+
+                        for (let i = 0; i < 2; i++) {
+                            args.push(offset.x + iterator.next());
+                            args.push(offset.y + iterator.next());
+                        }
+                        cursor.x = args[args.length - 2];
+                        cursor.y = args[args.length - 1];
+                        break;
+
+                    default:
+                        break;
+                }
+                this.nodes.push(new PathNode(type, args));
+            }
+
+            if (this.nodes.length > 50) {
+                console.warn("Complex shape registered, high usage may impact framerate.");
+            }
+        }
+        
+        /**
+         * Returns the bounds for this path shape.
+         */
+        getBounds() {
+            return Bounds.fromVertices(this.nodes.map(n => n.getResultingCursor()));
+        }
+        /**
+         * Normalizes the path's vertices using the given viewbox.
+         */
+        normalize(viewBox) {
+            viewBox = viewBox || ViewBox.fromBounds(this.getBounds());
+            if (!(viewBox instanceof ViewBox)) {
+                throw new TypeError(errors.typeCheckFailed.format("ViewBox"));
+            }
+            let iterator = new Iterator(this.nodes);
+            while (iterator.hasNext()) {
+                let node = iterator.next();
+                for (let i = 0; i < node.args.length; i += 2) {
+                    node.args[i] = viewBox.transformX(node.args[i]);
+                    node.args[i + 1] = viewBox.transformY(node.args[i + 1]);
+                }
+            }
+        }
+        /**
+         * Renders the path to the given canvas context.
+         */
+        draw(context) {
+            if (!(context instanceof CanvasRenderingContext2D)) {
+                throw new TypeError(errors.typeCheckFailed.format("CanvasRenderingContext2D"));
+            }
+
+            context.beginPath();
+            new Iterator(this.nodes).each(n => n.run(context, this.transform));
+            context.fill();
+        }
+    }
+    /**
+     * Represents a node on a path.
+     */
+    class PathNode {
+        constructor(type, args) {
+            this.type = type;
+            this.args = args;
+        }
+
+        /**
+         * Returns the cursor position for AFTER the node was executed.
+         */
+        getResultingCursor() {
+            return new Vector(this.args[this.args.length - 2], this.args[this.args.length - 1]);
+        }
+        /**
+         * Executes the operation of the node on the given context.
+         */
+        run(context, transform) {
+            let fun;
+            switch (this.type) {
+                case "move":
+                    fun = context.moveTo;
+                    break;
+                case "line":
+                    fun = context.lineTo;
+                    break;
+                case "bezier":
+                    fun = context.bezierCurveTo;
+            }
+
+            let transformedArgs = [];
+            for (let i = 0; i < this.args.length; i += 2) {
+                let t = new Vector(this.args[i], this.args[i + 1]);
+                if (transform) {
+                    t = transform.apply(t);
+                }
+                transformedArgs.push(t.x - window.scrollX);
+                transformedArgs.push(t.y - window.scrollY);
+            }
+
+            fun.apply(context, transformedArgs);
+        }
+    }
 
     // Create the canvas element and align it with the screen.
     const canvas = document.createElement("canvas");
@@ -167,6 +527,12 @@ const party = (function () {
     // Stores the particles needed throughout runtime.
     var particles = [];
 
+    // Stores the shapes the particles can take.
+    const shapes = {
+        square: new Polygon([new Vector(-0.5, 0.5), new Vector(0.5, 0.5), new Vector(0.5, -0.5), new Vector(-0.5, -0.5)]),
+        rectangle: new Polygon([new Vector(-0.3, 1), new Vector(0.3, 1), new Vector(0.3, -1), new Vector(-0.3, -1)])
+    };
+
     // Define conversions between radians and degrees
     const rad2deg = (180 / Math.PI);
     const deg2rad = (Math.PI / 180);
@@ -177,18 +543,13 @@ const party = (function () {
         return Math.random();
     }
     /**
-     * Returns a random value from a to b.
-     * @param {number} a The lower bound of the range (inclusive).
-     * @param {number} b The upper bound of the range (inclusive).
+     * Returns a random value from a to b, both inclusive.
      */
     function randRange(a, b) {
         return lerp(a, b, rand());
     }
     /**
      * Linearly interpolates from a to b by t. Unclamped.
-     * @param {number} a The "start" of the interpolation.
-     * @param {number} b The "end" of the interpolation.
-     * @param {number} t The percentage of interpolation.
      */
     function lerp(a, b, t) {
         return (1 - t) * a + t * b;
@@ -208,6 +569,14 @@ const party = (function () {
      */
     function applyAbsoluteVariation(value, variation) {
         return value + randRange(-variation / 2, variation / 2);
+    }
+
+    String.prototype.format = function () {
+        var a = this;
+        for (var k in arguments) {
+            a = a.replace(new RegExp("\\{" + k + "\\}", 'g'), arguments[k]);
+        }
+        return a;
     }
 
     /**
@@ -254,8 +623,13 @@ const party = (function () {
      * @see https://gist.github.com/jedfoster/7939513
      */
     function mix(color1, color2, weight) {
-        function d2h(d) { return d.toString(16); }
-        function h2d(h) { return parseInt(h, 16); }
+        function d2h(d) {
+            return d.toString(16);
+        }
+
+        function h2d(h) {
+            return parseInt(h, 16);
+        }
 
         weight = weight != undefined ? weight : 0.5;
 
@@ -267,7 +641,9 @@ const party = (function () {
 
                 val = d2h(Math.floor(lerp(v1, v2, weight)));
 
-            while (val.length < 2) { val = '0' + val; }
+            while (val.length < 2) {
+                val = '0' + val;
+            }
 
             color += val;
         }
@@ -278,9 +654,12 @@ const party = (function () {
     /**
      * Calculates the lighting for a surface with a specified transformation.
      * 1 means fully lit, 0 is fully in shadow.
-     * @param {object} transform The transformation of the object.
+     * @param {Transform} transform The transformation of the object.
      */
     function calculateLighting(transform) {
+        if (!(transform instanceof Transform)) {
+            throw new TypeError("Invalid transform supplied to lighting calculation.");
+        }
         return Math.abs(Math.cos(transform.rotation.x) * Math.cos(transform.rotation.y));
     }
 
@@ -335,24 +714,25 @@ const party = (function () {
         for (let i = 0; i < count; i++) {
             let angle = applyAbsoluteVariation(0, angleSpan) * deg2rad;
             let initialVelocityY = applyRelativeVariation(getOption(options, "yVelocity", 0), getOption(options, "yVelocityVariation", 0));
-            let width = applyRelativeVariation(getOption(options, "width", 5), scaleVariation);
+            let size = applyRelativeVariation(getOption(options, "size", 8), scaleVariation);
 
             createParticle({
-                acceleration: Transform(
-                    Vector(0, getOption(options, "gravity", true) * config.gravityPixels),
-                    Vector()
+                shape: getOption(options, "shape", "square"),
+                acceleration: new Transform(
+                    new Vector(0, getOption(options, "gravity", true) * config.gravityPixels),
+                    Vector.zero
                 ),
-                velocity: Transform(
-                    Vector(Math.sin(angle) * initialVelocityY, Math.cos(angle) * initialVelocityY),
+                velocity: new Transform(
+                    new Vector(Math.sin(angle) * initialVelocityY, Math.cos(angle) * initialVelocityY),
                     Vector.generate(() => rotationVelocityLimit * rand())
                 ),
-                transform: Transform(
-                    Vector(
+                transform: new Transform(
+                    new Vector(
                         (area.left || 0) + applyRelativeVariation((area.width || 0) / 2, getOption(options, "randomizePosition", true) * 2) + (useScroll ? window.scrollX : 0),
                         (area.top || 0) + applyRelativeVariation((area.height || 0) / 2, getOption(options, "randomizePosition", true) * 2) + (useScroll ? window.scrollY : 0)
                     ),
                     Vector.generate(() => Math.PI * getOption(options, "randomizeRotation", true) * rand()),
-                    Vector(width, width * getOption(options, "heightFactor", 3))
+                    Vector.one.scale(size)
                 ),
                 color: getOption(options, "color", getOption(options, "colorFunction", () => hslToHex(rand() * 360, 100, 70))()),
                 lifetime: 0,
@@ -360,21 +740,26 @@ const party = (function () {
                 /**
                  * Renders the particle to the global canvas context.
                  */
-                draw: function () {
+                draw: function (context) {
                     // Apply lighting to the color, if enabled.
-                    ctx.fillStyle = config.applyLighting
-                        ? mix('#000000', this.color, 0.25 + 0.75 * calculateLighting(this.transform))
-                        : this.color;
+                    context.fillStyle = config.applyLighting ?
+                        mix('#000000', this.color, 0.25 + 0.75 * calculateLighting(this.transform)) :
+                        this.color;
 
                     // Lets the particle grow to its size over time, so it doesn't spawn out of nowhere.
                     const maxSizeAt = 0.2;
                     let sm = this.lifetime > maxSizeAt ? 1 : this.lifetime / maxSizeAt;
 
+                    let definedShape = shapes[this.shape];
+                    if (!definedShape) {
+                        throw Error(`Unknown shape '${this.shape}'.`);
+                    }
+
                     // Transform the quad to fit the transform of the particle.
-                    Polygon.quad
-                        .applyTransform(Transform(0, 0, Vector.one.scale(sm)))
-                        .applyTransform(this.transform)
-                        .draw(ctx);
+                    let transform = new Transform(this.transform.position, this.transform.rotation, this.transform.scale.scale(sm));
+                    definedShape
+                        .withTransform(transform)
+                        .draw(context);
                 },
                 /**
                  * Apply the physics transformations to the particle.
@@ -421,7 +806,7 @@ const party = (function () {
         // Clear the canvas.
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        particles.forEach(p => p.draw());
+        particles.forEach(p => p.draw(ctx));
     }
     /**
      * Processes an animation frame.
@@ -515,6 +900,84 @@ const party = (function () {
                 height: -window.innerHeight
             };
             emitFromArea(area, true, options);
+        },
+
+        /**
+         * Registers a new shape under a given name.
+         * @param {string} name The name of the new shape.
+         * @param {any} shape The shape to add. This can be either an array of vectors, or an SVG document.
+         */
+        registerShape: function (name, shapeDefinition) {
+            // Arrays are interpreted as point collections
+            if (Array.isArray(shapeDefinition)) {
+                shapes[name] = new Polygon(shapeDefinition);
+            }
+            // Strings are interpreted as SVG graphics
+            else if (typeof shapeDefinition === 'string') {
+                let parser = new DOMParser();
+                let doc = parser.parseFromString(shapeDefinition, "application/xml");
+
+                // Catch if an error has occurred.
+                let error = doc.getElementsByTagName("parsererror")[0];
+                if (error) {
+                    throw new Error("Invalid SVG shape.");
+                }
+
+                // If an SVG viewbox was passed, parse it.
+                var viewBox;
+                let svg = doc.getElementsByTagName("svg")[0];
+                if (svg && svg.hasAttribute("viewBox")) {
+                    viewBox = ViewBox.fromBounds(svg.getAttribute("viewBox").split(' ').map(n => parseFloat(n)));
+                }
+
+                // Provide a storage for the created shape.
+                let shape;
+
+                let polygon = doc.getElementsByTagName("polygon")[0];
+                if (!shape && polygon) {
+                    // Extract the points from the polygon.
+                    let pointData = polygon.getAttribute("points");
+                    let pointExtractor = /(-?\d*\.\d+|-?\d+)/g;
+                    let matches = pointData.match(pointExtractor);
+
+                    // Parse the point collection into vectors.
+                    let points = [];
+                    for (let i = 0; i < matches.length; i += 2) {
+                        points.push(new Vector(parseFloat(matches[i]), parseFloat(matches[i + 1])));
+                    }
+
+                    // Create the resulting polygon.
+                    shape = new Polygon(points);
+                }
+
+                let path = doc.getElementsByTagName("path")[0];
+                if (!shape && path) {
+                    // Extract the nodes from the path definition.
+                    let pathData = path.getAttribute("d");
+                    let nodeExtractor = /([A-Za-z]|-?\d*\.\d+|-?\d+)/g;
+                    let matches = pathData.match(nodeExtractor);
+
+                    // Process the nodes into their correct form.
+                    let nodes = [];
+                    for (let i = 0; i < matches.length; i++) {
+                        let string = matches[i];
+                        let numeric = parseFloat(string);
+                        nodes.push(isNaN(numeric) ? string : numeric);
+                    }
+
+                    // Create a new path using the given nodes.
+                    shape = new Path(nodes);
+                }
+
+                // Ensure that a shape was created.
+                if (!shape) {
+                    throw new Error("No shape was determined from the SVG.");
+                }
+
+                // Normalize the shape using the viewbox.
+                shape.normalize(viewBox);
+                shapes[name] = shape;
+            }
         }
     };
 })();
