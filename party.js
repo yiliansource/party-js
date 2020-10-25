@@ -32,6 +32,13 @@ const party = (function () {
         applyLighting: true
     };
 
+    const errors = {
+        typeCheckFailed: "Invalid '{0}' supplied to method.",
+        abstractMethodNotImplemented: "The type is required to implement the '{0}' method.",
+        invalidPathNode: "Invalid node '{0}' detected in SVG path.",
+        malformedPathNode: "Malformed node '{0}' detected in SVG path."
+    };
+
     /**
      * Represents a 3-dimensional vector with xyz components.
      * Also offers basic vector math functionality.
@@ -49,19 +56,24 @@ const party = (function () {
          */
         add(vector) {
             if (!(vector instanceof Vector)) {
-                throw new TypeError("Invalid vector supplied to add operation.");
+                throw new TypeError(errors.typeCheckFailed.format("Vector"));
             }
             return new Vector(this.x + vector.x, this.y + vector.y, this.z + vector.z);
         }
         /**
-         * Returns a new vector, which is the product of the current vector and the supplied scale.
-         * @param {Number} scalar The value to scale the vector by.
+         * Returns a new vector, which is scaled by either a supplied scalar or another vector.
+         * @param {Number} scalar The number or vector to scale by.
          */
-        scale(scalar) {
-            if (typeof scalar !== 'number') {
-                throw new TypeError("Invalid scale supplied to scale operation.");
+        scale(s) {
+            if (typeof s === 'number') {
+                return new Vector(this.x * s, this.y * s, this.z * s);
             }
-            return new Vector(this.x * scalar, this.y * scalar, this.z * scalar);
+            else if (s instanceof Vector) {
+                return new Vector(this.x * s.x, this.y * s.y, this.z * s.z);
+            }
+            else {
+                throw new TypeError(errors.typeCheckFailed.format("Number/Vector"));
+            }
         }
 
         static get zero() {
@@ -78,7 +90,7 @@ const party = (function () {
          */
         static generate(factory) {
             if (typeof factory !== 'function') {
-                return new TypeError("Invalid factory function for generated vector.");
+                throw new TypeError(errors.typeCheckFailed.format("Function"));
             }
             return new Vector(factory(), factory(), factory());
         }
@@ -100,10 +112,10 @@ const party = (function () {
          */
         applyDelta(transform, delta) {
             if (!(transform instanceof Transform)) {
-                throw new TypeError("Invalid transform.");
+                throw new TypeError(errors.typeCheckFailed.format("Transform"));
             }
             if (typeof delta !== "number") {
-                throw new TypeError("Invalid delta supplied to transformation.");
+                throw new TypeError(errors.typeCheckFailed.format("Number"));
             }
             return new Transform(
                 this.position.add(transform.position.scale(delta)),
@@ -111,32 +123,85 @@ const party = (function () {
                 this.scale.add(transform.scale.scale(delta))
             );
         }
+        apply(point) {
+            if (!(point instanceof Vector)) {
+                throw new TypeError(errors.typeCheckFailed.format("Vector"));
+            }
+            let x = point.x * this.scale.x,
+                y = point.y * this.scale.y;
+            return new Vector(
+                // Basic orthographic transformation
+                this.position.x + (x * Math.cos(this.rotation.z) - y * Math.sin(this.rotation.z)) * Math.cos(this.rotation.y),
+                this.position.y + (x * Math.sin(this.rotation.z) + y * Math.cos(this.rotation.z)) * Math.cos(this.rotation.x)
+            );
+        }
     }
 
-    class Shape {
-        applyTransform(transform) {
-            throw new Error("The shape object needs to implement the applyTransform method.");
-        }
-        draw(context) {
-            throw new Error("The shape object needs to implement the draw method.");
+    class Bounds {
+        constructor(xmin, ymin, xmax, ymax) {
+            this.xmin = xmin;
+            this.ymin = ymin;
+            this.xmax = xmax;
+            this.ymax = ymax;
         }
 
-        static transformPoints(points, transform) {
-            if (!Array.isArray(points)) {
-                throw new TypeError("Non-array was supplied as points array.");
+        static fromVertices(vertices) {
+            let bounds = new Bounds(Infinity, Infinity, 0, 0);
+            for (let i = 0; i < vertices.length; i++) {
+                let p = vertices[i];
+                bounds.xmin = Math.min(p.x, bounds.xmin);
+                bounds.ymin = Math.min(p.y, bounds.ymin);
+                bounds.xmax = Math.max(p.x, bounds.xmax);
+                bounds.ymax = Math.max(p.y, bounds.ymax);
             }
+            return bounds;
+        }
+    }
+    class ViewBox {
+        constructor(xmin, ymin, width, height, isNonSquare) {
+            this.xmin = xmin;
+            this.ymin = ymin;
+
+            if (isNonSquare) {
+                this.width = width;
+                this.height = height;
+            }
+            else {
+                this.width = this.height = Math.max(width, height);
+            }
+        }
+
+        transformX(x) {
+            return (x - this.xmin - this.width / 2) / this.width;
+        }
+        transformY(y) {
+            return (y - this.ymin - this.height / 2) / this.height;
+        }
+        transformPoint(p) {
+            return new Vector(this.transformX(p.x), this.transformY(p.y));
+        }
+
+        static fromBounds(bounds) {
+            return new ViewBox(bounds.xmin, bounds.ymin, bounds.xmax - bounds.xmin, bounds.ymax - bounds.ymin);
+        }
+    }
+    class Shape {
+        withTransform(transform) {
             if (!(transform instanceof Transform)) {
-                throw new TypeError("Invalid transform supplied to transformation");
+                throw new TypeError(errors.typeCheckFailed.format("Transform"));
             }
-            return points.map(p => {
-                let x = p.x * transform.scale.x,
-                    y = p.y * transform.scale.y;
-                return new Vector(
-                    // Basic orthographic transformation
-                    transform.position.x + (x * Math.cos(transform.rotation.z) - y * Math.sin(transform.rotation.z)) * Math.cos(transform.rotation.y),
-                    transform.position.y + (x * Math.sin(transform.rotation.z) + y * Math.cos(transform.rotation.z)) * Math.cos(transform.rotation.x)
-                );
-            });
+            this.transform = transform;
+            return this;
+        }
+
+        getBounds() {
+            throw new Error(errors.abstractMethodNotImplemented.format("getBounds()"));
+        }
+        normalize(viewBox) {
+            throw new Error(errors.abstractMethodNotImplemented.format("normalize(viewBox)"));
+        }
+        draw(context) {
+            throw new Error(errors.abstractMethodNotImplemented.format("draw(context)"));
         }
     }
     /**
@@ -146,36 +211,229 @@ const party = (function () {
         constructor(points) {
             super();
             if (!Array.isArray(points)) {
-                throw new TypeError("Invalid points definition.");
+                throw new TypeError(errors.typeCheckFailed.format("Array"));
             }
             this.points = points;
         }
 
-        /**
-         * Transforms the polygon using the specified transform.
-         * @param {Transform} transform The transformation to apply to the polygon.
-         */
-        applyTransform(transform) {
-            return new Polygon(Shape.transformPoints(this.points, transform));
+        getBounds() {
+            return Bounds.fromVertices(this.points);
         }
+        normalize(viewBox) {
+            if (viewBox == undefined) {
+                viewBox = ViewBox.fromBounds(this.getBounds());
+            }
+            if (!(viewBox instanceof ViewBox)) {
+                throw new TypeError(errors.typeCheckFailed.format("ViewBox"));
+            }
+            this.points = this.points.map(p => viewBox.transformPoint(p));
+        }
+
         /**
          * Draws the polygon to the specified canvas context.
          * @param {CanvasRenderingContext2D} context The context to draw the points to.
          */
         draw(context) {
             if (!(context instanceof CanvasRenderingContext2D)) {
-                throw new TypeError("Invalid rendering context.");
+                throw new TypeError(errors.typeCheckFailed.format("CanvasRenderingContext2D"));
             }
 
-            ctx.beginPath();
+            context.beginPath();
             for (let i = 0; i < this.points.length; i++) {
-                let x = this.points[i].x - window.scrollX,
-                    y = this.points[i].y - window.scrollY;
+                let p = this.points[i];
+                if (this.transform) {
+                    p = this.transform.apply(p);
+                }
+                let x = p.x - window.scrollX,
+                    y = p.y - window.scrollY;
 
-                (i == 0 ? context.moveTo : context.lineTo).apply(context, [x, y]);
+                (i == 0 ? context.moveTo : context.lineTo).apply(context, [ x, y ]);
             }
-            ctx.closePath();
-            ctx.fill();
+            context.closePath();
+            context.fill();
+        }
+    }
+    class Path extends Shape {
+        constructor(nodes) {
+            super();
+
+            this.nodes = [];
+
+            // In order to reduce rendering complexity, transform the SVG commands into a more distinct format
+            let cursor = new Vector();
+            let iterator = new PathIterator(nodes);
+            while (iterator.hasNodes()) {
+                let node = iterator.getNode();
+                if (typeof node == "string") {
+                    let isRelative = node.toLowerCase() == node;
+                    let offset = isRelative ? new Vector(cursor.x, cursor.y) : new Vector();
+                    let type, args;
+                    switch (node.toLowerCase()) {
+                        case "m":
+                            type = "move";
+                            args = [ offset.x + iterator.getNode(), offset.y + iterator.getNode() ];
+                            cursor.x = args[0];
+                            cursor.y = args[1];
+                            break;
+                        case "l":
+                            type = "line";
+                            args = [ offset.x + iterator.getNode(), offset.y + iterator.getNode() ];
+                            cursor.x = args[0];
+                            cursor.y = args[1];
+                            break;
+                        case "h":
+                            type = "line";
+                            args = [ offset.x + iterator.getNode(), cursor.y ];
+                            cursor.x = args[0];
+                            break;
+                        case "v":
+                            type = "line";
+                            args = [ cursor.x, offset.y + iterator.getNode() ];
+                            cursor.y = args[1];
+                            break;
+                        case "z":
+                            type = "line";
+                            let origin = this.nodes[0].getResultingCursor();
+                            args = [ origin.x, origin.y ];
+                            cursor.x = origin.x;
+                            cursor.y = origin.y;
+                            break;
+                        case "c":
+                            type = "bezier";
+                            args = [];
+                            for (let i = 0; i < 3; i++) {
+                                args.push(offset.x + iterator.getNode());
+                                args.push(offset.y + iterator.getNode());
+                            }
+                            cursor.x = args[args.length - 2];
+                            cursor.y = args[args.length - 1];
+                            break;
+                        case "s":
+                            type = "bezier";
+                            
+                            let previousNode = this.nodes[this.nodes.length - 1];
+                            if (previousNode.type != "bezier") {
+                                throw new Error(errors.malformedPathNode.format(node));
+                            }
+                            
+                            let x1 = cursor.x + (previousNode.args[4] - previousNode.args[2]);
+                            let x2 = cursor.y + (previousNode.args[5] - previousNode.args[3]);
+                            args = [ x1, x2 ];
+                            
+                            for (let i = 0; i < 2; i++) {
+                                args.push(offset.x + iterator.getNode());
+                                args.push(offset.y + iterator.getNode());
+                            }
+                            cursor.x = args[args.length - 2];
+                            cursor.y = args[args.length - 1];
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                    this.nodes.push(new PathNode(type, args));
+                } else {
+                    throw new Error(errors.invalidPathNode.format(node));
+                }
+            }
+
+            if (this.nodes.length > 50) {
+                console.warn("Complex shape registered, high usage may impact framerate.");
+            }
+        }
+
+        getPathVertices() {
+            return this.nodes.map(n => n.getResultingCursor());
+        }
+        getBounds() {
+            return Bounds.fromVertices(this.getPathVertices());
+        }
+        normalize(viewBox) {
+            if (viewBox == undefined) {
+                viewBox = ViewBox.fromBounds(this.getBounds());
+            }
+            if (!(viewBox instanceof ViewBox)) {
+                throw new TypeError(errors.typeCheckFailed.format("ViewBox"));
+            }
+            let iterator = new PathIterator(this.nodes);
+            while (iterator.hasNodes()) {
+                let node = iterator.getNode();
+                for (let i = 0; i < node.args.length; i += 2) {
+                    node.args[i] = viewBox.transformX(node.args[i]);
+                    node.args[i + 1] = viewBox.transformY(node.args[i + 1]);
+                }
+            }
+        }
+        draw(context) {
+            if (!(context instanceof CanvasRenderingContext2D)) {
+                throw new TypeError(errors.typeCheckFailed.format("CanvasRenderingContext2D"));
+            }
+
+            context.beginPath();
+
+            var iterator = new PathIterator(this.nodes);
+            while (iterator.hasNodes()) {
+                iterator.getNode().run(context, this.transform);
+            }
+
+            context.fill();
+        }
+    }
+    class PathNode {
+        constructor(type, args) {
+            this.type = type;
+            this.args = args;
+        }
+
+        getResultingCursor() {
+            return new Vector(this.args[this.args.length - 2], this.args[this.args.length - 1]);
+        }
+        run(context, transform) {
+            let fun;
+            switch (this.type) {
+                case "move":
+                    fun = context.moveTo;
+                    break;
+                case "line":
+                    fun = context.lineTo;
+                    break;
+                case "bezier":
+                    fun = context.bezierCurveTo;
+            }
+
+            let transformedArgs = [];
+            for (let i = 0; i < this.args.length; i += 2) {
+                let t = new Vector(this.args[i], this.args[i + 1]);
+                if (transform) {
+                    t = transform.apply(t);
+                }
+                transformedArgs.push(t.x - window.scrollX);
+                transformedArgs.push(t.y - window.scrollY);
+            }
+
+            fun.apply(context, transformedArgs);
+        }
+    }
+    class PathIterator {
+        constructor(nodes) {
+            this.index = 0;
+            this.nodes = nodes;
+        }
+
+        hasNodes() {
+            return this.index < this.nodes.length;
+        }
+        getNode() {
+            return this.nodes[this.index++];
+        }
+        updateNode(fun) {
+            this.nodes[this.index] = fun(this.getNode());
+        }
+        reset() {
+            this.index = 0;
+        }
+        go(i) {
+            this.index += i;
         }
     }
 
@@ -236,6 +494,14 @@ const party = (function () {
         return value + randRange(-variation / 2, variation / 2);
     }
 
+    String.prototype.format = function () {
+        var a = this;
+        for (var k in arguments) {
+            a = a.replace(new RegExp("\\{" + k + "\\}", 'g'), arguments[k]);
+        }
+        return a;
+    }
+
     /**
      * Converts the hue, saturation and luminance component into a 6-digit hex color prefixed with #.
      * @param {number} h The hue component.
@@ -283,6 +549,7 @@ const party = (function () {
         function d2h(d) {
             return d.toString(16);
         }
+
         function h2d(h) {
             return parseInt(h, 16);
         }
@@ -412,9 +679,9 @@ const party = (function () {
                     }
 
                     // Transform the quad to fit the transform of the particle.
+                    let transform = new Transform(this.transform.position, this.transform.rotation, this.transform.scale.scale(sm));
                     definedShape
-                        .applyTransform(new Transform(0, 0, Vector.one.scale(sm)))
-                        .applyTransform(this.transform)
+                        .withTransform(transform)
                         .draw(context);
                 },
                 /**
@@ -563,20 +830,33 @@ const party = (function () {
          * @param {string} name The name of the new shape.
          * @param {any} shape The shape to add. This can be either an array of vectors, or an SVG document.
          */
-        registerShape: function (name, shape) {
+        registerShape: function (name, shapeDefinition) {
             // Arrays are interpreted as point collections
-            if (Array.isArray(shape)) {
-                shapes[name] = new Polygon(shape);
+            if (Array.isArray(shapeDefinition)) {
+                shapes[name] = new Polygon(shapeDefinition);
             }
             // Strings are interpreted as SVG graphics
-            else if (typeof shape === 'string') {
+            else if (typeof shapeDefinition === 'string') {
                 let parser = new DOMParser();
-                let doc = parser.parseFromString(shape, "application/xml");
+                let doc = parser.parseFromString(shapeDefinition, "application/xml");
+
+                let error = doc.getElementsByTagName("parsererror")[0];
+                if (error) {
+                    throw new Error(error.innerHTML);
+                }
+
+                let svg = doc.getElementsByTagName("svg")[0];
+                var viewBox;
+                if (svg && svg.hasAttribute("viewBox")) {
+                    viewBox = ViewBox.fromBounds(svg.getAttribute("viewBox").split(' ').map(n => parseFloat(n)));
+                }
+
+                let shape;
 
                 let polygon = doc.getElementsByTagName("polygon")[0];
-                if (polygon != undefined) {
+                if (polygon) {
                     let pointData = polygon.getAttribute("points");
-                    let pointExtractor = /(\d+(\.\d+)?)/g;
+                    let pointExtractor = /(-?\d+(\.\d+)?)/g;
                     let matches = pointData.match(pointExtractor);
 
                     let points = [];
@@ -584,27 +864,31 @@ const party = (function () {
                         points.push(new Vector(parseFloat(matches[i]), parseFloat(matches[i + 1])));
                     }
 
-                    function findExtrema(arr, att, isMin) {
-                        return arr.reduce(function (prev, curr) {
-                            return (isMin ? prev[att] < curr[att] : prev[att] > curr[att]) ? prev : curr;
-                        })
+                    shape = new Polygon(points);
+                }
+
+                let path = doc.getElementsByTagName("path")[0];
+                if (path) {
+                    let pathData = path.getAttribute("d");
+                    let nodeExtractor = /([A-Za-z]|-?\d+(\.\d+)?)/g;
+                    let matches = pathData.match(nodeExtractor);
+
+                    let nodes = [];
+                    for (let i = 0; i < matches.length; i++) {
+                        let string = matches[i];
+                        let numeric = parseFloat(string);
+                        nodes.push(isNaN(numeric) ? string : numeric);
                     }
 
-                    let viewBox = {
-                        xmin: findExtrema(points, 'x', true).x,
-                        xmax: findExtrema(points, 'x', false).x,
-                        ymin: findExtrema(points, 'y', true).y,
-                        ymax: findExtrema(points, 'y', false).y
-                    };
-                    viewBox.width = viewBox.xmax - viewBox.xmin;
-                    viewBox.height = viewBox.ymax - viewBox.ymin;
-
-                    points = points.map(p => {
-                        return new Vector((p.x - viewBox.xmin - viewBox.width / 2) / viewBox.width, (p.y - viewBox.ymin - viewBox.height / 2) / viewBox.height);
-                    })
-
-                    shapes[name] = new Polygon(points);
+                    shape = new Path(nodes);
                 }
+
+                if (!shape) {
+                    throw new Error("No shape was determined from the SVG.");
+                }
+
+                shape.normalize(viewBox);
+                shapes[name] = shape;
             }
         }
     };
