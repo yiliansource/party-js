@@ -725,9 +725,10 @@ const party = (function () {
     function emitFromArea(area, options, useScroll) {
         let count = getRandomizedValue(getOption(options, "count", 1));
         let spread = getRandomizedValue(getOption(options, "spread", 0));
+        let baseAngle = getRandomizedValue(getOption(options, "angle", 0));
 
         for (let i = 0; i < count; i++) {
-            let angle = applyAbsoluteVariation(0, spread) * deg2rad;
+            let angle = applyAbsoluteVariation(baseAngle, spread) * deg2rad;
             let initialVelocity = getRandomizedValue(getOption(options, "velocity", 0));
             let angularVelocity = getRandomizedValue(getOption(options, "angularVelocity", 0));
             let size = getRandomizedValue(getOption(options, "size", 8));
