@@ -28,13 +28,12 @@ const party = (function () {
     // Values defined here should only be changed with care between versions.
     const config = {
         maxParticles: 1000,
-        gravityPixels: 800,
-        applyLighting: true
+        gravityPixels: 800
     };
 
     // Define re-usable errors the library can produce.
     const errors = {
-        typeCheckFailed: "Invalid '{0}' supplied to method.",
+        typeCheckFailed: "The supplied parameter must be of type '{0}'.",
         abstractMethodNotImplemented: "The type is required to implement the '{0}' method.",
         invalidPathNode: "Invalid node '{0}' detected in SVG path.",
         malformedPathNode: "Malformed node '{0}' detected in SVG path."
@@ -698,33 +697,50 @@ const party = (function () {
     }
 
     /**
+     * Returns the randomized version of the given value.
+     * If the value is a number, string or boolean the result is the initial value.
+     * If the value is an array, a random array element is picked.
+     * If the value is a function, the result is the return value of the function.
+     * @param {any} value The provided randomizeable value.
+     */
+    function getRandomizedValue(value) {
+        if (["number", "string", "bigint", "boolean", "undefined"].includes(typeof value)) {
+            return value;
+        }
+        if (typeof value === "function") {
+            return value();
+        }
+        if (Array.isArray(value)) {
+            return value[Math.floor(rand() * value.length)];
+        }
+        throw new Error("Invalid randomized value");
+    }
+
+    /**
      * Emits particles from the specified area.
      * @param {object} area The area to emit from, using left, top, width and height components.
      * @param {boolean} useScroll Whether to position the area relative to the screen scroll.
      * @param {object} options The set of options to use to spawn the particles.
      */
-    function emitFromArea(area, useScroll, options) {
-        let count = applyRelativeVariation(getOption(options, "count", 1), getOption(options, "countVariation", 0));
-        let angleSpan = getOption(options, "angleSpan", 0);
-
-        let rotationVelocityLimit = getOption(options, "rotationVelocityLimit", 0);
-
-        let scaleVariation = getOption(options, "scaleVariation", 0);
+    function emitFromArea(area, options, useScroll) {
+        let count = getRandomizedValue(getOption(options, "count", 1));
+        let spread = getRandomizedValue(getOption(options, "spread", 0));
+        let baseAngle = getRandomizedValue(getOption(options, "angle", 0));
 
         for (let i = 0; i < count; i++) {
-            let angle = applyAbsoluteVariation(0, angleSpan) * deg2rad;
-            let initialVelocityY = applyRelativeVariation(getOption(options, "yVelocity", 0), getOption(options, "yVelocityVariation", 0));
-            let size = applyRelativeVariation(getOption(options, "size", 8), scaleVariation);
+            let angle = applyAbsoluteVariation(baseAngle, spread) * deg2rad;
+            let initialVelocity = getRandomizedValue(getOption(options, "velocity", 0));
+            let angularVelocity = getRandomizedValue(getOption(options, "angularVelocity", 0));
+            let size = getRandomizedValue(getOption(options, "size", 8));
 
             createParticle({
-                shape: getOption(options, "shape", "square"),
+                shape: getRandomizedValue(getOption(options, "shape", "rectangle")),
                 acceleration: new Transform(
-                    new Vector(0, getOption(options, "gravity", true) * config.gravityPixels),
-                    Vector.zero
+                    new Vector(0, getOption(options, "gravity", true) * config.gravityPixels)
                 ),
                 velocity: new Transform(
-                    new Vector(Math.sin(angle) * initialVelocityY, Math.cos(angle) * initialVelocityY),
-                    Vector.generate(() => rotationVelocityLimit * rand())
+                    new Vector(Math.sin(angle), Math.cos(angle)).scale(initialVelocity),
+                    Vector.generate(() => getRandomizedValue(angularVelocity))
                 ),
                 transform: new Transform(
                     new Vector(
@@ -734,7 +750,8 @@ const party = (function () {
                     Vector.generate(() => Math.PI * getOption(options, "randomizeRotation", true) * rand()),
                     Vector.one.scale(size)
                 ),
-                color: getOption(options, "color", getOption(options, "colorFunction", () => hslToHex(rand() * 360, 100, 70))()),
+                color: getRandomizedValue(getOption(options, "color", () => hslToHex(rand() * 360, 100, 70))),
+                lighting: getOption(options, "lighting", true),
                 lifetime: 0,
 
                 /**
@@ -742,7 +759,7 @@ const party = (function () {
                  */
                 draw: function (context) {
                     // Apply lighting to the color, if enabled.
-                    context.fillStyle = config.applyLighting ?
+                    context.fillStyle = this.lighting ?
                         mix('#000000', this.color, 0.25 + 0.75 * calculateLighting(this.transform)) :
                         this.color;
 
@@ -828,6 +845,15 @@ const party = (function () {
 
     return {
         /**
+         * Emits particles from the specified area (read from the properties 'left', 'top', 'width' and 'height').
+         * @param {object} area The area to emit the particles from.
+         * @param {boolean} useScroll Whether or not to position the area relative to the viewport.
+         * @param {object} options The set of options for spawning the particles.
+         */
+        area: function(area, options, useScroll) {
+            emitFromArea(area, options, useScroll == undefined ? true : useScroll);
+        },
+        /**
          * Spawns particles from the specified HTML element.
          * @param {object} element The HTML element to spawn the particles from.
          * @param {object} options The set of options for spawning the particles.
@@ -835,15 +861,14 @@ const party = (function () {
         element: function (element, options) {
             options = options || {};
             overrideUndefinedOptions(options, {
-                count: 40,
-                countVariation: 0.5,
-                angleSpan: 80,
-                yVelocity: -300,
-                yVelocityVariation: 1,
-                rotationVelocityLimit: 6,
-                scaleVariation: 0.8
+                shape: party.array([ "square", "rectangle" ]),
+                count: party.variation(40, 0.5),
+                spread: party.constant(80),
+                size: party.variation(10, 0.8),
+                velocity: party.variation(-300, 1),
+                angularVelocity: party.minmax(1, 6)
             });
-            emitFromArea(element.getBoundingClientRect(), true, options);
+            this.area(element.getBoundingClientRect(), options);
         },
         /**
          * Spawns particles from the specified position, relative to the viewport.
@@ -854,19 +879,14 @@ const party = (function () {
         position: function (x, y, options) {
             options = options || {};
             overrideUndefinedOptions(options, {
-                count: 40,
-                countVariation: 0.5,
-                angleSpan: 80,
-                yVelocity: -300,
-                yVelocityVariation: 1,
-                rotationVelocityLimit: 6,
-                scaleVariation: 0.8
+                shape: party.array([ "square", "rectangle" ]),
+                count: party.variation(40, 0.5),
+                spread: party.constant(80),
+                size: party.variation(10, 0.8),
+                velocity: party.variation(-300, 1),
+                angularVelocity: party.minmax(1, 6),
             });
-            let area = {
-                left: x,
-                top: y
-            };
-            emitFromArea(area, true, options);
+            this.area({ left: x, top: y }, options);
         },
         /**
          * Spawns particles from the mouse position retrieved from the current cursor event.
@@ -878,7 +898,7 @@ const party = (function () {
             if (event.clientX == undefined || event.clientY == undefined) {
                 return console.error("Calling 'party.cursor()' with no current mouse event is not allowed.");
             }
-            this.position(window.event.clientX, window.event.clientY, options);
+            this.position(event.clientX, event.clientY, options);
         },
         /**
          * Spawns particles from the top of the screen.
@@ -887,19 +907,13 @@ const party = (function () {
         screen: function (options) {
             options = options || {};
             overrideUndefinedOptions(options, {
-                count: 500 * (window.innerWidth / 1980),
-                countVariation: 0.5,
-                angleSpan: 0,
-                yVelocity: -100,
-                yVelocityVariation: 2,
-                rotationVelocityLimit: 6,
-                scaleVariation: 0.8
+                shape: party.array([ "square", "rectangle" ]),
+                count: party.variation(500 * (window.innerWidth / 1980), 0.5),
+                size: party.variation(10, 0.8),
+                velocity: party.variation(-100, 2),
+                angularVelocity: party.minmax(1, 6),
             });
-            let area = {
-                width: window.innerWidth,
-                height: -window.innerHeight
-            };
-            emitFromArea(area, true, options);
+            this.area({ width: window.innerWidth, height: -window.innerHeight }, options);
         },
 
         /**
@@ -930,11 +944,14 @@ const party = (function () {
                     viewBox = ViewBox.fromBounds(svg.getAttribute("viewBox").split(' ').map(n => parseFloat(n)));
                 }
 
+                // Locate the potential shapes
+                let polygon = doc.getElementsByTagName("polygon")[0];
+                let path = doc.getElementsByTagName("path")[0];
+
                 // Provide a storage for the created shape.
                 let shape;
 
-                let polygon = doc.getElementsByTagName("polygon")[0];
-                if (!shape && polygon) {
+                if (polygon) {
                     // Extract the points from the polygon.
                     let pointData = polygon.getAttribute("points");
                     let pointExtractor = /(-?\d*\.\d+|-?\d+)/g;
@@ -949,9 +966,7 @@ const party = (function () {
                     // Create the resulting polygon.
                     shape = new Polygon(points);
                 }
-
-                let path = doc.getElementsByTagName("path")[0];
-                if (!shape && path) {
+                else if (path) {
                     // Extract the nodes from the path definition.
                     let pathData = path.getAttribute("d");
                     let nodeExtractor = /([A-Za-z]|-?\d*\.\d+|-?\d+)/g;
@@ -978,6 +993,41 @@ const party = (function () {
                 shape.normalize(viewBox);
                 shapes[name] = shape;
             }
+        },
+
+        /**
+         * Creates a constant value. This is purely for syntax convenience, the given value is simply returned.
+         */
+        constant: function(value) {
+            return value;
+        },
+        /**
+         * Creates a function that calculates a variation on a specific value.
+         * Allows specification if the variation should be relative (default) or absolute. 
+         */
+        variation: function(value, variation, isAbsolute) {
+            if (typeof value !== "number" || typeof variation !== "number") {
+                throw new TypeError(errors.typeCheckFailed.format("Number"));
+            }
+            return () => (isAbsolute ? applyAbsoluteVariation : applyRelativeVariation)(value, variation);
+        },
+        /**
+         * Creates a function that returns a random value between min and max.
+         */
+        minmax: function(min, max) {
+            if (typeof min !== "number" || typeof max !== "number") {
+                throw new TypeError(errors.typeCheckFailed.format("Number"));
+            }
+            return () => randRange(min, max);
+        },
+        /**
+         * Creates an array. This is purely for syntax convenience, the given value is simply returned.
+         */
+        array: function(array) {
+            if (!Array.isArray(array)) {
+                throw new TypeError(errors.typeCheckFailed.format("Array"));
+            }
+            return array;
         }
     };
 })();
