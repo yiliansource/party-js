@@ -1,0 +1,92 @@
+/* stylelint-disable docusaurus/copyright-header */
+
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+ @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300&display=swap');
+
+.hero_banner {
+  padding: 4rem 0;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+
+  font-family: 'Roboto', 'Open Sans', sans-serif;
+
+  background: linear-gradient(-45deg, #ff4f63, #ff786b, #ffa467);
+  clip-path: ellipse(100% 55% at 48% 44%);
+}
+.hero_title {
+  font-weight: 100;
+  font-size: 4em;
+}
+.hero_subtitle {
+  font-weight: 300;
+  font-size: 1.3em;
+}
+.hero_buttonGetStarted {
+  color: var(--ifm-button-color);
+  border: 1px solid var(--ifm-button-color);
+  font-weight: 300;
+}
+.hero_buttonGetStarted:hover {
+  color: #ff4f63;
+  background-color: var(--ifm-button-color);
+}
+
+@media screen and (max-width: 966px) {
+  .heroBanner {
+    padding: 2rem;
+  }
+}
+@media screen and (max-width: 750px) {
+  .hero_banner {
+    clip-path: ellipse(150% 55% at 48% 44%);
+  }
+}
+
+.buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.features, .demos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem 0;
+  width: 100%;
+}
+
+.featureImage {
+  height: 130px;
+  width: 200px;
+  padding: 2em 0;
+}
+
+.demoButton {
+  display: inline-block;
+  width: 64px;
+  height: 64px;
+  margin: 2em 0;
+  padding: 0.8em;
+  cursor: pointer;
+  background: linear-gradient(#ffa68d, #fd3a84);
+  border-radius: 40%;
+  box-shadow: 2px 2px 0px rgb(0, 0, 0, 0.15);
+  transform: translate(-2px, -2px);
+  transition: all 0.1s;
+}
+.demoButton img {
+  margin: 0.1em 0 0 0.3em;
+}
+.demoButton:hover {
+  border-radius: 50%;
+}
+.demoButton:active {
+  box-shadow: none;
+  transform: translate(0px, 0px);
+}
