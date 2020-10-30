@@ -85,6 +85,89 @@ const party = (function () {
     }
 
     /**
+     * Represents an RGB color, with components ranging from 0 to 1.
+     */
+    class Color {
+        constructor(r, g, b) {
+            this.r = r;
+            this.g = g;
+            this.b = b;
+        }
+
+        /**
+         * Mixes the current color together with the specified color.
+         * Also provides the ability to specify the weight, which defaults to 0.5.
+         * @param {Color} color The color to mix with.
+         * @param {Number} weight The weight to mix by. Defaults to 0.5.
+         */
+        mix(color, weight) {
+            if (!(color instanceof Color)) {
+                throw new TypeError(errors.typeCheckFailed.format("Color"));
+            }
+            if (weight == undefined) {
+                weight = 0.5;
+            }
+            return new Color(
+                lerp(this.r, color.r, weight),
+                lerp(this.g, color.g, weight),
+                lerp(this.b, color.b, weight)
+            );
+        }
+
+        /**
+         * Returns a 6-digit hex string representation of the color, prefixed by #.
+         */
+        toString() {
+            function toHex(v) {
+                return Math.round(v * 255).toString(16).padStart(2, '0');
+            }
+            return `#${toHex(this.r)}${toHex(this.g)}${toHex(this.b)}`
+        }
+
+        /**
+         * Creates a new color from the specified hex string.
+         * The string can optionally be prefixed with #.
+         */
+        static fromHex(hex) {
+            if (hex.startsWith('#')) {
+                hex = hex.substring(1);
+            }
+            return new Color(
+                parseInt(hex.substring(0, 2), 16) / 255,
+                parseInt(hex.substring(2, 4), 16) / 255,
+                parseInt(hex.substring(4, 6), 16) / 255
+            );
+        }
+        /**
+         * Creates a new color from the specified hue, saturation and luminance values.
+         */
+        static fromHsl(h, s, l) {
+            h /= 360;
+            s /= 100;
+            l /= 100;
+            let r, g, b;
+            if (s === 0) {
+                r = g = b = l; // achromatic
+            } else {
+                const hue2rgb = (p, q, t) => {
+                    if (t < 0) t += 1;
+                    if (t > 1) t -= 1;
+                    if (t < 1 / 6) return p + (q - p) * 6 * t;
+                    if (t < 1 / 2) return q;
+                    if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
+                    return p;
+                };
+                const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+                const p = 2 * l - q;
+                r = hue2rgb(p, q, h + 1 / 3);
+                g = hue2rgb(p, q, h);
+                b = hue2rgb(p, q, h - 1 / 3);
+            }
+            return new Color(r, g, b);
+        }
+    }
+
+    /**
      * Represents a 3-dimensional vector with xyz components.
      * Also offers basic vector math functionality.
      */
@@ -112,11 +195,9 @@ const party = (function () {
         scale(s) {
             if (typeof s === 'number') {
                 return new Vector(this.x * s, this.y * s, this.z * s);
-            }
-            else if (s instanceof Vector) {
+            } else if (s instanceof Vector) {
                 return new Vector(this.x * s.x, this.y * s.y, this.z * s.z);
-            }
-            else {
+            } else {
                 throw new TypeError(errors.typeCheckFailed.format("Number/Vector"));
             }
         }
@@ -431,7 +512,7 @@ const party = (function () {
                 console.warn("Complex shape registered, high usage may impact framerate.");
             }
         }
-        
+
         /**
          * Returns the bounds for this path shape.
          */
@@ -533,7 +614,6 @@ const party = (function () {
     };
 
     // Define conversions between radians and degrees
-    const rad2deg = (180 / Math.PI);
     const deg2rad = (Math.PI / 180);
     /**
      * Returns a random number from 0 to 1.
@@ -576,78 +656,6 @@ const party = (function () {
             a = a.replace(new RegExp("\\{" + k + "\\}", 'g'), arguments[k]);
         }
         return a;
-    }
-
-    /**
-     * Converts the hue, saturation and luminance component into a 6-digit hex color prefixed with #.
-     * @param {number} h The hue component.
-     * @param {number} s The saturation component.
-     * @param {number} l The luminance component.
-     * @see https://stackoverflow.com/questions/36721830/convert-hsl-to-rgb-and-hex
-     */
-    function hslToHex(h, s, l) {
-        h /= 360;
-        s /= 100;
-        l /= 100;
-        let r, g, b;
-        if (s === 0) {
-            r = g = b = l; // achromatic
-        } else {
-            const hue2rgb = (p, q, t) => {
-                if (t < 0) t += 1;
-                if (t > 1) t -= 1;
-                if (t < 1 / 6) return p + (q - p) * 6 * t;
-                if (t < 1 / 2) return q;
-                if (t < 2 / 3) return p + (q - p) * (2 / 3 - t) * 6;
-                return p;
-            };
-            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-            const p = 2 * l - q;
-            r = hue2rgb(p, q, h + 1 / 3);
-            g = hue2rgb(p, q, h);
-            b = hue2rgb(p, q, h - 1 / 3);
-        }
-        const toHex = x => {
-            const hex = Math.round(x * 255).toString(16);
-            return hex.length === 1 ? '0' + hex : hex;
-        };
-        return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
-    }
-    /**
-     * Mixes the specified colors together using the specified weight.
-     * If not supplied, the are mixed with same amounts.
-     * @param {string} color1 The first color, as a 6-digit hex string prefixed with '#'.
-     * @param {string} color1 The second color, as a 6-digit hex string prefixed with '#'.
-     * @param {number} weight The percentage to mix by.
-     * @see https://gist.github.com/jedfoster/7939513
-     */
-    function mix(color1, color2, weight) {
-        function d2h(d) {
-            return d.toString(16);
-        }
-
-        function h2d(h) {
-            return parseInt(h, 16);
-        }
-
-        weight = weight != undefined ? weight : 0.5;
-
-        var color = "#";
-
-        for (var i = 1; i <= 5; i += 2) {
-            var v1 = h2d(color1.substr(i, 2)),
-                v2 = h2d(color2.substr(i, 2)),
-
-                val = d2h(Math.floor(lerp(v1, v2, weight)));
-
-            while (val.length < 2) {
-                val = '0' + val;
-            }
-
-            color += val;
-        }
-
-        return color;
     }
 
     /**
@@ -750,7 +758,7 @@ const party = (function () {
                     Vector.generate(() => Math.PI * getOption(options, "randomizeRotation", true) * rand()),
                     Vector.one.scale(size)
                 ),
-                color: getRandomizedValue(getOption(options, "color", () => hslToHex(rand() * 360, 100, 70))),
+                color: getRandomizedValue(getOption(options, "color", () => Color.fromHsl(rand() * 360, 100, 70).toString())),
                 lighting: getOption(options, "lighting", true),
                 lifetime: 0,
 
@@ -760,7 +768,7 @@ const party = (function () {
                 draw: function (context) {
                     // Apply lighting to the color, if enabled.
                     context.fillStyle = this.lighting ?
-                        mix('#000000', this.color, 0.25 + 0.75 * calculateLighting(this.transform)) :
+                        new Color(0, 0, 0).mix(Color.fromHex(this.color), 0.25 + 0.75 * calculateLighting(this.transform)).toString() :
                         this.color;
 
                     // Lets the particle grow to its size over time, so it doesn't spawn out of nowhere.
@@ -850,7 +858,7 @@ const party = (function () {
          * @param {boolean} useScroll Whether or not to position the area relative to the viewport.
          * @param {object} options The set of options for spawning the particles.
          */
-        area: function(area, options, useScroll) {
+        area: function (area, options, useScroll) {
             emitFromArea(area, options, useScroll == undefined ? true : useScroll);
         },
         /**
@@ -861,7 +869,7 @@ const party = (function () {
         element: function (element, options) {
             options = options || {};
             overrideUndefinedOptions(options, {
-                shape: party.array([ "square", "rectangle" ]),
+                shape: party.array(["square", "rectangle"]),
                 count: party.variation(40, 0.5),
                 spread: party.constant(80),
                 size: party.variation(10, 0.8),
@@ -879,14 +887,17 @@ const party = (function () {
         position: function (x, y, options) {
             options = options || {};
             overrideUndefinedOptions(options, {
-                shape: party.array([ "square", "rectangle" ]),
+                shape: party.array(["square", "rectangle"]),
                 count: party.variation(40, 0.5),
                 spread: party.constant(80),
                 size: party.variation(10, 0.8),
                 velocity: party.variation(-300, 1),
                 angularVelocity: party.minmax(1, 6),
             });
-            this.area({ left: x, top: y }, options);
+            this.area({
+                left: x,
+                top: y
+            }, options);
         },
         /**
          * Spawns particles from the mouse position retrieved from the current cursor event.
@@ -907,13 +918,16 @@ const party = (function () {
         screen: function (options) {
             options = options || {};
             overrideUndefinedOptions(options, {
-                shape: party.array([ "square", "rectangle" ]),
+                shape: party.array(["square", "rectangle"]),
                 count: party.variation(500 * (window.innerWidth / 1980), 0.5),
                 size: party.variation(10, 0.8),
                 velocity: party.variation(-100, 2),
                 angularVelocity: party.minmax(1, 6),
             });
-            this.area({ width: window.innerWidth, height: -window.innerHeight }, options);
+            this.area({
+                width: window.innerWidth,
+                height: -window.innerHeight
+            }, options);
         },
 
         /**
@@ -965,8 +979,7 @@ const party = (function () {
 
                     // Create the resulting polygon.
                     shape = new Polygon(points);
-                }
-                else if (path) {
+                } else if (path) {
                     // Extract the nodes from the path definition.
                     let pathData = path.getAttribute("d");
                     let nodeExtractor = /([A-Za-z]|-?\d*\.\d+|-?\d+)/g;
@@ -998,14 +1011,14 @@ const party = (function () {
         /**
          * Creates a constant value. This is purely for syntax convenience, the given value is simply returned.
          */
-        constant: function(value) {
+        constant: function (value) {
             return value;
         },
         /**
          * Creates a function that calculates a variation on a specific value.
          * Allows specification if the variation should be relative (default) or absolute. 
          */
-        variation: function(value, variation, isAbsolute) {
+        variation: function (value, variation, isAbsolute) {
             if (typeof value !== "number" || typeof variation !== "number") {
                 throw new TypeError(errors.typeCheckFailed.format("Number"));
             }
@@ -1014,7 +1027,7 @@ const party = (function () {
         /**
          * Creates a function that returns a random value between min and max.
          */
-        minmax: function(min, max) {
+        minmax: function (min, max) {
             if (typeof min !== "number" || typeof max !== "number") {
                 throw new TypeError(errors.typeCheckFailed.format("Number"));
             }
@@ -1023,11 +1036,26 @@ const party = (function () {
         /**
          * Creates an array. This is purely for syntax convenience, the given value is simply returned.
          */
-        array: function(array) {
+        array: function (array) {
             if (!Array.isArray(array)) {
                 throw new TypeError(errors.typeCheckFailed.format("Array"));
             }
             return array;
+        },
+
+        linearGradient: function () {
+            if (!arguments || arguments.length == 0) {
+                throw new Error();
+            }
+            if (arguments.length == 1) {
+                return arguments[0];
+            }
+            var colors = [...arguments].map(arg => Color.fromHex(arg));
+            return () => {
+                let position = randRange(0, colors.length - 1);
+                let index = Math.floor(position), sample = position % 1;
+                return colors[index].mix(colors[index + 1], sample).toString();
+            }
         }
     };
 })();
