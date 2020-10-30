@@ -11,6 +11,15 @@ module.exports = {
     '/js/party.min.js',
     '/js/site.js'
   ],
+  stylesheets: [
+    {
+      href: 'https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css',
+      type: 'text/css',
+      integrity:
+        'sha384-AfEj0r4/OFrOo5t7NnNe46zW/tFgW6x/bCJG8FqQCEo3+Aro6EYUG4+cU+KJWu/X',
+      crossorigin: 'anonymous',
+    },
+  ],
   themeConfig: {
     colorMode: {
       defaultMode: 'light',
@@ -71,8 +80,10 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl:
-            'https://github.com/yiliansource/partyjs/edit/master/site/',
+          showLastUpdateTime: true,
+          editUrl: 'https://github.com/yiliansource/partyjs/edit/master/site/',
+          remarkPlugins: [ require('remark-math') ],
+          rehypePlugins: [ require('rehype-katex') ],
         },
         blog: {
           showReadingTime: true,

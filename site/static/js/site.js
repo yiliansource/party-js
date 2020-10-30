@@ -42,6 +42,9 @@ window.addEventListener("load", function () {
     }
 
     for (let id in clickHandlers) {
-        document.getElementById(id).addEventListener("mousedown", clickHandlers[id]);
+        let element = document.getElementById(id);
+        if (element) {
+            element.addEventListener("mousedown", clickHandlers[id]);
+        }
     }
 });

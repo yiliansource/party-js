@@ -47,3 +47,45 @@ footer {
 footer .copynote {
   font-size: 0.8em;
 }
+
+.downloads {
+  margin-bottom: 1em;
+}
+.button--download {
+  margin: 0.2em;
+  padding: 0.5em 2em 0.7em 1.4em;
+  border: none;
+
+  font-size: 1em;
+  font-weight: 100;
+  letter-spacing: 0.03em;
+
+  background: linear-gradient(-45deg, #ff4f63, #ff786b, #ffa467);
+  box-shadow: 0 -4px 0 inset rgb(0, 0, 0, 0.2);
+  transition: all 0.05s;
+}
+.button--download::before {
+  display: inline-block;
+  content: "";
+  width: 1.5em;
+  height: 1.5em;
+  margin-right: 0.6em;
+  vertical-align: middle;
+  transform: scale(1.3);
+  opacity: 0.7;
+  
+  background-size: cover;
+  background-image: url(/img/logo.svg);
+  filter: drop-shadow(2px 0.5px 1px rgb(0, 0, 0, 0.2));
+
+  transition: all 0.2s;
+}
+.button--download:hover::before {
+  opacity: 1;
+  transform: scale(1.5);
+}
+.button--download:active {
+  padding-bottom: calc(0.7em - 2px);
+  box-shadow: none;
+  transform: translateY(2px);
+}

@@ -21,15 +21,18 @@
 .hero_title {
   font-weight: 100;
   font-size: 4em;
+  text-shadow: 1px 1px 1px rgb(0, 0, 0, 0.2);
 }
 .hero_subtitle {
   font-weight: 300;
   font-size: 1.3em;
+  text-shadow: 1px 1px 1px rgb(0, 0, 0, 0.2);
 }
 .hero_buttonGetStarted {
   color: var(--ifm-button-color);
   border: 1px solid var(--ifm-button-color);
   font-weight: 300;
+  filter: drop-shadow(1px 1px 1px rgb(0, 0, 0, 0.2));
 }
 .hero_buttonGetStarted:hover {
   color: #ff4f63;
@@ -65,6 +68,7 @@
   height: 130px;
   width: 200px;
   padding: 2em 0;
+  filter: drop-shadow(1px 1px 0px rgb(0, 0, 0, 0.1));
 }
 
 .demoButton {
