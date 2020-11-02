@@ -1,0 +1,27 @@
+{
+  "name": "party-js",
+  "version": "0.0.0",
+  "description": "A JavaScript library to brighten up your user's site experience with visual effects!",
+  "main": "party.min.js",
+  "files": [
+    "party.min.js"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YilianSource/party-js.git"
+  },
+  "keywords": [
+    "party",
+    "confetti",
+    "particles"
+  ],
+  "author": "Ian Hornik",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YilianSource/party-js/issues"
+  },
+  "homepage": "https://partyjs.yiliansource.dev"
+}
