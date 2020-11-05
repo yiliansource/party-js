@@ -1,0 +1,72 @@
+---
+id: examples
+title: Examples
+---
+
+This page contains some examples on how to use the library. Enjoy browsing through them!
+
+export const ExampleButton = ({id}) => (
+    <div className='example-container'>
+        <span id={id} className='button button--secondary align--right'>
+            Try it out!
+        </span>
+    </div>
+)
+
+### Confetti clicking
+
+```js
+let siteColors = ['#ffa68d', '#fd3a84'];
+document.getElementById('buttonConfetti').addEventListener('click', function (e) {
+    e.preventDefault();
+    party.element(this, {
+        color: siteColors,
+        count: party.variation(25, 0.5),
+        size: party.minmax(6, 10),
+        velocity: party.minmax(-300, -600),
+        angularVelocity: party.minmax(6, 9)
+    });
+});
+```
+
+<ExampleButton id="buttonConfetti"/>
+
+### Making it rain
+
+```js
+let siteColors = ['#ffa68d', '#fd3a84'];
+document.getElementById('screenConfetti').addEventListener('click', function (e) {
+    e.preventDefault();
+    party.screen({
+        color: siteColors,
+        size: party.minmax(6, 12),
+        count: party.variation(300 * (window.innerWidth / 1980), 0.4),
+        angle: -180,
+        spread: 80,
+        angularVelocity: party.minmax(6, 9)
+    });
+});
+```
+
+<ExampleButton id="screenConfetti"/>
+
+### Additional shapes
+
+```js
+let siteColors = ['#ffa68d', '#fd3a84'];
+document.getElementById('shapeConfetti').addEventListener('click', function (e) {
+    e.preventDefault();
+    party.element(this, {
+        shape: ['star', 'heart'],
+        count: 20,
+        color: siteColors,
+        spread: 360,
+        gravity: false,
+        size: party.minmax(14, 22),
+        velocity: party.minmax(-300, -600),
+        angularVelocity: party.minmax(2, 4)
+    });
+});
+```
+
+<ExampleButton id="shapeConfetti"/>
