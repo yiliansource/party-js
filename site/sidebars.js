@@ -1,5 +1,6 @@
 module.exports = {
   someSidebar: {
-    'party.js': ['quick-start','emitting-particles','shapes','customization','technical-details'],
+    'Documentation': ['quick-start','emitting-particles','shapes','customization','technical-details'],
+    'Other': ['examples']
   },
 };

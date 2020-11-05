@@ -87,7 +87,7 @@ function Feature({imageUrl, title, description}) {
     </div>
   );
 }
-function Demo({id, title, description}) {
+function Demo({id, title, exampleSlug, description}) {
   return (
     <div className={clsx('col col--4', styles.demo)}>
       <div className="text--center">
@@ -146,6 +146,9 @@ function Home() {
                   <Demo key={idx} {...props} />
                 ))}
               </div>
+            </div>
+            <div className={styles.exampleLink}>
+              <a href="/docs/examples">Check out the source code for the examples!</a>
             </div>
           </section>
         )}

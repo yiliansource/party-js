@@ -80,7 +80,7 @@
   cursor: pointer;
   background: linear-gradient(#ffa68d, #fd3a84);
   border-radius: 40%;
-  box-shadow: 2px 2px 0px rgb(0, 0, 0, 0.15);
+  box-shadow: 2px 2px 0px rgb(0, 0, 0, 0.25);
   transform: translate(-2px, -2px);
   transition: all 0.1s;
 }
@@ -93,4 +93,12 @@
 .demoButton:active {
   box-shadow: none;
   transform: translate(0px, 0px);
+}
+.demoSubtext {
+  font-size: 0.8em;
+  color: var(--ifm-color-gray-600);
+}
+.demoSubtext:hover {
+  text-decoration: underline;
+  color: var(--ifm-color-gray-600);
 }

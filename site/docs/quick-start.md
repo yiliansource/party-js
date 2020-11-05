@@ -6,29 +6,17 @@ slug: /
 
 ## Installation
 
-To download the current latest version of the library, just choose one of the downloads below!
-
-<div class="downloads">
-    <a class="button button--primary button--download"
-        href="https://raw.githubusercontent.com/YilianSource/party-js/master/party.js" download="https://raw.githubusercontent.com/YilianSource/party-js/master/party.js">
-        Full
-    </a>
-    <a class="button button--primary button--download"
-        href="https://raw.githubusercontent.com/YilianSource/party-js/master/party.min.js" download="https://raw.githubusercontent.com/YilianSource/party-js/master/party.min.js">
-        Minified
-    </a>
-</div>
-
+To download the current latest version of the library, download the latest version from <a href="https://raw.githubusercontent.com/YilianSource/party-js/master/party.min.js" download>here</a>.  
 Then include the downloaded file in your HTML document:
 
 ```html
-<script src="/js/lib/party.min.js"></script>
+<script src="/js/party.min.js"></script>
 ```
 
-You can also download the library via `npm`:
+You can also install it via `npm`:
 
 ```sh
-npm install partyjs
+npm install party-js
 ```
 
 ## Usage
@@ -46,7 +34,7 @@ The library ships with a bunch of pre-configured effects. Let's take a look at h
 It's as simple as that! The `element` function takes in the HTML element that should be used to spawn the particles, and takes care of everything else!
 
 :::note
-For a complete list of functions, head over to the [documentation](/docs/functions)!
+For a complete list of particle-emitting functions, head over to the [documentation](emitting-particles)!
 :::
 
 ## Configuring effects
@@ -80,7 +68,7 @@ The helper methods work on a per-particle basis, meaning that the method will no
 Take for example the `color` property: If a single value would be immediately calculated would have the same color, right? Determining a value just upon particle creation gives us the luxury of randomizing each individual particle!
 
 :::note
-A complete list of helper methods is available in the [documentation](/)!
+A complete list of helper methods is available in the [documentation](customization#randomization)!
 :::
 
 ## Feedback

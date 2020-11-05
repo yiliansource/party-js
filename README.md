@@ -1,5 +1,5 @@
 <h1 align="center" style="position: relative;">
-    <img width="200" src="./docs/partyjs.svg"/><br>
+    <img width="200" src="./site/static/img/logo.svg"/><br>
     party.js
 </h1>
 
@@ -8,8 +8,9 @@
 </h4>
 
 <p align="center">
-    <a href="https://deepscan.io/dashboard#view=project&tid=11458&pid=14332&bid=265225"><img src="https://deepscan.io/api/teams/11458/projects/14332/branches/265225/badge/grade.svg" alt="DeepScan grade"></a>
+    <img alt="npm" src="https://img.shields.io/npm/v/party-js"/>
     <img alt="GitHub" src="https://img.shields.io/github/license/yiliansource/party-js">
+    <a href="https://deepscan.io/dashboard#view=project&tid=11458&pid=14332&bid=265225"><img src="https://deepscan.io/api/teams/11458/projects/14332/branches/265225/badge/grade.svg" alt="DeepScan grade"></a>
     <img alt="GitHub file size in bytes" src="https://img.shields.io/github/size/yiliansource/party-js/party.min.js?label=minified%20size">
 </p>
 
@@ -24,15 +25,15 @@
 
 You can download the latest minified version from https://partyjs.yiliansource.dev/.
 
+You can also install the package via `npm`:
+
+```sh
+npm install party-js
+```
+
 ## Usage
 
-~~The quick start guide is also available at https://partyjs.yiliansource.dev/#quick-start~~. (soon!)
-
-To use the library, simple include the library in your HTML document.
-
-```html
-<script src="js/lib/party.min.js"></script>
-```
+#### The quick start guide is also available at https://partyjs.yiliansource.dev/docs!
 
 User-interactable functionality is contained in the global `party` variable. To, for example, let confetti rain down the screen, simply call:
 
@@ -40,12 +41,15 @@ User-interactable functionality is contained in the global `party` variable. To,
 party.screen();
 ```
 
-Configuring the effects is possible aswell, by passing in a set of options. A complete list of options ~~is available in the [documention]()~~ is coming soon!
+Configuring the effects is possible aswell, by passing in a set of options. For a complete overview of the options, refer to the [documentation](https://partyjs.yiliansource.dev/docs/customization).
 
 ```js
 document.getElementById("my-button").addEventListener("click", function(e) {
     e.preventDefault();
-    party.cursor({ count: 200, angleSpan: 100 });
+    party.cursor({ 
+        count: party.variation(50, 0.5),
+        angleSpan: party.minmax(60, 120)
+    });
 });
 ```
 
