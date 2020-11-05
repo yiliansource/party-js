@@ -53,12 +53,8 @@ module.exports = {
           items: [
             {
               label: 'Quick Start',
-              to: 'docs/quick-start/',
-            },
-            {
-              label: 'TODO',
-              to: 'docs/doc2/',
-            },
+              to: 'docs/',
+            }
           ],
         },
         {
