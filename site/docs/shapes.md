@@ -17,6 +17,11 @@ The library provides the following basic shapes for particles:
 
 - `square` - A basic square. What more would you expect?
 - `rectangle` - A rectangle with an aspect ratio of 3:10.
+- `circle` - A circle drawn using SVG paths.
+- `ellipse` - Essentially a squashed circle.
+- `rounded-square` - A slightly rounded version of the square.
+- `rounded-rectangle` - A sligthly rounded verison of the rectangle.
+- `star` - A five-pointed star.
 
 By default, particles use either `square`s or `rectangle`s, at random. To find out how the library randomizes the shape, check out [the section on randomization](customization#randomization).
 

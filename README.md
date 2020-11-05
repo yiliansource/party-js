@@ -23,7 +23,7 @@
 
 ## Installation
 
-You can download the latest minified version from https://partyjs.yiliansource.dev/.
+You can download the latest minified version at https://partyjs.yiliansource.dev/.
 
 You can also install the package via `npm`:
 
@@ -33,7 +33,7 @@ npm install party-js
 
 ## Usage
 
-#### The quick start guide is also available at https://partyjs.yiliansource.dev/docs!
+**Check out the [Quick Start](https://partyjs.yiliansource.dev/docs) guide!**
 
 User-interactable functionality is contained in the global `party` variable. To, for example, let confetti rain down the screen, simply call:
 
@@ -44,12 +44,9 @@ party.screen();
 Configuring the effects is possible aswell, by passing in a set of options. For a complete overview of the options, refer to the [documentation](https://partyjs.yiliansource.dev/docs/customization).
 
 ```js
-document.getElementById("my-button").addEventListener("click", function(e) {
-    e.preventDefault();
-    party.cursor({ 
-        count: party.variation(50, 0.5),
-        angleSpan: party.minmax(60, 120)
-    });
+party.element(document.querySelector("#my-element"), {
+    count: party.variation(50, 0.5),
+    angleSpan: party.minmax(60, 120)
 });
 ```
 
