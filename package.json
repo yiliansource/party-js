@@ -1,6 +1,6 @@
 {
   "name": "party-js",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A JavaScript library to brighten up your user's site experience with visual effects!",
   "main": "party.min.js",
   "files": [
