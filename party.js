@@ -21,8 +21,22 @@
 /**
  * Runs the initialization and exports the public functions.
  * "Private" members, such as utility functions will not be exported.
+ * Initialization is done trough a factory method to allow different module supports.
  */
-const party = (function () {
+(function (root, factory) {
+    if (typeof define === "function" && define.amd) {
+        // Define exports for Asynchronous Module Definition (AMD)
+        define('partyjs', [], factory);
+    }
+    else if (typeof exports === "object") {
+        // Define exports for CommonJS (CJS)
+        module.exports = factory();
+    }
+    else {
+        // Fallback to defining as browser global under 'party'.
+        root.party = factory();
+    }
+}(this, function () {
 
     // Define the default configuration. This will be used widely throughout runtime.
     // Values defined here should only be changed with care between versions.
@@ -594,6 +608,84 @@ const party = (function () {
         }
     }
 
+    /**
+     * Registers a new shape under a given name.
+     * @param {string} name The name of the new shape.
+     * @param {any} shape The shape to add. This can be either an array of vectors, or an SVG document.
+     */
+    function registerShape(name, shapeDefinition) {
+        // Arrays are interpreted as point collections
+        if (Array.isArray(shapeDefinition)) {
+            shapes[name] = new Polygon(shapeDefinition);
+        }
+        // Strings are interpreted as SVG graphics
+        else if (typeof shapeDefinition === 'string') {
+            let parser = new DOMParser();
+            let doc = parser.parseFromString(shapeDefinition, "application/xml");
+
+            // Catch if an error has occurred.
+            let error = doc.getElementsByTagName("parsererror")[0];
+            if (error) {
+                throw new Error("Invalid SVG shape.");
+            }
+
+            // If an SVG viewbox was passed, parse it.
+            var viewBox;
+            let svg = doc.getElementsByTagName("svg")[0];
+            if (svg && svg.hasAttribute("viewBox")) {
+                viewBox = ViewBox.fromBounds(svg.getAttribute("viewBox").split(' ').map(n => parseFloat(n)));
+            }
+
+            // Locate the potential shapes
+            let polygon = doc.getElementsByTagName("polygon")[0];
+            let path = doc.getElementsByTagName("path")[0];
+
+            // Provide a storage for the created shape.
+            let shape;
+
+            if (polygon) {
+                // Extract the points from the polygon.
+                let pointData = polygon.getAttribute("points");
+                let pointExtractor = /(-?\d*\.\d+|-?\d+)/g;
+                let matches = pointData.match(pointExtractor);
+
+                // Parse the point collection into vectors.
+                let points = [];
+                for (let i = 0; i < matches.length; i += 2) {
+                    points.push(new Vector(parseFloat(matches[i]), parseFloat(matches[i + 1])));
+                }
+
+                // Create the resulting polygon.
+                shape = new Polygon(points);
+            } else if (path) {
+                // Extract the nodes from the path definition.
+                let pathData = path.getAttribute("d");
+                let nodeExtractor = /([A-Za-z]|-?\d*\.\d+|-?\d+)/g;
+                let matches = pathData.match(nodeExtractor);
+
+                // Process the nodes into their correct form.
+                let nodes = [];
+                for (let i = 0; i < matches.length; i++) {
+                    let string = matches[i];
+                    let numeric = parseFloat(string);
+                    nodes.push(isNaN(numeric) ? string : numeric);
+                }
+
+                // Create a new path using the given nodes.
+                shape = new Path(nodes);
+            }
+
+            // Ensure that a shape was created.
+            if (!shape) {
+                throw new Error("No shape was determined from the SVG.");
+            }
+
+            // Normalize the shape using the viewbox.
+            shape.normalize(viewBox);
+            shapes[name] = shape;
+        }
+    }
+
     // Create the canvas element and align it with the screen.
     const canvas = document.createElement("canvas");
     canvas.id = "party-js-canvas";
@@ -612,6 +704,13 @@ const party = (function () {
         square: new Polygon([new Vector(-0.5, 0.5), new Vector(0.5, 0.5), new Vector(0.5, -0.5), new Vector(-0.5, -0.5)]),
         rectangle: new Polygon([new Vector(-0.3, 1), new Vector(0.3, 1), new Vector(0.3, -1), new Vector(-0.3, -1)])
     };
+
+    // Register default SVG shapes.
+    registerShape('circle', '<path d="M0,1 C0.551915024494,1 1,0.551915024494 1,0 C1,-0.551915024494 0.551915024494,-1 0,-1 C-0.551915024494,-1 -1,-0.551915024494 -1,0 C-1,0.551915024494 -0.551915024494,1 0,1 Z"/>');
+    registerShape('ellipse', '<path d="M0,0.5 C0.5,0.5 1,0.4 1,0 C1,-0.4 0.5,-0.5 0,-0.5 C-0.5,-0.5 -1,-0.4 -1,0 C-1,0.4 -0.5,0.5 0,0.5Z"/>');
+    registerShape('rounded-square', '<path d="M-0.5,1 L0.5,1 C0.75,1 1,0.75 1,0.5 L1,-0.5 C1,-0.75 0.75,-1 0.5,-1 L-0.5,-1 C-0.75,-1 -1,-0.75 -1,-0.5 L-1,0.5 C-1,0.75 -0.75,1 -0.5,1 Z"/>');
+    registerShape('rounded-rectangle', '<path d="M-0.6,0.5 L0.6,0.5 C0.8,0.5 1,0.3 1,0.1 L1,-0.1 C1,-0.3 0.8,-0.5 0.6,-0.5 L-0.6,-0.5 C-0.8,-0.5 -1,-0.3 -1,-0.1 L-1,0.1 C-1,0.3 -0.8,0.5 -0.6,0.5 Z"/>');
+    registerShape('star', '<polygon points="512,197.816 325.961,185.585 255.898,9.569 185.835,185.585 0,197.816 142.534,318.842 95.762,502.431 255.898,401.21 416.035,502.431 369.263,318.842"/>');
 
     // Define conversions between radians and degrees
     const deg2rad = (Math.PI / 180);
@@ -935,78 +1034,7 @@ const party = (function () {
          * @param {string} name The name of the new shape.
          * @param {any} shape The shape to add. This can be either an array of vectors, or an SVG document.
          */
-        registerShape: function (name, shapeDefinition) {
-            // Arrays are interpreted as point collections
-            if (Array.isArray(shapeDefinition)) {
-                shapes[name] = new Polygon(shapeDefinition);
-            }
-            // Strings are interpreted as SVG graphics
-            else if (typeof shapeDefinition === 'string') {
-                let parser = new DOMParser();
-                let doc = parser.parseFromString(shapeDefinition, "application/xml");
-
-                // Catch if an error has occurred.
-                let error = doc.getElementsByTagName("parsererror")[0];
-                if (error) {
-                    throw new Error("Invalid SVG shape.");
-                }
-
-                // If an SVG viewbox was passed, parse it.
-                var viewBox;
-                let svg = doc.getElementsByTagName("svg")[0];
-                if (svg && svg.hasAttribute("viewBox")) {
-                    viewBox = ViewBox.fromBounds(svg.getAttribute("viewBox").split(' ').map(n => parseFloat(n)));
-                }
-
-                // Locate the potential shapes
-                let polygon = doc.getElementsByTagName("polygon")[0];
-                let path = doc.getElementsByTagName("path")[0];
-
-                // Provide a storage for the created shape.
-                let shape;
-
-                if (polygon) {
-                    // Extract the points from the polygon.
-                    let pointData = polygon.getAttribute("points");
-                    let pointExtractor = /(-?\d*\.\d+|-?\d+)/g;
-                    let matches = pointData.match(pointExtractor);
-
-                    // Parse the point collection into vectors.
-                    let points = [];
-                    for (let i = 0; i < matches.length; i += 2) {
-                        points.push(new Vector(parseFloat(matches[i]), parseFloat(matches[i + 1])));
-                    }
-
-                    // Create the resulting polygon.
-                    shape = new Polygon(points);
-                } else if (path) {
-                    // Extract the nodes from the path definition.
-                    let pathData = path.getAttribute("d");
-                    let nodeExtractor = /([A-Za-z]|-?\d*\.\d+|-?\d+)/g;
-                    let matches = pathData.match(nodeExtractor);
-
-                    // Process the nodes into their correct form.
-                    let nodes = [];
-                    for (let i = 0; i < matches.length; i++) {
-                        let string = matches[i];
-                        let numeric = parseFloat(string);
-                        nodes.push(isNaN(numeric) ? string : numeric);
-                    }
-
-                    // Create a new path using the given nodes.
-                    shape = new Path(nodes);
-                }
-
-                // Ensure that a shape was created.
-                if (!shape) {
-                    throw new Error("No shape was determined from the SVG.");
-                }
-
-                // Normalize the shape using the viewbox.
-                shape.normalize(viewBox);
-                shapes[name] = shape;
-            }
-        },
+        registerShape,
 
         /**
          * Creates a constant value. This is purely for syntax convenience, the given value is simply returned.
@@ -1058,10 +1086,4 @@ const party = (function () {
             }
         }
     };
-})();
-
-party.registerShape('circle', '<path d="M0,1 C0.551915024494,1 1,0.551915024494 1,0 C1,-0.551915024494 0.551915024494,-1 0,-1 C-0.551915024494,-1 -1,-0.551915024494 -1,0 C-1,0.551915024494 -0.551915024494,1 0,1 Z"/>');
-party.registerShape('ellipse', '<path d="M0,0.5 C0.5,0.5 1,0.4 1,0 C1,-0.4 0.5,-0.5 0,-0.5 C-0.5,-0.5 -1,-0.4 -1,0 C-1,0.4 -0.5,0.5 0,0.5Z"/>');
-party.registerShape('rounded-square', '<path d="M-0.5,1 L0.5,1 C0.75,1 1,0.75 1,0.5 L1,-0.5 C1,-0.75 0.75,-1 0.5,-1 L-0.5,-1 C-0.75,-1 -1,-0.75 -1,-0.5 L-1,0.5 C-1,0.75 -0.75,1 -0.5,1 Z"/>');
-party.registerShape('rounded-rectangle', '<path d="M-0.6,0.5 L0.6,0.5 C0.8,0.5 1,0.3 1,0.1 L1,-0.1 C1,-0.3 0.8,-0.5 0.6,-0.5 L-0.6,-0.5 C-0.8,-0.5 -1,-0.3 -1,-0.1 L-1,0.1 C-1,0.3 -0.8,0.5 -0.6,0.5 Z"/>');
-party.registerShape('star', '<polygon points="512,197.816 325.961,185.585 255.898,9.569 185.835,185.585 0,197.816 142.534,318.842 95.762,502.431 255.898,401.21 416.035,502.431 369.263,318.842"/>');
+}));
