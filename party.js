@@ -116,7 +116,7 @@
          */
         mix(color, weight) {
             if (!(color instanceof Color)) {
-                throw new TypeError(errors.typeCheckFailed.format("Color"));
+                throw new TypeError(format(errors.typeCheckFailed, "Color"));
             }
             if (weight == undefined) {
                 weight = 0.5;
@@ -198,7 +198,7 @@
          */
         add(vector) {
             if (!(vector instanceof Vector)) {
-                throw new TypeError(errors.typeCheckFailed.format("Vector"));
+                throw new TypeError(format(errors.typeCheckFailed, "Vector"));
             }
             return new Vector(this.x + vector.x, this.y + vector.y, this.z + vector.z);
         }
@@ -212,7 +212,7 @@
             } else if (s instanceof Vector) {
                 return new Vector(this.x * s.x, this.y * s.y, this.z * s.z);
             } else {
-                throw new TypeError(errors.typeCheckFailed.format("Number/Vector"));
+                throw new TypeError(format(errors.typeCheckFailed, "Number/Vector"));
             }
         }
 
@@ -230,7 +230,7 @@
          */
         static generate(factory) {
             if (typeof factory !== 'function') {
-                throw new TypeError(errors.typeCheckFailed.format("Function"));
+                throw new TypeError(format(errors.typeCheckFailed, "Function"));
             }
             return new Vector(factory(), factory(), factory());
         }
@@ -252,10 +252,10 @@
          */
         applyDelta(transform, delta) {
             if (!(transform instanceof Transform)) {
-                throw new TypeError(errors.typeCheckFailed.format("Transform"));
+                throw new TypeError(format(errors.typeCheckFailed, "Transform"));
             }
             if (typeof delta !== "number") {
-                throw new TypeError(errors.typeCheckFailed.format("Number"));
+                throw new TypeError(format(errors.typeCheckFailed, "Number"));
             }
             return new Transform(
                 this.position.add(transform.position.scale(delta)),
@@ -265,7 +265,7 @@
         }
         apply(point) {
             if (!(point instanceof Vector)) {
-                throw new TypeError(errors.typeCheckFailed.format("Vector"));
+                throw new TypeError(format(errors.typeCheckFailed, "Vector"));
             }
             let x = point.x * this.scale.x,
                 y = point.y * this.scale.y;
@@ -355,7 +355,7 @@
          */
         withTransform(transform) {
             if (!(transform instanceof Transform)) {
-                throw new TypeError(errors.typeCheckFailed.format("Transform"));
+                throw new TypeError(format(errors.typeCheckFailed, "Transform"));
             }
             this.transform = transform;
             return this;
@@ -365,19 +365,19 @@
          * Abstract; returns the bounds of the shape.
          */
         getBounds() {
-            throw new Error(errors.abstractMethodNotImplemented.format("getBounds()"));
+            throw new Error(format(errors.abstractMethodNotImplemented, "getBounds()"));
         }
         /**
          * Abstract; normalizes the shape using the specified viewbox.
          */
         normalize(viewBox) {
-            throw new Error(errors.abstractMethodNotImplemented.format("normalize(viewBox)"));
+            throw new Error(format(abstractMethodNotImplemented, "normalize(viewBox)"));
         }
         /**
          * Abstract; renders the specified shape to the given context.
          */
         draw(context) {
-            throw new Error(errors.abstractMethodNotImplemented.format("draw(context)"));
+            throw new Error(format(abstractMethodNotImplemented, "draw(context)"));
         }
     }
     /**
@@ -387,7 +387,7 @@
         constructor(points) {
             super();
             if (!Array.isArray(points)) {
-                throw new TypeError(errors.typeCheckFailed.format("Array"));
+                throw new TypeError(format(errors.typeCheckFailed, "Array"));
             }
             this.points = points;
         }
@@ -404,7 +404,7 @@
         normalize(viewBox) {
             viewBox = viewBox || ViewBox.fromBounds(this.getBounds());
             if (!(viewBox instanceof ViewBox)) {
-                throw new TypeError(errors.typeCheckFailed.format("ViewBox"));
+                throw new TypeError(format(errors.typeCheckFailed, "ViewBox"));
             }
             this.points = this.points.map(p => viewBox.transformPoint(p));
         }
@@ -415,7 +415,7 @@
          */
         draw(context) {
             if (!(context instanceof CanvasRenderingContext2D)) {
-                throw new TypeError(errors.typeCheckFailed.format("CanvasRenderingContext2D"));
+                throw new TypeError(format(errors.typeCheckFailed, "CanvasRenderingContext2D"));
             }
 
             context.beginPath();
@@ -500,7 +500,7 @@
 
                         let previousNode = this.nodes[this.nodes.length - 1];
                         if (previousNode.type != "bezier") {
-                            throw new Error(errors.malformedPathNode.format(node));
+                            throw new Error(format(errors.malformedPathNode, node));
                         }
 
                         // This command infers its first control point from the previous bezier curve.
@@ -539,7 +539,7 @@
         normalize(viewBox) {
             viewBox = viewBox || ViewBox.fromBounds(this.getBounds());
             if (!(viewBox instanceof ViewBox)) {
-                throw new TypeError(errors.typeCheckFailed.format("ViewBox"));
+                throw new TypeError(format(errors.typeCheckFailed, "ViewBox"));
             }
             let iterator = new Iterator(this.nodes);
             while (iterator.hasNext()) {
@@ -555,7 +555,7 @@
          */
         draw(context) {
             if (!(context instanceof CanvasRenderingContext2D)) {
-                throw new TypeError(errors.typeCheckFailed.format("CanvasRenderingContext2D"));
+                throw new TypeError(format(errors.typeCheckFailed, "CanvasRenderingContext2D"));
             }
 
             context.beginPath();
@@ -749,12 +749,16 @@
         return value + randRange(-variation / 2, variation / 2);
     }
 
-    String.prototype.format = function () {
-        var a = this;
-        for (var k in arguments) {
-            a = a.replace(new RegExp("\\{" + k + "\\}", 'g'), arguments[k]);
+    /**
+     * Formats the specified strings using the specified arguments, replacing '{i}' with the argument at index i.
+     */
+    function format(str) {
+        for (let i in arguments) {
+            if (i > 0) {
+                str = str.replace(new RegExp("\\{" + (i - 1) + "\\}", 'g'), arguments[i]);
+            }
         }
-        return a;
+        return str;
     }
 
     /**
@@ -968,12 +972,12 @@
         element: function (element, options) {
             options = options || {};
             overrideUndefinedOptions(options, {
-                shape: party.array(["square", "rectangle"]),
-                count: party.variation(40, 0.5),
-                spread: party.constant(80),
-                size: party.variation(10, 0.8),
-                velocity: party.variation(-300, 1),
-                angularVelocity: party.minmax(1, 6)
+                shape: this.array(["square", "rectangle"]),
+                count: this.variation(40, 0.5),
+                spread: this.constant(80),
+                size: this.variation(10, 0.8),
+                velocity: this.variation(-300, 1),
+                angularVelocity: this.minmax(1, 6)
             });
             this.area(element.getBoundingClientRect(), options);
         },
@@ -986,12 +990,12 @@
         position: function (x, y, options) {
             options = options || {};
             overrideUndefinedOptions(options, {
-                shape: party.array(["square", "rectangle"]),
-                count: party.variation(40, 0.5),
-                spread: party.constant(80),
-                size: party.variation(10, 0.8),
-                velocity: party.variation(-300, 1),
-                angularVelocity: party.minmax(1, 6),
+                shape: this.array(["square", "rectangle"]),
+                count: this.variation(40, 0.5),
+                spread: this.constant(80),
+                size: this.variation(10, 0.8),
+                velocity: this.variation(-300, 1),
+                angularVelocity: this.minmax(1, 6),
             });
             this.area({
                 left: x,
@@ -1017,11 +1021,11 @@
         screen: function (options) {
             options = options || {};
             overrideUndefinedOptions(options, {
-                shape: party.array(["square", "rectangle"]),
-                count: party.variation(500 * (window.innerWidth / 1980), 0.5),
-                size: party.variation(10, 0.8),
-                velocity: party.variation(-100, 2),
-                angularVelocity: party.minmax(1, 6),
+                shape: this.array(["square", "rectangle"]),
+                count: this.variation(500 * (window.innerWidth / 1980), 0.5),
+                size: this.variation(10, 0.8),
+                velocity: this.variation(-100, 2),
+                angularVelocity: this.minmax(1, 6),
             });
             this.area({
                 width: window.innerWidth,
@@ -1048,7 +1052,7 @@
          */
         variation: function (value, variation, isAbsolute) {
             if (typeof value !== "number" || typeof variation !== "number") {
-                throw new TypeError(errors.typeCheckFailed.format("Number"));
+                throw new TypeError(format(errors.typeCheckFailed, "Number"));
             }
             return () => (isAbsolute ? applyAbsoluteVariation : applyRelativeVariation)(value, variation);
         },
@@ -1057,7 +1061,7 @@
          */
         minmax: function (min, max) {
             if (typeof min !== "number" || typeof max !== "number") {
-                throw new TypeError(errors.typeCheckFailed.format("Number"));
+                throw new TypeError(format(errors.typeCheckFailed, "Number"));
             }
             return () => randRange(min, max);
         },
@@ -1066,11 +1070,13 @@
          */
         array: function (array) {
             if (!Array.isArray(array)) {
-                throw new TypeError(errors.typeCheckFailed.format("Array"));
+                throw new TypeError(format(errors.typeCheckFailed, "Array"));
             }
             return array;
         },
-
+        /**
+         * Creates a linear gradient from the specified colours.
+         */
         linearGradient: function () {
             if (!arguments || arguments.length == 0) {
                 throw new Error();
