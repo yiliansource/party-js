@@ -8,7 +8,7 @@
 </h4>
 
 <p align="center">
-    <img alt="npm" src="https://img.shields.io/npm/v/party-js"/>
+    <a href="https://www.npmjs.com/package/party-js"><img alt="npm" src="https://img.shields.io/npm/v/party-js"/></a>
     <img alt="GitHub" src="https://img.shields.io/github/license/yiliansource/party-js">
     <a href="https://deepscan.io/dashboard#view=project&tid=11458&pid=14332&bid=265225"><img src="https://deepscan.io/api/teams/11458/projects/14332/branches/265225/badge/grade.svg" alt="DeepScan grade"></a>
     <img alt="GitHub file size in bytes" src="https://img.shields.io/github/size/yiliansource/party-js/party.min.js?label=minified%20size">

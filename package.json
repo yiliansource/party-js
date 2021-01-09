@@ -1,27 +1,33 @@
 {
-  "name": "party-js",
-  "version": "1.0.1",
-  "description": "A JavaScript library to brighten up your user's site experience with visual effects!",
-  "main": "party.min.js",
-  "files": [
-    "party.min.js"
-  ],
-  "scripts": {
-    "test": "echo \"Error: no test specified\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/YilianSource/party-js.git"
-  },
-  "keywords": [
-    "party",
-    "confetti",
-    "particles"
-  ],
-  "author": "Ian Hornik",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/YilianSource/party-js/issues"
-  },
-  "homepage": "https://partyjs.yiliansource.dev"
+    "name": "party-js",
+    "version": "2.0.0",
+    "description": "A JavaScript library to brighten up your user's site experience with visual effects!",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "clean": "rimraf bundle dist",
+        "build": "npm run clean && tsc && webpack"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/YilianSource/party-js.git"
+    },
+    "keywords": [
+        "party",
+        "confetti",
+        "particles"
+    ],
+    "author": "Ian Hornik",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/YilianSource/party-js/issues"
+    },
+    "homepage": "https://partyjs.yiliansource.dev",
+    "devDependencies": {
+        "rimraf": "^3.0.2",
+        "terser-webpack-plugin": "^5.1.1",
+        "webpack": "^5.12.2",
+        "webpack-cli": "^4.3.1"
+    },
+    "dependencies": {}
 }
