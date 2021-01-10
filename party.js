@@ -689,7 +689,7 @@
     // Create the canvas element and align it with the screen.
     const canvas = document.createElement("canvas");
     canvas.id = "party-js-canvas";
-    canvas.style = "position: fixed; left: 0; top: 0; pointer-events: none;";
+    canvas.style = "position: fixed; left: 0; top: 0; pointer-events: none; z-index: 99999;"; //just to keep the rendering on top as easiest solution
     // The context used for drawing on the canvas.
     const ctx = canvas.getContext("2d");
 
