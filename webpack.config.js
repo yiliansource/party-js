@@ -1,8 +1,9 @@
 const path = require('path');
+
 const TerserWebpackPlugin = require('terser-webpack-plugin');
 
 module.exports = {
-    mode: 'none',
+    mode: process.env.NODE_ENV || 'development',
     entry: {
         'party': './src/index.ts',
         'party.min': './src/index.ts'
@@ -14,10 +15,19 @@ module.exports = {
         library: 'party',
         umdNamedDefine: true
     },
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                use: 'ts-loader',
+                exclude: /node_modules/,
+            }
+        ]
+    },
     resolve: {
         extensions: ['.ts', '.js']
     },
-    devtool: 'source-map',
+    devtool: (process.env.NODE_ENV || 'development') == 'development' ? 'inline-source-map' : 'none',
     plugins: [
         new TerserWebpackPlugin({
             test: /\.min\.js$/
