@@ -26,6 +26,6 @@ export default class Renderer {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
     render(drawable: IDrawable) {
-        drawable.draw(this.context);
+        
     }
 }

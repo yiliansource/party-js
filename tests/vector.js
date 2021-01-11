@@ -3,7 +3,7 @@ const expect = require('chai').expect;
 const { deg2rad } = require('../dist/util/math');
 const Vector = require('../dist/util/vector').default;
 
-describe('Vectors', function() {
+describe('Vector', function() {
     describe('#construction', function() {
         it('creates vectors from arguments', function() {
             let v = new Vector(1, 2, 3);

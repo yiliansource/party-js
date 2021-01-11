@@ -20,6 +20,7 @@ export default class Particle implements ITickable, IDrawable, IDestructable {
     public transform: Transform;
     public rigidbody: Rigidbody;
     public colour: Colour;
+    public shape: string;
 
     constructor(options: ParticleOptions) {
         this.transform = new Transform(options.position, options.rotation, options.scale);
@@ -32,10 +33,6 @@ export default class Particle implements ITickable, IDrawable, IDestructable {
 
     tick(delta: number) {
         this.rigidbody.tick(delta);
-    }
-
-    draw(context: CanvasRenderingContext2D) {
-
     }
 
     shouldDestroy(): boolean {

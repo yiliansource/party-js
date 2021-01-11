@@ -20,6 +20,9 @@ export default class Vector {
         this.values[2] = value;
     }
 
+    get xyz() {
+        return [this.x, this.y, this.z];
+    }
     set xyz(values: [number, number, number]) {
         this.values[0] = values[0];
         this.values[1] = values[1];
@@ -92,6 +95,6 @@ export default class Vector {
     }
 
     public toString(): string {
-        return '(' + this.values.join(', ') + ')';
+        return 'Vector(' + this.values.join(', ') + ')';
     }
 }

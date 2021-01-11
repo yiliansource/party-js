@@ -28,13 +28,14 @@ export default class Colour {
         this.values[2] = values[2];
     }
 
-    constructor(r: number = 0, g: number = 0, b: number = 0) {
+    constructor(r: number, g: number, b: number) {
         this.rgb = [r, g, b];
     }
 
     private values = new Float32Array(3);
 
-    public static readonly white = new Colour()
+    public static readonly white = new Colour(1, 1, 1);
+    public static readonly black = new Colour(0, 0, 0);
 
     public mix(colour: Colour, weight: number = 0.5): Colour {
         return new Colour(
@@ -47,6 +48,10 @@ export default class Colour {
     public toHex(): string {
         const hex = (v: number) => Math.round(v * 255).toString(16).padStart(2, '0');
         return '#' + hex(this.r) + hex(this.g) + hex(this.b);
+    }
+
+    public toString(): string {
+        return 'rgb(' + this.values.join(', ') + ')';
     }
 
     public static fromHex(hex: string) {

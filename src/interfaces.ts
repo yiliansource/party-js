@@ -1,7 +1,10 @@
+import Transform from "./util/transform";
+
 export interface IEntity {}
 
 export interface IDrawable extends IEntity {
-    draw(context: CanvasRenderingContext2D): void;
+    shape: string;
+    transform: Transform;
 }
 
 export interface ITickable extends IEntity {
