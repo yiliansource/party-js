@@ -27,12 +27,10 @@
     if (typeof define === "function" && define.amd) {
         // Define exports for Asynchronous Module Definition (AMD)
         define('partyjs', [], factory);
-    }
-    else if (typeof exports === "object") {
+    } else if (typeof exports === "object") {
         // Define exports for CommonJS (CJS)
         module.exports = factory();
-    }
-    else {
+    } else {
         // Fallback to defining as browser global under 'party'.
         root.party = factory();
     }
@@ -951,24 +949,24 @@
     var lastUpdate = 0;
 
     function init() {
-          if (document.getElementById("party-js-canvas")) {
-            return
-          }
+        if (document.getElementById("party-js-canvas")) {
+            return;
+        }
 
-          // Create the canvas element and align it with the screen.
-          const canvas = document.createElement("canvas");
-          canvas.id = "party-js-canvas";
-          // Simple styling used to keep the canvas fixed, stretched across the screen and on top of everything.
-          canvas.style = "position: fixed; left: 0; top: 0; pointer-events: none; z-index: 99999;";
-          // The context used for drawing on the canvas.
-          ctx = canvas.getContext("2d");
+        // Create the canvas element and align it with the screen.
+        const canvas = document.createElement("canvas");
+        canvas.id = "party-js-canvas";
+        // Simple styling used to keep the canvas fixed, stretched across the screen and on top of everything.
+        canvas.style = "position: fixed; left: 0; top: 0; pointer-events: none; z-index: 99999;";
+        // The context used for drawing on the canvas.
+        ctx = canvas.getContext("2d");
 
-          // Attach it to the DOM when the document body is ready.
-          document.body ? document.body.appendChild(canvas) : window.addEventListener("load", () => document.body.appendChild(canvas));
+        // Attach it to the DOM when the document body is ready.
+        document.body ? document.body.appendChild(canvas) : window.addEventListener("load", () => document.body.appendChild(canvas));
 
-          window.requestAnimationFrame(loop);
+        window.requestAnimationFrame(loop);
     }
-    init()
+    init();
 
     return {
         /**
@@ -1108,7 +1106,8 @@
             var colors = [...arguments].map(arg => Color.fromHex(arg));
             return () => {
                 let position = randRange(0, colors.length - 1);
-                let index = Math.floor(position), sample = position % 1;
+                let index = Math.floor(position),
+                    sample = position % 1;
                 return colors[index].mix(colors[index + 1], sample).toString();
             }
         }
