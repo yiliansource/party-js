@@ -10,11 +10,11 @@
     The above copyright notice and this permission notice shall be included in all copies or
     substantial portions of the Software.
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
-    INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR 
-    PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
-    FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
-    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER 
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+    INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
+    PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+    FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR
+    OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
     DEALINGS IN THE SOFTWARE.
 */
 
@@ -27,12 +27,10 @@
     if (typeof define === "function" && define.amd) {
         // Define exports for Asynchronous Module Definition (AMD)
         define('partyjs', [], factory);
-    }
-    else if (typeof exports === "object") {
+    } else if (typeof exports === "object") {
         // Define exports for CommonJS (CJS)
         module.exports = factory();
-    }
-    else {
+    } else {
         // Fallback to defining as browser global under 'party'.
         root.party = factory();
     }
@@ -441,7 +439,7 @@
             while (iterator.hasNext()) {
                 let node = iterator.next();
                 if (typeof node != "string") {
-                    /** 
+                    /**
                      * If the node is not a command, interpret it as the same type as the last processed command, unless its a move command.
                      * @see https://www.w3.org/TR/SVG/paths.html
                      */
@@ -686,19 +684,10 @@
         }
     }
 
-    // Create the canvas element and align it with the screen.
-    const canvas = document.createElement("canvas");
-    canvas.id = "party-js-canvas";
-    // Simple styling used to keep the canvas fixed, stretched across the screen and on top of everything.
-    canvas.style = "position: fixed; left: 0; top: 0; pointer-events: none; z-index: 99999;";
-    // The context used for drawing on the canvas.
-    const ctx = canvas.getContext("2d");
-
-    // Attach it to the DOM when the document body is ready.
-    document.body ? document.body.appendChild(canvas) : window.addEventListener("load", () => document.body.appendChild(canvas));
-
     // Stores the particles needed throughout runtime.
     var particles = [];
+    // The context used for drawing on the canvas.
+    var ctx = null;
 
     // Stores the shapes the particles can take.
     const shapes = {
@@ -942,6 +931,11 @@
      * @param {number} timestamp The current timestamp of the animation.
      */
     function loop(timestamp) {
+        if (!ctx.canvas.parentElement) {
+            // abort if canvas was removed from DOM
+            return
+        }
+
         let delta = (timestamp - lastUpdate) / 1000;
 
         if (particles.length > 0) {
@@ -953,9 +947,33 @@
         window.requestAnimationFrame(loop);
     }
     var lastUpdate = 0;
-    window.requestAnimationFrame(loop);
+
+    function init() {
+        if (document.getElementById("party-js-canvas")) {
+            return;
+        }
+
+        // Create the canvas element and align it with the screen.
+        const canvas = document.createElement("canvas");
+        canvas.id = "party-js-canvas";
+        // Simple styling used to keep the canvas fixed, stretched across the screen and on top of everything.
+        canvas.style = "position: fixed; left: 0; top: 0; pointer-events: none; z-index: 99999;";
+        // The context used for drawing on the canvas.
+        ctx = canvas.getContext("2d");
+
+        // Attach it to the DOM when the document body is ready.
+        document.body ? document.body.appendChild(canvas) : window.addEventListener("load", () => document.body.appendChild(canvas));
+
+        window.requestAnimationFrame(loop);
+    }
+    init();
 
     return {
+        /**
+         * Attaches the canvas to the DOM, and starts the event loop to draw things to the canvas.
+         * Call init again if you're building an SPA and have re-rendered the body, to re-attach the canvas to the DOM.
+         */
+        init,
         /**
          * Emits particles from the specified area (read from the properties 'left', 'top', 'width' and 'height').
          * @param {object} area The area to emit the particles from.
@@ -1049,7 +1067,7 @@
         },
         /**
          * Creates a function that calculates a variation on a specific value.
-         * Allows specification if the variation should be relative (default) or absolute. 
+         * Allows specification if the variation should be relative (default) or absolute.
          */
         variation: function (value, variation, isAbsolute) {
             if (typeof value !== "number" || typeof variation !== "number") {
@@ -1088,7 +1106,8 @@
             var colors = [...arguments].map(arg => Color.fromHex(arg));
             return () => {
                 let position = randRange(0, colors.length - 1);
-                let index = Math.floor(position), sample = position % 1;
+                let index = Math.floor(position),
+                    sample = position % 1;
                 return colors[index].mix(colors[index + 1], sample).toString();
             }
         }
