@@ -1,11 +1,16 @@
-import Emitter from './emitter';
+import Emitter, { EmitterOptions } from './emitter';
 import Scene from './scene';
+
+export const init = () => Scene.init();
 
 export { range, variation } from './util/customization';
 export { default as Emitter } from './emitter';
 export { default as Particle } from './particle';
 
-Scene.initialize();
+export function createEmitter(options: EmitterOptions) {
+    let emitter = new Emitter(options);
+    Scene.addEntity(emitter);
+    return emitter;
+}
 
-// Just for testing
-Scene.addEntity(new Emitter());
+Scene.init();

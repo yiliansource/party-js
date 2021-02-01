@@ -108,4 +108,23 @@ describe('Vector', function() {
             expect(new Vector(3, 0, 0).normalized().dot(new Vector(0, 4, 0).normalized())).closeTo(0, 0.01);
         });
     });
+    describe('#lookAngles', function() {
+        it('creates vectors from look angles', function() {
+            const inOut = [
+                [new Vector(0, 0, 0), new Vector(0, 0, 1)],
+                [new Vector(0, 180 * deg2rad, 0), new Vector(0, 0, -1)],
+                [new Vector(-90 * deg2rad, 0, 0), new Vector(0, -1, 0)]
+            ]
+            for (let io of inOut) {
+                let v = Vector.fromLookAngles(io[0]), r = io[1];
+                console.log(v.toString() + " vs " + r.toString());
+                for (let i = 0; i < 3; i++) {
+                    expect(v.xyz[i]).to.be.closeTo(r.xyz[i], 0.001);
+                }
+            }
+        });
+        it('ignores roll values', function() {
+            expect(Vector.fromLookAngles(new Vector(0.3, 0.2, 0.5))).to.deep.equal(Vector.fromLookAngles(new Vector(0.3, 0.2, 0.1)));
+        });
+    });
 })

@@ -1,9 +1,8 @@
-import { ITickable } from "../interfaces";
 import { gravity } from "./constants";
 import Transform from "./transform";
 import Vector from "./vector";
 
-export default class Rigidbody implements ITickable {
+export default class Rigidbody {
     public velocity: Vector;
     public angularVelocity: Vector;
 

@@ -1,4 +1,3 @@
-import { IDrawable } from "./interfaces";
 
 export default class Renderer {
     constructor() {
@@ -24,8 +23,5 @@ export default class Renderer {
 
     prepare() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    }
-    render(drawable: IDrawable) {
-        
     }
 }

@@ -1,61 +1,103 @@
-<h1 align="center" style="position: relative;">
-    <img width="200" src="./site/static/img/logo.svg"/><br>
-    party.js
+<h1 align="center">
+    <img src="./.github/banner.svg">
 </h1>
 
-<h4 align="center">
-    A JavaScript library to brighten up your user's site experience with visual effects!
-</h4>
+<p align="center">
+    <a href="#installation">Installation</a> •
+    <a href="#usage">Usage</a> •
+    <a href="#contributing">Contributing</a>
+</p>
 
 <p align="center">
     <a href="https://www.npmjs.com/package/party-js"><img alt="npm" src="https://img.shields.io/npm/v/party-js"/></a>
     <img alt="GitHub" src="https://img.shields.io/github/license/yiliansource/party-js">
     <a href="https://deepscan.io/dashboard#view=project&tid=11458&pid=14332&bid=265225"><img src="https://deepscan.io/api/teams/11458/projects/14332/branches/265225/badge/grade.svg" alt="DeepScan grade"></a>
-    <img alt="GitHub file size in bytes" src="https://img.shields.io/github/size/yiliansource/party-js/party.min.js?label=minified%20size">
+    <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/party-js">
 </p>
 
-<p align="center">
-    <a href="#installation">Installation</a> •
-    <a href="#usage">Usage</a> •
-    <a href="#contributing">Contributing</a> •
-    <a href="#license">License</a>
-</p>
+> This document refers to version 2 of the library.  
+> Documentation for version 1 is no longer available.
 
 ## Installation
 
-You can download the latest minified version at https://partyjs.yiliansource.dev/.
+The library is written as an UMD module to allow integration into different environments.
 
-You can also install the package via `npm`:
+### Browsers
+
+You can grab the latest version from [jsdelivr](https://www.jsdelivr.com/).
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+```
+
+The library instance is loaded into the global `party` object.
+
+### Node.JS
+
+You can install the library via `npm`:
 
 ```sh
 npm install party-js
 ```
 
-## Usage
-
-**Check out the [Quick Start](https://partyjs.yiliansource.dev/docs) guide!**
-
-User-interactable functionality is contained in the global `party` variable. To, for example, let confetti rain down the screen, simply call:
+To use it, simply `require` or `import` it.
 
 ```js
-party.screen();
+const party = require("party-js");
+// or ...
+import party from "party-js";
 ```
 
-Configuring the effects is possible aswell, by passing in a set of options. For a complete overview of the options, refer to the [documentation](https://partyjs.yiliansource.dev/docs/customization).
+## Usage
+
+The library essentially offers a fully customizeable particle-system implementation into HTML documents. Users of the library have the ability to create and fine-tune effects to their individual liking. The library offers a few simple effects right out-of-the-box, so you don't have to waste time re-creating simple effects.
+
+For a complete guide on how to customize effects, take a look at the [guides]!
+
+Here's an example on how to emit confetti when a button is clicked:
 
 ```js
-party.element(document.querySelector("#my-element"), {
-    count: party.variation(50, 0.5),
-    angleSpan: party.minmax(60, 120)
+let myButton = document.getElementById('myButton');
+myButton.addEventListener('click', function() {
+    party.confettiCannon(this, {
+        amount: party.range(40, 60)
+    });
 });
 ```
 
+If you want to get a bit more advanced with your effects, you can create a new emitter instead:
+
+```js
+let myButton = document.getElementById("myButton");
+let myEmitter = party.createEmitter({
+    duration: 2,
+    loop: true,
+    rate: 10,
+    bursts: [{
+        time: 0,
+        count: 50,
+        probability: 0.5
+    }],
+    particleSettings: {
+        shape: 'star',
+        gravity: false,
+        // add more customization here ...
+    }
+});
+```
+
+## How it works
+
+In general the library consists of emitters and particles. Emitters are structures located at a specific position that emit particles, and particles themselves are small graphical elements that float around the screen. Both entities are highly customizeable.
+
+The library core spawns, updates and renders entities inside an animation frame loop. Entities are despawned when the leave the lower bound of the document.
+
 ## Contributing
 
-Pull requests are welcome! For larger changes, especially structural ones, please open an issue first to discuss what you would like to change.
+Contributions are highly welcome! Please check out the [contribution guidelines][contributing] when creating pull requests. Also, please consider [opening an issue][issues] to discuss your proposed changes first.
 
-If you have a feature request, feel free to [open an issue](https://github.com/YilianSource/party-js/issues)!
+If you have a feature request, feel free to [open an issue][issues]!
 
-## License
-
-This project is licensed under a [MIT](./LICENSE.md) license.
+[contributing]: ./.github/CONTRIBUTING.md
+[issues]: https://github.com/YilianSource/party-js/issues
+[guides]: https://partyjs.yiliansource.dev/guides

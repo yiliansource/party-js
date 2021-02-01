@@ -97,4 +97,12 @@ export default class Vector {
     public toString(): string {
         return 'Vector(' + this.values.join(', ') + ')';
     }
+
+    public static fromLookAngles(angles: Vector): Vector {
+        return new Vector(
+            Math.cos(angles.x) * Math.sin(angles.y),
+            Math.sin(angles.x),
+            Math.cos(angles.x) * Math.cos(angles.y)
+        );
+    }
 }
