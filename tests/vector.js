@@ -117,7 +117,6 @@ describe('Vector', function() {
             ]
             for (let io of inOut) {
                 let v = Vector.fromLookAngles(io[0]), r = io[1];
-                console.log(v.toString() + " vs " + r.toString());
                 for (let i = 0; i < 3; i++) {
                     expect(v.xyz[i]).to.be.closeTo(r.xyz[i], 0.001);
                 }

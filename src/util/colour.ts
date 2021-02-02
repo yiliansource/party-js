@@ -1,6 +1,12 @@
 import { lerp } from "./math";
 
+/**
+ * Represents a solid RGB colour with components ranging from 0 to 1.
+ */
 export default class Colour {
+    /**
+     * The red component of the colour (0 to 1).
+     */
     get r(): number {
         return this.values[0];
     }
@@ -8,6 +14,9 @@ export default class Colour {
         this.values[0] = value;
     }
 
+    /**
+     * The green component of the colour (0 to 1).
+     */
     get g(): number {
         return this.values[1];
     }
@@ -15,6 +24,9 @@ export default class Colour {
         this.values[1] = value;
     }
 
+    /**
+     * The blue component of the colour (0 to 1).
+     */
     get b(): number {
         return this.values[2];
     }
@@ -22,12 +34,21 @@ export default class Colour {
         this.values[2] = value;
     }
 
+    /**
+     * Retrieves the RGB values as an array.
+     */
+    get rgb() {
+        return [this.r, this.g, this.b];
+    }
     set rgb(values: [number, number, number]) {
         this.values[0] = values[0];
         this.values[1] = values[1];
         this.values[2] = values[2];
     }
 
+    /**
+     * Creates a new colour from the specified component values, ranging from 0 to 1.
+     */
     constructor(r: number, g: number, b: number) {
         this.rgb = [r, g, b];
     }
@@ -37,6 +58,9 @@ export default class Colour {
     public static readonly white = new Colour(1, 1, 1);
     public static readonly black = new Colour(0, 0, 0);
 
+    /**
+     * Mixes the current colour with the specified one, optionally with a specified weight (default 0.5).
+     */
     public mix(colour: Colour, weight: number = 0.5): Colour {
         return new Colour(
             lerp(this.r, colour.r, weight),
@@ -45,15 +69,24 @@ export default class Colour {
         );
     }
 
+    /**
+     * Returns the hexadecimal representation of the RGB components, prefixed by '#'.
+     */
     public toHex(): string {
         const hex = (v: number) => Math.round(v * 255).toString(16).padStart(2, '0');
         return '#' + hex(this.r) + hex(this.g) + hex(this.b);
     }
 
+    /**
+     * Returns a nicely formatted representation of the colour.
+     */
     public toString(): string {
         return 'rgb(' + this.values.join(', ') + ')';
     }
 
+    /**
+     * Parses an RGB colour from the specified hex string. This string may prefixed by a '#', but doesn't have to be.
+     */
     public static fromHex(hex: string) {
         if (hex.startsWith('#')) {
             hex = hex.substr(1);
@@ -65,6 +98,9 @@ export default class Colour {
         );
     }
 
+    /**
+     * Creates an RGB colour from the specified HSL values.
+     */
     public static fromHsl(h: number, s: number, l: number) {
         h /= 360; s /= 100; l /= 100;
         if (s === 0) {
