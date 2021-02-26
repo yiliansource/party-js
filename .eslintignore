@@ -1,0 +1,9 @@
+# ignore webpack config
+webpack.config.js
+
+# ignore built directories
+bundle
+dev
+dist
+node_modules
+coverage

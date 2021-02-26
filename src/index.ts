@@ -1,16 +1,9 @@
-import Emitter, { EmitterOptions } from './emitter';
-import Scene from './scene';
+import { Scene } from "./app/scene";
 
-export const init = () => Scene.init();
-
-export { range, variation } from './util/customization';
-export { default as Emitter } from './emitter';
-export { default as Particle } from './particle';
-
-export function createEmitter(options: EmitterOptions) {
-    let emitter = new Emitter(options);
-    Scene.addEntity(emitter);
-    return emitter;
+if (typeof document === "undefined" || typeof window === "undefined") {
+    throw new Error(
+        "It seems like you are trying to run party.js in a non-browser environment, which is not supported."
+    );
 }
 
-Scene.init();
+export const scene = new Scene();
