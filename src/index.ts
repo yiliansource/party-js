@@ -6,4 +6,7 @@ if (typeof document === "undefined" || typeof window === "undefined") {
     );
 }
 
+export * from "./app/globals";
+export * from "./generators";
+
 export const scene = new Scene();

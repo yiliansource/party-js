@@ -1,6 +1,6 @@
 import { lerp } from "../systems/math";
 
-export default class Colour {
+export class Colour {
     get r(): number {
         return this.values[0];
     }

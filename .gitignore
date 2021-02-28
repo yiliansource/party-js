@@ -1,4 +1,6 @@
+# ignore built files
 dist
 bundle
+
+# ignore node packages
 node_modules
-dev

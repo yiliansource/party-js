@@ -1,4 +1,5 @@
-import Vector from "../components/vector";
+import { Rect } from "../components/rect";
+import { Vector } from "../components/vector";
 import { lerp } from "./math";
 
 /**
@@ -27,5 +28,12 @@ export function randomUnitVector(): Vector {
         Math.sqrt(1 - z * z) * Math.cos(theta),
         Math.sqrt(1 - z * z) * Math.sin(theta),
         z
+    );
+}
+
+export function randomInsideRect(rect: Rect): Vector {
+    return new Vector(
+        rect.x + random(0, rect.width),
+        rect.y + random(0, rect.height)
     );
 }

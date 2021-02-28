@@ -1,35 +1,38 @@
-const path = require('path');
-const TerserWebpackPlugin = require('terser-webpack-plugin');
+const path = require("path");
+const TerserWebpackPlugin = require("terser-webpack-plugin");
+
+const mode = process.env.NODE_ENV || "development";
 
 module.exports = {
-    mode: process.env.NODE_ENV || 'development',
+    mode: mode,
     entry: {
-        'party': './src/index.ts',
-        'party.min': './src/index.ts'
+        party: "./src/index.ts",
+        "party.min": "./src/index.ts",
     },
     output: {
-        path: path.resolve(__dirname, 'bundle'),
-        filename: '[name].js',
-        libraryTarget: 'umd',
-        library: 'party',
-        umdNamedDefine: true
+        path: path.resolve(__dirname, "bundle"),
+        filename: "[name].js",
+        libraryTarget: "umd",
+        library: "party",
+        umdNamedDefine: true,
     },
     module: {
         rules: [
             {
                 test: /\.ts$/,
-                use: 'ts-loader',
+                use: "ts-loader",
                 exclude: /node_modules/,
-            }
-        ]
+            },
+        ],
     },
     resolve: {
-        extensions: ['.ts', '.js']
+        extensions: [".ts", ".js"],
     },
-    devtool: (process.env.NODE_ENV || 'development') == 'development' ? 'inline-source-map' : 'none',
+    devtool: mode == "development" ? "inline-source-map" : "none",
     plugins: [
         new TerserWebpackPlugin({
-            test: /\.min\.js$/
-        })
-    ]
-}
+            test: /\.min\.js$/,
+        }),
+    ],
+    stats: "errors-only",
+};

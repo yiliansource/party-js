@@ -12,7 +12,7 @@ export function getVariationValue<T>(variation: Variation<T>): T {
         return pick(variation);
     }
     if (typeof variation === "function") {
-        (variation as () => T)();
+        return (variation as () => T)();
     }
     return variation as T;
 }

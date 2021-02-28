@@ -4,10 +4,8 @@
         "target": "ES5",
         "declaration": true,
         "sourceMap": true,
-        "lib": [ "ES2015", "DOM" ],
+        "lib": ["ES2015", "DOM"],
         "outDir": "./dist"
     },
-    "include": [
-        "./src/**/*"
-    ]
+    "include": ["./src/**/*"]
 }

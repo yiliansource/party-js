@@ -49,7 +49,7 @@
 
 //         if (upperKeyIndex === -1) {
 //             // the requested time exceeds the last key, therefore return the last solid key.
-//             return ascendingKeys[ascendingKeys.length - 1].colour; 
+//             return ascendingKeys[ascendingKeys.length - 1].colour;
 //         }
 //         if (upperKeyIndex === 0) {
 //             // the requested time comes before any key, therefore return the first solid key.
@@ -70,7 +70,7 @@
 //     public static solid(colour: Colour) {
 //         return new Gradient({ colour, time: 0.5 });
 //     }
-    
+
 //     /**
 //      * Returns a gradient with evenly spaced keys from the given colours.
 //      */

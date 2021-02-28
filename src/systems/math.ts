@@ -22,7 +22,7 @@ export function lerp(a: number, b: number, t: number): number {
  * Smoothly interpolates between a and b by t (cosine interpolation).
  */
 export function slerp(a: number, b: number, t: number): number {
-    return lerp(a, b, (1 - Math.cos(t * Math.PI) / 2));
+    return lerp(a, b, 1 - Math.cos(t * Math.PI) / 2);
 }
 
 /**

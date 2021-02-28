@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="./.github/banner.svg">
+    <img src="./branding/banner.svg">
 </h1>
 
 <p align="center">
@@ -14,9 +14,6 @@
     <a href="https://deepscan.io/dashboard#view=project&tid=11458&pid=14332&bid=265225"><img src="https://deepscan.io/api/teams/11458/projects/14332/branches/265225/badge/grade.svg" alt="DeepScan grade"></a>
     <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/party-js">
 </p>
-
-> This document refers to version 2 of the library.  
-> Documentation for version 1 is no longer available.
 
 ## Installation
 
@@ -57,10 +54,10 @@ For a complete guide on how to customize effects, take a look at the [guides]!
 Here's an example on how to emit confetti when a button is clicked:
 
 ```js
-let myButton = document.getElementById('myButton');
-myButton.addEventListener('click', function() {
+let myButton = document.getElementById("myButton");
+myButton.addEventListener("click", function () {
     party.confettiCannon(this, {
-        amount: party.range(40, 60)
+        amount: party.range(40, 60),
     });
 });
 ```
@@ -73,16 +70,18 @@ let myEmitter = party.createEmitter({
     duration: 2,
     loop: true,
     rate: 10,
-    bursts: [{
-        time: 0,
-        count: 50,
-        probability: 0.5
-    }],
+    bursts: [
+        {
+            time: 0,
+            count: 50,
+            probability: 0.5,
+        },
+    ],
     particleSettings: {
-        shape: 'star',
+        shape: "star",
         gravity: false,
         // add more customization here ...
-    }
+    },
 });
 ```
 

@@ -1,4 +1,6 @@
-export default class Vector {
+import { deg2rad } from "../systems/math";
+
+export class Vector {
     get x(): number {
         return this.values[0];
     }
@@ -114,11 +116,7 @@ export default class Vector {
         return "Vector(" + this.values.join(", ") + ")";
     }
 
-    public static fromLookAngles(angles: Vector): Vector {
-        return new Vector(
-            Math.cos(angles.x) * Math.sin(angles.y),
-            Math.sin(angles.x),
-            Math.cos(angles.x) * Math.cos(angles.y)
-        );
+    public static from2dAngle(angle: number): Vector {
+        return new Vector(Math.cos(angle * deg2rad), Math.sin(angle * deg2rad));
     }
 }

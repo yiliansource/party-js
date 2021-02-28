@@ -13,7 +13,7 @@
 //         it('evaluates basic gradients', function() {
 //             let a = new Colour(0, 0, 0), b = new Colour(1, 1, 1);
 //             const gradient = new Gradient(
-//                 { colour: a, time: 0 }, 
+//                 { colour: a, time: 0 },
 //                 { colour: b, time: 1 }
 //             );
 
@@ -33,7 +33,7 @@
 //     describe('#simple', function() {
 //         let a = new Colour(0, 0, 0), b = new Colour(1, 1, 1);
 //         const gradient = new Gradient(
-//             { colour: a, time: 0.25 }, 
+//             { colour: a, time: 0.25 },
 //             { colour: b, time: 0.75 }
 //         );
 
