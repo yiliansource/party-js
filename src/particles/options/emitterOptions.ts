@@ -1,11 +1,12 @@
-import { Colour } from "../../../components/colour";
-import { Vector } from "../../../components/vector";
-import { Variation } from "../../../systems/customization";
+import { Colour } from "../../components/colour";
+import { Vector } from "../../components/vector";
+import { Variation } from "../../systems/customization";
+import { despawningRules } from "../../util/rules";
 import { Particle } from "../particle";
 
 export type ParticleDespawnRule = (particle: Particle) => boolean;
 
-export interface SystemOptions {
+export interface EmitterOptions {
     duration: number;
     loops: number;
 
@@ -19,7 +20,7 @@ export interface SystemOptions {
     despawningRules: ParticleDespawnRule[];
 }
 
-export function getDefaultSystemOptions(): SystemOptions {
+export function getDefaultEmitterOptions(): EmitterOptions {
     return {
         duration: 5,
         loops: -1,
@@ -30,7 +31,10 @@ export function getDefaultSystemOptions(): SystemOptions {
         initialRotation: Vector.zero,
         initialColour: Colour.white,
 
-        maxParticles: 1000,
-        despawningRules: [(particle: Particle) => particle.lifetime <= 0],
+        maxParticles: 300,
+        despawningRules: [
+            despawningRules.lifetimeDespawn,
+            despawningRules.boundsDespawn,
+        ],
     };
 }

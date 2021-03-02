@@ -1,5 +1,5 @@
-import { Rect } from "../../../components/rect";
-import { Variation } from "../../../systems/customization";
+import { Rect } from "../../components/rect";
+import { Variation } from "../../systems/customization";
 
 export interface ShapeOptions {
     source: Rect;

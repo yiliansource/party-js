@@ -1,4 +1,4 @@
-import { Variation } from "../../../systems/customization";
+import { Variation } from "../../systems/customization";
 
 export interface EmissionOptions {
     rate: number;

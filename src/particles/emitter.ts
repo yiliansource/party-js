@@ -1,30 +1,28 @@
-import { Colour } from "../../components/colour";
-import { Vector } from "../../components/vector";
-import { getVariationValue } from "../../systems/customization";
-import {
-    random,
-    randomInsideRect,
-    randomUnitVector,
-} from "../../systems/random";
-import { globals } from "../globals";
+import { Vector } from "../components/vector";
+import { settings } from "../settings";
+import { getVariationValue } from "../systems/customization";
+import { randomInsideRect } from "../systems/random";
 import { ParticleModifierModule } from "./modules/particleModifierModule";
 import {
     EmissionOptions,
+    EmitterOptions,
+    RendererOptions,
     ShapeOptions,
-    SystemOptions,
     getDefaultEmissionOptions,
+    getDefaultEmitterOptions,
+    getDefaultRendererOptions,
     getDefaultShapeOptions,
-    getDefaultSystemOptions,
 } from "./options";
 import { Particle, createParticle } from "./particle";
 
-export class ParticleSystem {
+export class Emitter {
     public readonly particles: Array<Particle> = [];
     public readonly modules: Array<ParticleModifierModule> = [];
 
-    public readonly options: SystemOptions;
+    public readonly options: EmitterOptions;
     public readonly emission: EmissionOptions;
     public readonly shape: ShapeOptions;
+    public readonly renderer: RendererOptions;
 
     private durationTimer = 0;
     private emissionTimer = 0;
@@ -39,9 +37,10 @@ export class ParticleSystem {
     }
 
     constructor() {
-        this.options = getDefaultSystemOptions();
+        this.options = getDefaultEmitterOptions();
         this.emission = getDefaultEmissionOptions();
         this.shape = getDefaultShapeOptions();
+        this.renderer = getDefaultRendererOptions();
     }
 
     public tick(delta: number): void {
@@ -93,7 +92,7 @@ export class ParticleSystem {
         particle.lifetime -= delta;
 
         particle.velocity = particle.velocity.add(
-            Vector.up.scale(globals.gravity * delta)
+            Vector.up.scale(settings.gravity * delta)
         );
         particle.location = particle.location.add(
             particle.velocity.scale(delta)
@@ -116,6 +115,10 @@ export class ParticleSystem {
             colour: getVariationValue(this.options.initialColour),
         });
         this.particles.push(particle);
+
+        if (this.particles.length > this.options.maxParticles) {
+            this.particles.shift();
+        }
 
         return particle;
     }

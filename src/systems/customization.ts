@@ -1,4 +1,4 @@
-import { pick, random } from "./random";
+import { pick, randomRange } from "./random";
 
 /**
  * Represents a variation of type T, in the form of a constant, an array or an evaluateable function.
@@ -21,7 +21,7 @@ export function getVariationValue<T>(variation: Variation<T>): T {
  * Creates a variation function that returns a random number from min to max.
  */
 export function range(min: number, max: number): Variation<number> {
-    return () => random(min, max);
+    return () => randomRange(min, max);
 }
 
 /**
@@ -37,6 +37,6 @@ export function variation(
 ): Variation<number> {
     return () =>
         isAbsolute
-            ? value + random(-variation / 2, +variation / 2)
-            : value * random(1 - variation / 2, 1 + variation / 2);
+            ? value + randomRange(-variation / 2, +variation / 2)
+            : value * randomRange(1 - variation / 2, 1 + variation / 2);
 }

@@ -1,12 +1,33 @@
 import { Vector } from "../components/vector";
 import { epsilon } from "../systems/math";
 
+/**
+ * Represents an euler rotation (a vector with components in radians).
+ */
 export type EulerRotation = Vector;
-export type AxisRotation = {
+/**
+ * Represents an axis rotation, with a specific, normalized axis and a rotation
+ * (in radians) around it.
+ */
+export interface AxisRotation {
+    /**
+     * The axis to rotate around.
+     */
     axis: Vector;
+    /**
+     * The amount of rotation, in radians, to apply.
+     */
     angle: number;
-};
+}
 
+/**
+ * Converts the specified euler rotation (in radians) to an axis rotation.
+ *
+ * @param euler The rotation (in radians) to convert.
+ * @returns An object containing the axis vector and the rotation angle (in radians).
+ *
+ * @see https://www.euclideanspace.com/maths/geometry/rotations/conversions/eulerToAngle/
+ */
 export function eulerToAxis(euler: EulerRotation): AxisRotation {
     const c1 = Math.cos(euler.x / 2);
     const c2 = Math.cos(euler.y / 2);

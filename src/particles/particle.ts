@@ -1,5 +1,5 @@
-import { Colour } from "../../components/colour";
-import { Vector } from "../../components/vector";
+import { Colour } from "../components/colour";
+import { Vector } from "../components/vector";
 
 export interface Particle {
     id: symbol;
