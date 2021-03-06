@@ -1,11 +1,14 @@
 import { Colour } from "../components";
 import { Gradient } from "../components/gradient";
+import { Spline } from "../components/spline";
 import { pick, randomRange } from "./random";
 
 /**
- * Represents a variation of type T, in the form of a constant, an array or an evaluateable function.
+ * Represents a variation of type T, in the form of a constant,
+ * an array or an evaluateable function.
  */
 export type Variation<T> = T | T[] | (() => T);
+
 /**
  * Returns a value instance of a variation.
  */
@@ -45,10 +48,23 @@ export function variation(
 }
 
 /**
+ * Creates a variation function that returns a random sample from the given spline.
+ *
+ * @param spline The spline to sample from.
+ */
+export function spline<T>(spline: Spline<T>): Variation<T> {
+    return () => spline.evaluate(Math.random());
+}
+
+/**
  * Creates a variation function that returns a random sample from the given gradient.
+ *
+ * @remarks
+ * This function is an alias for the spline variation, since a gradient is just
+ * a spline under the hood.
  *
  * @param gradient The gradient to sample from.
  */
 export function gradient(gradient: Gradient): Variation<Colour> {
-    return () => gradient.evaluate(Math.random());
+    return spline(gradient);
 }

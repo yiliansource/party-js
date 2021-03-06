@@ -2,7 +2,8 @@ import { lerp } from "../systems/math";
 
 /**
  * Represents a colour consisting of RGB values.
- * The components of the colour range from 0 to 255 (inclusive).
+ * The components of the colour are represented as
+ * integers in the range 0 to 255.
  *
  * @example
  * ```ts
@@ -20,9 +21,10 @@ export class Colour {
     }
     /**
      * Modifies the r-component of the colour.
+     * Note that this also floors the value.
      */
     set r(value: number) {
-        this.values[0] = value;
+        this.values[0] = Math.floor(value);
     }
 
     /**
@@ -33,13 +35,15 @@ export class Colour {
     }
     /**
      * Modifies the g-component of the colour.
+     * Note that this also floors the value.
      */
     set g(value: number) {
-        this.values[1] = value;
+        this.values[1] = Math.floor(value);
     }
 
     /**
      * Returns the b-component of the colour.
+     * Note that this also floors the value.
      */
     get b(): number {
         return this.values[2];
@@ -48,7 +52,7 @@ export class Colour {
      * Modifies the b-component of the colour.
      */
     set b(value: number) {
-        this.values[2] = value;
+        this.values[2] = Math.floor(value);
     }
 
     /**
@@ -61,9 +65,9 @@ export class Colour {
      * Simultaneously updates the rgb-components of the colour, by passing an array.
      */
     set rgb(values: [number, number, number]) {
-        this.values[0] = values[0];
-        this.values[1] = values[1];
-        this.values[2] = values[2];
+        this.r = values[0];
+        this.g = values[1];
+        this.b = values[2];
     }
 
     private values = new Float32Array(3);

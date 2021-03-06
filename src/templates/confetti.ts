@@ -14,6 +14,7 @@ import { scene } from "..";
  * The configuration to apply to the confetti.
  */
 export interface ConfettiConfiguration {
+    // TODO: Add properties
     count: number;
 }
 
