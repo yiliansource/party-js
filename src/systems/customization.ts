@@ -1,3 +1,5 @@
+import { Colour } from "../components";
+import { Gradient } from "../components/gradient";
 import { pick, randomRange } from "./random";
 
 /**
@@ -26,6 +28,7 @@ export function range(min: number, max: number): Variation<number> {
 
 /**
  * Creates a variation function that returns a variation on the given number.
+ *
  * @param value The base value for the variation.
  * @param variation The variation percentage to apply.
  * @param isAbsolute If true, the variation percentage is interpreted as absolute instead, adding the variation span to the value instead of multiplying with it.
@@ -39,4 +42,13 @@ export function variation(
         isAbsolute
             ? value + randomRange(-variation / 2, +variation / 2)
             : value * randomRange(1 - variation / 2, 1 + variation / 2);
+}
+
+/**
+ * Creates a variation function that returns a random sample from the given gradient.
+ *
+ * @param gradient The gradient to sample from.
+ */
+export function gradient(gradient: Gradient): Variation<Colour> {
+    return () => gradient.evaluate(Math.random());
 }

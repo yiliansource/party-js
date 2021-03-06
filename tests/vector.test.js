@@ -1,30 +1,22 @@
-import { expect } from "chai";
-import { describe, it } from "mocha";
+const { expect } = require("chai");
+const { describe, it } = require("mocha");
 
-import Vector from "../dist/components/vector";
-
-import { epsilon } from "../dist/systems/math";
-import {
-    magnitude,
-    sqrMagnitude,
-    add,
-    subtract,
-    scale,
-    normalize,
-} from "../dist/systems/math.vector";
+const { expectArrayCloseTo } = require("./util");
+const { Vector } = require("../dist/components/vector");
+const { epsilon } = require("../dist/systems/math");
 
 describe("Vector", function () {
     describe("#constructor", function () {
         const tests = [
-            { args: [1, 2], expected: 2 },
-            { args: [1, 2, 3], expected: 3 },
-            { args: [1, 2, 3, 4, 5], expected: 5 },
+            { args: [1, 2], expected: [1, 2, 0] },
+            { args: [1, 2, 3], expected: [1, 2, 3] },
+            { args: [1, 3, 5, 7, 9], expected: [1, 3, 5] },
         ];
 
-        for (let test of tests) {
-            it(`creates correct dimensions: ${test.args.length}`, function () {
-                let v = new Vector(test.args);
-                expect(v.values.length).to.equal(test.expected);
+        for (const test of tests) {
+            it(`fills missing components with zero: ${test.args.length}`, function () {
+                let v = new Vector(...test.args);
+                expect(v.xyz).to.eql(test.expected);
             });
         }
     });
@@ -41,17 +33,17 @@ describe("Vector", function () {
             { arg: new Vector(3, 0, 4), expectedSqr: 25, expected: 5 },
         ];
 
-        for (let test of tests) {
+        for (const test of tests) {
             it(`calculates magnitude: ${test.arg.toString()}`, function () {
-                expect(magnitude(test.arg)).to.be.closeTo(
+                expect(test.arg.magnitude()).to.be.closeTo(
                     test.expected,
                     epsilon
                 );
             });
         }
-        for (let test of tests) {
+        for (const test of tests) {
             it(`calculates squared magnitude: ${test.arg.toString()}`, function () {
-                expect(sqrMagnitude(test.arg)).to.be.closeTo(
+                expect(test.arg.sqrMagnitude()).to.be.closeTo(
                     test.expectedSqr,
                     epsilon
                 );
@@ -79,9 +71,9 @@ describe("Vector", function () {
             },
         ];
 
-        for (let test of tests) {
+        for (const test of tests) {
             it(`adds vectors: ${test.a.toString()} + ${test.b.toString()}`, function () {
-                expect(add(test.a, test.b)).to.deep.equal(test.expected);
+                expect(test.a.add(test.b)).to.deep.equal(test.expected);
             });
         }
     });
@@ -106,9 +98,9 @@ describe("Vector", function () {
             },
         ];
 
-        for (let test of tests) {
+        for (const test of tests) {
             it(`subtracts vectors: ${test.a.toString()} - ${test.b.toString()}`, function () {
-                expect(subtract(test.a, test.b)).to.deep.equal(test.expected);
+                expect(test.a.subtract(test.b)).to.deep.equal(test.expected);
             });
         }
     });
@@ -124,9 +116,9 @@ describe("Vector", function () {
             },
         ];
 
-        for (let test of testsScalar) {
+        for (const test of testsScalar) {
             it(`scales vectors by scalar: ${test.a.toString()} * ${test.b.toString()}`, function () {
-                expect(scale(test.a, test.b)).to.deep.equal(test.expected);
+                expect(test.a.scale(test.b)).to.deep.equal(test.expected);
             });
         }
 
@@ -144,23 +136,116 @@ describe("Vector", function () {
             },
         ];
 
-        for (let test of testsVector) {
+        for (const test of testsVector) {
             it(`scales vectors by vector: ${test.a.toString()} * ${test.b.toString()}`, function () {
-                expect(scale(test.a, test.b)).to.deep.equal(test.expected);
+                expect(test.a.scale(test.b)).to.deep.equal(test.expected);
             });
         }
     });
 
-    describe("#normalize", function () {
+    describe("#normalized", function () {
         const tests = [
             { arg: new Vector(2), expected: new Vector(1) },
             { arg: new Vector(0, 3, 0), expected: new Vector(0, 1, 0) },
             { arg: new Vector(0, 0, -1), expected: new Vector(0, 0, -1) },
         ];
 
-        for (let test of tests) {
+        for (const test of tests) {
             it(`normalizes vectors: ${test.arg.toString()}`, function () {
-                expect(normalize(test.arg)).to.deep.equal(test.expected);
+                expect(test.arg.normalized()).to.deep.equal(test.expected);
+            });
+        }
+    });
+
+    describe("#angle", function () {
+        const tests = [
+            { a: Vector.right, b: Vector.right, expected: 0 },
+            { a: Vector.right, b: Vector.up, expected: Math.PI / 2 },
+            { a: new Vector(1), b: new Vector(-1), expected: Math.PI },
+            {
+                a: new Vector(1, 1),
+                b: new Vector(-1, 1),
+                expected: Math.PI / 2,
+            },
+            {
+                a: new Vector(-1, -1),
+                b: new Vector(-1, 0),
+                expected: Math.PI / 4,
+            },
+        ];
+
+        for (const test of tests) {
+            it(`calculates angles between vectors: ${test.a.toString()} & ${test.b.toString()}`, function () {
+                expect(test.a.angle(test.b)).to.be.closeTo(
+                    test.expected,
+                    epsilon
+                );
+            });
+        }
+    });
+
+    describe("#cross", function () {
+        const tests = [
+            { a: Vector.right, b: Vector.up, expected: Vector.forward },
+            { a: Vector.forward, b: Vector.forward, expected: Vector.zero },
+            { a: Vector.up, b: Vector.up.scale(-1), expected: Vector.zero },
+            {
+                a: new Vector(1, 2),
+                b: new Vector(3, 4),
+                expected: new Vector(0, 0, -2),
+            },
+            {
+                a: new Vector(0, 1, 2),
+                b: new Vector(5, 4, 3),
+                expected: new Vector(-5, 10, -5),
+            },
+        ];
+
+        for (const test of tests) {
+            it(`calculates cross product: ${test.a.toString()} x ${test.b.toString()}`, function () {
+                expectArrayCloseTo(
+                    test.a.cross(test.b).xyz,
+                    test.expected.xyz,
+                    epsilon
+                );
+            });
+        }
+    });
+
+    describe("#dot", function () {
+        const tests = [
+            { a: Vector.right, b: Vector.up, expected: 0 },
+            { a: Vector.forward, b: Vector.forward, expected: 1 },
+            { a: Vector.up, b: Vector.up.scale(-1), expected: -1 },
+            { a: new Vector(1, 2), b: new Vector(3, 4), expected: 11 },
+            { a: new Vector(0, 1, 2), b: new Vector(5, 4, 3), expected: 10 },
+        ];
+
+        for (const test of tests) {
+            it(`calculates dot product: ${test.a.toString()} . ${test.b.toString()}`, function () {
+                expect(test.a.dot(test.b)).to.be.closeTo(
+                    test.expected,
+                    epsilon
+                );
+            });
+        }
+    });
+
+    describe("#from2dAngle", function () {
+        const tests = [
+            { arg: 0, expected: Vector.right },
+            { arg: 90, expected: Vector.up },
+            { arg: -90, expected: Vector.up.scale(-1) },
+            { arg: 45, expected: new Vector(1, 1).normalized() },
+        ];
+
+        for (const test of tests) {
+            it(`creates vector from 2d angle: ${test.arg.toString()}`, function () {
+                expectArrayCloseTo(
+                    Vector.from2dAngle(test.arg).xyz,
+                    test.expected.xyz,
+                    epsilon
+                );
             });
         }
     });

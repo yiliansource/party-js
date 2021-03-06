@@ -7,7 +7,7 @@
     "scripts": {
         "clean": "rimraf bundle dist",
         "build": "npm run clean && tsc && webpack",
-        "test": "npm run clean && tsc && mocha tests/**/*.js",
+        "test": "npm run clean && tsc && mocha tests/**/*.test.js",
         "lint": "npx eslint . --ext .js,.ts"
     },
     "repository": {

@@ -31,6 +31,9 @@ export function randomUnitVector(): Vector {
     );
 }
 
+/**
+ * Returns a random point inside the given rect.
+ */
 export function randomInsideRect(rect: Rect): Vector {
     return new Vector(
         rect.x + randomRange(0, rect.width),

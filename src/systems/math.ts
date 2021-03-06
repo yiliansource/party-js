@@ -1,9 +1,9 @@
 /**
- * Constant value coefficient to convert degrees to radians.
+ * Constant coefficient to convert degrees to radians.
  */
 export const deg2rad: number = Math.PI / 180;
 /**
- * Constant value coefficient to convert radians to degrees.
+ * Constant coefficient to convert radians to degrees.
  */
 export const rad2deg: number = 180 / Math.PI;
 /**
