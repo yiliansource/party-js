@@ -1,3 +1,5 @@
-branding/* linguist-vendored
 samples/* linguist-vendored
-site/* linguist-vendored
+docs/* linguist-vendored
+
+webpack.config.js linguist-vendored
+.eslintrc.js linguist-vendored
