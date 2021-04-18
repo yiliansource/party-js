@@ -1,61 +1,77 @@
-<h1 align="center" style="position: relative;">
-    <img width="200" src="./site/static/img/logo.svg"/><br>
-    party.js
+<h1 align="center">
+    <img src="./.github/banner.svg"/>
 </h1>
-
-<h4 align="center">
-    A JavaScript library to brighten up your user's site experience with visual effects!
-</h4>
-
-<p align="center">
-    <img alt="npm" src="https://img.shields.io/npm/v/party-js"/>
-    <img alt="GitHub" src="https://img.shields.io/github/license/yiliansource/party-js">
-    <a href="https://deepscan.io/dashboard#view=project&tid=11458&pid=14332&bid=265225"><img src="https://deepscan.io/api/teams/11458/projects/14332/branches/265225/badge/grade.svg" alt="DeepScan grade"></a>
-    <img alt="GitHub file size in bytes" src="https://img.shields.io/github/size/yiliansource/party-js/party.min.js?label=minified%20size">
-</p>
 
 <p align="center">
     <a href="#installation">Installation</a> •
     <a href="#usage">Usage</a> •
-    <a href="#contributing">Contributing</a> •
-    <a href="#license">License</a>
+    <a href="#contributing">Contributing</a>
+</p>
+
+<p align="center">
+    <a href="https://www.npmjs.com/package/party-js"><img alt="npm" src="https://img.shields.io/npm/v/party-js?style=flat-square"/></a>
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/yiliansource/party-js?style=flat-square">
+    <img alt="npm" src="https://img.shields.io/npm/dm/party-js?style=flat-square">
+    <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/party-js?style=flat-square"/>
+    <img alt="GitHub" src="https://img.shields.io/github/license/yiliansource/party-js?style=flat-square"/>
 </p>
 
 ## Installation
 
-You can download the latest minified version at https://partyjs.yiliansource.dev/.
+The library is written in TypeScript and compiled to an UMD module to allow integration into different environments.
 
-You can also install the package via `npm`:
+### Browsers
+
+You can grab the latest version from [jsdelivr](https://www.jsdelivr.com/).
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>
+```
+
+The library instance is loaded into the global `party` object.
+
+### Node.JS
+
+If you are using a package-managed environment, you can also install the latest version via [npm].
 
 ```sh
 npm install party-js
+yarn add party-js
+```
+
+To use it, simply `require` or `import` it.
+
+```ts
+const party = require("party-js");
+import party from "party-js";
 ```
 
 ## Usage
 
-**Check out the [Quick Start](https://partyjs.yiliansource.dev/docs) guide!**
-
-User-interactable functionality is contained in the global `party` variable. To, for example, let confetti rain down the screen, simply call:
+The library essentially offers a fully customizeable particle-system implementation into HTML documents. Users of the library have the ability to create and fine-tune effects to their individual liking. The library offers a few simple effects right out-of-the-box, so you don't have to waste time re-creating simple effects.
 
 ```js
-party.screen();
-```
-
-Configuring the effects is possible aswell, by passing in a set of options. For a complete overview of the options, refer to the [documentation](https://partyjs.yiliansource.dev/docs/customization).
-
-```js
-party.element(document.querySelector("#my-element"), {
-    count: party.variation(50, 0.5),
-    angleSpan: party.minmax(60, 120)
+document.querySelector(".button").addEventListener("click", function(e) {
+    party.confetti(this, {
+        count: party.range(20, 40)
+    });
 });
 ```
 
+If you want to learn more, check out the [quick start][quick-start] guide!
+
+## How it works
+
+In general the library consists of emitters and particles. Emitters are structures located at a specific position that emit particles, and particles themselves are small graphical elements that float around the screen. Both entities are highly customizeable.
+
+The library core spawns, updates and renders entities inside an animation frame loop. Entities are despawned when they leave the lower bound of the document, or their lifetime expires.
+
 ## Contributing
 
-Pull requests are welcome! For larger changes, especially structural ones, please open an issue first to discuss what you would like to change.
+First of all, thank you so much for wanting to contribute to the project! ❤  
+Please refer to the [contribution guidelines][contributing] when opening issues or creating pull requests.
 
-If you have a feature request, feel free to [open an issue](https://github.com/YilianSource/party-js/issues)!
-
-## License
-
-This project is licensed under a [MIT](./LICENSE.md) license.
+[contributing]: ./.github/CONTRIBUTING.md
+[npm]: https://www.npmjs.com/package/party-js
+[issues]: https://github.com/YilianSource/party-js/issues
+[quick-start]: https://partyjs.yiliansource.dev/docs/

@@ -1,0 +1,90 @@
+/* stylelint-disable docusaurus/copyright-header */
+
+/**
+ * Any CSS included here will be global. The classic template
+ * bundles Infima by default. Infima is a CSS framework designed to
+ * work well for content-centric websites.
+ */
+
+/* You can override the default Infima variables here. */
+:root {
+    --ifm-color-primary: #e62e43;
+    --ifm-color-primary-dark: #de1b31;
+    --ifm-color-primary-darker: #d2192e;
+    --ifm-color-primary-darkest: #ad1526;
+    --ifm-color-primary-light: #e94759;
+    --ifm-color-primary-lighter: #ea5364;
+    --ifm-color-primary-lightest: #ef7886;
+
+    --ifm-navbar-shadow: 0 2px 5px 0 rgb(0, 0, 0, 0.15);
+    --ifm-footer-shadow: 0 -2px 5px 0 rgb(0, 0, 0, 0.15);
+
+    --ifm-link-color: var(--ifm-color-primary-light);
+    --ifm-menu-color-active: var(--ifm-color-primary-light);
+    --ifm-navbar-link-hover-color: var(--ifm-color-primary-light);
+
+    --ifm-code-font-size: 95%;
+
+    --ifm-hr-border-color: var(--ifm-color-emphasis-200);
+}
+
+html[data-theme="dark"] {
+    --ifm-font-color-base-inverse: #202020;
+    --ifm-background-color: #202224;
+}
+
+@import url("https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=block");
+@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@200;400;600&display=swap");
+
+html,
+body {
+    height: auto !important;
+}
+body {
+    font-family: "IBM Plex Sans", "Open Sans", sans-serif;
+}
+
+.docusaurus-highlight-code-line {
+    background-color: rgb(54, 57, 70);
+    display: block;
+    margin: 0 calc(-1 * var(--ifm-pre-padding));
+    padding: 0 var(--ifm-pre-padding);
+}
+
+footer {
+    box-shadow: var(--ifm-footer-shadow);
+}
+footer .copynote {
+    margin-top: 3em;
+    font-size: 0.8em;
+}
+footer .footer__links {
+    justify-content: center;
+}
+footer .footer__links .footer__col {
+    flex: 0 0 300px;
+}
+
+.example-container {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.navbar__brand {
+    filter: drop-shadow(1px 1px 0 rgb(0, 0, 0, 0.1));
+}
+.navbar__logo {
+    transform: scale(1.3);
+}
+.navbar__title {
+    font-family: "Dosis";
+    font-size: 1.4em;
+    font-weight: 800;
+
+    margin-bottom: 5px;
+    color: #fd3a84;
+    background: linear-gradient(90deg, #ffa68d, #fd3a84);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

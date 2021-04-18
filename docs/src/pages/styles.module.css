@@ -1,0 +1,110 @@
+/* stylelint-disable docusaurus/copyright-header */
+
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.heroBanner {
+    padding: 4rem 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+
+    font-family: "Dosis", "Open Sans", sans-serif;
+
+    background: linear-gradient(-45deg, #ff4f63, #ff786b, #ffa467);
+    clip-path: ellipse(100% 55% at 48% 44%);
+}
+.heroLogo {
+    position: absolute;
+    transform: translateX(-100%) translateY(-10px);
+    width: 94px;
+
+    --logo-color: white;
+}
+html[data-theme="dark"] .heroLogo {
+    --logo-color: var(--ifm-heading-color);
+}
+.heroLogo linearGradient stop {
+    stop-color: var(--logo-color);
+}
+.heroLogo path {
+    stroke-width: 0.8px;
+}
+.heroTitle {
+    font-weight: 100;
+    font-size: 4em;
+    letter-spacing: 0.02em;
+    filter: drop-shadow(2px 2px 1px rgb(0, 0, 0, 0.2));
+}
+.heroTitle span {
+    display: inline-block;
+    position: relative;
+}
+.heroSubtitle {
+    margin: 1em 0;
+    font-weight: 400;
+    font-size: 1.5em;
+    line-height: 1.2;
+    letter-spacing: 0.02em;
+    text-shadow: 2px 2px 1px rgb(0, 0, 0, 0.15);
+}
+.heroButtonGetStarted {
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    color: var(--ifm-button-color);
+    border: 1px solid var(--ifm-button-color);
+    filter: drop-shadow(1px 1px 1px rgb(0, 0, 0, 0.2));
+}
+.heroButtonGetStarted:hover {
+    color: #ff4f63;
+    background-color: var(--ifm-button-color);
+}
+
+@media screen and (max-width: 1000px) {
+    .heroBanner {
+        padding: 2em 1em 3em;
+    }
+}
+@media screen and (max-width: 750px) {
+    .heroBanner {
+        clip-path: ellipse(150% 55% at 48% 44%);
+    }
+    .heroTitle {
+        margin-bottom: 0;
+    }
+    .heroSubtitle {
+        margin-top: 0;
+    }
+    .heroLogo {
+        position: relative;
+        display: inline;
+        margin-left: -0.5em;
+        vertical-align: middle;
+        transform: none;
+        line-height: 0;
+    }
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.features {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem 0;
+    width: 100%;
+}
+
+.featureImage {
+    height: 130px;
+    width: 200px;
+    padding: 2em 0;
+    filter: drop-shadow(2px 2px 0 rgb(0, 0, 0, 0.15));
+}
