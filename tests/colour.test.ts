@@ -1,13 +1,17 @@
-const { expect } = require("chai");
-const { describe, it } = require("mocha");
+import { expect } from "chai";
+import { describe, it } from "mocha";
 
-const { expectArrayCloseTo } = require("./util");
-const { Colour } = require("../dist/components/colour");
-const { epsilon } = require("../dist/systems/math");
+import { Colour } from "../src/components/colour";
+import { epsilon } from "../src/systems/math";
+import { expectArrayCloseTo } from "./util";
+
+type ColourComponents = [number, number, number];
 
 describe("Colour", function () {
     describe("#constructor", function () {
-        const tests = [
+        const tests: {
+            params: ColourComponents;
+        }[] = [
             { params: [255, 255, 255] },
             { params: [0, 0, 0] },
             { params: [127, 46, 24] },
@@ -26,7 +30,11 @@ describe("Colour", function () {
     });
 
     describe("#mix", function () {
-        const halfwayTests = [
+        const halfwayTests: {
+            a: ColourComponents;
+            b: ColourComponents;
+            expected: ColourComponents;
+        }[] = [
             {
                 a: [0, 0, 0],
                 b: [100, 60, 30],
@@ -52,7 +60,12 @@ describe("Colour", function () {
             });
         }
 
-        const weightTests = [
+        const weightTests: {
+            a: ColourComponents;
+            b: ColourComponents;
+            weight: number;
+            expected: ColourComponents;
+        }[] = [
             {
                 a: [0, 0, 0],
                 b: [100, 100, 100],
@@ -81,32 +94,34 @@ describe("Colour", function () {
             });
         }
 
-        const nomixTests = [
+        const nomixTests: {
+            a: ColourComponents;
+            b: ColourComponents;
+        }[] = [
             {
                 a: [24, 96, 125],
                 b: [1, 24, 40],
-                weight: 0,
             },
             {
                 a: [58, 52, 12],
                 b: [251, 210, 194],
-                weight: 0,
             },
         ];
 
         for (const test of nomixTests) {
-            it(`doesn't mix when weight is zero: ${test.a} * ${test.b} (${(
-                test.weight * 100
-            ).toFixed(2)}%)`, function () {
+            it(`doesn't mix when weight is zero: ${test.a} * ${test.b} (0%)`, function () {
                 const a = new Colour(...test.a);
                 const b = new Colour(...test.b);
-                expectArrayCloseTo(a.mix(b, test.weight).rgb, test.a, epsilon);
+                expectArrayCloseTo(a.mix(b, 0).rgb, test.a, epsilon);
             });
         }
     });
 
     describe("#fromHex", function () {
-        const tests = [
+        const tests: {
+            hex: string;
+            rgb: ColourComponents;
+        }[] = [
             { hex: "#B9D300", rgb: [185, 211, 0] },
             { hex: "#3296D8", rgb: [50, 150, 216] },
             { hex: "#A02DC5", rgb: [160, 45, 197] },
@@ -131,7 +146,10 @@ describe("Colour", function () {
     });
 
     describe("#fromHsl", function () {
-        const tests = [
+        const tests: {
+            hsl: ColourComponents;
+            rgb: ColourComponents;
+        }[] = [
             { hsl: [67, 100, 41], rgb: [185, 211, 0] },
             { hsl: [204, 68, 52], rgb: [50, 150, 216] },
             { hsl: [285, 63, 47], rgb: [160, 45, 197] },

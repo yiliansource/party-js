@@ -1,5 +1,5 @@
 import { Debug } from "./debug";
-import { Emitter } from "./particles/emitter";
+import { Emitter, EmitterConstructionOptions } from "./particles/emitter";
 import { Renderer } from "./renderer";
 
 /**
@@ -15,7 +15,7 @@ export class Scene {
     /**
      * The emitters currently present in the scene.
      */
-    public emitters: Array<Emitter> = [];
+    public emitters: Emitter[] = [];
 
     /**
      * The debug instance associated with the scene.
@@ -47,8 +47,8 @@ export class Scene {
     /**
      * Creates and returns a new, default emitter object.
      */
-    public createEmitter(): Emitter {
-        const emitter = new Emitter();
+    public createEmitter(options?: EmitterConstructionOptions): Emitter {
+        const emitter = new Emitter(options);
         this.emitters.push(emitter);
         return emitter;
     }
@@ -70,31 +70,46 @@ export class Scene {
      * Processes a tick cycle, updating all emitters contained in the scene.
      * This is handled as a JS animation frame event, hence the passed timestamp.
      *
+     * @remarks
+     * The emitter ticking and particle rendering is run using try-catch blocks,
+     * to ensure that we can recover from potential errors.
+     *
      * @param timestamp The current timestamp of the animation frame.
      */
     private tick(timestamp: number): void {
         // Calculate the elapsed delta and convert it to seconds.
         const delta = (timestamp - this.lastTickTimestamp) / 1000;
 
-        // Tick through the emitters from back to front, so that
-        // expired emitters may be removed.
-        for (let i = this.emitters.length - 1; i >= 0; i--) {
-            const emitter = this.emitters[i];
+        try {
+            // Perform ticks for all the emitters in the scene.
+            for (let i = 0; i < this.emitters.length; i++) {
+                const emitter = this.emitters[i];
 
-            emitter.tick(delta);
-            if (emitter.isExpired) {
-                this.emitters.splice(i, 1);
+                emitter.tick(delta);
+                if (emitter.isExpired) {
+                    this.emitters.splice(i--, 1);
+                }
             }
+        } catch (error) {
+            console.error(
+                `An error occurred while updating the scene's emitters:\n"${error}"`
+            );
         }
 
-        // Instruct the renderer to draw the particles of all systems.
-        this.renderer.begin();
-        for (const emitter of this.emitters) {
-            for (const particle of emitter.particles) {
-                this.renderer.renderParticle(particle, emitter);
+        try {
+            // Instruct the renderer to draw the particles of all systems.
+            this.renderer.begin();
+            for (const emitter of this.emitters) {
+                for (const particle of emitter.particles) {
+                    this.renderer.renderParticle(particle, emitter);
+                }
             }
+            this.renderer.end();
+        } catch (error) {
+            console.error(
+                `An error occurred while rendering the scene's particles:\n"${error}"`
+            );
         }
-        this.renderer.end();
 
         // Perform a tick on the debug interface
         this.debug.tick(delta);

@@ -1,8 +1,13 @@
-const { expect } = require("chai");
-const { describe, it } = require("mocha");
+import { expect } from "chai";
+import { describe, it } from "mocha";
 
-const { epsilon } = require("../dist/systems/math");
-const { NumericSpline } = require("../dist/components/numericSpline");
+import { NumericSpline } from "../src/components/numericSpline";
+import { epsilon } from "../src/systems/math";
+
+interface SplineKey<T> {
+    time: number;
+    value: T;
+}
 
 describe("Spline", function () {
     /**
@@ -20,39 +25,21 @@ describe("Spline", function () {
 
     // TODO: Might need better test coverage
     describe("#evaluate", function () {
-        const tests = [
+        const tests: {
+            keys: SplineKey<number>[];
+            expected: SplineKey<number>[];
+        }[] = [
             {
                 keys: [
-                    {
-                        time: 0,
-                        value: 0,
-                    },
-                    {
-                        time: 1,
-                        value: 1,
-                    },
+                    { time: 0, value: 0 },
+                    { time: 1, value: 1 },
                 ],
                 expected: [
-                    {
-                        time: -1,
-                        value: 0,
-                    },
-                    {
-                        time: 0,
-                        value: 0,
-                    },
-                    {
-                        time: 0.5,
-                        value: 0.5,
-                    },
-                    {
-                        time: 1,
-                        value: 1,
-                    },
-                    {
-                        time: 2,
-                        value: 1,
-                    },
+                    { time: -1, value: 0 },
+                    { time: 0, value: 0 },
+                    { time: 0.5, value: 0.5 },
+                    { time: 1, value: 1 },
+                    { time: 2, value: 1 },
                 ],
             },
         ];

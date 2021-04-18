@@ -1,13 +1,16 @@
-const { expect } = require("chai");
-const { describe, it } = require("mocha");
+import { expect } from "chai";
+import { describe, it } from "mocha";
 
-const { expectArrayCloseTo } = require("./util");
-const { Vector } = require("../dist/components/vector");
-const { epsilon } = require("../dist/systems/math");
+import { Vector } from "../src/components/vector";
+import { epsilon } from "../src/systems/math";
+import { expectArrayCloseTo } from "./util";
 
 describe("Vector", function () {
     describe("#constructor", function () {
-        const tests = [
+        const tests: {
+            args: number[];
+            expected: number[];
+        }[] = [
             { args: [1, 2], expected: [1, 2, 0] },
             { args: [1, 2, 3], expected: [1, 2, 3] },
             { args: [1, 3, 5, 7, 9], expected: [1, 3, 5] },
@@ -15,14 +18,18 @@ describe("Vector", function () {
 
         for (const test of tests) {
             it(`fills missing components with zero: ${test.args.length}`, function () {
-                let v = new Vector(...test.args);
+                const v = new Vector(...test.args);
                 expect(v.xyz).to.eql(test.expected);
             });
         }
     });
 
     describe("#magnitude", function () {
-        const tests = [
+        const tests: {
+            arg: Vector;
+            expected: number;
+            expectedSqr: number;
+        }[] = [
             { arg: new Vector(0, 0), expectedSqr: 0, expected: 0 },
             { arg: new Vector(3, 0), expectedSqr: 9, expected: 3 },
             {
@@ -34,7 +41,7 @@ describe("Vector", function () {
         ];
 
         for (const test of tests) {
-            it(`calculates magnitude: ${test.arg.toString()}`, function () {
+            it(`calculates magnitude: |${test.arg.toString()}|`, function () {
                 expect(test.arg.magnitude()).to.be.closeTo(
                     test.expected,
                     epsilon
@@ -42,7 +49,7 @@ describe("Vector", function () {
             });
         }
         for (const test of tests) {
-            it(`calculates squared magnitude: ${test.arg.toString()}`, function () {
+            it(`calculates squared magnitude: |${test.arg.toString()}|²`, function () {
                 expect(test.arg.sqrMagnitude()).to.be.closeTo(
                     test.expectedSqr,
                     epsilon
@@ -52,7 +59,11 @@ describe("Vector", function () {
     });
 
     describe("#add", function () {
-        const tests = [
+        const tests: {
+            a: Vector;
+            b: Vector;
+            expected: Vector;
+        }[] = [
             { a: new Vector(2), b: new Vector(5), expected: new Vector(7) },
             {
                 a: new Vector(1, 2, 3),
@@ -60,14 +71,14 @@ describe("Vector", function () {
                 expected: new Vector(5, 7, 9),
             },
             {
-                a: new Vector(0, -1, 2, 5),
-                b: new Vector(-2, 3, 1, 3),
-                expected: new Vector(-2, 2, 3, 8),
+                a: new Vector(0, -1, 2),
+                b: new Vector(-2, 3, 1),
+                expected: new Vector(-2, 2, 3),
             },
             {
-                a: new Vector(1, 1, 1, 1, 1, 1),
-                b: new Vector(0, 1, 2, 3, 4, 5),
-                expected: new Vector(1, 2, 3, 4, 5, 6),
+                a: new Vector(1, 1, 1),
+                b: new Vector(0, 1, 2),
+                expected: new Vector(1, 2, 3),
             },
         ];
 
@@ -79,7 +90,11 @@ describe("Vector", function () {
     });
 
     describe("#subtract", function () {
-        const tests = [
+        const tests: {
+            a: Vector;
+            b: Vector;
+            expected: Vector;
+        }[] = [
             { a: new Vector(6), b: new Vector(4), expected: new Vector(2) },
             {
                 a: new Vector(4, 5, 6),
@@ -87,14 +102,14 @@ describe("Vector", function () {
                 expected: new Vector(1, 3, 5),
             },
             {
-                a: new Vector(3, -2, 1, 2),
-                b: new Vector(5, 3, 2, 1),
-                expected: new Vector(-2, -5, -1, 1),
+                a: new Vector(3, -2, 1),
+                b: new Vector(5, 3, 2),
+                expected: new Vector(-2, -5, -1),
             },
             {
-                a: new Vector(5, 4, 3, 2, 1, 0),
-                b: new Vector(2, 2, 2, 2, 2, 2),
-                expected: new Vector(3, 2, 1, 0, -1, -2),
+                a: new Vector(5, 4, 3),
+                b: new Vector(2, 2, 2),
+                expected: new Vector(3, 2, 1),
             },
         ];
 
@@ -106,13 +121,17 @@ describe("Vector", function () {
     });
 
     describe("#scale", function () {
-        const testsScalar = [
+        const testsScalar: {
+            a: Vector;
+            b: number;
+            expected: Vector;
+        }[] = [
             { a: new Vector(4), b: 3, expected: new Vector(12) },
             { a: new Vector(3, 5), b: 2, expected: new Vector(6, 10) },
             {
-                a: new Vector(1, 2, 3, 4, 5),
+                a: new Vector(1, 2, 3),
                 b: 4,
-                expected: new Vector(4, 8, 12, 16, 20),
+                expected: new Vector(4, 8, 12),
             },
         ];
 
@@ -122,7 +141,11 @@ describe("Vector", function () {
             });
         }
 
-        const testsVector = [
+        const testsVector: {
+            a: Vector;
+            b: Vector;
+            expected: Vector;
+        }[] = [
             { a: new Vector(2), b: new Vector(3), expected: new Vector(6) },
             {
                 a: new Vector(8, 2),
@@ -130,9 +153,9 @@ describe("Vector", function () {
                 expected: new Vector(8, 6),
             },
             {
-                a: new Vector(1, 2, 3, 4, 5),
-                b: new Vector(0, 3, 0, 2, 1),
-                expected: new Vector(0, 6, 0, 8, 5),
+                a: new Vector(1, 2, 3),
+                b: new Vector(0, 3, 0),
+                expected: new Vector(0, 6, 0),
             },
         ];
 
@@ -144,7 +167,10 @@ describe("Vector", function () {
     });
 
     describe("#normalized", function () {
-        const tests = [
+        const tests: {
+            arg: Vector;
+            expected: Vector;
+        }[] = [
             { arg: new Vector(2), expected: new Vector(1) },
             { arg: new Vector(0, 3, 0), expected: new Vector(0, 1, 0) },
             { arg: new Vector(0, 0, -1), expected: new Vector(0, 0, -1) },
@@ -158,24 +184,28 @@ describe("Vector", function () {
     });
 
     describe("#angle", function () {
-        const tests = [
+        const tests: {
+            a: Vector;
+            b: Vector;
+            expected: number;
+        }[] = [
             { a: Vector.right, b: Vector.right, expected: 0 },
-            { a: Vector.right, b: Vector.up, expected: Math.PI / 2 },
-            { a: new Vector(1), b: new Vector(-1), expected: Math.PI },
+            { a: Vector.right, b: Vector.up, expected: 90 },
+            { a: new Vector(1), b: new Vector(-1), expected: 180 },
             {
                 a: new Vector(1, 1),
                 b: new Vector(-1, 1),
-                expected: Math.PI / 2,
+                expected: 90,
             },
             {
                 a: new Vector(-1, -1),
                 b: new Vector(-1, 0),
-                expected: Math.PI / 4,
+                expected: 45,
             },
         ];
 
         for (const test of tests) {
-            it(`calculates angles between vectors: ${test.a.toString()} & ${test.b.toString()}`, function () {
+            it(`calculates angles between vectors: ${test.a.toString()} ∡ ${test.b.toString()}`, function () {
                 expect(test.a.angle(test.b)).to.be.closeTo(
                     test.expected,
                     epsilon
@@ -185,7 +215,11 @@ describe("Vector", function () {
     });
 
     describe("#cross", function () {
-        const tests = [
+        const tests: {
+            a: Vector;
+            b: Vector;
+            expected: Vector;
+        }[] = [
             { a: Vector.right, b: Vector.up, expected: Vector.forward },
             { a: Vector.forward, b: Vector.forward, expected: Vector.zero },
             { a: Vector.up, b: Vector.up.scale(-1), expected: Vector.zero },
@@ -202,7 +236,7 @@ describe("Vector", function () {
         ];
 
         for (const test of tests) {
-            it(`calculates cross product: ${test.a.toString()} x ${test.b.toString()}`, function () {
+            it(`calculates cross product: ${test.a.toString()} ⨯ ${test.b.toString()}`, function () {
                 expectArrayCloseTo(
                     test.a.cross(test.b).xyz,
                     test.expected.xyz,
@@ -213,7 +247,11 @@ describe("Vector", function () {
     });
 
     describe("#dot", function () {
-        const tests = [
+        const tests: {
+            a: Vector;
+            b: Vector;
+            expected: number;
+        }[] = [
             { a: Vector.right, b: Vector.up, expected: 0 },
             { a: Vector.forward, b: Vector.forward, expected: 1 },
             { a: Vector.up, b: Vector.up.scale(-1), expected: -1 },
@@ -222,7 +260,7 @@ describe("Vector", function () {
         ];
 
         for (const test of tests) {
-            it(`calculates dot product: ${test.a.toString()} . ${test.b.toString()}`, function () {
+            it(`calculates dot product: ${test.a.toString()} ∙ ${test.b.toString()}`, function () {
                 expect(test.a.dot(test.b)).to.be.closeTo(
                     test.expected,
                     epsilon
@@ -232,7 +270,10 @@ describe("Vector", function () {
     });
 
     describe("#from2dAngle", function () {
-        const tests = [
+        const tests: {
+            arg: number;
+            expected: Vector;
+        }[] = [
             { arg: 0, expected: Vector.right },
             { arg: 90, expected: Vector.up },
             { arg: -90, expected: Vector.up.scale(-1) },

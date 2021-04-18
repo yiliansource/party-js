@@ -12,7 +12,7 @@ export type Source = Point | HTMLElement | MouseEvent;
 /**
  * Converts a particle system source to an actual rectangle.
  *
- * @param source The junction of types to convert.
+ * @param source The source to convert to a rectangle.
  * @returns A rectangle representing the converted source.
  */
 export function sourceToRect(source: Source): Rect {
@@ -28,7 +28,6 @@ export function sourceToRect(source: Source): Rect {
         // Handle the source as an HTMLElement.
         return source.getBoundingClientRect();
     } else {
-        // TODO: Maybe check the type here aswell and throw an error if none match?
         // Handle the source as a mouse event.
         return {
             x: (source as MouseEvent).clientX,

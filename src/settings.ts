@@ -3,9 +3,15 @@
  */
 export const settings = {
     /**
-     * The amount of gravity to apply to particles in the scene, in pixels.
+     * Whether the debugging mode should be enabled.
      */
-    gravity: 500,
+    debug: false,
+    /**
+     * The amount of gravity to apply to particles in the scene, in pixels.
+     * Note that this value is positive by default, since the y-axis increases
+     * downwards in a DOM.
+     */
+    gravity: 800,
     /**
      * The z-index to place the DOM containers at.
      */

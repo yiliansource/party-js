@@ -1,5 +1,6 @@
 import { Colour } from "../components/colour";
 import { Vector } from "../components/vector";
+import { overrideDefaults } from "../util/config";
 
 /**
  * Represents an emitted particle.
@@ -56,21 +57,24 @@ export type ParticleCreationOptions = Partial<
     Omit<Particle, "id" | "initialLifetime" | "initialSize" | "initialRotation">
 >;
 
+/**
+ * Creates a new particle object, using the specified creation options.
+ */
 export function createParticle(options: ParticleCreationOptions): Particle {
-    // Fill in the options, providing defaults to omitted fields.
-    const filledOptions = Object.assign(
-        <ParticleCreationOptions>{
+    const filledOptions = overrideDefaults(
+        {
             lifetime: 0,
+            size: 1,
             location: Vector.zero,
             rotation: Vector.zero,
             velocity: Vector.zero,
             colour: Colour.white,
         },
         options
-    ) as Required<ParticleCreationOptions>;
+    );
 
-    // Generate a symbolic ID and fill in the initial values.
-    return <Particle>{
+    // Generate an ID symbol and fill in the initial values.
+    return {
         id: Symbol(),
 
         ...filledOptions,

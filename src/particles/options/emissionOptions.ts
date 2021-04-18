@@ -1,4 +1,4 @@
-import { Variation } from "../../systems/customization";
+import { Variation } from "../../systems/variation";
 
 /**
  * Holds a set of options used to configure the way particles are emitted in.

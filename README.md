@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="./branding/banner.svg">
+    <img src="./.github/banner.svg"/>
 </h1>
 
 <p align="center">
@@ -9,15 +9,16 @@
 </p>
 
 <p align="center">
-    <a href="https://www.npmjs.com/package/party-js"><img alt="npm" src="https://img.shields.io/npm/v/party-js"/></a>
-    <img alt="GitHub" src="https://img.shields.io/github/license/yiliansource/party-js">
-    <a href="https://deepscan.io/dashboard#view=project&tid=11458&pid=14332&bid=265225"><img src="https://deepscan.io/api/teams/11458/projects/14332/branches/265225/badge/grade.svg" alt="DeepScan grade"></a>
-    <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/party-js">
+    <a href="https://www.npmjs.com/package/party-js"><img alt="npm" src="https://img.shields.io/npm/v/party-js?style=flat-square"/></a>
+    <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/yiliansource/party-js?style=flat-square">
+    <img alt="npm" src="https://img.shields.io/npm/dm/party-js?style=flat-square">
+    <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/party-js?style=flat-square"/>
+    <img alt="GitHub" src="https://img.shields.io/github/license/yiliansource/party-js?style=flat-square"/>
 </p>
 
 ## Installation
 
-The library is written as an UMD module to allow integration into different environments.
+The library is written in TypeScript and compiled to an UMD module to allow integration into different environments.
 
 ### Browsers
 
@@ -31,17 +32,17 @@ The library instance is loaded into the global `party` object.
 
 ### Node.JS
 
-You can install the library via `npm`:
+If you are using a package-managed environment, you can also install the latest version via [npm].
 
 ```sh
 npm install party-js
+yarn add party-js
 ```
 
 To use it, simply `require` or `import` it.
 
-```js
+```ts
 const party = require("party-js");
-// or ...
 import party from "party-js";
 ```
 
@@ -49,54 +50,28 @@ import party from "party-js";
 
 The library essentially offers a fully customizeable particle-system implementation into HTML documents. Users of the library have the ability to create and fine-tune effects to their individual liking. The library offers a few simple effects right out-of-the-box, so you don't have to waste time re-creating simple effects.
 
-For a complete guide on how to customize effects, take a look at the [guides]!
-
-Here's an example on how to emit confetti when a button is clicked:
-
 ```js
-let myButton = document.getElementById("myButton");
-myButton.addEventListener("click", function () {
-    party.confettiCannon(this, {
-        amount: party.range(40, 60),
+document.querySelector(".button").addEventListener("click", function(e) {
+    party.confetti(this, {
+        count: party.range(20, 40)
     });
 });
 ```
 
-If you want to get a bit more advanced with your effects, you can create a new emitter instead:
-
-```js
-let myButton = document.getElementById("myButton");
-let myEmitter = party.createEmitter({
-    duration: 2,
-    loop: true,
-    rate: 10,
-    bursts: [
-        {
-            time: 0,
-            count: 50,
-            probability: 0.5,
-        },
-    ],
-    particleSettings: {
-        shape: "star",
-        gravity: false,
-        // add more customization here ...
-    },
-});
-```
+If you want to learn more, check out the [quick start][quick-start] guide!
 
 ## How it works
 
 In general the library consists of emitters and particles. Emitters are structures located at a specific position that emit particles, and particles themselves are small graphical elements that float around the screen. Both entities are highly customizeable.
 
-The library core spawns, updates and renders entities inside an animation frame loop. Entities are despawned when the leave the lower bound of the document.
+The library core spawns, updates and renders entities inside an animation frame loop. Entities are despawned when they leave the lower bound of the document, or their lifetime expires.
 
 ## Contributing
 
-Contributions are highly welcome! Please check out the [contribution guidelines][contributing] when creating pull requests. Also, please consider [opening an issue][issues] to discuss your proposed changes first.
-
-If you have a feature request, feel free to [open an issue][issues]!
+First of all, thank you so much for wanting to contribute to the project! ❤  
+Please refer to the [contribution guidelines][contributing] when opening issues or creating pull requests.
 
 [contributing]: ./.github/CONTRIBUTING.md
+[npm]: https://www.npmjs.com/package/party-js
 [issues]: https://github.com/YilianSource/party-js/issues
-[guides]: https://partyjs.yiliansource.dev/guides
+[quick-start]: https://partyjs.yiliansource.dev/docs/

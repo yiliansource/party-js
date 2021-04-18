@@ -1,5 +1,6 @@
 import { getDebugContainer } from "./containers";
 import { Scene } from "./scene";
+import { settings } from "./settings";
 
 /**
  * Represents a utility module to view debug information inside the DOM.
@@ -9,15 +10,6 @@ import { Scene } from "./scene";
  * While disabled, the utility will not fetch stats and update itself.
  */
 export class Debug {
-    /**
-     * Is the debug window enabled (false by default).
-     */
-    public enabled = false;
-    /**
-     * Should individual emitter stats be shown?
-     */
-    public showEmitters = false;
-
     /**
      * The rate at which the debug interface should refresh itself (per second).
      */
@@ -45,12 +37,12 @@ export class Debug {
 
         // If the current display style does not match the style inferred from the
         // enabled-state, update it.
-        const displayStyle = this.enabled ? "block" : "none";
+        const displayStyle = settings.debug ? "block" : "none";
         if (container.style.display !== displayStyle) {
             container.style.display = displayStyle;
         }
 
-        if (!this.enabled) {
+        if (!settings.debug) {
             // If the interface is not enabled, don't fetch or update any infos.
             return;
         }
@@ -68,7 +60,7 @@ export class Debug {
      *
      * @returns An array of debugging information, formatted as HTML.
      */
-    private getDebugInformation(delta: number): Array<string> {
+    private getDebugInformation(delta: number): string[] {
         // Count emitters and particles.
         const emitters = this.scene.emitters.length;
         const particles = this.scene.emitters.reduce(
@@ -76,7 +68,7 @@ export class Debug {
             0
         );
 
-        const infos: Array<string> = [
+        const infos: string[] = [
             `<b>party.js Debug</b>`,
             `--------------`,
             `FPS: ${Math.round(1 / delta)}`,
@@ -84,25 +76,23 @@ export class Debug {
             `Particles: ${particles}`,
         ];
 
-        if (this.showEmitters) {
-            // If individuals should be shown, represent them as their index and show
-            // their current internal timer and contained particles.
-            const sysInfos: Array<string> = this.scene.emitters.map(function (
-                emitter,
-                index
-            ) {
-                return (
-                    `Emitter #${index + 1} (` +
-                    [
-                        `Σp: ${emitter.particles.length}`,
-                        `Σt: ${emitter["durationTimer"].toFixed(3)}s`,
-                    ].join(", ") +
-                    `)`
-                );
-            });
+        // Emitter informations are formatted using their index, internal timer
+        // and total particle count.
+        const emitterInfos: string[] = this.scene.emitters.map(function (
+            emitter,
+            index
+        ) {
+            return (
+                `Emitter #${index + 1} (` +
+                [
+                    `Σp: ${emitter.particles.length}`,
+                    `Σt: ${emitter["durationTimer"].toFixed(3)}s`,
+                ].join(", ") +
+                `)`
+            );
+        });
 
-            infos.push("--------------", ...sysInfos);
-        }
+        infos.push("--------------", ...emitterInfos);
 
         return infos;
     }

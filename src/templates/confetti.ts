@@ -1,21 +1,29 @@
+import { Colour, Vector } from "../components";
+import { Emitter } from "../particles/emitter";
+import { ParticleModifier } from "../systems/modifiers";
 import {
-    Colour,
-    Emitter,
-    Rect,
-    Source,
-    modules,
-    random,
+    Variation,
+    evaluateVariation,
     range,
-    sourceToRect,
-} from "../";
-import { scene } from "..";
+    skew,
+} from "../systems/variation";
+import { Source, sourceToRect } from "../util";
+import { overrideDefaults } from "../util/config";
+import { modules, random, scene } from "..";
 
 /**
  * The configuration to apply to the confetti.
  */
 export interface ConfettiConfiguration {
-    // TODO: Add properties
-    count: number;
+    count: Variation<number>;
+    spread: Variation<number>;
+    speed: Variation<number>;
+    size: Variation<number>;
+    rotation: Variation<Vector>;
+    colour: Variation<Colour>;
+    rotationOverLifetime: ParticleModifier<Vector>;
+    sizeOverLifetime: ParticleModifier<number>;
+    shapes: Variation<string | HTMLElement>;
 }
 
 /**
@@ -28,39 +36,52 @@ export function confetti(
     source: Source,
     options?: Partial<ConfettiConfiguration>
 ): Emitter {
-    const rect: Rect = sourceToRect(source);
-    const emitter = scene.createEmitter();
-
-    // Apply configuration defaults.
-    const config = Object.assign(
-        {},
-        <ConfettiConfiguration>{
-            count: 100,
+    const config = overrideDefaults(
+        {
+            count: range(20, 40),
+            spread: 40,
+            speed: range(300, 600),
+            size: skew(1, 0.2),
+            rotation: () => random.randomUnitVector().scale(180),
+            colour: () => Colour.fromHsl(random.randomRange(0, 360), 100, 70),
+            sizeOverLifetime: (p) =>
+                Math.min(1, (p.initialLifetime - p.lifetime) * 3),
+            rotationOverLifetime: (p) =>
+                new Vector(140, 200, 260).scale(p.initialLifetime - p.lifetime),
+            shapes: ["square", "circle"],
         },
         options
     );
 
-    emitter.options.loops = 1;
-    emitter.options.duration = 10;
-    emitter.options.initialLifetime = range(6, 8);
-    emitter.options.initialSpeed = range(300, 500);
-    emitter.options.initialSize = range(0.8, 1.2);
-    emitter.options.initialRotation = () =>
-        random.randomUnitVector().scale(180);
-    emitter.options.initialColour = () =>
-        Colour.fromHsl(random.randomRange(0, 360), 100, 70);
-
-    emitter.emission.rate = 0;
-    emitter.emission.bursts.push({
-        time: 0,
-        count: range(20, 40),
+    const rect = sourceToRect(source);
+    const emitter = scene.createEmitter({
+        emitterOptions: {
+            loops: 1,
+            duration: 8,
+            initialLifetime: range(6, 8),
+            initialSpeed: config.speed,
+            initialSize: config.size,
+            initialRotation: config.rotation,
+            initialColour: config.colour,
+        },
+        emissionOptions: {
+            rate: 0,
+            bursts: [{ time: 0, count: config.count }],
+        },
+        shapeOptions: {
+            angle: skew(-90, evaluateVariation(config.spread)),
+            source: rect,
+        },
+        rendererOptions: {
+            shapeFactory: config.shapes,
+        },
     });
 
-    emitter.shape.angle = range(-50, -130);
-    emitter.shape.source = rect;
+    const rotationModule = emitter.addModule(modules.RotationModifier);
+    rotationModule.rotation = config.rotationOverLifetime;
 
-    emitter.modules.push(new modules.RotationOverLifetimeModule());
-    emitter.modules.push(new modules.SizeOverLifetimeModule());
+    const sizeModule = emitter.addModule(modules.SizeModifier);
+    sizeModule.size = config.sizeOverLifetime;
 
     return emitter;
 }

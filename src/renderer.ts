@@ -1,10 +1,10 @@
 import { Vector } from "./components/vector";
 import { getParticleContainer } from "./containers";
 import { Emitter } from "./particles/emitter";
-import { ElementFactory, RendererOptions } from "./particles/options";
+import { RendererOptions } from "./particles/options";
 import { Particle } from "./particles/particle";
-import { deg2rad } from "./systems/math";
-import { eulerToAxis } from "./util/rotation";
+import { resolveShapeFactory } from "./shapes";
+import { rotationToNormal } from "./util";
 
 /**
  * Represents a renderer used to draw particles to the DOM via HTML
@@ -26,7 +26,7 @@ export class Renderer {
      * The collection of symbols containing the particles that were rendered this frame.
      * This is, for example, used to delete unused particles from the DOM.
      */
-    private renderedParticles: Array<symbol>;
+    private renderedParticles: symbol[];
 
     /**
      * Begins a new render block.
@@ -66,22 +66,10 @@ export class Renderer {
     public renderParticle(particle: Particle, emitter: Emitter): void {
         const options: RendererOptions = emitter.renderer;
 
-        if (!this.elements.has(particle.id)) {
-            // If the HTMLElement for the given particle does not exist yet, create one using
-            // the factory of the render options. This either means executing the factory
-            // function, or cloning a template HTMLElement.
-            const factory: ElementFactory = options.factory;
-            const element =
-                typeof factory === "function"
-                    ? factory()
-                    : (factory.cloneNode(true) as HTMLElement);
-
-            const container = getParticleContainer();
-            // Register the new element in the map, while appending the new element to the DOM.
-            this.elements.set(particle.id, container.appendChild(element));
-        }
-
-        const element = this.elements.get(particle.id);
+        // Ensure that an element for the particle exists.
+        const element = this.elements.has(particle.id)
+            ? this.elements.get(particle.id)
+            : this.createParticleElement(particle, options);
 
         if (options.applyColour) {
             // If the options offer a colouring method, apply it.
@@ -92,10 +80,8 @@ export class Renderer {
             // If the options offer a lighting method, apply it.
             // Lighting is calculated as a combination of the particle's normal
             // direction and the lighting direction.
-
-            // TODO: Is this really the correct way to get the normal?
-            const normal = eulerToAxis(particle.rotation.scale(deg2rad)).axis;
-            const lightingCoefficient = normal.dot(Vector.forward);
+            const normal = rotationToNormal(particle.rotation);
+            const lightingCoefficient = normal.dot(this.light);
 
             options.applyLighting(lightingCoefficient, element);
         }
@@ -108,5 +94,29 @@ export class Renderer {
 
         // Mark the particle as rendered.
         this.renderedParticles.push(particle.id);
+    }
+
+    /**
+     * Creates the HTMLElement for a particle that does not have one already.
+     */
+    private createParticleElement(
+        particle: Particle,
+        options: RendererOptions
+    ): HTMLElement {
+        // Resolve the element returned from the factory.
+        const resolved = resolveShapeFactory(options.shapeFactory);
+        // Clone the node to ensure we do not break existing elements.
+        const element = resolved.cloneNode(true) as HTMLElement;
+
+        // Ensure that the elements can be "stacked" ontop of eachother.
+        element.style.position = "absolute";
+
+        // Register the new element in the map, while appending the new element to the DOM.
+        this.elements.set(
+            particle.id,
+            getParticleContainer().appendChild(element)
+        );
+
+        return element;
     }
 }

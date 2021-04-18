@@ -23,13 +23,13 @@ export abstract class Spline<T> {
     /**
      * The keys in the gradient. Note that these are not sorted.
      */
-    protected keys: Array<SplineKey<T>>;
+    protected keys: SplineKey<T>[];
 
     /**
      * Creates a new spline instance, using the specified keys.
      * Note that you have to pass at least one key.
      */
-    constructor(...keys: Array<SplineKey<T>>) {
+    constructor(...keys: SplineKey<T>[]) {
         if (keys.length === 0) {
             throw new Error("Splines require at least one key.");
         }

@@ -1,12 +1,12 @@
-# ignore webpack config
+# ignore configs
+.eslintrc.js
 webpack.config.js
 
 # ignore built directories
 bundle
-dev
 dist
 node_modules
-coverage
 
-# ignore samples
+# ignore samples and documentation
+docs
 samples

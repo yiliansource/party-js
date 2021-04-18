@@ -1,6 +1,6 @@
 import { Colour } from "../../components/colour";
 import { Vector } from "../../components/vector";
-import { Variation } from "../../systems/customization";
+import { Variation } from "../../systems/variation";
 import { despawningRules } from "../../util/rules";
 import { Particle } from "../particle";
 
@@ -51,6 +51,11 @@ export interface EmitterOptions {
     initialColour: Variation<Colour>;
 
     /**
+     * Whether to apply gravity to the emitted particles.
+     * @defaultValue true
+     */
+    useGravity: boolean;
+    /**
      * The maximum number of particles that may be active in the current emitter.
      * @defaultValue 300
      */
@@ -81,10 +86,8 @@ export function getDefaultEmitterOptions(): EmitterOptions {
         initialRotation: Vector.zero,
         initialColour: Colour.white,
 
+        useGravity: true,
         maxParticles: 300,
-        despawningRules: [
-            despawningRules.lifetimeDespawn,
-            despawningRules.boundsDespawn,
-        ],
+        despawningRules: [despawningRules.lifetime, despawningRules.bounds],
     };
 }

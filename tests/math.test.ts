@@ -1,45 +1,54 @@
-const { expect } = require("chai");
-const { describe, it } = require("mocha");
+import { expect } from "chai";
+import { describe, it } from "mocha";
 
-const math = require("../dist/systems/math");
+import * as math from "../src/systems/math";
 
 describe("Math", function () {
     describe("#lerp", function () {
-        const tests = [
+        const tests: {
+            a: number;
+            b: number;
+            t: number;
+            expected: number;
+        }[] = [
             // Basic
-            { a: 1, b: 3, t: 0.5, lerped: 2 },
-            { a: 0, b: 5, t: 0.2, lerped: 1 },
-            { a: 2, b: 7, t: 1, lerped: 7 },
+            { a: 1, b: 3, t: 0.5, expected: 2 },
+            { a: 0, b: 5, t: 0.2, expected: 1 },
+            { a: 2, b: 7, t: 1, expected: 7 },
             // Inverse
-            { a: 8, b: 4, t: 0.5, lerped: 6 },
-            { a: 5, b: 4, t: 1, lerped: 4 },
+            { a: 8, b: 4, t: 0.5, expected: 6 },
+            { a: 5, b: 4, t: 1, expected: 4 },
             // Unclamped
-            { a: 3, b: 7, t: 2, lerped: 11 },
-            { a: 2, b: 3, t: 3, lerped: 5 },
+            { a: 3, b: 7, t: 2, expected: 11 },
+            { a: 2, b: 3, t: 3, expected: 5 },
             // Negative
-            { a: -8, b: -4, t: 0.5, lerped: -6 },
-            { a: -2, b: -4, t: 0.25, lerped: -2.5 },
+            { a: -8, b: -4, t: 0.5, expected: -6 },
+            { a: -2, b: -4, t: 0.25, expected: -2.5 },
         ];
 
         for (const test of tests) {
             it(`lerps values: ${test.a} to ${test.b} by ${test.t}`, function () {
                 expect(math.lerp(test.a, test.b, test.t)).to.be.closeTo(
-                    test.lerped,
+                    test.expected,
                     math.epsilon
                 );
             });
 
-            it(`inversely lerps values: ${test.a} to ${test.b} with ${test.lerped}`, function () {
-                expect(math.invlerp(test.a, test.b, test.lerped)).to.be.closeTo(
-                    test.t,
-                    math.epsilon
-                );
+            it(`inversely lerps values: ${test.a} to ${test.b} with ${test.expected}`, function () {
+                expect(
+                    math.invlerp(test.a, test.b, test.expected)
+                ).to.be.closeTo(test.t, math.epsilon);
             });
         }
     });
 
     describe("#clamp", function () {
-        const tests = [
+        const tests: {
+            value: number;
+            min: number;
+            max: number;
+            expected: number;
+        }[] = [
             // Inside
             { value: 3, min: 0, max: 5, expected: 3 },
             { value: 2, min: -5, max: 10, expected: 2 },
@@ -60,7 +69,11 @@ describe("Math", function () {
     });
 
     describe("#approximately", function () {
-        const tests = [
+        const tests: {
+            a: number;
+            b: number;
+            expected: boolean;
+        }[] = [
             // Truthy
             { a: 3, b: 3, expected: true },
             { a: 0.000000000002, b: 0.00000000001, expected: true },

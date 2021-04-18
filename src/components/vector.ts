@@ -1,4 +1,4 @@
-import { deg2rad } from "../systems/math";
+import { deg2rad, rad2deg } from "../systems/math";
 
 /**
  * Represents a structure used to process vectors.
@@ -12,8 +12,7 @@ import { deg2rad } from "../systems/math";
  * ```ts
  * const vectorA = new Vector(1, 3, 5);
  * const vectorB = new Vector(2, 3, 1);
- * const vectorC = vectorA.add(vectorB);
- * // Result: (3, 6, 6)
+ * const vectorC = vectorA.add(vectorB); // (3, 6, 6)
  * ```
  */
 export class Vector {
@@ -170,12 +169,15 @@ export class Vector {
     }
 
     /**
-     * Returns the angle between two vectors, in radians.
+     * Returns the angle between two vectors, in degrees.
      */
     public angle(vector: Vector): number {
-        return Math.acos(
-            (this.x * vector.x + this.y * vector.y + this.z * vector.z) /
-                (this.magnitude() * vector.magnitude())
+        return (
+            rad2deg *
+            Math.acos(
+                (this.x * vector.x + this.y * vector.y + this.z * vector.z) /
+                    (this.magnitude() * vector.magnitude())
+            )
         );
     }
 
@@ -195,7 +197,9 @@ export class Vector {
      */
     public dot(vector: Vector): number {
         return (
-            this.magnitude() * vector.magnitude() * Math.cos(this.angle(vector))
+            this.magnitude() *
+            vector.magnitude() *
+            Math.cos(deg2rad * this.angle(vector))
         );
     }
 

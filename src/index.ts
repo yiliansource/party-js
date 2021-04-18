@@ -8,23 +8,26 @@ if (typeof document === "undefined" || typeof window === "undefined") {
 }
 
 // Export the configurable settings object.
-export * from "./settings";
+export { settings } from "./settings";
 
 // Export the emitter and particle types.
 export * from "./particles/particle";
 export * from "./particles/emitter";
 
-// Export utilities to properly customize emitters.
+// Export various utilities and objects.
+export * as variation from "./systems/variation";
+export * as modifier from "./systems/modifiers";
 export * as modules from "./particles/modules";
-export * as options from "./particles/options";
 export * as random from "./systems/random";
 export * as math from "./systems/math";
-export * from "./util";
-export * from "./systems/customization";
+export * as util from "./util";
 export * from "./components";
 
 // Export templates to quickly & easily create sample systems.
 export * from "./templates";
+
+// Export shapes so new ones can be registered easily.
+export * from "./shapes";
 
 // Export and create the main scene.
 export const scene = new Scene();

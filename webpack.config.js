@@ -28,10 +28,16 @@ module.exports = {
     resolve: {
         extensions: [".ts", ".js"],
     },
-    devtool: mode == "development" ? "inline-source-map" : "none",
+    devtool: mode == "development" ? "source-map" : "none",
     plugins: [
         new TerserWebpackPlugin({
             test: /\.min\.js$/,
+            terserOptions: {
+                format: {
+                    comments: false,
+                },
+            },
+            extractComments: false,
         }),
     ],
     stats: "errors-only",

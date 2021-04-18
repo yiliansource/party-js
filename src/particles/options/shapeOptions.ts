@@ -1,5 +1,5 @@
 import { Rect } from "../../components/rect";
-import { Variation } from "../../systems/customization";
+import { Variation } from "../../systems/variation";
 
 /**
  * Holds a set of options to determine the area and direction that particles are spawned in.
@@ -13,7 +13,7 @@ export interface ShapeOptions {
      */
     source: Rect;
     /**
-     * The angle that particles will be emitted at, in degrees.. This is used to, for example,
+     * The angle that particles will be emitted at, in degrees. This is used to, for example,
      * give the particles a particular amount of initial force in a direction.
      *
      * @defaultValue 0

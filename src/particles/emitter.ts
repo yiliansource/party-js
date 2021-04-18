@@ -1,7 +1,8 @@
 import { Vector } from "../components/vector";
 import { settings } from "../settings";
-import { getVariationValue } from "../systems/customization";
 import { randomInsideRect } from "../systems/random";
+import { evaluateVariation } from "../systems/variation";
+import { overrideDefaults } from "../util/config";
 import { ParticleModifierModule } from "./modules/particleModifierModule";
 import {
     EmissionOptions,
@@ -16,7 +17,25 @@ import {
 import { Particle, createParticle } from "./particle";
 
 /**
+ * Represents the type (or constructor) or a particle modifier module.
+ */
+type ParticleModuleConstructor<TModule extends ParticleModifierModule> = {
+    new (...args: unknown[]): TModule;
+};
+
+/**
+ * Defines the set of options that can be used when creating a new emitter.
+ */
+export interface EmitterConstructionOptions {
+    emitterOptions?: Partial<EmitterOptions>;
+    emissionOptions?: Partial<EmissionOptions>;
+    shapeOptions?: Partial<ShapeOptions>;
+    rendererOptions?: Partial<RendererOptions>;
+}
+
+/**
  * Represents an emitter that is responsible for spawning and updating particles.
+ *
  * Particles themselves are just data-holders, with the system acting upon them and
  * modifying them. The modifications are done mainly via modules, that use the
  * particle's data together with some function to apply temporal transitions.
@@ -28,11 +47,11 @@ export class Emitter {
     /**
      * The particles currently contained within the system.
      */
-    public readonly particles: Array<Particle> = [];
+    public readonly particles: Particle[] = [];
     /**
      * The array of modules used to modify particles during their lifetime.
      */
-    public readonly modules: Array<ParticleModifierModule> = [];
+    public readonly modules: ParticleModifierModule[] = [];
 
     /**
      * The main options of the emitter.
@@ -55,36 +74,57 @@ export class Emitter {
     private emissionTimer = 0; // Measures the current emission timer, to allow spawning particles in intervals.
     private currentLoop = 0; // The current loop index.
 
-    private attemptedBurstIndices: Array<number> = []; // The indices of the particle bursts that were attempted this loop.
+    private attemptedBurstIndices: number[] = []; // The indices of the particle bursts that were attempted this loop.
 
     /**
      * Checks if the emitter is already expired and can be removed.
      * Expired emitters are not updated.
      */
     public get isExpired(): boolean {
-        // Negative loop counts indicate infinity.
-        if (this.options.loops < 0) {
-            return false;
-        }
-        return this.currentLoop >= this.options.loops;
+        return (
+            this.options.loops >= 0 && this.currentLoop >= this.options.loops
+        );
     }
 
     /**
      * Creates a new emitter, using default options.
      */
-    constructor() {
-        // TODO: Maybe options can already be passed as partials?
-        this.options = getDefaultEmitterOptions();
-        this.emission = getDefaultEmissionOptions();
-        this.shape = getDefaultShapeOptions();
-        this.renderer = getDefaultRendererOptions();
+    constructor(options?: EmitterConstructionOptions) {
+        this.options = overrideDefaults(
+            getDefaultEmitterOptions(),
+            options?.emitterOptions
+        );
+        this.emission = overrideDefaults(
+            getDefaultEmissionOptions(),
+            options?.emissionOptions
+        );
+        this.shape = overrideDefaults(
+            getDefaultShapeOptions(),
+            options?.shapeOptions
+        );
+        this.renderer = overrideDefaults(
+            getDefaultRendererOptions(),
+            options?.rendererOptions
+        );
+    }
+
+    /**
+     * Adds a particle modifier module of the specified type to the emitter and returns it.
+     */
+    public addModule<TModule extends ParticleModifierModule>(
+        moduleType: ParticleModuleConstructor<TModule>,
+        ...args: unknown[]
+    ): TModule {
+        const module = new moduleType(args);
+        this.modules.push(module);
+        return module;
     }
 
     /**
      * Processes a tick of the emitter, using the elapsed time.
      *
      * @remarks
-     * This handles a few things. Namely:
+     * This handles a few things, namely:
      * - Incrementing the duration timer and potentially incrementing the loop.
      * - Handling particle bursts & emissions.
      * - Despawning particles conditionally.
@@ -117,7 +157,7 @@ export class Emitter {
                 // Has the burst already been attempted? If not ...
                 if (!this.attemptedBurstIndices.includes(burstIndex)) {
                     // Perform the burst, emitting a variable amount of particles.
-                    const count = getVariationValue(burst.count);
+                    const count = evaluateVariation(burst.count);
                     for (let i = 0; i < count; i++) {
                         this.emitParticle();
                     }
@@ -164,10 +204,13 @@ export class Emitter {
     private tickParticle(particle: Particle, delta: number): void {
         particle.lifetime -= delta;
 
-        // Apply gravitational acceleration to the particle.
-        particle.velocity = particle.velocity.add(
-            Vector.up.scale(settings.gravity * delta)
-        );
+        if (this.options.useGravity) {
+            // Apply gravitational acceleration to the particle.
+            particle.velocity = particle.velocity.add(
+                Vector.up.scale(settings.gravity * delta)
+            );
+        }
+
         // Apply the particle's velocity to its location.
         particle.location = particle.location.add(
             particle.velocity.scale(delta)
@@ -185,13 +228,13 @@ export class Emitter {
     private emitParticle(): Particle {
         const particle: Particle = createParticle({
             location: randomInsideRect(this.shape.source),
-            lifetime: getVariationValue(this.options.initialLifetime),
+            lifetime: evaluateVariation(this.options.initialLifetime),
             velocity: Vector.from2dAngle(
-                getVariationValue(this.shape.angle)
-            ).scale(getVariationValue(this.options.initialSpeed)),
-            size: getVariationValue(this.options.initialSize),
-            rotation: getVariationValue(this.options.initialRotation),
-            colour: getVariationValue(this.options.initialColour),
+                evaluateVariation(this.shape.angle)
+            ).scale(evaluateVariation(this.options.initialSpeed)),
+            size: evaluateVariation(this.options.initialSize),
+            rotation: evaluateVariation(this.options.initialRotation),
+            colour: evaluateVariation(this.options.initialColour),
         });
         this.particles.push(particle);
 

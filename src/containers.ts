@@ -61,7 +61,7 @@ export function getDebugContainer(): HTMLElement {
     if (!isContainerActive(__debugContainer)) {
         __debugContainer = document.createElement("div");
         __debugContainer.id = elementPrefix + "debug";
-        // Style the container in a non-prominent, simplistic, yet clean way in the top-left corner.
+        // Style the container in a non-prominent, simplistic, yet clean way, in the top-left corner.
         partialUpdateStyle(__debugContainer, {
             position: "absolute",
             top: "0",
