@@ -14,7 +14,6 @@
     <img alt="GitHub Build Status" src="https://img.shields.io/github/workflow/status/yiliansource/party-js/Node.js%20CI?style=flat&logo=Node.js">
     <a href="https://partyjs.yiliansource.dev"><img alt="GitHub Docs Status" src="https://img.shields.io/github/workflow/status/yiliansource/party-js/Deploy%20documentation?color=blue&label=docs&logo=Read%20the%20Docs&logoColor=white"></a>
     <img alt="npm downloads" src="https://img.shields.io/npm/dm/party-js?style=flat">
-    <img alt="npm bundle size" src="https://img.shields.io/bundlephobia/min/party-js?style=flat"/>
     <img alt="License" src="https://img.shields.io/github/license/yiliansource/party-js?style=flat"/>
 </p>
 

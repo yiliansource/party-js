@@ -1,7 +1,12 @@
+.eslintignore
+.eslintrc.js
+.prettierrc
 tsconfig.json
 webpack.config.js
 
-src
-docs
-samples
-node_modules
+.github/
+docs/
+samples/
+node_modules/
+src/
+tests/
