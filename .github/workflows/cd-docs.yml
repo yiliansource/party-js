@@ -15,7 +15,7 @@ jobs:
             - name: Install and Build
               run: |
                   cd docs
-                  npm ci
+                  npm install
                   npm run build
 
             - name: Deploy
