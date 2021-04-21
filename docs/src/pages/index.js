@@ -7,6 +7,7 @@ import React from "react";
 
 import PartyJSLogo from "../../static/img/logo.svg";
 import styles from "./styles.module.css";
+import DemoButton from "../components/DemoButton";
 
 const features = [
     {
@@ -46,30 +47,24 @@ const features = [
 
 const demos = [
     {
-        id: "buttonConfetti",
         title: "Confetti clicking!",
+        demoMethod: demoConfetti,
         description: (
             <>Click the button to let some confetti explode from it!</>
         ),
     },
     {
-        id: "screenConfetti",
-        title: "Make it rain!",
+        title: "Sparkly!",
+        demoMethod: demoSparkles,
         description: (
-            <>
-                Want to cover the entire screen in confetti? That's possible
-                aswell!
-            </>
+            <>Want to add some sparkles to something? That's possible aswell!</>
         ),
     },
     {
-        id: "shapeConfetti",
-        title: "Tired of rectangles and squares?",
+        title: "Spread the love!",
+        demoMethod: demoHearts,
         description: (
-            <>
-                But just using basic shapes all the time is boring. Let's spice
-                it up a little!
-            </>
+            <>Want to fill the screens of your users with hearts? Go for it!</>
         ),
     },
 ];
@@ -93,16 +88,12 @@ function Feature({ imageUrl, title, description }) {
         </div>
     );
 }
-function Demo({ id, title, exampleSlug, description }) {
+function Demo({ title, demoMethod, description }) {
     return (
-        <div className={clsx("col col--4", styles.demo)}>
-            <div className="text--center">
-                <div className={styles.demoButton} id={id}>
-                    <img src={useBaseUrl("img/cursor.svg")} draggable="false" />
-                </div>
-            </div>
+        <div className={clsx("demo col col--4", styles.demo)}>
             <h3>{title}</h3>
             <p>{description}</p>
+            <DemoButton demoMethod={demoMethod} />
         </div>
     );
 }
@@ -151,11 +142,10 @@ function Home() {
                         </div>
                     </section>
                 )}
-                {/*
+
                 {demos && demos.length > 0 && (
                     <section className={styles.demos}>
                         <h1>Check out the demos!</h1>
-                        <br />
                         <div className="container">
                             <div className="row">
                                 {demos.map((props, idx) => (
@@ -164,12 +154,12 @@ function Home() {
                             </div>
                         </div>
                         <div className={styles.exampleLink}>
-                            <a href="/docs/examples">
+                            <a href="/docs/examples/simple">
                                 Check out the source code for the examples!
                             </a>
                         </div>
                     </section>
-                                )}*/}
+                )}
             </main>
         </Layout>
     );

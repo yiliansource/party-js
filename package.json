@@ -25,13 +25,8 @@
     ],
     "author": "Ian Hornik",
     "license": "MIT",
-    "importSort": {
-        ".js, .ts": {
-            "style": "module",
-            "parser": "typescript"
-        }
-    },
     "devDependencies": {
+        "@trivago/prettier-plugin-sort-imports": "^2.0.2",
         "@types/chai": "^4.2.16",
         "@types/mocha": "^8.2.2",
         "@typescript-eslint/eslint-plugin": "^4.14.2",
@@ -40,10 +35,8 @@
         "eslint": "^7.19.0",
         "eslint-config-prettier": "^8.2.0",
         "eslint-plugin-prettier": "^3.4.0",
-        "import-sort-style-module": "^6.0.0",
         "mocha": "^8.2.1",
         "prettier": "^2.2.1",
-        "prettier-plugin-import-sort": "0.0.6",
         "rimraf": "^3.0.2",
         "terser-webpack-plugin": "^5.1.1",
         "ts-loader": "^8.0.14",

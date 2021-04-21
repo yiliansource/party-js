@@ -31,5 +31,7 @@
             "last 1 safari version"
         ]
     },
-    "devDependencies": {}
+    "devDependencies": {
+        "@types/react": "^17.0.3"
+    }
 }
