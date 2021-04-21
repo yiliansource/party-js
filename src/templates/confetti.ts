@@ -1,3 +1,4 @@
+import { modules, random, scene } from "..";
 import { Colour, Vector } from "../components";
 import { Emitter } from "../particles/emitter";
 import { ParticleModifier } from "../systems/modifiers";
@@ -9,7 +10,6 @@ import {
 } from "../systems/variation";
 import { Source, sourceToRect } from "../util";
 import { overrideDefaults } from "../util/config";
-import { modules, random, scene } from "..";
 
 /**
  * The configuration to apply to the confetti.

@@ -4,5 +4,6 @@
     "semi": true,
     "singleQuote": false,
     "endOfLine": "auto",
-    "importOrderSeperation": true
+    "importOrder": ["^@core/(.*)$", "^@server/(.*)$", "^@ui/(.*)$", "^[./]"],
+    "importOrderSeparation": true
 }
