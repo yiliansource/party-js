@@ -1,5 +1,5 @@
 <h1 align="center">
-    <img src="./.github/banner.svg"/>
+    <img src="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/banner.svg"/>
 </h1>
 
 <p align="center">
@@ -74,5 +74,5 @@ Please refer to the [contribution guidelines][contributing] when opening issues 
 
 [contributing]: ./.github/CONTRIBUTING.md
 [npm]: https://www.npmjs.com/package/party-js
-[issues]: https://github.com/YilianSource/party-js/issues
+[issues]: https://github.com/yilianyource/party-js/issues
 [quick-start]: https://partyjs.yiliansource.dev/docs/

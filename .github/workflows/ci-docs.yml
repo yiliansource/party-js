@@ -1,17 +1,18 @@
-name: CD (docs)
+name: CI (docs)
 
 on:
-    workflow_dispatch:
+    # We do not need a push event to master here, since the doc deploy will verify the code anyway.
 
-    push:
+    pull_request:
         branches:
             - main
         paths:
-            - "docs/**"
+            - "src/**"
 
 jobs:
-    cd:
+    ci:
         runs-on: ubuntu-latest
+
         steps:
             - name: Checkout
               uses: actions/checkout@v2
@@ -28,9 +29,3 @@ jobs:
             - name: Build
               run: npm run build
               working-directory: ./docs
-
-            - name: Deploy to GitHub Pages
-              uses: JamesIves/github-pages-deploy-action@4.1.1
-              with:
-                  branch: docs
-                  folder: ./docs/build
