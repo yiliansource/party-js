@@ -1,16 +1,17 @@
 import React, { FunctionComponent } from "react";
 
 interface DemoButtonProps {
-    demoMethod: (id: string) => void;
+    demoMethod: string;
 }
 
-const DemoButton: FunctionComponent<DemoButtonProps> = (
-    props: DemoButtonProps
-) => (
+const DemoButton: FunctionComponent<DemoButtonProps> = ({
+    demoMethod,
+}: DemoButtonProps) => (
     <div
-        id={props.demoMethod.name}
+        id={demoMethod}
         className="demoButton"
-        onClick={props.demoMethod.bind(this, props.demoMethod.name)}
+        // Workaround to call a demo method by it's name.
+        onClick={() => (window as any)[demoMethod](demoMethod)}
     >
         <img src="/img/cursor.svg" />
     </div>

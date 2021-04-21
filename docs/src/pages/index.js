@@ -48,21 +48,21 @@ const features = [
 const demos = [
     {
         title: "Confetti clicking!",
-        demoMethod: demoConfetti,
+        demoMethod: "demoConfetti",
         description: (
             <>Click the button to let some confetti explode from it!</>
         ),
     },
     {
         title: "Sparkly!",
-        demoMethod: demoSparkles,
+        demoMethod: "demoSparkles",
         description: (
             <>Want to add some sparkles to something? That's possible aswell!</>
         ),
     },
     {
         title: "Spread the love!",
-        demoMethod: demoHearts,
+        demoMethod: "demoHearts",
         description: (
             <>Want to fill the screens of your users with hearts? Go for it!</>
         ),
@@ -88,6 +88,7 @@ function Feature({ imageUrl, title, description }) {
         </div>
     );
 }
+
 function Demo({ title, demoMethod, description }) {
     return (
         <div className={clsx("demo col col--4", styles.demo)}>
