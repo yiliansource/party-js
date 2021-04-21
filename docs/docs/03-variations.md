@@ -4,7 +4,7 @@ title: Variations
 
 ## Introduction
 
-The library makes heavy use of so-called _variations_ to allow the variation/customization of individual values. Variations are generic, in theory they can take any value, no matter if it's a number, Vector or Colour. A variation can be represented by a _constant_, an _array_, or a _function returning a value_.
+The library makes heavy use of so-called _variations_ to allow the variation/customization of individual values. Variations are generic - in theory they can take any value, no matter if it's a number, Vector or Colour. A variation can be represented by a _constant_, an _array_, or a _function returning a value_.
 
 ```ts
 type Variation<T> = T | T[] | (() => T);
@@ -29,7 +29,7 @@ party.confetti(myElement, {
 
 ## Helper Methods
 
-To assist you in creating variations aside from constants and arrays, there are some pre-made helper methods for you to use. All of these return a valid variation that can be evaluated.
+To assist in creating variations aside from constants and arrays, the library offers pre-made helper methods - these return a valid variation that can be evaluated.
 
 -   `party.variation.range(min, max)`: Creates a variation that returns a random number from min to max.
 -   `party.variation.skew(value, amount)`: Creates a variation that skews the specified value by a specified, absolute amount. This means that instead of the value itself, a random number that deviates at most by the specified amount is returned.

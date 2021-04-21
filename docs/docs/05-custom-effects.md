@@ -100,7 +100,7 @@ const emitter = party.scene.createEmitter({
 });
 ```
 
-Note that we passing [variations](/docs/variations) to some of the options. This is to, as the name might suggest, allow variety in the way that particles are emitted. You can learn more about variations on their documentation page.
+Note that we're passing [variations](/docs/variations) to some of the options. This is to - as the name might suggest - allow variety in the way that particles are emitted. You can learn more about variations on their documentation page.
 
 The **emitter options** control what properties the emitted particle are given after they are spawned, things like colour, velocity or rotation.
 
