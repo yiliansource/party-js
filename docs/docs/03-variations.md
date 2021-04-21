@@ -23,7 +23,7 @@ party.confetti(myElement, {
     // We want to randomize the amount of confetti that is emitted, so we
     // create a range from 20 to 40. When the particles are created, this
     // variation is evaluated, randomizing the amount of spawned particles.
-    count: party.variation.range(20, 40)
+    count: party.variation.range(20, 40),
 });
 ```
 

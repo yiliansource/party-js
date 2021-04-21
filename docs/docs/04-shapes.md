@@ -25,6 +25,6 @@ Shapes are used by the renderer to determine which kind of HTMLElement to spawn 
 
 ```ts {2}
 party.confetti(myButton, {
-    shapes: ["square", "circle"]
+    shapes: ["square", "circle"],
 });
 ```

@@ -88,3 +88,38 @@ footer .footer__links .footer__col {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+.demo {
+    margin-bottom: 1em;
+}
+.demo p {
+    margin-bottom: 0.5em;
+}
+.demo .demoButton {
+    margin-bottom: 1em;
+}
+
+.demoButton {
+    display: block;
+    cursor: pointer;
+    width: 80px;
+    height: 40px;
+    padding: 0.5em 0.5em calc(0.7em + 3px);
+    border-radius: 4px;
+    box-shadow: 0 3px #bf4167;
+    background: linear-gradient(135deg, #ffa68d, #fd3a84);
+    text-align: center;
+    transition: filter 0.2s;
+    user-select: none;
+}
+.demoButton:hover {
+    filter: brightness(1.1);
+}
+.demoButton:active {
+    box-shadow: none;
+    transform: translateY(3px);
+}
+.demoButton img {
+    height: 100%;
+    filter: drop-shadow(2px 1px 0 rgb(0, 0, 0, 0.3));
+}

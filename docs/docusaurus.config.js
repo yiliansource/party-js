@@ -11,6 +11,10 @@ module.exports = {
     projectName: "party-js",
     stylesheets: [],
     plugins: [],
+    scripts: [
+        "/js/demos.js",
+        "https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js",
+    ],
     themeConfig: {
         colorMode: {
             respectPrefersColorScheme: true,
@@ -73,7 +77,10 @@ module.exports = {
                         "https://github.com/yiliansource/party-js/edit/main/docs/",
                 },
                 theme: {
-                    customCss: require.resolve("./src/css/custom.css"),
+                    customCss: [
+                        require.resolve("./src/css/custom.css"),
+                        require.resolve("./src/css/components.css"),
+                    ],
                 },
             },
         ],

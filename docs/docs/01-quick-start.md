@@ -23,7 +23,7 @@ You can download the latest version of the library from [jsdelivr](https://www.j
 
 The library instance is loaded into the global `party` object.
 
-### Node.JS
+### Node.js
 
 If you are using a package-managed environment, you can also install the latest version via [npm](https://www.npmjs.com/package/party-js).
 
@@ -54,9 +54,9 @@ As an example, we will implement the _confetti_ effect when a button is clicked.
 This is the simplest way to play the effect. Templated effects offer additional customizeability via option overrides, best explained in the following code snippet.
 
 ```js
-document.querySelector(".button").addEventListener("click", function(e) {
+document.querySelector(".button").addEventListener("click", function (e) {
     party.confetti(this, {
-        count: party.range(20, 40)
+        count: party.variation.range(20, 40),
     });
 });
 ```

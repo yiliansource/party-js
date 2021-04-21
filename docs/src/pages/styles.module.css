@@ -108,3 +108,20 @@ html[data-theme="dark"] .heroLogo {
     padding: 2em 0;
     filter: drop-shadow(2px 2px 0 rgb(0, 0, 0, 0.15));
 }
+
+.demos {
+    margin: 2em 0;
+}
+.demos .col > *:last-child {
+    margin: -1em 0 2em;
+}
+.demos h1 {
+    text-align: center;
+    margin-bottom: 1em;
+}
+.demos .exampleLink {
+    text-align: center;
+}
+.demoButton {
+    display: none;
+}

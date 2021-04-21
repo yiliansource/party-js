@@ -11,8 +11,16 @@ As we've seen before, [templates](/docs/templates) are powerful tools, but somet
 To understand how custom effects work, let's break down the [confetti](/docs/templates#confetti) template we saw before. Note that some parts are omitted for the sake of brevity.
 
 ```ts
-function confetti(source: Source, options?: Partial<ConfettiConfiguration>): Emitter {
-    const config = party.util.overrideDefaults({ /* ... */ }, options);
+function confetti(
+    source: Source,
+    options?: Partial<ConfettiConfiguration>
+): Emitter {
+    const config = party.util.overrideDefaults(
+        {
+            /* ... */
+        },
+        options
+    );
     const rect = party.util.sourceToRect(source);
     const emitter = party.scene.createEmitter({
         emitterOptions: {
@@ -25,8 +33,10 @@ function confetti(source: Source, options?: Partial<ConfettiConfiguration>): Emi
             bursts: [{ time: 0, count: config.count }],
         },
         shapeOptions: {
-            angle: party.variation.skew(-90,
-                party.variation.evaluateVariation(config.spread)),
+            angle: party.variation.skew(
+                -90,
+                party.variation.evaluateVariation(config.spread)
+            ),
             source: rect,
         },
         rendererOptions: {
@@ -48,7 +58,12 @@ function confetti(source: Source, options?: Partial<ConfettiConfiguration>): Emi
 Let's break down the effect bit by bit. First, we provide fill in values that the user potentially omitted, to ensure that all the configuration we need has a proper value.
 
 ```ts
-const config = party.util.overrideDefaults({ /* ... */ }, options);
+const config = party.util.overrideDefaults(
+    {
+        /* ... */
+    },
+    options
+);
 ```
 
 Next up, we determine the actual area that the particles will be emitted from. This is done by converting the `Source` parameter to a `Rect` using a utility method.
@@ -73,8 +88,10 @@ const emitter = party.scene.createEmitter({
         bursts: [{ time: 0, count: config.count }],
     },
     shapeOptions: {
-        angle: party.variation.skew(-90,
-            party.variation.evaluateVariation(config.spread)),
+        angle: party.variation.skew(
+            -90,
+            party.variation.evaluateVariation(config.spread)
+        ),
         source: rect,
     },
     rendererOptions: {

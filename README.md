@@ -52,9 +52,9 @@ import party from "party-js";
 The library essentially offers a fully customizeable particle-system implementation into HTML documents. Users of the library have the ability to create and fine-tune effects to their individual liking. The library offers a few simple effects right out-of-the-box, so you don't have to waste time re-creating simple effects.
 
 ```js
-document.querySelector(".button").addEventListener("click", function(e) {
+document.querySelector(".button").addEventListener("click", function (e) {
     party.confetti(this, {
-        count: party.range(20, 40)
+        count: party.variation.range(20, 40),
     });
 });
 ```
