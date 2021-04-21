@@ -22,7 +22,7 @@ party.math.approximately(a, b); // a ≈ b
 
 ## Randomization
 
-Common "random" operations in the library as helper methods. Note that the actual randomization implementation is still up to the underlying JavaScript implementation.
+Common "random" operations in the library as helper methods.
 
 ```ts
 party.random.randomRange(min, max); // random number from min to max
@@ -30,6 +30,10 @@ party.random.pick(array); // random element in array
 party.random.randomUnitVector(); // random 3d vector
 party.random.randomInsideRect(rect); // random point inside a given rectangle
 ```
+
+:::note
+The actual randomization implementation is still up to the underlying JavaScript implementation.
+:::
 
 ## Others
 

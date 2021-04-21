@@ -4,7 +4,7 @@ title: Shapes
 
 ## Introduction
 
-Shapes define the way that particles are rendered in the DOM. They are essentially just an HTML string, that can be converted to a valid element and attached to a particle.
+Shapes define the way that particles are rendered in the DOM. They essentially consist of an HTML string, that can be converted to a valid element and attached to a particle.
 
 The library provides various shapes out-of-the-box:
 

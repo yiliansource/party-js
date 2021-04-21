@@ -3,13 +3,18 @@ title: Quick Start
 slug: /
 ---
 
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
 ## About
 
 **party.js** is a JavaScript library intended to provide customizeable particle effects to browser environments. To ensure a safer development process, the library is written in TypeScript.
 
 The main focus is to provide users a more fun experience while browsing/interacting with websites.
 
-Note that the library is intended to only work in browser-like environments, where a global `document` and `window` are both present. If either of those does not exist, the initialization will fail.
+:::note
+The library is intended to only work in browser-like environments, where a global `document` and `window` are both present. If either of those does not exist, the initialization will fail.
+:::
 
 ## Installation
 
@@ -27,8 +32,9 @@ The library instance is loaded into the global `party` object.
 
 If you are using a package-managed environment, you can also install the latest version via [npm](https://www.npmjs.com/package/party-js).
 
-```sh
+```python
 npm install party-js
+# or
 yarn add party-js
 ```
 
@@ -36,6 +42,7 @@ You can then either `require` or `import` it.
 
 ```ts
 const party = require('party-js');
+// or
 import party from 'party-js'.
 ```
 
@@ -65,4 +72,4 @@ The `party.range(...)` method is a [variation](/docs/variations) method, used to
 
 ### Custom effects
 
-If you want to have even more control over the effects that are played, you can completely customize the emitted particles. To ensure you have a good understanding on how customization in the library works, I'd suggest that you take a look at the documentation on [variations](/docs/variations) and [shapes](/docs/shapes) first, before taking a look at [custom effects](/docs/custom-effects), which will guide you through how to create an effect yourself.
+If you want to have even more control over the effects that are played, you can completely customize the emitted particles. To ensure you have a good understanding on how customization in the library works, I recommend that you look at the documentation on [variations](/docs/variations) and [shapes](/docs/shapes) first. Then, take a look at [custom effects](/docs/custom-effects) - these guide you through creating your own effects.
