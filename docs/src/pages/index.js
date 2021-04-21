@@ -105,7 +105,7 @@ function Home() {
     return (
         <Layout
             title={`Hello!`}
-            description="Description will go into a meta tag in <head />"
+            description="A JavaScript library to brighten up your user's site experience with visual effects!"
         >
             <header className={clsx("hero hero--primary", styles.heroBanner)}>
                 <div className="container">

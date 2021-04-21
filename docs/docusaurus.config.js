@@ -16,6 +16,10 @@ module.exports = {
         "https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js",
     ],
     themeConfig: {
+        image: 'img/banner.png',
+        metadatas: [{
+            name: "theme-color", content: "#FF7F6B"
+        }],
         colorMode: {
             respectPrefersColorScheme: true,
         },
