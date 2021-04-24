@@ -23,9 +23,9 @@ jobs:
                   node-version: 12.x
 
             - name: Install Docusaurus
-              run: npm install
+              run: yarn install --frozen-lockfile
               working-directory: ./docs
 
             - name: Build
-              run: npm run build
+              run: yarn build
               working-directory: ./docs
