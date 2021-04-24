@@ -12,12 +12,12 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/YilianSource/party-js.git"
+        "url": "git+https://github.com/yiliansource/party-js.git"
     },
     "bugs": {
-        "url": "https://github.com/YilianSource/party-js/issues"
+        "url": "https://github.com/yiliansource/party-js/issues"
     },
-    "homepage": "https://partyjs.yiliansource.dev",
+    "homepage": "https://party.js.org",
     "keywords": [
         "party",
         "confetti",

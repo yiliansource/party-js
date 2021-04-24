@@ -2,7 +2,7 @@ module.exports = {
     title: "party.js",
     tagline:
         "A JavaScript library to brighten up your user's site experience with visual effects!",
-    url: "https://partyjs.yiliansource.dev",
+    url: "https://party.js.org/",
     baseUrl: "/",
     onBrokenLinks: "throw",
     onBrokenMarkdownLinks: "warn",
@@ -16,10 +16,13 @@ module.exports = {
         "https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js",
     ],
     themeConfig: {
-        image: 'img/banner.png',
-        metadatas: [{
-            name: "theme-color", content: "#FF7F6B"
-        }],
+        image: "img/banner.png",
+        metadatas: [
+            {
+                name: "theme-color",
+                content: "#FF7F6B",
+            },
+        ],
         colorMode: {
             respectPrefersColorScheme: true,
         },
@@ -68,7 +71,7 @@ module.exports = {
                     ],
                 },
             ],
-            copyright: `<div class="copynote">Copyright © ${new Date().getFullYear()} YilianSource. Built with <span style="color: #e31b23;">❤</span> and Docusaurus.<br>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>`,
+            copyright: `<div class="copynote">Copyright © ${new Date().getFullYear()} Ian Hornik. Built with <span style="color: #e31b23;">❤</span> and Docusaurus.<br>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>`,
         },
     },
     presets: [

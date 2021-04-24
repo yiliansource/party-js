@@ -12,7 +12,7 @@
     <a href="https://www.npmjs.com/package/party-js"><img alt="npm" src="https://img.shields.io/npm/v/party-js?style=flat"/></a>
     <img alt="GitHub Repo stars" src="https://img.shields.io/github/stars/yiliansource/party-js?style=flat">
     <img alt="GitHub Build Status" src="https://img.shields.io/github/workflow/status/yiliansource/party-js/Node.js%20CI?style=flat&logo=Node.js">
-    <a href="https://partyjs.yiliansource.dev"><img alt="GitHub Docs Status" src="https://img.shields.io/github/workflow/status/yiliansource/party-js/Deploy%20documentation?color=blue&label=docs&logo=Read%20the%20Docs&logoColor=white"></a>
+    <a href="https://party.js.org/"><img alt="GitHub Docs Status" src="https://img.shields.io/github/workflow/status/yiliansource/party-js/Deploy%20documentation?color=blue&label=docs&logo=Read%20the%20Docs&logoColor=white"></a>
     <img alt="npm downloads" src="https://img.shields.io/npm/dm/party-js?style=flat">
     <img alt="License" src="https://img.shields.io/github/license/yiliansource/party-js?style=flat"/>
 </p>
@@ -75,4 +75,4 @@ Please refer to the [contribution guidelines][contributing] when opening issues 
 [contributing]: ./.github/CONTRIBUTING.md
 [npm]: https://www.npmjs.com/package/party-js
 [issues]: https://github.com/yilianyource/party-js/issues
-[quick-start]: https://partyjs.yiliansource.dev/docs/
+[quick-start]: https://party.js.org//docs/
