@@ -29,6 +29,10 @@ module.exports = {
         prism: {
             theme: require("prism-react-renderer/themes/dracula"),
         },
+        googleAnalytics: {
+            trackingID: "G-EWQS5KE2B5",
+            anonymizeIP: true,
+        },
         navbar: {
             title: "party.js",
             logo: {
@@ -78,6 +82,7 @@ module.exports = {
         [
             "@docusaurus/preset-classic",
             {
+                debug: true,
                 docs: {
                     sidebarPath: require.resolve("./sidebars.js"),
                     editUrl:
