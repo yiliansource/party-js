@@ -2,32 +2,25 @@
 
 This website is built using [Docusaurus 2](https://v2.docusaurus.io/), a modern static website generator.
 
-## Installation
+Content is meant to serve as assistive content to the library **party-js**, not as a standalone product.
+
+## Building & Running
+
+Make sure your dependancies are installed:
 
 ```console
 yarn install
 ```
 
-## Local Development
+To run in development mode (live reloading):
 
 ```console
 yarn start
 ```
 
-This command starts a local development server and open up a browser window. Most changes are reflected live without having to restart the server.
-
-## Build
+To run in production mode (optimizations & safer build):
 
 ```console
 yarn build
+yarn serve
 ```
-
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-## Deployment
-
-```console
-GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
-```
-
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
