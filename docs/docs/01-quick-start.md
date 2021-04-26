@@ -3,9 +3,6 @@ title: Quick Start
 slug: /
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-
 ## About
 
 **party.js** is a JavaScript library intended to provide customizeable particle effects to browser environments. To ensure a safer development process, the library is written in TypeScript.
@@ -38,12 +35,12 @@ npm install party-js
 yarn add party-js
 ```
 
-You can then either `require` or `import` it.
+You can then either `import` or `require` it.
 
 ```ts
-const party = require('party-js');
+import * as party from 'party-js';
 // or
-import party from 'party-js'.
+const party = require('party-js');
 ```
 
 ## Usage

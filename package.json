@@ -2,8 +2,8 @@
     "name": "party-js",
     "version": "2.0.0-0",
     "description": "A JavaScript library to brighten up your user's site experience with visual effects!",
-    "main": "dist/index.js",
-    "types": "dist/index.d.ts",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "scripts": {
         "clean": "rimraf bundle dist",
         "build": "npm run clean && tsc && webpack",

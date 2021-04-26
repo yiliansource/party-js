@@ -1,19 +1,24 @@
-import React, { FunctionComponent } from "react";
+import { Source } from "party-js/src/util";
+import React, { FunctionComponent, useRef } from "react";
 
 interface DemoButtonProps {
-    demoMethod: string;
+    demoMethod: (source: Source) => void;
 }
 
 const DemoButton: FunctionComponent<DemoButtonProps> = ({
     demoMethod,
-}: DemoButtonProps) => (
-    <div
-        id={demoMethod}
-        className="demoButton"
-        // Workaround to call a demo method by it's name.
-        onClick={() => (window as any)[demoMethod](demoMethod)}
-    >
-        <img src="/img/cursor.svg" />
-    </div>
-);
+}: DemoButtonProps) => {
+    const buttonElement: React.MutableRefObject<HTMLDivElement> = useRef(null);
+
+    return (
+        <div
+            ref={buttonElement}
+            id={demoMethod.name + "-button"}
+            className="demoButton"
+            onClick={() => demoMethod(buttonElement.current)}
+        >
+            <img src="/img/cursor.svg" />
+        </div>
+    );
+};
 export default DemoButton;

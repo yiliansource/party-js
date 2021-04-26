@@ -3,13 +3,14 @@ title: Advanced
 ---
 
 import DemoButton from "../../src/components/DemoButton";
+import { hearts } from "../../src/demos.ts";
 
 ## Hearts
 
 A completely customized effect, showcasing the power of emitters, shapes and variations.
 
 ```js
-const element = document.getElementById(id);
+const element = document.getElementById("hearts-button");
 const rect = party.util.sourceToRect(element);
 
 // Make sure the "heart" shapes exists.
@@ -52,4 +53,4 @@ sizeModule.size = (p) =>
     0.5 + 0.3 * (Math.cos((p.initialLifetime - p.lifetime) * 10) + 1);
 ```
 
-<DemoButton demoMethod="demoHearts" />
+<DemoButton demoMethod={hearts} />

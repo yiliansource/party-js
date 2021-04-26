@@ -11,10 +11,7 @@ module.exports = {
     projectName: "party-js",
     stylesheets: [],
     plugins: [],
-    scripts: [
-        "/js/demos.js",
-        "https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js",
-    ],
+    scripts: [],
     themeConfig: {
         image: "img/banner.png",
         metadatas: [

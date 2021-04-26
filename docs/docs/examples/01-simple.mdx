@@ -3,27 +3,28 @@ title: Simple
 ---
 
 import DemoButton from "../../src/components/DemoButton";
+import { confetti, sparkles } from "../../src/demos.ts";
 
 ## Confetti
 
 A demonstration of the [confetti template](/docs/templates#confetti).
 
 ```js
-const element = document.getElementById("demoConfetti");
+const element = document.getElementById("confetti-button");
 party.confetti(element, {
     size: party.variation.range(0.6, 1),
 });
 ```
 
-<DemoButton demoMethod="demoConfetti" />
+<DemoButton demoMethod={confetti} />
 
 ## Sparkles
 
 A demonstration of the [sparkles template](/docs/templates#sparkles).
 
 ```js
-const element = document.getElementById("demoSparkles");
+const element = document.getElementById("sparkles-button");
 party.sparkles(element);
 ```
 
-<DemoButton demoMethod="demoSparkles" />
+<DemoButton demoMethod={sparkles} />

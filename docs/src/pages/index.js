@@ -8,6 +8,7 @@ import React from "react";
 import PartyJSLogo from "../../static/img/logo.svg";
 import styles from "./styles.module.css";
 import DemoButton from "../components/DemoButton";
+import * as demoMethods from "../demos";
 
 const features = [
     {
@@ -48,21 +49,21 @@ const features = [
 const demos = [
     {
         title: "Confetti clicking!",
-        demoMethod: "demoConfetti",
+        demoMethod: demoMethods.confetti,
         description: (
             <>Click the button to let some confetti explode from it!</>
         ),
     },
     {
         title: "Sparkly!",
-        demoMethod: "demoSparkles",
+        demoMethod: demoMethods.sparkles,
         description: (
             <>Want to add some sparkles to something? That's possible aswell!</>
         ),
     },
     {
         title: "Spread the love!",
-        demoMethod: "demoHearts",
+        demoMethod: demoMethods.hearts,
         description: (
             <>Want to fill the screens of your users with hearts? Go for it!</>
         ),
@@ -155,9 +156,9 @@ function Home() {
                             </div>
                         </div>
                         <div className={styles.exampleLink}>
-                            <a href="/docs/examples/simple">
+                            <Link to={useBaseUrl("docs/examples/simple")}>
                                 Check out the source code for the examples!
-                            </a>
+                            </Link>
                         </div>
                     </section>
                 )}

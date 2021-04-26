@@ -35,16 +35,18 @@ The library instance is loaded into the global `party` object.
 
 If you are using a package-managed environment, you can also install the latest version via [npm].
 
-```sh
+```python
 npm install party-js
+# or
 yarn add party-js
 ```
 
 To use it, simply `require` or `import` it.
 
 ```ts
+import * as party from "party-js";
+// or
 const party = require("party-js");
-import party from "party-js";
 ```
 
 ## Usage
