@@ -75,4 +75,4 @@ Please refer to the [contribution guidelines][contributing] when opening issues 
 [contributing]: ./.github/CONTRIBUTING.md
 [npm]: https://www.npmjs.com/package/party-js
 [issues]: https://github.com/yilianyource/party-js/issues
-[quick-start]: https://party.js.org//docs/
+[quick-start]: https://party.js.org/docs/
