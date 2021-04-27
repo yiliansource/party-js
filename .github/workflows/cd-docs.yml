@@ -6,8 +6,10 @@ on:
     push:
         branches:
             - main
+        # Ensure that the documentation can be rebuilt on documentation and library source changes.
         paths:
             - "docs/**"
+            - "src/**"
 
 jobs:
     cd:
@@ -21,6 +23,19 @@ jobs:
               with:
                   node-version: 12.x
 
+            # Note that we include the built library, to keep examples up-to-date.
+
+            - name: Install dependancies
+              run: yarn install --frozen-lockfile
+
+            - name: Build library
+              run: yarn build
+
+            - name: Remove unnecessary files
+              run: rm -rf samples src tests
+
+            # Build the actual site.
+
             - name: Install Docusaurus
               run: yarn install --frozen-lockfile
               working-directory: ./docs
@@ -33,4 +48,3 @@ jobs:
               uses: JamesIves/github-pages-deploy-action@4.1.1
               with:
                   branch: gh-pages
-                  folder: ./docs/build

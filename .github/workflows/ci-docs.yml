@@ -1,13 +1,13 @@
 name: CI (docs)
 
 on:
-    # We do not need a push event to master here, since the doc deploy will verify the code anyway.
-
     pull_request:
         branches:
             - main
+        # Ensure that the documentation can be rebuilt on documentation and library source changes.
         paths:
             - "docs/**"
+            - "src/**"
 
 jobs:
     ci:
@@ -21,6 +21,16 @@ jobs:
               uses: actions/setup-node@v2
               with:
                   node-version: 12.x
+
+            # Note that we include the built library, to keep examples up-to-date.
+
+            - name: Install dependancies
+              run: yarn install --frozen-lockfile
+
+            - name: Build library
+              run: yarn build
+
+            # Build the actual site. Note that we do not deploy it, we just check if it builds without errors.
 
             - name: Install Docusaurus
               run: yarn install --frozen-lockfile
