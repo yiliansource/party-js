@@ -32,8 +32,11 @@ export class Scene {
     private scheduledTickId?: number = undefined;
     /**
      * The timestamp of the last tick, used to calculate deltas.
+     *
+     * @initialValue `performance.now()` (time origin)
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/DOMHighResTimeStamp
      */
-    private lastTickTimestamp = 0;
+    private lastTickTimestamp = performance.now();
 
     /**
      * Initializes a new scene and starts the ticking job.

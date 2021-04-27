@@ -49,7 +49,7 @@ export function sparkles(
     );
 
     const rect: Rect = sourceToRect(source);
-    const emitter = scene.createEmitter({
+    const emitter = scene.current.createEmitter({
         emitterOptions: {
             loops: 1,
             duration: 3,
