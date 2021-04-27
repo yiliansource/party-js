@@ -1,0 +1,30 @@
+---
+title: Simple
+---
+
+import DemoButton from "../../src/components/DemoButton";
+import { confetti, sparkles } from "../../src/util/demos";
+
+## Confetti
+
+A demonstration of the [confetti template](/docs/templates#confetti).
+
+```js
+const element = document.getElementById("demoConfetti");
+party.confetti(element, {
+    size: party.variation.range(0.6, 1),
+});
+```
+
+<DemoButton demoMethod={confetti} />
+
+## Sparkles
+
+A demonstration of the [sparkles template](/docs/templates#sparkles).
+
+```js
+const element = document.getElementById("demoSparkles");
+party.sparkles(element);
+```
+
+<DemoButton demoMethod={sparkles} />

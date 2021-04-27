@@ -1,0 +1,52 @@
+{
+    "name": "party-js",
+    "version": "2.0.0-0",
+    "description": "A JavaScript library to brighten up your user's site experience with visual effects!",
+    "main": "./dist/index.js",
+    "types": "./dist/index.d.ts",
+    "exports": {
+        ".": "./dist"
+    },
+    "scripts": {
+        "clean": "rimraf bundle dist",
+        "build": "npm run clean && tsc && webpack",
+        "test": "mocha -r ts-node/register 'tests/**/*.test.ts'",
+        "lint": "npx eslint . --ext .js,.ts"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/yiliansource/party-js.git"
+    },
+    "bugs": {
+        "url": "https://github.com/yiliansource/party-js/issues"
+    },
+    "homepage": "https://party.js.org",
+    "keywords": [
+        "party",
+        "confetti",
+        "particles"
+    ],
+    "author": "Ian Hornik",
+    "license": "MIT",
+    "devDependencies": {
+        "@trivago/prettier-plugin-sort-imports": "^2.0.2",
+        "@types/chai": "^4.2.16",
+        "@types/mocha": "^8.2.2",
+        "@typescript-eslint/eslint-plugin": "^4.14.2",
+        "@typescript-eslint/parser": "^4.14.2",
+        "chai": "^4.2.0",
+        "eslint": "^7.19.0",
+        "eslint-config-prettier": "^8.2.0",
+        "eslint-plugin-prettier": "^3.4.0",
+        "mocha": "^8.2.1",
+        "prettier": "^2.2.1",
+        "rimraf": "^3.0.2",
+        "terser-webpack-plugin": "^5.1.1",
+        "ts-loader": "^8.0.14",
+        "ts-node": "^9.1.1",
+        "typescript": "^4.1.3",
+        "webpack": "^5.24.2",
+        "webpack-cli": "^4.5.0"
+    },
+    "dependencies": {}
+}

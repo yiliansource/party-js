@@ -1,0 +1,12 @@
+.eslintignore
+.eslintrc.js
+.prettierrc
+tsconfig.json
+webpack.config.js
+
+.github/
+docs/
+samples/
+node_modules/
+src/
+tests/
