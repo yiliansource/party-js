@@ -22,7 +22,7 @@ function confetti(
         options
     );
     const rect = party.util.sourceToRect(source);
-    const emitter = party.scene.createEmitter({
+    const emitter = party.scene.current.createEmitter({
         emitterOptions: {
             // ...
             initialSpeed: config.speed,
@@ -77,7 +77,7 @@ After we've prepared all the objects we need, it's time to finally create the `E
 We use the fact that we can pass every configuration option that we need directly into the method that creates a new emitter in the scene.
 
 ```ts
-const emitter = party.scene.createEmitter({
+const emitter = party.scene.current.createEmitter({
     emitterOptions: {
         // ...
         initialSpeed: config.speed,

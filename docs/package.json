@@ -16,6 +16,7 @@
         "@docusaurus/preset-classic": "2.0.0-alpha.73",
         "@mdx-js/react": "^1.6.21",
         "clsx": "^1.1.1",
+        "party-js": "link:../",
         "react": "^16.8.4",
         "react-dom": "^16.8.4"
     },
@@ -32,6 +33,11 @@
         ]
     },
     "devDependencies": {
-        "@types/react": "^17.0.3"
+        "@docusaurus/module-type-aliases": "^2.0.0-alpha.73",
+        "@tsconfig/docusaurus": "^1.0.2",
+        "@types/react": "^17.0.4",
+        "@types/react-helmet": "^6.1.1",
+        "@types/react-router-dom": "^5.1.7",
+        "typescript": "^4.2.4"
     }
 }

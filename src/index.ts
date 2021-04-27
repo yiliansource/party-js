@@ -1,11 +1,5 @@
 import { Scene } from "./scene";
-
-// The library requires the use of the DOM, hence it cannot run in non-browser environments.
-if (typeof document === "undefined" || typeof window === "undefined") {
-    throw new Error(
-        "It seems like you are trying to run party.js in a non-browser environment, which is not supported."
-    );
-}
+import Lazy from "./util/lazy";
 
 // Export the configurable settings object.
 export { settings } from "./settings";
@@ -29,5 +23,18 @@ export * from "./templates";
 // Export shapes so new ones can be registered easily.
 export * from "./shapes";
 
-// Export and create the main scene.
-export const scene = new Scene();
+// Export and lazily create the main scene.
+export const scene = new Lazy<Scene>(() => {
+    // The library requires the use of the DOM, hence it cannot run in non-browser environments.
+    if (typeof document === "undefined" || typeof window === "undefined") {
+        throw new Error(
+            "It seems like you are trying to run party.js in a non-browser environment, which is not supported."
+        );
+    }
+    return new Scene();
+});
+
+export function forceInitialize(): void {
+    // Forces the initialization of the lazy scene.
+    scene.current;
+}

@@ -4,6 +4,9 @@
     "description": "A JavaScript library to brighten up your user's site experience with visual effects!",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
+    "exports": {
+        ".": "./dist"
+    },
     "scripts": {
         "clean": "rimraf bundle dist",
         "build": "npm run clean && tsc && webpack",

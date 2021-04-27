@@ -1,4 +1,4 @@
-import { getDebugContainer } from "./containers";
+import { debugContainer } from "./containers";
 import { Scene } from "./scene";
 import { settings } from "./settings";
 
@@ -33,7 +33,7 @@ export class Debug {
      * @param delta The time that has elapsed since the last tick.
      */
     public tick(delta: number): void {
-        const container = getDebugContainer();
+        const container = debugContainer.current;
 
         // If the current display style does not match the style inferred from the
         // enabled-state, update it.

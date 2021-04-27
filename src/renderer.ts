@@ -1,5 +1,5 @@
 import { Vector } from "./components/vector";
-import { getParticleContainer } from "./containers";
+import { particleContainer } from "./containers";
 import { Emitter } from "./particles/emitter";
 import { RendererOptions } from "./particles/options";
 import { Particle } from "./particles/particle";
@@ -114,7 +114,7 @@ export class Renderer {
         // Register the new element in the map, while appending the new element to the DOM.
         this.elements.set(
             particle.id,
-            getParticleContainer().appendChild(element)
+            particleContainer.current.appendChild(element)
         );
 
         return element;

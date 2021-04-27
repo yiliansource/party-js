@@ -3,13 +3,27 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
 import clsx from "clsx";
+import { Source } from "party-js/dist/util";
 import React from "react";
 
 import PartyJSLogo from "../../static/img/logo.svg";
-import styles from "./styles.module.css";
 import DemoButton from "../components/DemoButton";
+import * as demoMethods from "../util/demos";
+import styles from "./styles.module.css";
 
-const features = [
+interface Feature {
+    title: string;
+    imageUrl: string;
+    description: JSX.Element;
+}
+
+interface Demo {
+    title: string;
+    demoMethod: (source: Source) => void;
+    description: JSX.Element;
+}
+
+const features: Feature[] = [
     {
         title: "Easy to Use",
         imageUrl: "img/ice-cream.svg",
@@ -45,31 +59,35 @@ const features = [
     },
 ];
 
-const demos = [
+const demos: Demo[] = [
     {
         title: "Confetti clicking!",
-        demoMethod: "demoConfetti",
+        demoMethod: demoMethods.confetti,
         description: (
             <>Click the button to let some confetti explode from it!</>
         ),
     },
     {
         title: "Sparkly!",
-        demoMethod: "demoSparkles",
+        demoMethod: demoMethods.sparkles,
         description: (
             <>Want to add some sparkles to something? That's possible aswell!</>
         ),
     },
     {
         title: "Spread the love!",
-        demoMethod: "demoHearts",
+        demoMethod: demoMethods.hearts,
         description: (
             <>Want to fill the screens of your users with hearts? Go for it!</>
         ),
     },
 ];
 
-function Feature({ imageUrl, title, description }) {
+const FeatureElement: React.FunctionComponent<Feature> = function ({
+    title,
+    imageUrl,
+    description,
+}: Feature) {
     const imgUrl = useBaseUrl(imageUrl);
     return (
         <div className={clsx("col col--4", styles.feature)}>
@@ -87,9 +105,13 @@ function Feature({ imageUrl, title, description }) {
             <p>{description}</p>
         </div>
     );
-}
+};
 
-function Demo({ title, demoMethod, description }) {
+const DemoElement: React.FunctionComponent<Demo> = function ({
+    title,
+    demoMethod,
+    description,
+}: Demo) {
     return (
         <div className={clsx("demo col col--4", styles.demo)}>
             <h3>{title}</h3>
@@ -97,16 +119,13 @@ function Demo({ title, demoMethod, description }) {
             <DemoButton demoMethod={demoMethod} />
         </div>
     );
-}
+};
 
-function Home() {
+export default function () {
     const context = useDocusaurusContext();
     const { siteConfig = {} } = context;
     return (
-        <Layout
-            title={`Hello!`}
-            description="A JavaScript library to brighten up your user's site experience with visual effects!"
-        >
+        <Layout title={`Hello!`} description={siteConfig.tagline}>
             <header className={clsx("hero hero--primary", styles.heroBanner)}>
                 <div className="container">
                     <h1 className={clsx(styles.heroTitle)}>
@@ -137,7 +156,7 @@ function Home() {
                         <div className="container">
                             <div className="row">
                                 {features.map((props, idx) => (
-                                    <Feature key={idx} {...props} />
+                                    <FeatureElement key={idx} {...props} />
                                 ))}
                             </div>
                         </div>
@@ -150,14 +169,14 @@ function Home() {
                         <div className="container">
                             <div className="row">
                                 {demos.map((props, idx) => (
-                                    <Demo key={idx} {...props} />
+                                    <DemoElement key={idx} {...props} />
                                 ))}
                             </div>
                         </div>
                         <div className={styles.exampleLink}>
-                            <a href="/docs/examples/simple">
+                            <Link to="/docs/examples/simple">
                                 Check out the source code for the examples!
-                            </a>
+                            </Link>
                         </div>
                     </section>
                 )}
@@ -165,5 +184,3 @@ function Home() {
         </Layout>
     );
 }
-
-export default Home;

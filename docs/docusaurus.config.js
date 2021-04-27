@@ -9,12 +9,6 @@ module.exports = {
     favicon: "img/logo.svg",
     organizationName: "yiliansource",
     projectName: "party-js",
-    stylesheets: [],
-    plugins: [],
-    scripts: [
-        "/js/demos.js",
-        "https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js",
-    ],
     themeConfig: {
         image: "img/banner.png",
         metadatas: [
