@@ -44,6 +44,14 @@ body {
     font-family: "IBM Plex Sans", "Open Sans", sans-serif;
 }
 
+#__docusaurus {
+    min-height: 100vh !important;
+}
+#__docusaurus .main-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
 .docusaurus-highlight-code-line {
     background-color: rgb(54, 57, 70);
     display: block;
@@ -71,7 +79,7 @@ footer .footer__links .footer__col {
 }
 
 .navbar__brand {
-    filter: drop-shadow(1px 1px 0 rgb(0, 0, 0, 0.1));
+    filter: drop-shadow(1px 1px 0 rgba(0, 0, 0, 0.1));
 }
 .navbar__logo {
     transform: scale(1.3);
@@ -87,39 +95,4 @@ footer .footer__links .footer__col {
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-}
-
-.demo {
-    margin-bottom: 1em;
-}
-.demo p {
-    margin-bottom: 0.5em;
-}
-.demo .demoButton {
-    margin-bottom: 1em;
-}
-
-.demoButton {
-    display: block;
-    cursor: pointer;
-    width: 80px;
-    height: 40px;
-    padding: 0.5em 0.5em calc(0.7em + 3px);
-    border-radius: 4px;
-    box-shadow: 0 3px #bf4167;
-    background: linear-gradient(135deg, #ffa68d, #fd3a84);
-    text-align: center;
-    transition: filter 0.2s;
-    user-select: none;
-}
-.demoButton:hover {
-    filter: brightness(1.1);
-}
-.demoButton:active {
-    box-shadow: none;
-    transform: translateY(3px);
-}
-.demoButton img {
-    height: 100%;
-    filter: drop-shadow(2px 1px 0 rgb(0, 0, 0, 0.3));
 }

@@ -1,0 +1,26 @@
+input[type="text"] {
+    font: inherit;
+    color: inherit;
+    background: inherit;
+
+    font-size: 1em;
+    border: 1px solid var(--ifm-color-emphasis-300);
+    padding: 0.5em 0.75em;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+label {
+    display: block;
+
+    span {
+        font-size: 0.9em;
+        color: var(--ifm-color-emphasis-700);
+    }
+    input[type="text"] {
+        display: block;
+        margin-top: 0.25em;
+    }
+}

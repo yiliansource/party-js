@@ -1,5 +1,6 @@
+import React, { createRef } from "react";
+
 import Chevron from "./Chevron";
-import React, { createRef, useRef, useState } from "react";
 
 interface AccordionProps {
     icon?: string;
@@ -53,7 +54,6 @@ export default class Accordion extends React.Component<
     }
 
     toggleExpanded(): void {
-        console.log(this.content.current);
         this.setState({
             expanded: !this.state.expanded,
             height: this.state.expanded ? 0 : this.content.current.scrollHeight,

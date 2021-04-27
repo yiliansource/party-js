@@ -125,3 +125,10 @@ html[data-theme="dark"] .heroLogo {
 .demoButton {
     display: none;
 }
+
+.demo {
+    margin-bottom: 2em;
+}
+.demo p {
+    margin-bottom: 0.5em;
+}

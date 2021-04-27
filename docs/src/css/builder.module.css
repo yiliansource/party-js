@@ -1,0 +1,17 @@
+.effectBuilder {
+    display: flex;
+    flex-direction: row;
+    flex: 1 0 auto;
+}
+.effectBuilder > div {
+    padding: 1em 2em;
+    flex-basis: 50%;
+}
+
+.emitterConfig {
+    box-shadow: 2px 0 8px rgb(0, 0, 0, 0.05);
+    z-index: 1;
+}
+.emitterPreview {
+    background: var(--ifm-color-emphasis-100);
+}

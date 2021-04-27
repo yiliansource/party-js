@@ -9,6 +9,7 @@ module.exports = {
     favicon: "img/logo.svg",
     organizationName: "yiliansource",
     projectName: "party-js",
+    plugins: ["docusaurus-plugin-sass"],
     themeConfig: {
         image: "img/banner.png",
         metadatas: [
@@ -38,6 +39,11 @@ module.exports = {
                     to: "docs/",
                     activeBasePath: "docs",
                     label: "Docs",
+                    position: "left",
+                },
+                {
+                    to: "builder/",
+                    label: "Builder",
                     position: "left",
                 },
                 {
@@ -84,8 +90,9 @@ module.exports = {
                 },
                 theme: {
                     customCss: [
-                        require.resolve("./src/css/custom.css"),
-                        require.resolve("./src/css/components.css"),
+                        require.resolve("./src/css/custom.scss"),
+                        require.resolve("./src/css/forms.scss"),
+                        require.resolve("./src/css/components.scss"),
                     ],
                 },
             },

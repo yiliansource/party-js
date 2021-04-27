@@ -125,7 +125,7 @@ export default function () {
     const context = useDocusaurusContext();
     const { siteConfig = {} } = context;
     return (
-        <Layout title={`Hello!`} description={siteConfig.tagline}>
+        <Layout title="Hello!" description={siteConfig.tagline}>
             <header className={clsx("hero hero--primary", styles.heroBanner)}>
                 <div className="container">
                     <h1 className={clsx(styles.heroTitle)}>
