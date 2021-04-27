@@ -3,6 +3,7 @@ title: Simple
 ---
 
 import DemoButton from "../../src/components/DemoButton";
+import { confetti, sparkles } from "../../src/util/demos";
 
 ## Confetti
 
@@ -15,7 +16,7 @@ party.confetti(element, {
 });
 ```
 
-<DemoButton demoMethod="demoConfetti" />
+<DemoButton demoMethod={confetti} />
 
 ## Sparkles
 
@@ -26,4 +27,4 @@ const element = document.getElementById("demoSparkles");
 party.sparkles(element);
 ```
 
-<DemoButton demoMethod="demoSparkles" />
+<DemoButton demoMethod={sparkles} />

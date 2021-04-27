@@ -3,6 +3,7 @@ title: Advanced
 ---
 
 import DemoButton from "../../src/components/DemoButton";
+import { hearts } from "../../src/util/demos";
 
 ## Hearts
 
@@ -52,4 +53,4 @@ sizeModule.size = (p) =>
     0.5 + 0.3 * (Math.cos((p.initialLifetime - p.lifetime) * 10) + 1);
 ```
 
-<DemoButton demoMethod="demoHearts" />
+<DemoButton demoMethod={hearts} />
