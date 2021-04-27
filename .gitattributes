@@ -1,5 +1,0 @@
-samples/* linguist-vendored
-docs/* linguist-vendored
-
-webpack.config.js linguist-vendored
-.eslintrc.js linguist-vendored
