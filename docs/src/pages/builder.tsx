@@ -8,39 +8,38 @@ import * as party from "party-js";
 import React from "react";
 
 import EmitterConfig, {
-    EmitterOptionSet,
-} from "../components/builder/emitter-config";
-import EmitterPreview from "../components/builder/emitter-preview";
+    EmitterConfigState,
+} from "../components/builder/EmitterConfig";
+import EmitterPreview from "../components/builder/EmitterPreview";
 import styles from "../css/builder.module.css";
 
 export default class Builder extends React.Component {
     emitter: party.Emitter;
 
-    constructor(props) {
+    constructor(props: any) {
         super(props);
 
         this.handleConfigChange = this.handleConfigChange.bind(this);
 
-        party.settings.debug = true;
         party.scene.current.emitters = [];
         this.emitter = party.scene.current.createEmitter({
             emitterOptions: {
-                initialColour: party.Colour.black,
+                initialColour: party.Colour.fromHsl(10, 90, 60),
             },
             rendererOptions: {
                 shapeFactory: "circle",
             },
         });
+
+        const sizeModule = this.emitter.addModule(party.modules.SizeModifier);
+        sizeModule.size = new party.NumericSpline(
+            { time: 0, value: 0 },
+            { time: 0.05, value: 1 }
+        );
     }
 
-    handleConfigChange(set: EmitterOptionSet): void {
-        Object.assign(this.emitter.options, {
-            emission: set.emission,
-        } as Partial<party.Emitter>);
-        this.setState(this.state);
-
-        // TODO: For some reason the components don't re-render...
-        console.log("state!");
+    handleConfigChange(set: EmitterConfigState): void {
+        this.emitter.emission.rate = set.rate;
     }
 
     render() {
@@ -57,7 +56,7 @@ export default class Builder extends React.Component {
                         >
                             <EmitterConfig
                                 emitter={this.emitter}
-                                onOptionChange={this.handleConfigChange}
+                                onConfigChange={this.handleConfigChange}
                             />
                             <EmitterPreview emitter={this.emitter} />
                         </div>
