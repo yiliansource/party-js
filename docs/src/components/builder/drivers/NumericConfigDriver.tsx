@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React from "react";
 
 import { ConfigDriver, ConfigDriverProps } from "./ConfigDriver";
 
@@ -16,17 +16,24 @@ export class NumericConfigDriver extends ConfigDriver<
     NumericConfigDriverProps,
     NumericConfigDriverState
 > {
+    static defaultProps: Partial<NumericConfigDriverProps> = {
+        max: Number.POSITIVE_INFINITY,
+        min: Number.NEGATIVE_INFINITY,
+        step: 1,
+    };
+
     getInitialState(props: NumericConfigDriverProps): NumericConfigDriverState {
         return {
-            input: props.get().toString(),
+            input: ((props.get && props.get()) || 0).toString(),
         };
     }
-    getResult() {
-        return parseInt(this.state.input) || 0;
+    getResult(): number {
+        const parsed = parseFloat(this.state.input) || 0;
+        return Math.min(this.props.max, Math.max(this.props.min, parsed));
     }
     handleValueChanged(event: React.ChangeEvent<HTMLInputElement>) {
         const input = event.target.value;
-        if (!/^-?\d*$/.test(input)) {
+        if (!/^-?\d*(\.\d*)?$/.test(input)) {
             return;
         }
 
@@ -37,16 +44,13 @@ export class NumericConfigDriver extends ConfigDriver<
 
     renderInner() {
         return (
-            <Fragment>
-                <input
-                    type="text"
-                    name={this.props.name}
-                    min={this.props.min}
-                    value={this.state.input}
-                    onChange={this.handleValueChanged.bind(this)}
-                />
-                <span>{this.getResult()}</span>
-            </Fragment>
+            <input
+                className="driver-input numeric"
+                type="text"
+                name={this.props.name}
+                value={this.state.input}
+                onChange={this.handleValueChanged.bind(this)}
+            />
         );
     }
 }

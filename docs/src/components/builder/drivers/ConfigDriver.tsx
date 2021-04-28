@@ -1,11 +1,11 @@
 import React from "react";
 
 export interface ConfigDriverProps<TValue> {
-    label: string;
+    label?: string;
     name?: string;
 
-    get: () => TValue;
-    set: (value: TValue) => void;
+    get?: () => TValue;
+    set?: (value: TValue) => void;
 }
 
 export abstract class ConfigDriver<
@@ -18,18 +18,27 @@ export abstract class ConfigDriver<
         this.state = this.getInitialState(props);
     }
 
+    public abstract getResult(): TValue;
+
     protected abstract getInitialState(props: TProps): TState;
-    protected abstract getResult(): TValue;
     protected abstract renderInner(): JSX.Element;
 
-    componentDidUpdate() {
-        this.props.set(this.getResult());
+    protected getWrapperClass(): string[] {
+        return ["config-driver"];
+    }
+
+    componentDidUpdate(prevProps: TProps, prevState: TState) {
+        if (this.state !== prevState) {
+            this.props.set && this.props.set(this.getResult());
+        }
     }
 
     public render() {
         return (
-            <label>
-                <span>{this.props.label}</span>
+            <label className={this.getWrapperClass().join(" ")}>
+                {this.props.label && (
+                    <span className="label">{this.props.label}</span>
+                )}
                 {this.renderInner()}
             </label>
         );

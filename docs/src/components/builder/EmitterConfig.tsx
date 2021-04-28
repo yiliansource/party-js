@@ -47,46 +47,45 @@ export default class EmitterConfig extends React.Component<
                 <h2>Configuration</h2>
                 <p>Configure the emitter here.</p>
 
-                <NumericConfigDriver
-                    label="Rate"
-                    min={0}
-                    step={1}
-                    get={() => this.props.emitter.emission.rate}
-                    set={(value) => (this.props.emitter.emission.rate = value)}
-                />
-                <NumericConfigDriver
-                    label="Duration"
-                    min={1}
-                    step={1}
-                    get={() => this.props.emitter.options.duration}
-                    set={(value) =>
-                        (this.props.emitter.options.duration = value)
-                    }
-                />
+                <div className="row margin-bottom-sm">
+                    <div className="col">
+                        <NumericConfigDriver label="Duration" />
+                    </div>
+                    <div className="col">
+                        <NumericConfigDriver label="Loops" />
+                    </div>
+                    <div className="col">
+                        <NumericConfigDriver label="Rate" />
+                    </div>
+                    <div className="col">
+                        <NumericConfigDriver label="Max. Particles" />
+                    </div>
+                </div>
 
-                <hr />
-
-                <GroupConfigDriver
-                    label="Rotation"
-                    schema={[
-                        {
-                            label: "X",
-                            type: "number",
-                        },
-                    ]}
-                    get={() => {
-                        const [x, y, z] = (this.props.emitter.options
-                            .initialRotation as party.Vector).xyz;
-                        return { x, y, z };
-                    }}
-                    set={(result: Record<string, number>) => {
-                        this.props.emitter.options.initialRotation = new party.Vector(
-                            result.x,
-                            result.y,
-                            result.z
-                        );
-                    }}
-                />
+                <div className="row">
+                    <div className="col">
+                        <RepeaterConfigDriver
+                            label="Bursts"
+                            get={() => this.props.emitter.emission.bursts}
+                            set={(value) =>
+                                (this.props.emitter.emission.bursts = value as any)
+                            }
+                            schema={[
+                                { label: "Time", name: "time", type: "number" },
+                                {
+                                    label: "Count",
+                                    name: "count",
+                                    type: "number",
+                                },
+                                {
+                                    label: "Probability",
+                                    name: "probability",
+                                    type: "number",
+                                },
+                            ]}
+                        />
+                    </div>
+                </div>
             </div>
         );
     }

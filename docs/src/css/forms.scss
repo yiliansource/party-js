@@ -1,27 +1,85 @@
-input[type="text"] {
-    font: inherit;
-    color: inherit;
-    background: inherit;
+.config-driver {
+    & > .label {
+        font-size: 15px;
+    }
 
-    font-size: 1em;
-    border: 1px solid var(--ifm-color-emphasis-300);
-    padding: 0.5em 0.75em;
+    & > input.driver-input {
+        font: inherit;
+        color: var(--ifm-color-gray-900);
+        font-size: 14px;
+        border: none;
+        margin-left: 0.5em;
+        padding: 0.3em 0.6em;
+        border-radius: 6px;
+        background: var(--ifm-color-secondary);
+        transition-property: color, background;
+        transition-duration: 200ms;
 
-    &:focus {
-        outline: none;
+        &.numeric {
+            width: 60px;
+        }
+
+        &:focus {
+            outline: none;
+            background: var(--ifm-color-secondary-dark);
+        }
+    }
+
+    & > select.driver-select {
+        font: inherit;
+        color: var(--ifm-color-gray-900);
+        background: var(--ifm-color-secondary);
+        border-radius: 6px;
+        border: none;
+        margin-left: 0.5em;
+        padding: 0.3em 0.8em;
+
+        & > option {
+            background: white;
+        }
     }
 }
 
-label {
-    display: block;
-    margin-bottom: 0.5em;
+.driver-group,
+.repeater-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 
-    span {
-        font-size: 0.9em;
-        color: var(--ifm-color-emphasis-700);
+    & > .config-driver:not(:last-child) {
+        margin-right: 1em;
     }
-    input[type="text"] {
-        display: block;
+}
+
+.group-config-driver {
+    & > .label {
+        font-weight: bold;
+    }
+}
+
+.repeater-config-driver {
+    & > .label {
+        font-weight: bold;
+    }
+
+    & > .driver-repeater {
+        display: flex;
+        flex-direction: column;
         margin-top: 0.25em;
+
+        & > .repeater-item {
+            & > .remove {
+                margin-left: auto;
+            }
+
+            &:not(:nth-last-child(2)) {
+                padding-bottom: 0.2em;
+                border-bottom: 1px solid var(--ifm-color-emphasis-200);
+                margin-bottom: 0.2em;
+            }
+            &:nth-last-child(2) {
+                margin-bottom: 0.3em;
+            }
+        }
     }
 }

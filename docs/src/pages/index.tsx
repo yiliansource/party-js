@@ -8,8 +8,8 @@ import React from "react";
 
 import PartyJSLogo from "../../static/img/logo.svg";
 import DemoButton from "../components/DemoButton";
+import styles from "../css/index.module.css";
 import * as demoMethods from "../util/demos";
-import styles from "./styles.module.css";
 
 interface Feature {
     title: string;

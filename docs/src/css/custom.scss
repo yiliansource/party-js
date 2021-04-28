@@ -96,3 +96,28 @@ footer .footer__links .footer__col {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
+
+$types: "margin", "padding";
+$sizes: (
+    "none": 0,
+    "xs": 0.25rem,
+    "sm": 0.5rem,
+    "md": 1rem,
+    "lg": 2rem,
+    "xl": 5rem,
+);
+$sides: "top", "left", "bottom", "right";
+
+@each $type in $types {
+    @each $size, $value in $sizes {
+        .#{$type}--#{size} {
+            #{$type}: #{$value} !important;
+        }
+
+        @each $side in $sides {
+            .#{$type}-#{$side}-#{$size} {
+                #{$type}-#{$side}: #{$value} !important;
+            }
+        }
+    }
+}

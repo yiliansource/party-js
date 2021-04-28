@@ -26,6 +26,9 @@ export default class Builder extends React.Component {
             emitterOptions: {
                 initialColour: party.Colour.fromHsl(10, 90, 60),
             },
+            emissionOptions: {
+                bursts: [{ time: 0, count: 20, probability: 1 }],
+            },
             rendererOptions: {
                 shapeFactory: "circle",
             },
@@ -36,6 +39,10 @@ export default class Builder extends React.Component {
             { time: 0, value: 0 },
             { time: 0.05, value: 1 }
         );
+    }
+
+    componentWillUnmount() {
+        party.scene.current.emitters = [];
     }
 
     handleConfigChange(set: EmitterConfigState): void {

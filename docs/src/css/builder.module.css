@@ -4,7 +4,7 @@
     flex: 1 0 auto;
 }
 .effectBuilder > div {
-    padding: 1em 2em;
+    padding: 1.5em 2.2em;
     flex-basis: 50%;
 }
 
@@ -12,6 +12,7 @@
     box-shadow: 2px 0 8px rgb(0, 0, 0, 0.05);
     z-index: 1;
 }
+
 .emitterPreview {
     background: var(--ifm-color-emphasis-100);
 }
