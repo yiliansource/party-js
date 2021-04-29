@@ -1,3 +1,4 @@
+export * from "./BooleanConfigDriver";
 export * from "./ColourConfigDriver";
 export * from "./GroupConfigDriver";
 export * from "./NumericConfigDriver";

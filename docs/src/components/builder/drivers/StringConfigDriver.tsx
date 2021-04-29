@@ -2,11 +2,7 @@ import React from "react";
 
 import { ConfigDriver, ConfigDriverProps } from "./ConfigDriver";
 
-interface StringConfigDriverProps extends ConfigDriverProps<string> {
-    min?: number;
-    max?: number;
-    step?: number;
-}
+interface StringConfigDriverProps extends ConfigDriverProps<string> {}
 interface StringConfigDriverState {
     input: string;
 }

@@ -90,6 +90,7 @@ export class RepeaterConfigDriver extends ConfigDriver<
                                 }
                             })}
                             <div
+                                tabIndex={0}
                                 className="remove button button--secondary"
                                 onClick={() => this.removeItem(index)}
                             >
@@ -99,6 +100,7 @@ export class RepeaterConfigDriver extends ConfigDriver<
                     );
                 })}
                 <div
+                    tabIndex={0}
                     className="add button button--secondary"
                     onClick={this.addItem.bind(this)}
                 >

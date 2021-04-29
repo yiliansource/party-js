@@ -1,6 +1,11 @@
 .config-driver {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+
     & > .label {
         font-size: 15px;
+        white-space: nowrap;
     }
 
     & > input.driver-input {
@@ -18,10 +23,20 @@
         &.numeric {
             width: 60px;
         }
+        &.boolean {
+            &[type="checkbox"] {
+                appearance: none;
+                height: 20px;
+                width: 20px;
+                background-color: currentColor;
+                color: var(--ifm-color-secondary);
 
-        &:focus {
-            outline: none;
-            background: var(--ifm-color-secondary-dark);
+                &:checked {
+                    color: #fe6388;
+
+                    background-image: url("data:image/svg+xml,%3csvg viewBox='0 0 16 16' fill='white' xmlns='http://www.w3.org/2000/svg'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
+                }
+            }
         }
     }
 
@@ -40,9 +55,21 @@
     }
 }
 
+input[type="text"],
+input[type="checkbox"],
+select,
+button,
+.button {
+    &:focus {
+        outline: none;
+        box-shadow: 0 0 0 2px rgb(254, 98, 134);
+    }
+}
+
 .driver-group,
 .repeater-item {
     display: flex;
+    flex-wrap: wrap;
     flex-direction: row;
     align-items: center;
 
@@ -52,12 +79,18 @@
 }
 
 .group-config-driver {
+    align-items: flex-start;
+    flex-direction: column;
+
     & > .label {
         font-weight: bold;
     }
 }
 
 .repeater-config-driver {
+    align-items: flex-start;
+    flex-direction: column;
+
     & > .label {
         font-weight: bold;
     }
@@ -66,6 +99,7 @@
         display: flex;
         flex-direction: column;
         margin-top: 0.25em;
+        width: 100%;
 
         & > .repeater-item {
             & > .remove {
@@ -73,13 +107,19 @@
             }
 
             &:not(:nth-last-child(2)) {
-                padding-bottom: 0.2em;
-                border-bottom: 1px solid var(--ifm-color-emphasis-200);
-                margin-bottom: 0.2em;
+                padding-bottom: 0.3em;
+                border-bottom: 1px solid var(--ifm-color-emphasis-100);
+                margin-bottom: 0.5em;
             }
             &:nth-last-child(2) {
                 margin-bottom: 0.3em;
             }
         }
+    }
+}
+
+@media (max-width: 996px) {
+    .config-driver {
+        margin-bottom: 0.4em;
     }
 }

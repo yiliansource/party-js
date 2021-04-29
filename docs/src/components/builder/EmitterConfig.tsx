@@ -5,26 +5,20 @@ import React from "react";
 
 import styles from "../../css/builder.module.css";
 import {
+    BooleanConfigDriver,
     NumericConfigDriver,
     ColourConfigDriver,
     GroupConfigDriver,
     RepeaterConfigDriver,
     SelectConfigDriver,
+    StringConfigDriver,
 } from "./drivers";
 
 export interface EmitterConfigProps {
     emitter: party.Emitter;
-
-    onConfigChange: (state: EmitterConfigState) => void;
-}
-export interface EmitterConfigState {
-    rate: number;
 }
 
-export default class EmitterConfig extends React.Component<
-    EmitterConfigProps,
-    EmitterConfigState
-> {
+export default class EmitterConfig extends React.Component<EmitterConfigProps> {
     constructor(props: EmitterConfigProps) {
         super(props);
 
@@ -84,6 +78,51 @@ export default class EmitterConfig extends React.Component<
                                 },
                             ]}
                         />
+                    </div>
+                </div>
+
+                <hr />
+
+                <div className="row margin-bottom-sm">
+                    <div className="col">
+                        <NumericConfigDriver label="Lifetime" />
+                    </div>
+                    <div className="col">
+                        <NumericConfigDriver label="Speed" />
+                    </div>
+                    <div className="col">
+                        <NumericConfigDriver label="Size" />
+                    </div>
+                    <div className="col">
+                        <StringConfigDriver label="Colour" />
+                    </div>
+                </div>
+
+                <div className="row">
+                    <div className="col col--8">
+                        <GroupConfigDriver
+                            label="Rotation"
+                            schema={[
+                                {
+                                    label: "X",
+                                    name: "x",
+                                    type: "number",
+                                },
+                                {
+                                    label: "Y",
+                                    name: "y",
+                                    type: "number",
+                                },
+                                {
+                                    label: "Z",
+                                    name: "z",
+                                    type: "number",
+                                },
+                            ]}
+                        />
+                    </div>
+                    <div className="col">
+                        <BooleanConfigDriver label="Use Gravity?" />
                     </div>
                 </div>
             </div>

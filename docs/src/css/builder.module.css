@@ -1,18 +1,34 @@
 .effectBuilder {
+    flex: 1 0 auto;
     display: flex;
     flex-direction: row;
-    flex: 1 0 auto;
+    flex-wrap: wrap;
 }
 .effectBuilder > div {
-    padding: 1.5em 2.2em;
     flex-basis: 50%;
+    min-height: 70vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.effectBuilder > div > div {
+    height: 100%;
+    position: relative;
+    padding: 1.2em;
+    flex: 1 0;
 }
 
 .emitterConfig {
-    box-shadow: 2px 0 8px rgb(0, 0, 0, 0.05);
+    box-shadow: 0 0 8px 4px rgb(0, 0, 0, 0.05);
     z-index: 1;
 }
 
 .emitterPreview {
     background: var(--ifm-color-emphasis-100);
+}
+
+@media screen and (max-width: 996px) {
+    .effectBuilder {
+        flex-direction: column;
+    }
 }

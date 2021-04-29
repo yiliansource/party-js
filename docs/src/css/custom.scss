@@ -61,6 +61,7 @@ body {
 
 footer {
     box-shadow: var(--ifm-footer-shadow);
+    z-index: var(--ifm-z-index-fixed);
 }
 footer .copynote {
     margin-top: 3em;
