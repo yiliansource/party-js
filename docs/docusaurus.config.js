@@ -23,7 +23,7 @@ module.exports = {
         prism: {
             theme: require("prism-react-renderer/themes/dracula"),
         },
-        googleAnalytics: {
+        gtag: {
             trackingID: "G-EWQS5KE2B5",
             anonymizeIP: true,
         },
