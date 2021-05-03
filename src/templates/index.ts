@@ -1,2 +1,2 @@
-export { confetti, ConfettiConfiguration } from "./confetti";
-export { sparkles, SparkleConfiguration } from "./sparkles";
+export * from "./confetti";
+export * from "./sparkles";
