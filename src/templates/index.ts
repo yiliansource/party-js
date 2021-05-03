@@ -1,2 +1,2 @@
-export { confetti } from "./confetti";
-export { sparkles } from "./sparkles";
+export * from "./confetti";
+export * from "./sparkles";
