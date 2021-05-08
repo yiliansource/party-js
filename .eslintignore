@@ -3,8 +3,8 @@
 webpack.config.js
 
 # ignore built directories
+lib
 bundle
-dist
 node_modules
 
 # ignore samples and documentation

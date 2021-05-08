@@ -1,27 +1,18 @@
 import { Vector } from "../components/vector";
 import { settings } from "../settings";
-import { randomInsideRect } from "../systems/random";
+import { randomInsideSource } from "../systems/random";
 import { evaluateVariation } from "../systems/variation";
 import { overrideDefaults } from "../util/config";
 import { ParticleModifierModule } from "./modules/particleModifierModule";
 import {
     EmissionOptions,
     EmitterOptions,
-    RendererOptions,
-    ShapeOptions,
+    RenderOptions,
     getDefaultEmissionOptions,
     getDefaultEmitterOptions,
     getDefaultRendererOptions,
-    getDefaultShapeOptions,
 } from "./options";
-import { Particle, createParticle } from "./particle";
-
-/**
- * Represents the type (or constructor) or a particle modifier module.
- */
-type ParticleModuleConstructor<TModule extends ParticleModifierModule> = {
-    new (...args: unknown[]): TModule;
-};
+import { Particle } from "./particle";
 
 /**
  * Defines the set of options that can be used when creating a new emitter.
@@ -29,8 +20,7 @@ type ParticleModuleConstructor<TModule extends ParticleModifierModule> = {
 export interface EmitterConstructionOptions {
     emitterOptions?: Partial<EmitterOptions>;
     emissionOptions?: Partial<EmissionOptions>;
-    shapeOptions?: Partial<ShapeOptions>;
-    rendererOptions?: Partial<RendererOptions>;
+    rendererOptions?: Partial<RenderOptions>;
 }
 
 /**
@@ -62,17 +52,13 @@ export class Emitter {
      */
     public readonly emission: EmissionOptions;
     /**
-     * The shape options of the emitter.
-     */
-    public readonly shape: ShapeOptions;
-    /**
      * The renderer options of the emitter.
      */
-    public readonly renderer: RendererOptions;
+    public readonly renderer: RenderOptions;
 
+    private currentLoop = 0; // The current loop index.
     private durationTimer = 0; // Measures the current runtime duration, to allow loops to reset.
     private emissionTimer = 0; // Measures the current emission timer, to allow spawning particles in intervals.
-    private currentLoop = 0; // The current loop index.
 
     private attemptedBurstIndices: number[] = []; // The indices of the particle bursts that were attempted this loop.
 
@@ -98,10 +84,6 @@ export class Emitter {
             getDefaultEmissionOptions(),
             options?.emissionOptions
         );
-        this.shape = overrideDefaults(
-            getDefaultShapeOptions(),
-            options?.shapeOptions
-        );
         this.renderer = overrideDefaults(
             getDefaultRendererOptions(),
             options?.rendererOptions
@@ -112,7 +94,7 @@ export class Emitter {
      * Adds a particle modifier module of the specified type to the emitter and returns it.
      */
     public addModule<TModule extends ParticleModifierModule>(
-        moduleType: ParticleModuleConstructor<TModule>,
+        moduleType: new (...args: unknown[]) => TModule,
         ...args: unknown[]
     ): TModule {
         const module = new moduleType(args);
@@ -226,15 +208,15 @@ export class Emitter {
      * Also may despawn a particle if the maximum number of particles is exceeded.
      */
     private emitParticle(): Particle {
-        const particle: Particle = createParticle({
-            location: randomInsideRect(this.shape.source),
-            lifetime: evaluateVariation(this.options.initialLifetime),
+        const particle: Particle = new Particle({
+            location: randomInsideSource(this.emission.source),
+            lifetime: evaluateVariation(this.emission.initialLifetime),
             velocity: Vector.from2dAngle(
-                evaluateVariation(this.shape.angle)
-            ).scale(evaluateVariation(this.options.initialSpeed)),
-            size: evaluateVariation(this.options.initialSize),
-            rotation: evaluateVariation(this.options.initialRotation),
-            colour: evaluateVariation(this.options.initialColour),
+                evaluateVariation(this.emission.angle)
+            ).scale(evaluateVariation(this.emission.initialSpeed)),
+            size: evaluateVariation(this.emission.initialSize),
+            rotation: evaluateVariation(this.emission.initialRotation),
+            colour: evaluateVariation(this.emission.initialColour),
         });
         this.particles.push(particle);
 

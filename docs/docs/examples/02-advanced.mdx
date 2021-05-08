@@ -11,7 +11,6 @@ A completely customized effect, showcasing the power of emitters, shapes and var
 
 ```js
 const element = document.getElementById(id);
-const rect = party.util.sourceToRect(element);
 
 // Make sure the "heart" shapes exists.
 if (!party.resolvableShapes.heart) {
@@ -23,20 +22,20 @@ const emitter = party.scene.current.createEmitter({
         loops: 1,
         useGravity: false,
         initialSpeed: 400,
+    },
+    emissionOptions: {
+        rate: 0,
+        bursts: [{ time: 0, count: party.variation.skew(20, 10) }],
+
+        source,
+        angle: party.variation.range(0, 360),
+
         initialColour: party.variation.gradientSample(
             party.Gradient.simple(
                 party.Colour.fromHex("#ffa68d"),
                 party.Colour.fromHex("#fd3a84")
             )
         ),
-    },
-    emissionOptions: {
-        rate: 0,
-        bursts: [{ time: 0, count: party.variation.skew(20, 10) }],
-    },
-    shapeOptions: {
-        angle: party.variation.range(0, 360),
-        source: rect,
     },
     rendererOptions: {
         shapeFactory: "heart",

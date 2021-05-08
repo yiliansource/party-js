@@ -1,4 +1,4 @@
-import { Vector } from "../../components/vector";
+import { Vector } from "../../components";
 import { ParticleModifier, evaluateModifier } from "../../systems/modifiers";
 import { Particle } from "../particle";
 import { ParticleModifierModule } from "./particleModifierModule";

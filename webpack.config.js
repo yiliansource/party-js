@@ -1,4 +1,6 @@
 const path = require("path");
+
+const TsconfigPathsPlugin = require("tsconfig-paths-webpack-plugin");
 const TerserWebpackPlugin = require("terser-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "development";
@@ -15,6 +17,7 @@ module.exports = {
         libraryTarget: "umd",
         library: "party",
         umdNamedDefine: true,
+        libraryExport: "default",
     },
     module: {
         rules: [
@@ -27,6 +30,7 @@ module.exports = {
     },
     resolve: {
         extensions: [".ts", ".js"],
+        plugins: [new TsconfigPathsPlugin()],
     },
     devtool: mode == "development" ? "source-map" : "none",
     plugins: [

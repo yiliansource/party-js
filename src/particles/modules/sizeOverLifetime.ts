@@ -13,7 +13,7 @@ export class SizeModifier extends ParticleModifierModule {
     /**
      * Applies the size over lifetime to the specified particle.
      */
-    public apply(particle: Particle): void {
+    public apply(this: SizeModifier, particle: Particle): void {
         particle.size =
             particle.initialSize * evaluateModifier(this.size, particle);
     }

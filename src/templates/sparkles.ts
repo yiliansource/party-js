@@ -1,10 +1,12 @@
-import { modules, random, scene } from "..";
-import { Colour, NumericSpline, Rect, Vector } from "../components";
+import party from "../";
+import { Colour, NumericSpline, Vector } from "../components";
 import { Emitter } from "../particles/emitter";
+import * as modules from "../particles/modules";
+import { Source } from "../particles/options";
 import { ParticleModifier } from "../systems/modifiers";
-import { Variation, range } from "../systems/variation";
-import { Source, sourceToRect } from "../util";
-import { overrideDefaults } from "../util/config";
+import { randomRange } from "../systems/random";
+import { range, Variation } from "../systems/variation";
+import { overrideDefaults } from "../util";
 
 /**
  * The configuration to apply to the sparkles.
@@ -34,8 +36,8 @@ export function sparkles(
             count: range(10, 20),
             speed: range(100, 200),
             size: range(0.5, 1.5),
-            rotation: () => new Vector(0, 0, random.randomRange(0, 360)),
-            colour: () => Colour.fromHsl(50, 100, random.randomRange(55, 85)),
+            rotation: () => new Vector(0, 0, randomRange(0, 360)),
+            colour: () => Colour.fromHsl(50, 100, randomRange(55, 85)),
             sizeOverLifetime: new NumericSpline(
                 { time: 0, value: 0 },
                 { time: 0.3, value: 1 },
@@ -48,25 +50,24 @@ export function sparkles(
         options
     );
 
-    const rect: Rect = sourceToRect(source);
-    const emitter = scene.current.createEmitter({
+    const emitter = party.scene.current.createEmitter({
         emitterOptions: {
             loops: 1,
             duration: 3,
             useGravity: false,
+        },
+        emissionOptions: {
+            rate: 0,
+            bursts: [{ time: 0, count: config.count }],
+
+            source,
+            angle: range(0, 360),
+
             initialLifetime: range(1, 2),
             initialSpeed: config.speed,
             initialSize: config.size,
             initialRotation: config.rotation,
             initialColour: config.colour,
-        },
-        emissionOptions: {
-            rate: 0,
-            bursts: [{ time: 0, count: config.count }],
-        },
-        shapeOptions: {
-            angle: range(0, 360),
-            source: rect,
         },
         rendererOptions: {
             applyLighting: undefined,

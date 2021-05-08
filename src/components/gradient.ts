@@ -1,4 +1,4 @@
-import { Colour } from "./colour";
+import { Colour } from "./";
 import { Spline } from "./spline";
 
 /**

@@ -1,11 +1,12 @@
 {
     "compilerOptions": {
+        "baseUrl": "./src",
+        "outDir": "./lib",
         "module": "CommonJS",
         "target": "ES5",
-        "declaration": true,
-        "sourceMap": true,
         "lib": ["ES2015", "DOM"],
-        "outDir": "./dist"
+        "declaration": true,
+        "sourceMap": true
     },
     "include": ["./src/**/*"]
 }

@@ -1,7 +1,7 @@
 /**
  * Represents a rectangle with an origin and size.
  */
-export interface Rect {
+export class Rect {
     /**
      * The x-position of the rectangle.
      */
@@ -18,4 +18,20 @@ export interface Rect {
      * The height of the rectangle.
      */
     height: number;
+
+    constructor(x = 0, y = 0, width = 0, height = 0) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+
+    public static fromHtmlElement(element: HTMLElement): Rect {
+        const bounds = element.getBoundingClientRect();
+        return new Rect(bounds.x, bounds.y, bounds.width, bounds.height);
+    }
+
+    public static fromMouseEvent(e: MouseEvent): Rect {
+        return new Rect(e.clientX, e.clientY);
+    }
 }

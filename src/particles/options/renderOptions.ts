@@ -12,7 +12,7 @@ export type ApplyFunction<T> = (property: T, element: HTMLElement) => void;
 /**
  * Holds the options used to configure the renderer for a particle system.
  */
-export interface RendererOptions {
+export interface RenderOptions {
     /**
      * The factory used to determine the element (or "shape") that a particle will be rendered as.
      * This variation can also return a resolve-able string.
@@ -49,7 +49,7 @@ export interface RendererOptions {
 /**
  * Returns the default set of renderer options.
  */
-export function getDefaultRendererOptions(): RendererOptions {
+export function getDefaultRendererOptions(): RenderOptions {
     return {
         shapeFactory: "square",
 

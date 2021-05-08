@@ -1,5 +1,5 @@
-import { settings } from ".";
-import Lazy from "./util/lazy";
+import { settings } from "./settings";
+import { Lazy } from "./util/lazy";
 
 /**
  * The prefix to apply to the containers.

@@ -1,4 +1,4 @@
-import { Source } from "party-js/dist/util";
+import { Source } from "party-js/lib/particles/options/emissionOptions";
 import React, { FunctionComponent, useRef } from "react";
 
 interface DemoButtonProps {

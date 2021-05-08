@@ -1,4 +1,5 @@
 .github/ISSUE_TEMPLATE
+
+lib
 bundle
-dist
 node_modules

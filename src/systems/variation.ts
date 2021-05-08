@@ -1,5 +1,4 @@
-import { Colour } from "../components";
-import { Gradient } from "../components/gradient";
+import { Colour, Gradient } from "../components";
 import { Spline } from "../components/spline";
 import { pick, randomRange } from "./random";
 

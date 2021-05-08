@@ -3,8 +3,9 @@
 </h1>
 
 <p align="center">
-    <a href="#installation">Installation</a> •
-    <a href="#usage">Usage</a> •
+    <a href="#installation">Installation</a> &bull;
+    <a href="#usage">Usage</a> &bull;
+    <a href="#how-it-works">How it works</a> &bull;
     <a href="#contributing">Contributing</a>
 </p>
 
@@ -14,7 +15,6 @@
     <img alt="GitHub Build Status" src="https://img.shields.io/github/workflow/status/yiliansource/party-js/Node.js%20CI?style=flat&logo=Node.js">
     <a href="https://party.js.org/"><img alt="GitHub Docs Status" src="https://img.shields.io/github/workflow/status/yiliansource/party-js/Deploy%20documentation?color=blue&label=docs&logo=Read%20the%20Docs&logoColor=white"></a>
     <img alt="npm downloads" src="https://img.shields.io/npm/dm/party-js?style=flat">
-    <img alt="License" src="https://img.shields.io/github/license/yiliansource/party-js?style=flat"/>
 </p>
 
 ## Installation
@@ -35,7 +35,7 @@ The library instance is loaded into the global `party` object.
 
 If you are using a package-managed environment, you can also install the latest version via [npm].
 
-```python
+```bash
 npm install party-js
 # or
 yarn add party-js
@@ -44,7 +44,7 @@ yarn add party-js
 To use it, simply `require` or `import` it.
 
 ```ts
-import * as party from "party-js";
+import party from "party-js";
 // or
 const party = require("party-js");
 ```

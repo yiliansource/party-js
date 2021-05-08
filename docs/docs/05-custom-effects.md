@@ -21,23 +21,22 @@ function confetti(
         },
         options
     );
-    const rect = party.util.sourceToRect(source);
     const emitter = party.scene.current.createEmitter({
         emitterOptions: {
             // ...
-            initialSpeed: config.speed,
-            initialLifetime: party.variation.range(6, 8),
         },
         emissionOptions: {
             rate: 0,
             bursts: [{ time: 0, count: config.count }],
-        },
-        shapeOptions: {
+
+            source,
             angle: party.variation.skew(
                 -90,
                 party.variation.evaluateVariation(config.spread)
             ),
-            source: rect,
+
+            initialSpeed: config.speed,
+            initialLifetime: party.variation.range(6, 8),
         },
         rendererOptions: {
             shapeFactory: config.shapes,
@@ -66,12 +65,6 @@ const config = party.util.overrideDefaults(
 );
 ```
 
-Next up, we determine the actual area that the particles will be emitted from. This is done by converting the `Source` parameter to a `Rect` using a utility method.
-
-```ts
-const rect = party.util.sourceToRect(source);
-```
-
 After we've prepared all the objects we need, it's time to finally create the `Emitter` object. This is the instance that will ultimately be responsible for spawning our confetti-particles.
 
 We use the fact that we can pass every configuration option that we need directly into the method that creates a new emitter in the scene.
@@ -80,19 +73,17 @@ We use the fact that we can pass every configuration option that we need directl
 const emitter = party.scene.current.createEmitter({
     emitterOptions: {
         // ...
-        initialSpeed: config.speed,
-        initialLifetime: party.variation.range(6, 8),
     },
     emissionOptions: {
         rate: 0,
         bursts: [{ time: 0, count: config.count }],
-    },
-    shapeOptions: {
+        source,
         angle: party.variation.skew(
             -90,
             party.variation.evaluateVariation(config.spread)
         ),
-        source: rect,
+        initialSpeed: config.speed,
+        initialLifetime: party.variation.range(6, 8),
     },
     rendererOptions: {
         shapeFactory: config.shapes,
