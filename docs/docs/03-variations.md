@@ -4,7 +4,7 @@ title: Variations
 
 ## Introduction
 
-The library makes heavy use of so-called _variations_ to allow the variation/customization of individual values. Variations are generic - in theory they can take any value, no matter if it's a number, Vector or Colour. A variation can be represented by a _constant_, an _array_, or a _function returning a value_.
+The library makes heavy use of so-called _variations_ to allow the variation/customization of individual values. Variations are generic - in theory they can take any value, no matter if it's a number, Vector or Color. A variation can be represented by a _constant_, an _array_, or a _function returning a value_.
 
 ```ts
 type Variation<T> = T | T[] | (() => T);
@@ -35,4 +35,4 @@ To assist in creating variations aside from constants and arrays, the library of
 -   `party.variation.skew(value, amount)`: Creates a variation that skews the specified value by a specified, absolute amount. This means that instead of the value itself, a random number that deviates at most by the specified amount is returned.
 -   `party.variation.skewRelative(value, percentage)`: Creates a variation that skews the specified value by a specified percentage. This means that instead of the value itself, a random number that deviates by a maximum of the specified percentage is returned.
 -   `party.variation.splineSample(spline)`: Creates a variation that returns a random sample from the given spline.
--   `party.variation.gradientSample(gradient)`: Creates a variation that returns a random colour sample from the given gradient.
+-   `party.variation.gradientSample(gradient)`: Creates a variation that returns a random color sample from the given gradient.

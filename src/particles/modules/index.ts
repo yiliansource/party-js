@@ -1,3 +1,6 @@
+export * from "./colourBySize";
+export * from "./colourOverLifetime";
 export * from "./customModifierModule";
-export * from "./sizeOverLifetime";
+export * from "./opacityOverLifetime";
 export * from "./rotationOverLifetime";
+export * from "./sizeOverLifetime";

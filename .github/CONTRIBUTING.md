@@ -21,7 +21,7 @@ The latest rewrite of the library was intended to provide a proper architectural
 | samples | Contains a sample HTML page that can also be used as a playground while testing new features. |
 | tests | Contains the static tests that are required to pass before a change is permitted. |
 | src | The root for the actual source code of the project. This directory already contains important scripts, like the `Scene` or the `Renderer`. |
-| src/components | Contains components that the library needs to function, like Vectors or Colours. Essentially, these should be types that can exist without dependancies on other parts of the library, although they may depend on eachother. |
+| src/components | Contains components that the library needs to function, like Vectors or Colors. Essentially, these should be types that can exist without dependancies on other parts of the library, although they may depend on eachother. |
 | src/particles | Contains the behaviour and types for emitters and particles, together with the definitions of what is configurable. |
 | src/particles/modules | Contains the particle modules that can be added to emitter objects. |
 | src/particles/options | Contains the option definitions for emitters, together with their defaults. |

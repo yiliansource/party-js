@@ -216,7 +216,7 @@ export class Emitter {
             ).scale(evaluateVariation(this.emission.initialSpeed)),
             size: evaluateVariation(this.emission.initialSize),
             rotation: evaluateVariation(this.emission.initialRotation),
-            colour: evaluateVariation(this.emission.initialColour),
+            color: evaluateVariation(this.emission.initialColor),
         });
         this.particles.push(particle);
 

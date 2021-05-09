@@ -1,4 +1,4 @@
-import { Colour, Rect, Vector } from "../../components";
+import { Color, Rect, Vector } from "../../components";
 import { Variation } from "../../systems/variation";
 
 /**
@@ -56,10 +56,10 @@ export interface EmissionOptions {
      */
     initialRotation: Variation<Vector>;
     /**
-     * The variable, initial colour of the emitted particles.
+     * The variable, initial color of the emitted particles.
      * @defaultValue `Color.white`
      */
-    initialColour: Variation<Colour>;
+    initialColor: Variation<Color>;
 }
 
 /**
@@ -95,6 +95,6 @@ export function getDefaultEmissionOptions(): EmissionOptions {
         initialSpeed: 5,
         initialSize: 1,
         initialRotation: Vector.zero,
-        initialColour: Colour.white,
+        initialColor: Color.white,
     };
 }

@@ -93,7 +93,7 @@ const emitter = party.scene.current.createEmitter({
 
 Note that we're passing [variations](/docs/variations) to some of the options. This is to - as the name might suggest - allow variety in the way that particles are emitted. You can learn more about variations on their documentation page.
 
-The **emitter options** control what properties the emitted particle are given after they are spawned, things like colour, velocity or rotation.
+The **emitter options** control what properties the emitted particle are given after they are spawned, things like color, velocity or rotation.
 
 The **emission options** control the speed at which particles are emitted. The `rate` option specifies how many particles should be emitted per second, while the `bursts` option can be used to specify points in time at which groups of particles should be spawned. For the confetti effect, we only want particles to be emitted all at once, so this is fitting.
 

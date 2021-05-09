@@ -1,4 +1,4 @@
-import { Colour } from "../../components/colour";
+import { Color } from "../../components/color";
 import { Variation } from "../../systems/variation";
 import { Particle } from "../particle";
 
@@ -30,10 +30,15 @@ export interface RenderOptions {
     shapeFactory: Variation<HTMLElement | string>;
 
     /**
-     * The delegate used to apply a certain colour to the particle's HTMLElement.
-     * @defaultValue Applies the specified colour to the element's 'background'.
+     * The delegate used to apply a certain color to the particle's HTMLElement.
+     * @defaultValue Applies the specified color to the element's "background" property.
      */
-    applyColour?: ApplyFunction<Colour>;
+    applyColor?: ApplyFunction<Color>;
+    /**
+     * The delegate used to apply a certain degree of opacity to the particle's HTMLElement.
+     * @defaultValue Applies the specified opacity to the element's "opacity" property.
+     */
+    applyOpacity?: ApplyFunction<number>;
     /**
      * The delegate used to apply a certain degree of lighting to the particle's HTMLElement.
      * @defaultValue Applies the specified lighting to the element as a brightness filter.
@@ -53,14 +58,15 @@ export function getDefaultRendererOptions(): RenderOptions {
     return {
         shapeFactory: "square",
 
-        applyColour: defaultApplyColour,
+        applyColor: defaultApplyColor,
+        applyOpacity: defaultApplyOpacity,
         applyLighting: defaultApplyLighting,
         applyTransform: defaultApplyTransform,
     };
 }
 
 /**
- * Applies the specified colour to the element.
+ * Applies the specified color to the element.
  *
  * @remarks
  * This function is aware of the element's node type:
@@ -68,8 +74,8 @@ export function getDefaultRendererOptions(): RenderOptions {
  * - `svg` elements have their `fill` and `color` set.
  * - Other elements have their `color` set.
  */
-function defaultApplyColour(colour: Colour, element: HTMLElement): void {
-    const hex = colour.toHex();
+function defaultApplyColor(color: Color, element: HTMLElement): void {
+    const hex = color.toHex();
     // Note that by default, HTML node names are uppercase.
     switch (element.nodeName.toLowerCase()) {
         case "div":
@@ -82,6 +88,12 @@ function defaultApplyColour(colour: Colour, element: HTMLElement): void {
             element.style.color = hex;
             break;
     }
+}
+/**
+ * Applies the specified opacity to the element.
+ */
+function defaultApplyOpacity(opacity: number, element: HTMLElement): void {
+    element.style.opacity = opacity.toString();
 }
 /**
  * Applies the specified lighting to the element as a brightness filter.

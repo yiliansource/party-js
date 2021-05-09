@@ -71,9 +71,14 @@ export class Renderer {
             ? this.elements.get(particle.id)
             : this.createParticleElement(particle, options);
 
-        if (options.applyColour) {
-            // If the options offer a colouring method, apply it.
-            options.applyColour(particle.colour, element);
+        if (options.applyColor) {
+            // If the options offer a coloring method, apply it.
+            options.applyColor(particle.color, element);
+        }
+
+        if (options.applyOpacity) {
+            // If the options offer an opacity modifying method, apply it.
+            options.applyOpacity(particle.opacity, element);
         }
 
         if (options.applyLighting) {

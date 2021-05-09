@@ -1,4 +1,4 @@
-import { Colour, Gradient } from "../components";
+import { Color, Gradient } from "../components";
 import { Spline } from "../components/spline";
 import { pick, randomRange } from "./random";
 
@@ -67,6 +67,6 @@ export function splineSample<T>(spline: Spline<T>): Variation<T> {
  *
  * @param gradient The gradient to sample from.
  */
-export function gradientSample(gradient: Gradient): Variation<Colour> {
+export function gradientSample(gradient: Gradient): Variation<Color> {
     return splineSample(gradient);
 }

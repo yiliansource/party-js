@@ -4,7 +4,7 @@ title: Particle Modules
 
 ## Introduction
 
-Static particles can look pretty boring. Particle modules allow certain particle properties to change over time, for example rotation or colour. These modules are registered at emitter creation, and are executed on a per-tick basis for each particle. They receive the particles themselves as a parameter, so they can alter the particle according to, for example, the particle's lifetime.
+Static particles can look pretty boring. Particle modules allow certain particle properties to change over time, for example rotation or color. These modules are registered at emitter creation, and are executed on a per-tick basis for each particle. They receive the particles themselves as a parameter, so they can alter the particle according to, for example, the particle's lifetime.
 
 They are implemented as class instances, using a single method override to drive their impact on the particles.
 

@@ -1,11 +1,14 @@
-import { ParticleModifier, evaluateModifier } from "../../systems/modifiers";
+import {
+    ParticleModifier,
+    evaluateModifierViaLifetime,
+} from "../../systems/modifiers";
 import { Particle } from "../particle";
 import { ParticleModifierModule } from "./particleModifierModule";
 
 /**
  * Represents a module that can be used to scale the size of a particle over its lifetime.
  */
-export class SizeModifier extends ParticleModifierModule {
+export class SizeOverLifetime extends ParticleModifierModule {
     /**
      * The variation controlling the size of the particle.
      */
@@ -13,8 +16,9 @@ export class SizeModifier extends ParticleModifierModule {
     /**
      * Applies the size over lifetime to the specified particle.
      */
-    public apply(this: SizeModifier, particle: Particle): void {
+    public apply(this: SizeOverLifetime, particle: Particle): void {
         particle.size =
-            particle.initialSize * evaluateModifier(this.size, particle);
+            particle.initialSize *
+            evaluateModifierViaLifetime(this.size, particle);
     }
 }

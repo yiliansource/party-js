@@ -1,32 +1,32 @@
-import { Colour } from "./";
+import { Color } from "./";
 import { Spline } from "./spline";
 
 /**
- * Represents a gradient that can be used to interpolate between multiple colours.
+ * Represents a gradient that can be used to interpolate between multiple color.
  */
-export class Gradient extends Spline<Colour> {
+export class Gradient extends Spline<Color> {
     /**
-     * Interpolates between two colours on the gradient.
+     * Interpolates between two color on the gradient.
      */
-    protected interpolate(a: Colour, b: Colour, t: number): Colour {
+    protected interpolate(a: Color, b: Color, t: number): Color {
         return a.mix(b, t);
     }
 
     /**
-     * Returns a solid gradient from the given colour.
+     * Returns a solid gradient from the given color.
      */
-    public static solid(colour: Colour): Gradient {
-        return new Gradient({ value: colour, time: 0.5 });
+    public static solid(color: Color): Gradient {
+        return new Gradient({ value: color, time: 0.5 });
     }
 
     /**
-     * Returns a gradient with evenly spaced keys from the given colours.
+     * Returns a gradient with evenly spaced keys from the given colors.
      */
-    public static simple(...colours: Colour[]): Gradient {
-        const step = 1 / (colours.length - 1);
+    public static simple(...colors: Color[]): Gradient {
+        const step = 1 / (colors.length - 1);
         return new Gradient(
-            ...colours.map((colour, index) => ({
-                value: colour,
+            ...colors.map((color, index) => ({
+                value: color,
                 time: index * step,
             }))
         );

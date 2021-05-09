@@ -1,5 +1,5 @@
 import party from "../";
-import { Colour, Vector } from "../components";
+import { Color, Vector } from "../components";
 import { Emitter } from "../particles/emitter";
 import * as modules from "../particles/modules";
 import { Source } from "../particles/options";
@@ -22,7 +22,7 @@ export interface ConfettiConfiguration {
     speed: Variation<number>;
     size: Variation<number>;
     rotation: Variation<Vector>;
-    colour: Variation<Colour>;
+    color: Variation<Color>;
     rotationOverLifetime: ParticleModifier<Vector>;
     sizeOverLifetime: ParticleModifier<number>;
     shapes: Variation<string | HTMLElement>;
@@ -45,7 +45,7 @@ export function confetti(
             speed: range(300, 600),
             size: skew(1, 0.2),
             rotation: () => randomUnitVector().scale(180),
-            colour: () => Colour.fromHsl(randomRange(0, 360), 100, 70),
+            color: () => Color.fromHsl(randomRange(0, 360), 100, 70),
             sizeOverLifetime: (p) =>
                 Math.min(1, (p.initialLifetime - p.lifetime) * 3),
             rotationOverLifetime: (p) =>
@@ -71,17 +71,17 @@ export function confetti(
             initialSpeed: config.speed,
             initialSize: config.size,
             initialRotation: config.rotation,
-            initialColour: config.colour,
+            initialColor: config.color,
         },
         rendererOptions: {
             shapeFactory: config.shapes,
         },
     });
 
-    const rotationModule = emitter.addModule(modules.RotationModifier);
+    const rotationModule = emitter.addModule(modules.RotationOverLifetime);
     rotationModule.rotation = config.rotationOverLifetime;
 
-    const sizeModule = emitter.addModule(modules.SizeModifier);
+    const sizeModule = emitter.addModule(modules.SizeOverLifetime);
     sizeModule.size = config.sizeOverLifetime;
 
     return emitter;

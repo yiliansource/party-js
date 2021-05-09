@@ -26,12 +26,25 @@ export class Rect {
         this.height = height;
     }
 
+    /**
+     * Creates a rect from the given HTMLElement.
+     */
     public static fromHtmlElement(element: HTMLElement): Rect {
         const bounds = element.getBoundingClientRect();
         return new Rect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
 
+    /**
+     * Creates a rect from the given MouseEvent.
+     */
     public static fromMouseEvent(e: MouseEvent): Rect {
         return new Rect(e.clientX, e.clientY);
+    }
+
+    /**
+     * Creates a rect from the viewport screen. Uses the global `window` object underneath.
+     */
+    public static fromScreen(): Rect {
+        return new Rect(0, 0, window.innerWidth, window.innerHeight);
     }
 }

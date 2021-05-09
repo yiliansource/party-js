@@ -29,10 +29,10 @@ export function hearts(source: Source): void {
             angle: party.variation.range(0, 360),
 
             initialSpeed: 400,
-            initialColour: party.variation.gradientSample(
+            initialColor: party.variation.gradientSample(
                 party.Gradient.simple(
-                    party.Colour.fromHex("#ffa68d"),
-                    party.Colour.fromHex("#fd3a84")
+                    party.Color.fromHex("#ffa68d"),
+                    party.Color.fromHex("#fd3a84")
                 )
             ),
         },

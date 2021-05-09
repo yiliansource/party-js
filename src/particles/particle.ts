@@ -1,4 +1,4 @@
-import { Colour, Vector } from "../components";
+import { Color, Vector } from "../components";
 import { overrideDefaults } from "../util/config";
 
 /**
@@ -38,9 +38,13 @@ export class Particle {
      */
     velocity: Vector;
     /**
-     * The current colour of the particle.
+     * The current color of the particle.
      */
-    colour: Colour;
+    color: Color;
+    /**
+     * The opacity of the particle (from 0 to 1).
+     */
+    opacity: number;
 
     /**
      * The initial lifetime of the particle.
@@ -66,7 +70,8 @@ export class Particle {
                 location: Vector.zero,
                 rotation: Vector.zero,
                 velocity: Vector.zero,
-                colour: Colour.white,
+                color: Color.white,
+                opacity: 1,
             },
             options
         );
@@ -81,6 +86,7 @@ export class Particle {
 
         this.location = populatedOptions.location;
         this.velocity = populatedOptions.velocity;
-        this.colour = populatedOptions.colour;
+        this.color = populatedOptions.color;
+        this.opacity = populatedOptions.opacity;
     }
 }

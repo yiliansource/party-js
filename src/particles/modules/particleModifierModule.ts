@@ -1,8 +1,7 @@
 import { Particle } from "../particle";
 
 /**
- * Represents a module that can be used to modify the
- * properties of a particle over time.
+ * Represents a module that can be used to modify the properties of a particle over time.
  */
 export abstract class ParticleModifierModule {
     /**

@@ -1,5 +1,5 @@
 import party from "../";
-import { Colour, NumericSpline, Vector } from "../components";
+import { Color, NumericSpline, Vector } from "../components";
 import { Emitter } from "../particles/emitter";
 import * as modules from "../particles/modules";
 import { Source } from "../particles/options";
@@ -16,9 +16,10 @@ export interface SparkleConfiguration {
     speed: Variation<number>;
     size: Variation<number>;
     rotation: Variation<Vector>;
-    colour: Variation<Colour>;
+    color: Variation<Color>;
     rotationOverLifetime: ParticleModifier<Vector>;
     sizeOverLifetime: ParticleModifier<number>;
+    opacityOverLifetime: ParticleModifier<number>;
 }
 
 /**
@@ -37,15 +38,20 @@ export function sparkles(
             speed: range(100, 200),
             size: range(0.5, 1.5),
             rotation: () => new Vector(0, 0, randomRange(0, 360)),
-            colour: () => Colour.fromHsl(50, 100, randomRange(55, 85)),
+            color: () => Color.fromHsl(50, 100, randomRange(55, 85)),
+            rotationOverLifetime: (p) =>
+                new Vector(0, 0, 200).scale(p.initialLifetime - p.lifetime),
             sizeOverLifetime: new NumericSpline(
                 { time: 0, value: 0 },
                 { time: 0.3, value: 1 },
                 { time: 0.7, value: 1 },
                 { time: 1, value: 0 }
             ),
-            rotationOverLifetime: (p) =>
-                new Vector(0, 0, 200).scale(p.initialLifetime - p.lifetime),
+            opacityOverLifetime: new NumericSpline(
+                { time: 0, value: 1 },
+                { time: 0.5, value: 1 },
+                { time: 1, value: 0 }
+            ),
         },
         options
     );
@@ -67,7 +73,7 @@ export function sparkles(
             initialSpeed: config.speed,
             initialSize: config.size,
             initialRotation: config.rotation,
-            initialColour: config.colour,
+            initialColor: config.color,
         },
         rendererOptions: {
             applyLighting: undefined,
@@ -75,11 +81,14 @@ export function sparkles(
         },
     });
 
-    const rotationModule = emitter.addModule(modules.RotationModifier);
+    const rotationModule = emitter.addModule(modules.RotationOverLifetime);
     rotationModule.rotation = config.rotationOverLifetime;
 
-    const sizeModule = emitter.addModule(modules.SizeModifier);
+    const sizeModule = emitter.addModule(modules.SizeOverLifetime);
     sizeModule.size = config.sizeOverLifetime;
+
+    const opacityModule = emitter.addModule(modules.OpacityOverLifetime);
+    opacityModule.opacity = config.sizeOverLifetime;
 
     return emitter;
 }
