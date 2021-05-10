@@ -1,8 +1,9 @@
-import { Source } from "party-js/lib/particles/options/emissionOptions";
 import React, { FunctionComponent, useRef } from "react";
 
+import styles from "./DemoButton.module.scss";
+
 interface DemoButtonProps {
-    demoMethod: (source: Source) => void;
+    demoMethod: (source: HTMLElement) => void;
 }
 
 const DemoButton: FunctionComponent<DemoButtonProps> = ({
@@ -13,7 +14,7 @@ const DemoButton: FunctionComponent<DemoButtonProps> = ({
         <div
             ref={elementReference}
             id={demoMethod.name}
-            className="demoButton"
+            className={styles.demoButton}
             onClick={() => demoMethod.call(null, elementReference.current)}
         >
             <img src="/img/cursor.svg" />

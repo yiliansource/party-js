@@ -78,7 +78,7 @@ function createParticleContainer(): HTMLElement {
     partialUpdateStyle(container, {
         width: "100%",
         height: "100%",
-        perspective: "400px",
+        perspective: "100vw",
     });
     rootContainer.current.appendChild(container);
 

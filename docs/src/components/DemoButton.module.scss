@@ -1,0 +1,26 @@
+.demoButton {
+    display: block;
+    cursor: pointer;
+    width: 80px;
+    height: 40px;
+    padding: 0.5em 0.5em calc(0.7em + 3px);
+    border-radius: 4px;
+    box-shadow: 0 3px #bf4167;
+    background: linear-gradient(135deg, #ffa68d, #fd3a84);
+    text-align: center;
+    transition: filter 0.2s;
+    user-select: none;
+
+    &:hover {
+        filter: brightness(1.1);
+    }
+    &:active {
+        box-shadow: none;
+        transform: translateY(3px);
+    }
+
+    img {
+        height: 100%;
+        filter: drop-shadow(2px 1px 0 rgba(0, 0, 0, 0.3));
+    }
+}

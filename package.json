@@ -9,7 +9,7 @@
     },
     "scripts": {
         "clean": "rimraf bundle lib",
-        "build": "npm run clean && tsc && webpack",
+        "build": "yarn clean && tsc && webpack",
         "test": "mocha -r ts-node/register 'tests/**/*.test.ts'",
         "lint": "npx eslint . --ext .js,.ts"
     },

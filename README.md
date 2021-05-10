@@ -61,20 +61,11 @@ document.querySelector(".button").addEventListener("click", function (e) {
 });
 ```
 
-If you want to learn more, check out the [quick start][quick-start] guide!
-
-## How it works
-
-In general the library consists of emitters and particles. Emitters are structures located at a specific position that emit particles, and particles themselves are small graphical elements that float around the screen. Both entities are highly customizeable.
-
-The library core spawns, updates and renders entities inside an animation frame loop. Entities are despawned when they leave the lower bound of the document, or their lifetime expires.
+If you want to learn more, check out the [quick start](https://party.js.org/docs/) guide!
 
 ## Contributing
 
 First of all, thank you so much for wanting to contribute to the project! ❤  
-Please refer to the [contribution guidelines][contributing] when opening issues or creating pull requests.
+Please refer to the [contribution guidelines](./.github/CONTRIBUTING.md) when opening issues or creating pull requests.
 
-[contributing]: ./.github/CONTRIBUTING.md
 [npm]: https://www.npmjs.com/package/party-js
-[issues]: https://github.com/yilianyource/party-js/issues
-[quick-start]: https://party.js.org/docs/

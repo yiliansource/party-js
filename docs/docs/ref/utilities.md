@@ -47,7 +47,8 @@ To allow variety in the way that particles disappear, the particle has the defau
 ### Methods
 
 ```ts
-party.util.overrideDefaults(a, b); // overrides the defaults specified in A with the partial object B.
-party.util.rotationToNormal(rotation); // converts euler angles (in degrees) to a normal vector.
-party.util.sourceToRect(source); // converts a Point, HTMLElement or MouseEvent to a rect.
+// overrides the defaults specified in A with the partial object B.
+party.util.overrideDefaults(a, b);
+// converts euler angles (in degrees) to a normal vector.
+party.util.rotationToNormal(rotation);
 ```

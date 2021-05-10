@@ -1,0 +1,36 @@
+---
+title: Shapes
+---
+
+import DemoCodeblock from "../../src/components/DemoCodeblock";
+import Shapes from "../../src/components/Shapes";
+
+## Introduction
+
+Shapes define the way that particles are rendered in the DOM. They essentially consist of an HTML string, that can be converted to a valid element and attached to a particle.
+
+The library provides various shapes out-of-the-box:
+
+<Shapes />
+
+These are contained in the lookup `party.resolvableShapes`, where you can easily add new ones yourself, for example:
+
+```ts
+party.resolvableShapes["myImage"] = `<img src="myImage.png"/>`;
+```
+
+Shapes are used by the renderer to determine which kind of HTMLElement to spawn for a particular particle. [Templates](/docs/ref/templates) usually expose this to the user in the form of a `shapes` field. Note that this usually is a [variation](/docs/ref/variations), in this case of a resolvable `string` or a `HTMLElement`, so you can use a constant string or element, an array of either, or a function that returns either.
+
+<DemoCodeblock method={(party, e) => {
+    party.confetti(e, {
+        shapes: ["star", "roundedSquare"]
+    });
+}}>
+
+```ts {2}
+party.confetti(mouseEvent, {
+    shapes: ["star", "roundedSquare"],
+});
+```
+
+</DemoCodeblock>
