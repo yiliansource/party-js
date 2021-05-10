@@ -21,7 +21,7 @@ The latest rewrite of the library was intended to provide a proper architectural
 | samples | Contains a sample HTML page that can also be used as a playground while testing new features. |
 | tests | Contains the static tests that are required to pass before a change is permitted. |
 | src | The root for the actual source code of the project. This directory already contains important scripts, like the `Scene` or the `Renderer`. |
-| src/components | Contains components that the library needs to function, like Vectors or Colours. Essentially, these should be types that can exist without dependancies on other parts of the library, although they may depend on eachother. |
+| src/components | Contains components that the library needs to function, like Vectors or Colors. Essentially, these should be types that can exist without dependancies on other parts of the library, although they may depend on eachother. |
 | src/particles | Contains the behaviour and types for emitters and particles, together with the definitions of what is configurable. |
 | src/particles/modules | Contains the particle modules that can be added to emitter objects. |
 | src/particles/options | Contains the option definitions for emitters, together with their defaults. |
@@ -68,10 +68,10 @@ The following section will guide you through how to get the library running loca
 
 First, fork (so you have your "own" version to work on) and clone (so you get the changes to your local environment) the repository.
 
-You can install all developmental dependancies of the library using the package manager of your choice.
+You can install all developmental dependancies of the library using yarn. You _can_ use npm too, but make sure to not commit any package-lock.json files.
 
 ```sh
-npm install
+yarn install
 ```
 
 Now you are ready to write code. If you are not sure where to look for things, take a peek at the [directory structure](#directory-structure) of the library.
@@ -83,8 +83,8 @@ Now you are ready to write code. If you are not sure where to look for things, t
 Any change that you make will have to still pass all of the unit tests and linting rules that are set up. You can run package scripts to check if you're good to go. If neither command produces an error, you're good!
 
 ```
-npm run test
-npm run lint
+yarn test
+yarn lint
 ```
 
 #### Pull Requests

@@ -2,14 +2,14 @@
     "name": "party-js",
     "version": "2.0.0-0",
     "description": "A JavaScript library to brighten up your user's site experience with visual effects!",
-    "main": "./dist/index.js",
-    "types": "./dist/index.d.ts",
+    "main": "./lib/index.js",
+    "types": "./lib/index.d.ts",
     "exports": {
-        ".": "./dist"
+        ".": "./lib"
     },
     "scripts": {
-        "clean": "rimraf bundle dist",
-        "build": "npm run clean && tsc && webpack",
+        "clean": "rimraf bundle lib",
+        "build": "yarn clean && tsc && webpack",
         "test": "mocha -r ts-node/register 'tests/**/*.test.ts'",
         "lint": "npx eslint . --ext .js,.ts"
     },

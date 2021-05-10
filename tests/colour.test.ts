@@ -1,16 +1,16 @@
 import { expect } from "chai";
 import { describe, it } from "mocha";
 
-import { Colour } from "../src/components/colour";
+import { Color } from "../src/components/color";
 import { epsilon } from "../src/systems/math";
 import { expectArrayCloseTo } from "./util";
 
-type ColourComponents = [number, number, number];
+type ColorComponents = [number, number, number];
 
-describe("Colour", function () {
+describe("Color", function () {
     describe("#constructor", function () {
         const tests: {
-            params: ColourComponents;
+            params: ColorComponents;
         }[] = [
             { params: [255, 255, 255] },
             { params: [0, 0, 0] },
@@ -19,9 +19,9 @@ describe("Colour", function () {
         ];
 
         for (const test of tests) {
-            it(`creates colours from components: ${test.params}`, function () {
+            it(`creates colors from components: ${test.params}`, function () {
                 expectArrayCloseTo(
-                    new Colour(...test.params).rgb,
+                    new Color(...test.params).rgb,
                     test.params,
                     epsilon
                 );
@@ -31,9 +31,9 @@ describe("Colour", function () {
 
     describe("#mix", function () {
         const halfwayTests: {
-            a: ColourComponents;
-            b: ColourComponents;
-            expected: ColourComponents;
+            a: ColorComponents;
+            b: ColorComponents;
+            expected: ColorComponents;
         }[] = [
             {
                 a: [0, 0, 0],
@@ -53,18 +53,18 @@ describe("Colour", function () {
         ];
 
         for (const test of halfwayTests) {
-            it(`mixes colours together halfway by default: ${test.a} * ${test.b}`, function () {
-                const a = new Colour(...test.a);
-                const b = new Colour(...test.b);
+            it(`mixes colors together halfway by default: ${test.a} * ${test.b}`, function () {
+                const a = new Color(...test.a);
+                const b = new Color(...test.b);
                 expectArrayCloseTo(a.mix(b).rgb, test.expected, epsilon);
             });
         }
 
         const weightTests: {
-            a: ColourComponents;
-            b: ColourComponents;
+            a: ColorComponents;
+            b: ColorComponents;
             weight: number;
-            expected: ColourComponents;
+            expected: ColorComponents;
         }[] = [
             {
                 a: [0, 0, 0],
@@ -81,11 +81,11 @@ describe("Colour", function () {
         ];
 
         for (const test of weightTests) {
-            it(`mixes colours by weight: ${test.a} * ${test.b} (${(
+            it(`mixes colors by weight: ${test.a} * ${test.b} (${(
                 test.weight * 100
             ).toFixed(2)}%)`, function () {
-                const a = new Colour(...test.a);
-                const b = new Colour(...test.b);
+                const a = new Color(...test.a);
+                const b = new Color(...test.b);
                 expectArrayCloseTo(
                     a.mix(b, test.weight).rgb,
                     test.expected,
@@ -95,8 +95,8 @@ describe("Colour", function () {
         }
 
         const nomixTests: {
-            a: ColourComponents;
-            b: ColourComponents;
+            a: ColorComponents;
+            b: ColorComponents;
         }[] = [
             {
                 a: [24, 96, 125],
@@ -110,8 +110,8 @@ describe("Colour", function () {
 
         for (const test of nomixTests) {
             it(`doesn't mix when weight is zero: ${test.a} * ${test.b} (0%)`, function () {
-                const a = new Colour(...test.a);
-                const b = new Colour(...test.b);
+                const a = new Color(...test.a);
+                const b = new Color(...test.b);
                 expectArrayCloseTo(a.mix(b, 0).rgb, test.a, epsilon);
             });
         }
@@ -120,7 +120,7 @@ describe("Colour", function () {
     describe("#fromHex", function () {
         const tests: {
             hex: string;
-            rgb: ColourComponents;
+            rgb: ColorComponents;
         }[] = [
             { hex: "#B9D300", rgb: [185, 211, 0] },
             { hex: "#3296D8", rgb: [50, 150, 216] },
@@ -131,14 +131,14 @@ describe("Colour", function () {
         for (const test of tests) {
             it(`converts hex to rgb: ${test.hex}`, function () {
                 expectArrayCloseTo(
-                    Colour.fromHex(test.hex).rgb,
+                    Color.fromHex(test.hex).rgb,
                     test.rgb,
                     epsilon
                 );
             });
 
             it(`converts rgb to hex: ${test.rgb}`, function () {
-                expect(new Colour(...test.rgb).toHex().toUpperCase()).to.equal(
+                expect(new Color(...test.rgb).toHex().toUpperCase()).to.equal(
                     test.hex
                 );
             });
@@ -147,8 +147,8 @@ describe("Colour", function () {
 
     describe("#fromHsl", function () {
         const tests: {
-            hsl: ColourComponents;
-            rgb: ColourComponents;
+            hsl: ColorComponents;
+            rgb: ColorComponents;
         }[] = [
             { hsl: [67, 100, 41], rgb: [185, 211, 0] },
             { hsl: [204, 68, 52], rgb: [50, 150, 216] },
@@ -159,7 +159,7 @@ describe("Colour", function () {
         for (const test of tests) {
             it(`converts hsl to rgb: ${test.hsl}`, function () {
                 expectArrayCloseTo(
-                    Colour.fromHsl(...test.hsl).rgb,
+                    Color.fromHsl(...test.hsl).rgb,
                     test.rgb,
                     // there are some precision problems here, so we compensate
                     // being more tolerant with the epsilon

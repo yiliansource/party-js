@@ -1,5 +1,5 @@
-import { settings } from ".";
-import Lazy from "./util/lazy";
+import { settings } from "./settings";
+import { Lazy } from "./util/lazy";
 
 /**
  * The prefix to apply to the containers.
@@ -78,7 +78,7 @@ function createParticleContainer(): HTMLElement {
     partialUpdateStyle(container, {
         width: "100%",
         height: "100%",
-        perspective: "400px",
+        perspective: "100vw",
     });
     rootContainer.current.appendChild(container);
 

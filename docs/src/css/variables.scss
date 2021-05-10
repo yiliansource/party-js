@@ -1,0 +1,32 @@
+$lightest: white;
+$darkest: #202224;
+
+:root {
+    --ifm-color-primary-darkest: #ad1526;
+    --ifm-color-primary-darker: #d2192e;
+    --ifm-color-primary-dark: #de1b31;
+    --ifm-color-primary: #e62e43;
+    --ifm-color-primary-light: #e94759;
+    --ifm-color-primary-lighter: #ea5364;
+    --ifm-color-primary-lightest: #ef7886;
+
+    --ifm-navbar-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.15);
+    --ifm-footer-shadow: 0 -2px 6px 0 rgba(0, 0, 0, 0.1);
+
+    --ifm-link-color: var(--ifm-color-primary-light);
+    --ifm-menu-color-active: var(--ifm-color-primary-light);
+    --ifm-navbar-link-hover-color: var(--ifm-color-primary-light);
+
+    --ifm-code-font-size: 95%;
+
+    --ifm-hr-border-color: var(--ifm-color-emphasis-200);
+}
+
+html[data-theme="dark"] {
+    @for $i from 0 through 10 {
+        --ifm-color-gray-#{$i * 100}: #{mix($darkest, $lightest, $i * 10)};
+    }
+
+    --ifm-font-color-base-inverse: #202020;
+    --ifm-background-color: var(--ifm-color-gray-1000);
+}

@@ -2,8 +2,9 @@
 title: Templates
 ---
 
-import Accordion from "../src/components/Accordion";
-import { FieldList, FieldItem } from "../src/components/Fields";
+import Accordion from "../../src/components/Accordion";
+import DemoCodeblock from "../../src/components/DemoCodeblock";
+import { FieldList, FieldItem } from "../../src/components/Fields";
 
 ## Introduction
 
@@ -11,7 +12,7 @@ In order to simplify the learning curve, party.js provides templates to avoid ne
 
 Before we list the templates, a quick note: Most templates support `Source`s, which denote the area where particles are emitted from. A source can be:
 
--   A point object ( `{ x, y }` ).
+-   A rect object ( `{ x, y, width, height }` ).
 -   An `HTMLElement`.
 -   A `MouseEvent`.
 
@@ -19,15 +20,18 @@ Here you can find a list of all templates that are currently implemented, togeth
 
 ## Confetti
 
-The library's signature effect. Allows you to let confetti pop from any element or point in the document! This effect supports _sources_. You can find an example of the effect in the [examples](/docs/examples/simple#confetti).
+The library's signature effect. Allows you to let confetti pop from any element or point in the document! This effect supports _sources_.
+
+<DemoCodeblock method={(party, e) => party.confetti(e)}>
 
 ```js
 const element = document.querySelector(".confetti-sample");
-const options = {
-    // ...
-};
-party.confetti(element, options);
+party.confetti(element, {
+    /* ... */
+});
 ```
+
+</DemoCodeblock>
 
 <Accordion icon="/img/settings.svg" title="Configuration" expanded={true}>
     <FieldList>
@@ -62,10 +66,10 @@ party.confetti(element, options);
             description="The initial rotation that the confetti particles are emitted with."
         />
         <FieldItem
-            name="colour"
-            type="Variation<Colour>"
-            defaultValue="() => Colour.fromHsl(random.randomRange(0, 360), 100, 70)"
-            description="The initial colour that particles are emitted with."
+            name="color"
+            type="Variation<Color>"
+            defaultValue="() => Color.fromHsl(random.randomRange(0, 360), 100, 70)"
+            description="The initial color that particles are emitted with."
         />
         <FieldItem
             name="rotationOverLifetime"
@@ -90,15 +94,18 @@ party.confetti(element, options);
 
 ## Sparkles
 
-Allows you to emit sparkling sparks from any element or point in the document. This effect supports _sources_. You can find an example of the effect in the [examples](/docs/examples/simple#sparkles).
+Allows you to emit sparkling sparks from any element or point in the document. This effect supports _sources_.
+
+<DemoCodeblock method={(party, e) => party.sparkles(e)}>
 
 ```js
 const element = document.querySelector(".sparkles-sample");
-const options = {
-    // ...
-};
-party.sparkles(element, options);
+party.sparkles(element, {
+    /* ... */
+});
 ```
+
+</DemoCodeblock>
 
 <Accordion icon="/img/settings.svg" title="Configuration" expanded={true}>
     <FieldList>
@@ -127,10 +134,10 @@ party.sparkles(element, options);
             description="The initial rotation that sparkles should be emitted with. Note that the default only affects the z-axis."
         />
         <FieldItem
-            name="colour"
-            type="Variation<Colour>"
-            defaultValue="Colour.fromHsl(50, 100, random.randomRange(55, 85))"
-            description="The initial colour that sparkles should be emitted with. By default a gold-ish colour."
+            name="color"
+            type="Variation<Color>"
+            defaultValue="Color.fromHsl(50, 100, random.randomRange(55, 85))"
+            description="The initial color that sparkles should be emitted with. By default a gold-ish color."
         />
         <FieldItem
             name="rotationOverLifetime"
@@ -143,6 +150,12 @@ party.sparkles(element, options);
             type="ParticleModifier<number>"
             defaultValue="new NumericSpline({ time: 0, value: 0 }, { time: 0.3, value: 1 }, { time: 0.7, value: 1 }, { time: 1, value: 0 })"
             description="The size that is applied to the sparkles over their lifetime."
+        />
+        <FieldItem
+            name="opacityOverLifetime"
+            type="ParticleModifier<number>"
+            defaultValue="new NumericSpline({ time: 0, value: 1 }, { time: 0.5, value: 1 }, { time: 1, value: 0 })"
+            description="The opacity that is applied to the sparkles over their lifetime."
         />
     </FieldList>
 </Accordion>

@@ -1,6 +1,3 @@
-import { Colour } from "../../components/colour";
-import { Vector } from "../../components/vector";
-import { Variation } from "../../systems/variation";
 import { despawningRules } from "../../util/rules";
 import { Particle } from "../particle";
 
@@ -23,32 +20,6 @@ export interface EmitterOptions {
      * @defaultValue -1
      */
     loops: number;
-
-    /**
-     * The variable, initial lifetime of the emitted particle.
-     * @defaultValue 5
-     */
-    initialLifetime: Variation<number>;
-    /**
-     * The variable, initial speed of the emitted particles.
-     * @defaultValue 5
-     */
-    initialSpeed: Variation<number>;
-    /**
-     * The variable, initial size of the emitted particles.
-     * @defaultValue 5
-     */
-    initialSize: Variation<number>;
-    /**
-     * The variable, initial rotation of the emitted particles, as euler angles.
-     * @defaultValue `Vector.zero`
-     */
-    initialRotation: Variation<Vector>;
-    /**
-     * The variable, initial colour of the emitted particles.
-     * @defaultValue `Color.white`
-     */
-    initialColour: Variation<Colour>;
 
     /**
      * Whether to apply gravity to the emitted particles.
@@ -79,12 +50,6 @@ export function getDefaultEmitterOptions(): EmitterOptions {
     return {
         duration: 5,
         loops: -1,
-
-        initialLifetime: 5,
-        initialSpeed: 5,
-        initialSize: 1,
-        initialRotation: Vector.zero,
-        initialColour: Colour.white,
 
         useGravity: true,
         maxParticles: 300,

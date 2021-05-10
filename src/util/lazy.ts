@@ -11,7 +11,7 @@ type ExistsPredicate<T> = (value: T) => boolean;
  * A wrapper class to lazily initialize a value.
  * Supports custom factory and predicate methods.
  */
-export default class Lazy<T> {
+export class Lazy<T> {
     /**
      * The current value of the lazy object. Will be initialized, if the 'exists'
      * predicate doesn't match.

@@ -2,14 +2,18 @@ import { Variation, evaluateVariation } from "./systems/variation";
 
 /**
  * Represents the lookup that maps resolveable element keys to HTML strings.
+ *
+ * @remarks
+ * The default shapes are made to fit inside a dimension of 10x10 pixels, except
+ * the star shape, which exceeds it slightly.
  */
 export const resolvableShapes: Record<string, string> = {
     square: `<div style="height: 10px; width: 10px;"></div>`,
     rectangle: `<div style="height: 6px; width: 10px;"></div>`,
-    circle: `<svg viewBox="-1 -1 2 2" width="10" height="10"><path fill="currentColor" d="M0,1 C0.551915024494,1 1,0.551915024494 1,0 C1,-0.551915024494 0.551915024494,-1 0,-1 C-0.551915024494,-1 -1,-0.551915024494 -1,0 C-1,0.551915024494 -0.551915024494,1 0,1 Z"/></svg>`,
+    circle: `<svg viewBox="0 0 2 2" width="10" height="10"><circle cx="1" cy="1" r="1" fill="currentColor"/></svg>`,
     roundedSquare: `<div style="height: 10px; width: 10px; border-radius: 3px;"></div>`,
     roundedRectangle: `<div style="height: 6px; width: 10px; border-radius: 3px;"></div>`,
-    star: `<svg viewBox="0 0 512 512" width="20" height="20"><polygon fill="currentColor" points="512,197.816 325.961,185.585 255.898,9.569 185.835,185.585 0,197.816 142.534,318.842 95.762,502.431 255.898,401.21 416.035,502.431 369.263,318.842"/></svg>`,
+    star: `<svg viewBox="0 0 512 512" width="15" height="15"><polygon fill="currentColor" points="512,197.816 325.961,185.585 255.898,9.569 185.835,185.585 0,197.816 142.534,318.842 95.762,502.431 255.898,401.21 416.035,502.431 369.263,318.842"/></svg>`,
 };
 
 /**

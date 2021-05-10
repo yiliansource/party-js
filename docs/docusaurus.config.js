@@ -9,6 +9,7 @@ module.exports = {
     favicon: "img/logo.svg",
     organizationName: "yiliansource",
     projectName: "party-js",
+    plugins: ["docusaurus-plugin-sass"],
     themeConfig: {
         image: "img/banner.png",
         metadatas: [
@@ -29,6 +30,7 @@ module.exports = {
         },
         navbar: {
             title: "party.js",
+            hideOnScroll: true,
             logo: {
                 alt: "party.js Logo",
                 src: "img/logo.svg",
@@ -42,8 +44,8 @@ module.exports = {
                 },
                 {
                     href: "https://github.com/yiliansource/party-js",
-                    label: "GitHub",
                     position: "right",
+                    className: "header-github-link",
                 },
             ],
         },
@@ -57,11 +59,23 @@ module.exports = {
                             label: "Quick Start",
                             to: "docs/",
                         },
+                        {
+                            label: "Contributing",
+                            to: "docs/contributing",
+                        },
+                        {
+                            label: "Migrating from v1 to v2",
+                            to: "docs/migrating-v1-v2",
+                        },
                     ],
                 },
                 {
                     title: "More",
                     items: [
+                        {
+                            label: "Guides",
+                            to: "docs/guides/using-templates",
+                        },
                         {
                             label: "GitHub",
                             href: "https://github.com/yiliansource/party-js",
@@ -69,7 +83,7 @@ module.exports = {
                     ],
                 },
             ],
-            copyright: `<div class="copynote">Copyright © ${new Date().getFullYear()} Ian Hornik. Built with <span style="color: #e31b23;">❤</span> and Docusaurus.<br>Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></div>`,
+            copyright: `<div class="copynote">Copyright © ${new Date().getFullYear()} Ian Hornik. Built with <span style="color: #e31b23;">❤</span> and Docusaurus.<br><span style="opacity: 0.6">Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></span></div>`,
         },
     },
     presets: [
@@ -83,10 +97,7 @@ module.exports = {
                         "https://github.com/yiliansource/party-js/edit/main/docs/",
                 },
                 theme: {
-                    customCss: [
-                        require.resolve("./src/css/custom.css"),
-                        require.resolve("./src/css/components.css"),
-                    ],
+                    customCss: [require.resolve("./src/css/custom.scss")],
                 },
             },
         ],

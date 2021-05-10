@@ -1,6 +1,7 @@
-// @ts-ignore
-import ChevronSVG from "../../static/img/chevron.svg";
 import React, { FunctionComponent } from "react";
+
+import ChevronSVG from "../../static/img/chevron.svg";
+import styles from "./Chevron.module.scss";
 
 interface ChevronProps {
     direction?: "right" | "down";
@@ -9,7 +10,7 @@ interface ChevronProps {
 const Chevron: FunctionComponent<ChevronProps> = ({
     direction = "right",
 }: ChevronProps) => (
-    <span className={`chevron ${direction}`}>
+    <span className={`${styles.chevron} ${styles[direction]}`}>
         <ChevronSVG />
     </span>
 );

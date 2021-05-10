@@ -1,5 +1,5 @@
-import { Rect } from "../components/rect";
-import { Vector } from "../components/vector";
+import { Rect, Vector } from "../components";
+import { Source } from "../particles/options";
 import { lerp } from "./math";
 
 /**
@@ -39,4 +39,17 @@ export function randomInsideRect(rect: Rect): Vector {
         rect.x + randomRange(0, rect.width),
         rect.y + randomRange(0, rect.height)
     );
+}
+
+/**
+ * Returns a random point inside the given dynamic source.
+ */
+export function randomInsideSource(source: Source): Vector {
+    if ("getBoundingClientRect" in source) {
+        source = Rect.fromHtmlElement(source);
+    } else if ("clientX" in source) {
+        source = Rect.fromMouseEvent(source);
+    }
+
+    return randomInsideRect(source);
 }

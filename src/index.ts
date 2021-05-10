@@ -1,30 +1,19 @@
+import * as components from "./components";
+import { Emitter } from "./particles/emitter";
+import * as modules from "./particles/modules";
+import { Particle } from "./particles/particle";
 import { Scene } from "./scene";
-import Lazy from "./util/lazy";
+import { settings } from "./settings";
+import * as shapes from "./shapes";
+import * as math from "./systems/math";
+import * as modifier from "./systems/modifiers";
+import * as random from "./systems/random";
+import * as variation from "./systems/variation";
+import * as templates from "./templates";
+import * as util from "./util";
 
-// Export the configurable settings object.
-export { settings } from "./settings";
-
-// Export the emitter and particle types.
-export * from "./particles/particle";
-export * from "./particles/emitter";
-
-// Export various utilities and objects.
-export * as variation from "./systems/variation";
-export * as modifier from "./systems/modifiers";
-export * as modules from "./particles/modules";
-export * as random from "./systems/random";
-export * as math from "./systems/math";
-export * as util from "./util";
-export * from "./components";
-
-// Export templates to quickly & easily create sample systems.
-export * from "./templates";
-
-// Export shapes so new ones can be registered easily.
-export * from "./shapes";
-
-// Export and lazily create the main scene.
-export const scene = new Lazy<Scene>(() => {
+// Create the lazy-initializing scene.
+const scene = new util.Lazy<Scene>(() => {
     // The library requires the use of the DOM, hence it cannot run in non-browser environments.
     if (typeof document === "undefined" || typeof window === "undefined") {
         throw new Error(
@@ -34,7 +23,36 @@ export const scene = new Lazy<Scene>(() => {
     return new Scene();
 });
 
-export function forceInitialize(): void {
-    // Forces the initialization of the lazy scene.
-    scene.current;
-}
+const party = {
+    // Export utility components at top level.
+    ...components,
+    // Export templates to quickly & easily create sample systems.
+    ...templates,
+    // Export shapes so new ones can be registered easily.
+    ...shapes,
+
+    // Export the scene and the global settings.
+    scene,
+    settings,
+
+    // Export the emitter and particle types.
+    Particle,
+    Emitter,
+
+    // Export various utilities and objects.
+    variation,
+    modifier,
+    modules,
+    random,
+    math,
+    util,
+
+    /**
+     * Forces the initialization of the otherwise lazy scene.
+     */
+    forceInitialize(): void {
+        scene.current;
+    },
+};
+
+export default party;

@@ -1,4 +1,4 @@
-export * from "./colour";
+export * from "./color";
 export * from "./gradient";
 export * from "./numericSpline";
 export * from "./rect";

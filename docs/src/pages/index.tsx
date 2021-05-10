@@ -3,7 +3,6 @@ import useBaseUrl from "@docusaurus/useBaseUrl";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import Layout from "@theme/Layout";
 import clsx from "clsx";
-import { Source } from "party-js/dist/util";
 import React from "react";
 
 import PartyJSLogo from "../../static/img/logo.svg";
@@ -19,7 +18,7 @@ interface Feature {
 
 interface Demo {
     title: string;
-    demoMethod: (source: Source) => void;
+    demoMethod: (source: HTMLElement) => void;
     description: JSX.Element;
 }
 
@@ -174,8 +173,8 @@ export default function () {
                             </div>
                         </div>
                         <div className={styles.exampleLink}>
-                            <Link to="/docs/examples/simple">
-                                Check out the source code for the examples!
+                            <Link to="/docs/guides/using-templates">
+                                Check out the guides to learn more!
                             </Link>
                         </div>
                     </section>

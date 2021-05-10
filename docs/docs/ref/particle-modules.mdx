@@ -1,0 +1,58 @@
+---
+title: Particle Modules
+---
+
+import DemoCodeblock from "../../src/components/DemoCodeblock";
+
+## Introduction
+
+Static particles can look pretty boring. Particle modules allow certain particle properties to change over time, for example rotation or color. These modules are registered at emitter creation, and are executed on a per-tick basis for each particle. They receive the particles themselves as a parameter, so they can alter the particle according to, for example, the particle's lifetime.
+
+They are implemented as class instances, using a single method override to drive their impact on the particles.
+
+```ts
+abstract class ParticleModifierModule {
+    abstract apply(particle: Particle): void;
+}
+```
+
+Modules are commonly used in [templates](/docs/ref/templates), and examples on how to use them yourself can be found on the [customization](/docs/guides/custom-effects) page. Usually, the changes these modules apply are driven through _particle modifiers_, which are similar to [variations](/docs/ref/variations). A particle modifier can be represented by either a constant, a [spline](/docs/ref/utilities#splines) or a function taking a particle as a parameter and producing a value.
+
+```ts
+type ParticleModifier<T> = T | Spline<T> | ((particle: Particle) => T);
+```
+
+## Pre-made Modules
+
+Various modules exist, to customize particle behaviour over time. Additionally to the modules listed below, a `CustomModifierModule` exists, where you can pass your own modifier function, that operates on a particle.
+
+### Lifetime-driven Modifiers
+
+The particle lifetime is passed to these modules as a percentage of a particle's total lifetime.
+
+-   `ColorOverLifetime`: Drives the color of a particle through a `color` modifier property.
+-   `OpacityOverLifetime`: Drives the opacity of a particle through an `opacity` modifier property.
+-   `RotationOverLifetime`: Drives the rotation of particle through a `rotation` modifier property. Note that, since rotation is represented as a `Vector`, you currently can **not** use Splines for this.
+-   `SizeOverLifetime`: Drives the size of a particle through a `size` modifier property.
+
+### Size-driven Modifiers
+
+-   `ColorBySize`: Drives the color of a particle through a `color` modifier property.
+
+## Example
+
+As an example on the usage, this is how the [sparkles](/docs/ref/templates#sparkles) template drives the particle's sizes:
+
+<DemoCodeblock method={(party, e) => party.sparkles(e)}>
+
+```ts
+const sizeModule = emitter.addModule(party.modules.SizeOverLifetime);
+sizeModule.size = new party.NumericSpline(
+    { time: 0, value: 0 },
+    { time: 0.3, value: 1 },
+    { time: 0.7, value: 1 },
+    { time: 1, value: 0 }
+);
+```
+
+</DemoCodeblock>

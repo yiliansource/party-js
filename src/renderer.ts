@@ -1,7 +1,7 @@
 import { Vector } from "./components/vector";
 import { particleContainer } from "./containers";
 import { Emitter } from "./particles/emitter";
-import { RendererOptions } from "./particles/options";
+import { RenderOptions } from "./particles/options";
 import { Particle } from "./particles/particle";
 import { resolveShapeFactory } from "./shapes";
 import { rotationToNormal } from "./util";
@@ -64,16 +64,21 @@ export class Renderer {
      * @param emitter The system containing the particle.
      */
     public renderParticle(particle: Particle, emitter: Emitter): void {
-        const options: RendererOptions = emitter.renderer;
+        const options: RenderOptions = emitter.renderer;
 
         // Ensure that an element for the particle exists.
         const element = this.elements.has(particle.id)
             ? this.elements.get(particle.id)
             : this.createParticleElement(particle, options);
 
-        if (options.applyColour) {
-            // If the options offer a colouring method, apply it.
-            options.applyColour(particle.colour, element);
+        if (options.applyColor) {
+            // If the options offer a coloring method, apply it.
+            options.applyColor(particle.color, element);
+        }
+
+        if (options.applyOpacity) {
+            // If the options offer an opacity modifying method, apply it.
+            options.applyOpacity(particle.opacity, element);
         }
 
         if (options.applyLighting) {
@@ -101,7 +106,7 @@ export class Renderer {
      */
     private createParticleElement(
         particle: Particle,
-        options: RendererOptions
+        options: RenderOptions
     ): HTMLElement {
         // Resolve the element returned from the factory.
         const resolved = resolveShapeFactory(options.shapeFactory);

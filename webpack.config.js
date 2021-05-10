@@ -1,4 +1,5 @@
 const path = require("path");
+
 const TerserWebpackPlugin = require("terser-webpack-plugin");
 
 const mode = process.env.NODE_ENV || "development";
@@ -15,6 +16,7 @@ module.exports = {
         libraryTarget: "umd",
         library: "party",
         umdNamedDefine: true,
+        libraryExport: "default",
     },
     module: {
         rules: [

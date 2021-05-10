@@ -2,19 +2,19 @@
 title: Components
 ---
 
-To allow structured and clean functionalities, the library offers various component types to define properties like colour, positions, rotations or behaviour over time. They are all exported into the `party` object.
+To allow structured and clean functionalities, the library offers various component types to define properties like color, positions, rotations or behaviour over time. They are all exported into the `party` object.
 
-## Colour
+## Color
 
-Allows the representation of colours through RGB components.
+Allows the representation of colors through RGB components.
 
 ```ts
-const a = new party.Colour(12, 59, 219);
-const b = party.Colour.fromHex("#ffa68d");
-const result = a.mix(b); // Colour (#8570b4)
+const a = new party.Color(12, 59, 219);
+const b = party.Color.fromHex("#ffa68d");
+const result = a.mix(b); // Color (#8570b4)
 ```
 
-As seen above, colours can be mixed together (with an optional weight). Note that this will create a new object, instead of modifying one of the components.
+As seen above, colors can be mixed together (with an optional weight). Note that this will create a new object, instead of modifying one of the components.
 
 Additionally, conversion from and to hexadecimal notation are supported, as well as conversion from HSL.
 
@@ -50,11 +50,11 @@ const result = mySpline.evaluate(0.2); // 0.0955
 
 ### Gradient
 
-In this implementation, the values of the spline keys consist of colours, which are mixed together to ease between them. The implementation also offers static utility methods to easily create gradients.
+In this implementation, the values of the spline keys consist of colors, which are mixed together to ease between them. The implementation also offers static utility methods to easily create gradients.
 
 ```ts
-const a = new party.Colour(12, 59, 219);
-const b = party.Colour.fromHex("#ffa68d");
+const a = new party.Color(12, 59, 219);
+const b = party.Color.fromHex("#ffa68d");
 const simpleGradient = party.Gradient.simple(a, b);
-const result = simpleGradient.evaluate(0.6); // Colour (#9d7bac)
+const result = simpleGradient.evaluate(0.6); // Color (#9d7bac)
 ```

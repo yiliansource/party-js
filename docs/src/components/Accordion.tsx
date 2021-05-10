@@ -1,5 +1,7 @@
+import React, { createRef } from "react";
+
+import styles from "./Accordion.module.scss";
 import Chevron from "./Chevron";
-import React, { createRef, useRef, useState } from "react";
 
 interface AccordionProps {
     icon?: string;
@@ -26,34 +28,37 @@ export default class Accordion extends React.Component<
 
     render(): React.ReactNode {
         return (
-            <div className={`accordion ${this.state.expanded ? "active" : ""}`}>
+            <div
+                className={`${styles.accordion} ${
+                    this.state.expanded ? "active" : ""
+                }`}
+            >
                 <div
-                    className="header"
+                    className={styles.header}
                     onClick={this.toggleExpanded.bind(this)}
                 >
                     {this.props.icon ? (
-                        <img className="icon" src={this.props.icon} />
+                        <img className={styles.icon} src={this.props.icon} />
                     ) : null}
-                    <span className="title">{this.props.title}</span>
+                    <span className={styles.title}>{this.props.title}</span>
                     <Chevron
                         direction={this.state.expanded ? "down" : "right"}
                     />
                 </div>
                 <div
                     ref={this.content}
-                    className="content"
+                    className={styles.content}
                     style={{
                         maxHeight: this.state.height + "px",
                     }}
                 >
-                    <div className="wrapper">{this.props.children}</div>
+                    <div className={styles.wrapper}>{this.props.children}</div>
                 </div>
             </div>
         );
     }
 
     toggleExpanded(): void {
-        console.log(this.content.current);
         this.setState({
             expanded: !this.state.expanded,
             height: this.state.expanded ? 0 : this.content.current.scrollHeight,
