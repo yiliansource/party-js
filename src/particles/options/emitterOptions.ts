@@ -1,3 +1,4 @@
+import { ModuleFunction } from "../../systems/modules";
 import { despawningRules } from "../../util/rules";
 import { Particle } from "../particle";
 
@@ -41,6 +42,14 @@ export interface EmitterOptions {
      * @defaultValue Despawns particles when their lifetime is over or when they leave the document bounds.
      */
     despawningRules: ParticleDespawnRule[];
+    /**
+     * The array of module functions used to modify particles while they are active.
+     *
+     * @remarks
+     * New modules can be created via the `ModuleBuilder` class. Alternatively, for full
+     * control, a function can be passed that takes a particle as a parameter, and modifies it.
+     */
+    modules: ModuleFunction[];
 }
 
 /**
@@ -54,5 +63,6 @@ export function getDefaultEmitterOptions(): EmitterOptions {
         useGravity: true,
         maxParticles: 300,
         despawningRules: [despawningRules.lifetime, despawningRules.bounds],
+        modules: [],
     };
 }

@@ -1,10 +1,10 @@
-import { Vector } from "./components/vector";
-import { particleContainer } from "./containers";
-import { Emitter } from "./particles/emitter";
-import { RenderOptions } from "./particles/options";
-import { Particle } from "./particles/particle";
-import { resolveShapeFactory } from "./shapes";
-import { rotationToNormal } from "./util";
+import { Vector } from "../components/vector";
+import { particleContainer } from "../containers";
+import { resolveShapeFactory } from "../systems/shapes";
+import { rotationToNormal } from "../util";
+import { Emitter } from "./emitter";
+import { RenderOptions } from "./options";
+import { Particle } from "./particle";
 
 /**
  * Represents a renderer used to draw particles to the DOM via HTML

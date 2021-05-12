@@ -5,6 +5,7 @@ import { Lazy } from "./util/lazy";
  * The prefix to apply to the containers.
  */
 const elementPrefix = "party-js-";
+
 /**
  * A utility method to partially update the style of the specified element.
  */

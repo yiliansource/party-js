@@ -1,6 +1,6 @@
 import { Debug } from "./debug";
 import { Emitter, EmitterConstructionOptions } from "./particles/emitter";
-import { Renderer } from "./renderer";
+import { Renderer } from "./particles/renderer";
 
 /**
  * Represents a scene that contains emitters and their particles.

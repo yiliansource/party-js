@@ -1,31 +1,23 @@
 import party from "../";
 import { Color, Vector } from "../components";
 import { Emitter } from "../particles/emitter";
-import * as modules from "../particles/modules";
-import { Source } from "../particles/options";
-import { ParticleModifier } from "../systems/modifiers";
-import { randomRange, randomUnitVector } from "../systems/random";
-import {
-    evaluateVariation,
-    range,
-    skew,
-    Variation,
-} from "../systems/variation";
-import { overrideDefaults } from "../util";
+import { ModuleBuilder, ModuleFunction } from "../systems/modules";
+import * as random from "../systems/random";
+import * as sources from "../systems/sources";
+import * as variation from "../systems/variation";
 
 /**
  * The configuration to apply to the confetti.
  */
 export interface ConfettiConfiguration {
-    count: Variation<number>;
-    spread: Variation<number>;
-    speed: Variation<number>;
-    size: Variation<number>;
-    rotation: Variation<Vector>;
-    color: Variation<Color>;
-    rotationOverLifetime: ParticleModifier<Vector>;
-    sizeOverLifetime: ParticleModifier<number>;
-    shapes: Variation<string | HTMLElement>;
+    count: variation.Variation<number>;
+    spread: variation.Variation<number>;
+    speed: variation.Variation<number>;
+    size: variation.Variation<number>;
+    rotation: variation.Variation<Vector>;
+    color: variation.Variation<Color>;
+    shapes: variation.Variation<string | HTMLElement>;
+    modules: ModuleFunction[];
 }
 
 /**
@@ -35,21 +27,28 @@ export interface ConfettiConfiguration {
  * @param options The (optional) configuration overrides.
  */
 export function confetti(
-    source: Source,
+    source: sources.DynamicSourceType,
     options?: Partial<ConfettiConfiguration>
 ): Emitter {
-    const config = overrideDefaults(
+    const populated = party.util.overrideDefaults(
         {
-            count: range(20, 40),
-            spread: 40,
-            speed: range(300, 600),
-            size: skew(1, 0.2),
-            rotation: () => randomUnitVector().scale(180),
-            color: () => Color.fromHsl(randomRange(0, 360), 100, 70),
-            sizeOverLifetime: (p) =>
-                Math.min(1, (p.initialLifetime - p.lifetime) * 3),
-            rotationOverLifetime: (p) =>
-                new Vector(140, 200, 260).scale(p.initialLifetime - p.lifetime),
+            count: party.variation.range(20, 40),
+            spread: party.variation.range(35, 45),
+            speed: party.variation.range(300, 600),
+            size: party.variation.skew(1, 0.2),
+            rotation: () => random.randomUnitVector().scale(180),
+            color: () => Color.fromHsl(random.randomRange(0, 360), 100, 70),
+            modules: [
+                new ModuleBuilder()
+                    .drive("size")
+                    .by((t) => Math.min(1, t * 3))
+                    .build(),
+                new ModuleBuilder()
+                    .drive("rotation")
+                    .by((t) => new Vector(140, 200, 260).scale(t))
+                    .relative()
+                    .build(),
+            ],
             shapes: ["square", "circle"],
         },
         options
@@ -59,30 +58,28 @@ export function confetti(
         emitterOptions: {
             loops: 1,
             duration: 8,
+            modules: populated.modules,
         },
         emissionOptions: {
             rate: 0,
-            bursts: [{ time: 0, count: config.count }],
+            bursts: [{ time: 0, count: populated.count }],
 
-            source,
-            angle: skew(-90, evaluateVariation(config.spread)),
+            sourceSampler: sources.dynamicSource(source),
+            angle: variation.skew(
+                -90,
+                variation.evaluateVariation(populated.spread)
+            ),
 
-            initialLifetime: range(6, 8),
-            initialSpeed: config.speed,
-            initialSize: config.size,
-            initialRotation: config.rotation,
-            initialColor: config.color,
+            initialLifetime: variation.range(6, 8),
+            initialSpeed: populated.speed,
+            initialSize: populated.size,
+            initialRotation: populated.rotation,
+            initialColor: populated.color,
         },
         rendererOptions: {
-            shapeFactory: config.shapes,
+            shapeFactory: populated.shapes,
         },
     });
-
-    const rotationModule = emitter.addModule(modules.RotationOverLifetime);
-    rotationModule.rotation = config.rotationOverLifetime;
-
-    const sizeModule = emitter.addModule(modules.SizeOverLifetime);
-    sizeModule.size = config.sizeOverLifetime;
 
     return emitter;
 }

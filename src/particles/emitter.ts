@@ -1,9 +1,8 @@
 import { Vector } from "../components/vector";
 import { settings } from "../settings";
-import { randomInsideSource } from "../systems/random";
+import { ModuleFunction } from "../systems/modules";
 import { evaluateVariation } from "../systems/variation";
 import { overrideDefaults } from "../util/config";
-import { ParticleModifierModule } from "./modules/particleModifierModule";
 import {
     EmissionOptions,
     EmitterOptions,
@@ -38,10 +37,6 @@ export class Emitter {
      * The particles currently contained within the system.
      */
     public readonly particles: Particle[] = [];
-    /**
-     * The array of modules used to modify particles during their lifetime.
-     */
-    public readonly modules: ParticleModifierModule[] = [];
 
     /**
      * The main options of the emitter.
@@ -88,18 +83,6 @@ export class Emitter {
             getDefaultRendererOptions(),
             options?.rendererOptions
         );
-    }
-
-    /**
-     * Adds a particle modifier module of the specified type to the emitter and returns it.
-     */
-    public addModule<TModule extends ParticleModifierModule>(
-        moduleType: new (...args: unknown[]) => TModule,
-        ...args: unknown[]
-    ): TModule {
-        const module = new moduleType(args);
-        this.modules.push(module);
-        return module;
     }
 
     /**
@@ -198,8 +181,9 @@ export class Emitter {
             particle.velocity.scale(delta)
         );
 
-        for (const module of this.modules) {
-            module.apply(particle);
+        // Apply the modules to the particle.
+        for (const moduleFunction of this.options.modules) {
+            moduleFunction(particle);
         }
     }
 
@@ -209,7 +193,7 @@ export class Emitter {
      */
     private emitParticle(): Particle {
         const particle: Particle = new Particle({
-            location: randomInsideSource(this.emission.source),
+            location: this.emission.sourceSampler(),
             lifetime: evaluateVariation(this.emission.initialLifetime),
             velocity: Vector.from2dAngle(
                 evaluateVariation(this.emission.angle)
