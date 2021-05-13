@@ -1,10 +1,6 @@
 import { Color, Rect, Vector } from "../../components";
+import { SourceSampler, rectSource } from "../../systems/sources";
 import { Variation } from "../../systems/variation";
-
-/**
- * Represents a junction of types that can be used as particle system sources.
- */
-export type Source = Rect | HTMLElement | MouseEvent;
 
 /**
  * Holds a set of options used to configure the way particles are emitted in.
@@ -12,21 +8,23 @@ export type Source = Rect | HTMLElement | MouseEvent;
 export interface EmissionOptions {
     /**
      * The number of particles that should be emitted per second.
+     *
      * @defaultValue 10
      */
     rate: number;
     /**
      * The bursts that particles should be bulk-emitted at.
+     *
      * @defaultValue An empty array.
      */
     bursts: Burst[];
 
     /**
-     * The area that particles will be emitted from.
+     * The sampler used to generate particle spawn positions.
      *
-     * @defaultValue A zero-sized rect at (0, 0).
+     * @defaultValue A sampler that emits particles from (0, 0).
      */
-    source: Source;
+    sourceSampler: SourceSampler;
     /**
      * The angle that particles will be emitted at, in degrees. This is used to, for example,
      * give the particles a particular amount of initial force in a direction.
@@ -37,26 +35,31 @@ export interface EmissionOptions {
 
     /**
      * The variable, initial lifetime of the emitted particle.
+     *
      * @defaultValue 5
      */
     initialLifetime: Variation<number>;
     /**
      * The variable, initial speed of the emitted particles.
+     *
      * @defaultValue 5
      */
     initialSpeed: Variation<number>;
     /**
      * The variable, initial size of the emitted particles.
+     *
      * @defaultValue 1
      */
     initialSize: Variation<number>;
     /**
      * The variable, initial rotation of the emitted particles, as euler angles.
+     *
      * @defaultValue `Vector.zero`
      */
     initialRotation: Variation<Vector>;
     /**
      * The variable, initial color of the emitted particles.
+     *
      * @defaultValue `Color.white`
      */
     initialColor: Variation<Color>;
@@ -89,7 +92,7 @@ export function getDefaultEmissionOptions(): EmissionOptions {
 
         angle: 0,
         bursts: [],
-        source: new Rect(),
+        sourceSampler: rectSource(Rect.zero),
 
         initialLifetime: 5,
         initialSpeed: 5,

@@ -11,7 +11,7 @@
         "clean": "rimraf bundle lib",
         "build": "yarn clean && tsc && webpack",
         "test": "mocha -r ts-node/register 'tests/**/*.test.ts'",
-        "lint": "npx eslint . --ext .js,.ts"
+        "lint": "eslint . --ext .js,.ts"
     },
     "repository": {
         "type": "git",

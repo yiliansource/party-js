@@ -1,5 +1,4 @@
-import { Rect, Vector } from "../components";
-import { Source } from "../particles/options";
+import { Circle, Rect, Vector } from "../components";
 import { lerp } from "./math";
 
 /**
@@ -41,15 +40,11 @@ export function randomInsideRect(rect: Rect): Vector {
     );
 }
 
-/**
- * Returns a random point inside the given dynamic source.
- */
-export function randomInsideSource(source: Source): Vector {
-    if ("getBoundingClientRect" in source) {
-        source = Rect.fromHtmlElement(source);
-    } else if ("clientX" in source) {
-        source = Rect.fromMouseEvent(source);
-    }
-
-    return randomInsideRect(source);
+export function randomInsideCircle(circle: Circle): Vector {
+    const theta = randomRange(0, 2 * Math.PI);
+    const radius = randomRange(0, circle.radius);
+    return new Vector(
+        circle.x + Math.cos(theta) * radius,
+        circle.y + Math.sin(theta) * radius
+    );
 }

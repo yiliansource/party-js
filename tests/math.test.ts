@@ -85,7 +85,9 @@ describe("Math", function () {
         ];
 
         for (const test of tests) {
-            it(`approximately compares values: ${test.a} == ${test.b}`, function () {
+            it(`approximately compares values: ${test.a} ${
+                test.expected ? "==" : "!="
+            } ${test.b}`, function () {
                 expect(math.approximately(test.a, test.b)).to.equal(
                     test.expected
                 );

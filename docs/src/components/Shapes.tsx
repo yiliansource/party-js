@@ -28,24 +28,21 @@ export default () => (
                 </tr>
             </thead>
             <tbody>
-                {Object.keys(party.resolvableShapes)
-                    // Make sure that custom registered shapes arent rendered.
-                    .filter((key) => !["heart"].includes(key))
-                    .map((key) => (
-                        <tr key={key}>
-                            <td>
-                                <code>{key}</code>
-                            </td>
-                            <td>
-                                <div
-                                    className="shapeSample"
-                                    dangerouslySetInnerHTML={{
-                                        __html: party.resolvableShapes[key],
-                                    }}
-                                ></div>
-                            </td>
-                        </tr>
-                    ))}
+                {Object.keys(party.resolvableShapes).map((key) => (
+                    <tr key={key}>
+                        <td>
+                            <code>{key}</code>
+                        </td>
+                        <td>
+                            <div
+                                className="shapeSample"
+                                dangerouslySetInnerHTML={{
+                                    __html: party.resolvableShapes[key],
+                                }}
+                            ></div>
+                        </td>
+                    </tr>
+                ))}
             </tbody>
         </table>
     </>
