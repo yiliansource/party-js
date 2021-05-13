@@ -29,9 +29,27 @@ export class Rect {
     public static readonly zero: Rect = new Rect(0, 0);
 
     /**
-     * Returns a new rectangle from the viewport's bounds.
+     * Returns a new document-space rectangle from the viewport's bounds.
      */
     public static fromScreen(): Rect {
-        return new Rect(0, 0, window.innerWidth, window.innerHeight);
+        return new Rect(
+            window.scrollX,
+            window.scrollY,
+            window.innerWidth,
+            window.innerHeight
+        );
+    }
+
+    /**
+     * Returns a new document-space rectangle from the specified element.
+     */
+    public static fromElement(element: HTMLElement): Rect {
+        const r = element.getBoundingClientRect();
+        return new Rect(
+            window.scrollX + r.x,
+            window.scrollY + r.y,
+            r.width,
+            r.height
+        );
     }
 }

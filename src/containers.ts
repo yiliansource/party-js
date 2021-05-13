@@ -32,16 +32,24 @@ function createRootContainer(): HTMLElement {
     // Style the container to stretch across the full screen, without being interactable
     // by the user. Also apply the z-index from the global settings.
     partialUpdateStyle(container, {
-        position: "fixed",
+        position: "absolute",
         left: "0",
         top: "0",
-        bottom: "0",
-        right: "0",
         pointerEvents: "none",
         userSelect: "none",
         zIndex: settings.zIndex.toString(),
     });
     document.body.appendChild(container);
+
+    // Ensure that the root container is always the same size as the entire DOM.
+    function fitToWindow() {
+        if (isContainerActive(container)) {
+            container.style.height = document.body.offsetHeight + "px";
+            container.style.width = document.body.offsetWidth + "px";
+        }
+        window.requestAnimationFrame(fitToWindow);
+    }
+    window.requestAnimationFrame(fitToWindow);
 
     return container;
 }
@@ -79,6 +87,7 @@ function createParticleContainer(): HTMLElement {
     partialUpdateStyle(container, {
         width: "100%",
         height: "100%",
+        overflow: "hidden",
         perspective: "100vw",
     });
     rootContainer.current.appendChild(container);

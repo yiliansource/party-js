@@ -46,11 +46,15 @@ export function rectSource(source: Rect): SourceSampler {
  * Creates a sampler to retrieve random points inside a specified HTMLElement.
  */
 export function elementSource(source: HTMLElement): SourceSampler {
-    return () => randomInsideRect(source.getBoundingClientRect());
+    return () => randomInsideRect(Rect.fromElement(source));
 }
 /**
  * Creates a sampler to retrieve the position of a mouse event.
  */
 export function mouseSource(source: MouseEvent): SourceSampler {
-    return () => new Vector(source.clientX, source.clientY);
+    return () =>
+        new Vector(
+            window.scrollX + source.clientX,
+            window.scrollY + source.clientY
+        );
 }

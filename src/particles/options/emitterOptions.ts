@@ -18,7 +18,7 @@ export interface EmitterOptions {
     duration: number;
     /**
      * The number of loops that should be performed. Negative numbers result in infinite loops.
-     * @defaultValue -1
+     * @defaultValue 1
      */
     loops: number;
 
@@ -58,7 +58,7 @@ export interface EmitterOptions {
 export function getDefaultEmitterOptions(): EmitterOptions {
     return {
         duration: 5,
-        loops: -1,
+        loops: 1,
 
         useGravity: true,
         maxParticles: 300,

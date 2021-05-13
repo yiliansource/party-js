@@ -79,17 +79,20 @@ export class Debug {
         // Emitter informations are formatted using their index, internal timer
         // and total particle count.
         const emitterInfos: string[] = this.scene.emitters.map(function (
-            emitter,
-            index
+            emitter
         ) {
-            return (
-                `Emitter #${index + 1} (` +
-                [
-                    `Σp: ${emitter.particles.length}`,
-                    `Σt: ${emitter["durationTimer"].toFixed(3)}s`,
-                ].join(", ") +
-                `)`
-            );
+            return [
+                // Show the current loop and the total loops.
+                `⭯: ${emitter["currentLoop"] + 1}/${
+                    emitter.options.loops >= 0 ? emitter.options.loops : "∞"
+                }`,
+                // Show the amount of particle contained.
+                `Σp: ${emitter.particles.length}`,
+                // Show the internal timer.
+                !emitter.isExpired
+                    ? `Σt: ${emitter["durationTimer"].toFixed(3)}s`
+                    : "<i>expired</i>",
+            ].join(", ");
         });
 
         infos.push("--------------", ...emitterInfos);
