@@ -23,14 +23,39 @@ Additionally, conversion from and to hexadecimal notation are supported, as well
 Allows the representation of things like location and rotation through XYZ components.
 
 ```ts
-const vectorA = new Vector(1, 3, 5);
-const vectorB = new Vector(2, 3, 1);
+const vectorA = new party.Vector(1, 3, 5);
+const vectorB = new party.Vector(2, 3, 1);
 const vectorC = vectorA.add(vectorB); // (3, 6, 6)
 ```
 
 The `Vector` class has various arithmetic vector math operations defined. Note that these always return a new vector, instead of altering an existing one.
 
 You can also create a 2D vector from a 2D angle. Note that a 90° angle will return (0, 1) correctly, but will point downwards in the DOM.
+
+## Geometry Components
+
+Geometry components are usually used to define [source sampler](./sources) areas.
+
+### Rect
+
+A simple rectangle with a position and size.
+
+```ts
+// (x, y, width, height)
+new party.Rect(1, 2, 3, 4);
+
+// Uses the window's inner height to create a screen-space rect.
+party.Rect.fromScreen();
+```
+
+### Circle
+
+A simple circle with a position and radius.
+
+```ts
+// (x, y, radius)
+new party.Circle(1, 2, 3);
+```
 
 ## Splines
 

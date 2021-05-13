@@ -112,6 +112,23 @@ export class ModuleBuilder {
         return this;
     }
 
+    /**
+     * Specifies that the module function is supposed to act relative to the
+     * properties initial value.
+     *
+     * @remarks
+     * Note that this is only possible if an "initial*" property exists on the
+     * particle object. The operation applied to the initial and new value
+     * is dependant on their type:
+     * - `Vector`: Both vectors are added.
+     * - `number`: Both numbers are multiplied.
+     *
+     * For more advanced relative customizations, consider using the particle
+     * object in the driver value function instead, like:
+     * ```ts
+     * .by((t, p) => p.initialSize + t * 2);
+     * ```
+     */
     public relative(isRelative = true): ModuleBuilder {
         this.isRelative = isRelative;
         return this;
@@ -193,6 +210,14 @@ function calculateModuleFactor(
     }
 }
 
+/**
+ * Updates a driven property of a particle using the specified value.
+ *
+ * @remarks
+ * If the operation is marked as relative, the function infers the new value
+ * through the value's type. Note that relative properties must have a
+ * corresponding "initial*" value in the particle's properties.
+ */
 function updateDrivenProperty(
     particle: Particle,
     key: DrivableKey,
@@ -215,7 +240,7 @@ function updateDrivenProperty(
         if (value instanceof Vector) {
             updateDrivenProperty(particle, key, (initial as Vector).add(value));
         } else if (typeof value === "number") {
-            updateDrivenProperty(particle, key, (initial as number) + value);
+            updateDrivenProperty(particle, key, (initial as number) * value);
         } else {
             throw new Error(
                 `Unable to use relative chaining with particle key '${key}'; no relative operation for '${value}' could be inferred.`

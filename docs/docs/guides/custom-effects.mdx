@@ -16,39 +16,40 @@ To understand how custom effects work, let's break down the [confetti](/docs/ref
 <DemoCodeblock method={(party, e) => party.confetti(e)}>
 
 ```ts
-function confetti(source, options?): Emitter {
-    const config = party.util.overrideDefaults(
+function confetti(source, options): Emitter {
+    const populated = party.util.overrideDefaults(
         {
-            // ...
+            modules: [
+                new ModuleBuilder()
+                    .drive("size")
+                    .by((t) => Math.min(1, t * 3))
+                    .build(),
+            ],
         },
         options
     );
+
     const emitter = party.scene.current.createEmitter({
         emitterOptions: {
-            // ...
+            modules: populated.modules,
         },
         emissionOptions: {
             rate: 0,
-            bursts: [{ time: 0, count: config.count }],
+            bursts: [{ time: 0, count: populated.count }],
 
             source,
             angle: party.variation.skew(
                 -90,
-                party.variation.evaluateVariation(config.spread)
+                party.variation.evaluateVariation(populated.spread)
             ),
 
-            initialSpeed: config.speed,
+            initialSpeed: populated.speed,
             initialLifetime: party.variation.range(6, 8),
         },
         rendererOptions: {
-            shapeFactory: config.shapes,
+            shapeFactory: populated.shapes,
         },
     });
-
-    const rotationModule = emitter.addModule(party.modules.RotationModifier);
-    rotationModule.rotation = config.rotationOverLifetime;
-
-    // ...
 
     return emitter;
 }
@@ -60,41 +61,48 @@ function confetti(source, options?): Emitter {
 
 ### Configuration
 
-Let's break down the effect bit by bit. First, we provide fill in values that the user potentially omitted, to ensure that all the configuration we need has a proper value.
+Let's break down the effect bit by bit. First, we provide fill in values that the user potentially omitted, to ensure that all the configuration we need has a proper value. For now, let's just focus on the _modules_.
 
 ```ts
-const config = party.util.overrideDefaults(
+const populated = party.util.overrideDefaults(
     {
-        /* ... */
+        modules: [
+            new ModuleBuilder()
+                .drive("size")
+                .by((t) => Math.min(1, t * 3))
+                .build(),
+        ],
     },
     options
 );
 ```
 
+[Modules](/docs/ref/particle-modules) allow particle to change their appearance over their lifetime. How they work is best explained on their own documentation page, but here we are simply creating a new module function that drives the size of the particles over their lifetime.
+
 ### Creating the emitter
 
-After we've prepared all the objects we need, it's time to finally create the `Emitter` object. This is the instance that will ultimately be responsible for spawning our confetti-particles.
+After we've prepared all the options we need, it's time to finally create the `Emitter` object. This is the instance that will ultimately be responsible for spawning our confetti-particles.
 
 We use the fact that we can pass every configuration option that we need directly into the method that creates a new emitter in the scene.
 
 ```ts
 const emitter = party.scene.current.createEmitter({
     emitterOptions: {
-        // ...
+        modules: populated.modules,
     },
     emissionOptions: {
         rate: 0,
-        bursts: [{ time: 0, count: config.count }],
+        bursts: [{ time: 0, count: populated.count }],
         source,
         angle: party.variation.skew(
             -90,
-            party.variation.evaluateVariation(config.spread)
+            party.variation.evaluateVariation(populated.spread)
         ),
-        initialSpeed: config.speed,
+        initialSpeed: populated.speed,
         initialLifetime: party.variation.range(6, 8),
     },
     rendererOptions: {
-        shapeFactory: config.shapes,
+        shapeFactory: populated.shapes,
     },
 });
 ```
@@ -109,25 +117,6 @@ The **shape options** specify the area that particles are emitted from, and the 
 
 The **renderer options** define the way that particles appear on the screen, and how certain properties of them are applied to their looks, for example the lighting and transform.
 
-### Adding the modules
-
-Finally, we want to give some variation over time to the particles. In this case, we will use a `RotationModifier` to rotate the particles over time. We use an instance method of the emitter to add the module by it's type, and then configure it.
-
-```ts
-const rotationModule = emitter.addModule(party.modules.RotationModifier);
-rotationModule.rotation = config.rotationOverLifetime;
-```
-
-Note that we _could_ also add the module manually, but the above method is shorter.
-
-```ts
-const rotationModule = new party.modules.RotationModifier();
-rotationModule.rotation = config.rotationOverLifetime;
-emitter.modules.push(rotationModule);
-```
-
-At the end we simply return the created emitter object, but this is obviously optional.
-
 ### All done!
 
 That's all there is to it! If you want to learn more about how to create custom effects, you can check out the other guides.
@@ -141,26 +130,46 @@ With the knowledge we just gained from learning how custom effects work, we can 
 }}>
 
 ```js
-const element = document.getElementById(id);
+const heartPath = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "path"
+);
+heartPath.setAttribute(
+    "d",
+    "M316.722,29.761c66.852,0,121.053,54.202,121.053,121.041c0,110.478-218.893,257.212-218.893,257.212S0,266.569,0,150.801 C0,67.584,54.202,29.761,121.041,29.761c40.262,0,75.827,19.745,97.841,49.976C240.899,49.506,276.47,29.761,316.722,29.761z"
+);
 
-// Make sure the "heart" shape exists.
-if (!party.resolvableShapes.heart) {
-    party.resolvableShapes.heart = `<svg viewBox="0 0 512 512" height="20" width="20"><path d="M316.722,29.761c66.852,0,121.053,54.202,121.053,121.041c0,110.478-218.893,257.212-218.893,257.212S0,266.569,0,150.801 C0,67.584,54.202,29.761,121.041,29.761c40.262,0,75.827,19.745,97.841,49.976C240.899,49.506,276.47,29.761,316.722,29.761z"/></svg>`;
-}
+const heartShape = document.createElementNS(
+    "http://www.w3.org/2000/svg",
+    "svg"
+);
+heartShape.setAttribute("viewBox", "0 0 512 512");
+heartShape.setAttribute("height", "20");
+heartShape.setAttribute("width", "20");
+heartShape.appendChild(heartPath);
 
-const emitter = party.scene.current.createEmitter({
+party.scene.current.createEmitter({
     emitterOptions: {
         loops: 1,
         useGravity: false,
-        initialSpeed: 400,
+        modules: [
+            new party.ModuleBuilder()
+                .drive("size")
+                .by((t) => 0.5 + 0.3 * (Math.cos(t * 10) + 1))
+                .build(),
+            new party.ModuleBuilder()
+                .drive("rotation")
+                .by((t) => new party.Vector(0, 0, 100).scale(t))
+                .relative()
+                .build(),
+        ],
     },
     emissionOptions: {
         rate: 0,
         bursts: [{ time: 0, count: party.variation.skew(20, 10) }],
-
-        source,
+        sourceSampler: party.sources.dynamicSource(source),
         angle: party.variation.range(0, 360),
-
+        initialSpeed: 400,
         initialColor: party.variation.gradientSample(
             party.Gradient.simple(
                 party.Color.fromHex("#ffa68d"),
@@ -169,18 +178,10 @@ const emitter = party.scene.current.createEmitter({
         ),
     },
     rendererOptions: {
-        shapeFactory: "heart",
+        shapeFactory: heartShape,
         applyLighting: undefined,
     },
 });
-
-const rotationModule = emitter.addModule(party.modules.RotationModifier);
-rotationModule.rotation = (p) =>
-    new party.Vector(0, 0, 100).scale(p.initialLifetime - p.lifetime);
-
-const sizeModule = emitter.addModule(party.modules.SizeModifier);
-sizeModule.size = (p) =>
-    0.5 + 0.3 * (Math.cos((p.initialLifetime - p.lifetime) * 10) + 1);
 ```
 
 </DemoCodeblock>

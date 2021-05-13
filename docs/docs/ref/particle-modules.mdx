@@ -6,53 +6,106 @@ import DemoCodeblock from "../../src/components/DemoCodeblock";
 
 ## Introduction
 
-Static particles can look pretty boring. Particle modules allow certain particle properties to change over time, for example rotation or color. These modules are registered at emitter creation, and are executed on a per-tick basis for each particle. They receive the particles themselves as a parameter, so they can alter the particle according to, for example, the particle's lifetime.
-
-They are implemented as class instances, using a single method override to drive their impact on the particles.
+Static particles can look pretty boring. Particle modules allow certain particle properties to change over time, for example rotation or color. These modules are represented as functions, that can be applied per-emitter on every particle in every tick.
 
 ```ts
-abstract class ParticleModifierModule {
-    abstract apply(particle: Particle): void;
-}
+export type ModuleFunction = (particle: Particle) => void;
 ```
 
-Modules are commonly used in [templates](/docs/ref/templates), and examples on how to use them yourself can be found on the [customization](/docs/guides/custom-effects) page. Usually, the changes these modules apply are driven through _particle modifiers_, which are similar to [variations](/docs/ref/variations). A particle modifier can be represented by either a constant, a [spline](/docs/ref/utilities#splines) or a function taking a particle as a parameter and producing a value.
+Looks simple doesn't it? But don't be deceived - they are much more powerful than you might initially think!
+
+Let's say you wanted to make your particle's sizes pulse over time using a sine wave. Well, then you just need to pass a function that does exactly that into your emitter's modules!
 
 ```ts
-type ParticleModifier<T> = T | Spline<T> | ((particle: Particle) => T);
+emitter.options.modules.push(
+    (particle: Particle) =>
+        (particle.size = Math.sin(new Date().getTime() / 1000))
+);
 ```
 
-## Pre-made Modules
+However, writing functions like that for every single property you want to animate is boring and can get messy. You can still use them for more advanced cases, but for simple ones we will take a look at the `ModuleBuilder` class.
 
-Various modules exist, to customize particle behaviour over time. Additionally to the modules listed below, a `CustomModifierModule` exists, where you can pass your own modifier function, that operates on a particle.
+## Module Builder
 
-### Lifetime-driven Modifiers
+The `ModuleBuilder` class is a utility class that allows us to construct `ModuleFunctions` (as seen above) from specific parameters. Let's jump in and take a look at an example:
 
-The particle lifetime is passed to these modules as a percentage of a particle's total lifetime.
+```ts
+new ModuleBuilder()
+    .drive("size")
+    .by((t) => Math.min(1, t * 3))
+    .through("lifetime")
+    .build(),
+```
 
--   `ColorOverLifetime`: Drives the color of a particle through a `color` modifier property.
--   `OpacityOverLifetime`: Drives the opacity of a particle through an `opacity` modifier property.
--   `RotationOverLifetime`: Drives the rotation of particle through a `rotation` modifier property. Note that, since rotation is represented as a `Vector`, you currently can **not** use Splines for this.
--   `SizeOverLifetime`: Drives the size of a particle through a `size` modifier property.
+This can be read as: we're creating a new **module builder** that drives the **size** of a particle using the specified **function**, that takes the particle's **lifetime** as a factor.
 
-### Size-driven Modifiers
+### .drive(key)
 
--   `ColorBySize`: Drives the color of a particle through a `color` modifier property.
+Specifies the particle property to drive through the module function. Currently supported are `color`, `opacity`, `rotation` and `size`.
+
+### .by(factor)
+
+Specifies the value to drive the value by. This can either be a constant, a spline or a function that calculates a value from a factor and the particle as context.
+
+```ts
+type ModuleDriverValue<T> =
+    | T
+    | Spline<T>
+    | ((factor: number, particle?: Particle) => T);
+```
+
+### .through(factorType)
+
+Specifies the factor used to evaluate the driving value specified with `.by()`. Currently supports `lifetime` (in seconds), `relativeLifetime` (from 0 to 1) and `size`. By default, this uses the `lifetime` factor.
+
+### .relative()
+
+Chains the module function to be applied relative to the initial value. Note that this is **only** supported for properties that have an initial value in the particle object, currently `rotation` and `size`. The operation applied to the new and initial value is inferred from their types:
+
+-   `Vector`: Both vectors are added.
+-   `number`: Both numbers are multiplied.
 
 ## Example
 
-As an example on the usage, this is how the [sparkles](/docs/ref/templates#sparkles) template drives the particle's sizes:
-
-<DemoCodeblock method={(party, e) => party.sparkles(e)}>
+<DemoCodeblock 
+    method={(party, e) => {
+        party.sparkles(e, {
+            modules: [
+                new party.ModuleBuilder()
+                    .drive("size")
+                    .by(new party.NumericSpline(
+                        { time: 0, value: 0 }, 
+                        { time: 0.5, value: 1 }, 
+                        { time: 1, value: 0 }
+                    )).build(),
+                new party.ModuleBuilder()
+                    .drive("opacity")
+                    .by((t) => t)
+                    .through("size")
+                    .build()
+            ]
+        });
+    }}>
 
 ```ts
-const sizeModule = emitter.addModule(party.modules.SizeOverLifetime);
-sizeModule.size = new party.NumericSpline(
-    { time: 0, value: 0 },
-    { time: 0.3, value: 1 },
-    { time: 0.7, value: 1 },
-    { time: 1, value: 0 }
-);
+party.sparkles(mouseEvent, {
+    emitter: {
+        modules: [
+            new party.ModuleBuilder()
+                .drive("size")
+                .by(new party.NumericSpline(
+                    { time: 0, value: 0 },
+                    { time: 0.5, value: 1 },
+                    { time: 1, value: 0 }
+                )).build(),
+            new party.ModuleBuilder()
+                .drive("opacity")
+                .by((t) => t)
+                .through("size")
+                .build()
+        ]
+    }
+}
 ```
 
 </DemoCodeblock>

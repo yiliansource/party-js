@@ -1,0 +1,41 @@
+---
+title: Sources
+---
+
+## Introduction
+
+Sources denote the area where particles are emitted from. Template effects commonly support dynamic sources, which means you can pass any of the valid types, and the template will figure out the correct source type to use. The available source types include:
+
+-   [`Circle`](./components#circle)
+-   [`Rect`](./components#rect)
+-   `HTMLElement`
+-   `MouseEvent`
+
+:::note
+
+These objects are all passed by reference, so if you change their properties, the emitter will pick up those changes.
+
+:::
+
+To use sources in custom effects, one can also manually create sampler methods:
+
+```ts
+// Dynamically infers the sampler to generate from the source.
+party.sources.dynamicSource(myDynamicSource);
+
+// You can also explicitly specify the sampler type to generate.
+party.sources.circleSource(myCircle);
+party.sources.rectSource(myRect);
+party.sources.elementSource(myHtmlElement);
+party.sources.mouseSource(myMouseEvent);
+```
+
+## Custom Samplers
+
+A source sampler is essentially just a method that takes no arguments and returns a [`Vector`](./components#vector), which means that you are not forced to use one of the sampler-generating methods above - you can just make one yourself!
+
+```ts
+const mySampler = () => new party.Vector(Math.random() * 100, 0, 0);
+```
+
+This sampler can then be passed in the `sourceSampler` property of an emitter's `emission` options.

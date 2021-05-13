@@ -1,5 +1,5 @@
 ---
-title: Migrating to v2
+title: Migrating from v1
 ---
 
 v2 of the library comes with a few API changes, which developers will have to adapt to. Below you can find references to methods shipped in v1, and how to mimic their functionality in v2.
@@ -8,7 +8,7 @@ v2 of the library comes with a few API changes, which developers will have to ad
 
 -   `party.init()`
 
-Since components in the library are now lazily initialized, and re-created whenever they are deemed missing, there is no need to re-initialize it, since it's done internally. However, if you do not want the components to be lazily initialized, you can call `party.forceInitialization()` to manually initialize the library's components.
+Since components in the library are now lazily initialized, and re-created whenever they are deemed missing, there is no need to re-initialize it, since it's done internally. However, if you do not want the components to be lazily initialized, you can call `party.forceInit()` to manually initialize the library's components.
 
 ---
 

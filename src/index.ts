@@ -30,6 +30,8 @@ const PartyGlobal = {
     ...templates,
     // Export shapes so new ones can be registered easily.
     ...shapes,
+    // Export the module builder, so new modules can be built easily.
+    ...modules,
 
     // Export the scene and the global settings.
     scene,
@@ -41,7 +43,6 @@ const PartyGlobal = {
 
     // Export various utilities and objects.
     variation,
-    modules,
     sources,
     random,
     math,

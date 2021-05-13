@@ -27,4 +27,11 @@ export class Rect {
     }
 
     public static readonly zero: Rect = new Rect(0, 0);
+
+    /**
+     * Returns a new rectangle from the viewport's bounds.
+     */
+    public static fromScreen(): Rect {
+        return new Rect(0, 0, window.innerWidth, window.innerHeight);
+    }
 }

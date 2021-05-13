@@ -1,6 +1,5 @@
 import { Vector } from "../components/vector";
 import { settings } from "../settings";
-import { ModuleFunction } from "../systems/modules";
 import { evaluateVariation } from "../systems/variation";
 import { overrideDefaults } from "../util/config";
 import {

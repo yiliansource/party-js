@@ -32,7 +32,7 @@ export function sparkles(
         {
             count: variation.range(10, 20),
             speed: variation.range(100, 200),
-            size: variation.range(0.5, 1.5),
+            size: variation.range(0.8, 1.8),
             rotation: () => new Vector(0, 0, random.randomRange(0, 360)),
             color: () => Color.fromHsl(50, 100, random.randomRange(55, 85)),
             modules: [

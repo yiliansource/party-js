@@ -15,6 +15,7 @@ module.exports = {
             label: "Reference",
             items: [
                 "ref/templates",
+                "ref/sources",
                 "ref/variations",
                 "ref/shapes",
                 "ref/particle-modules",
