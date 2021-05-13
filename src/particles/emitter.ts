@@ -58,12 +58,19 @@ export class Emitter {
 
     /**
      * Checks if the emitter is already expired and can be removed.
-     * Expired emitters are not updated.
+     * Expired emitters do not emit new particles.
      */
     public get isExpired(): boolean {
         return (
             this.options.loops >= 0 && this.currentLoop >= this.options.loops
         );
+    }
+    /**
+     * Checks if the emitter can safely be removed.
+     * This is true if no more particles are active.
+     */
+    public get canRemove(): boolean {
+        return this.particles.length === 0;
     }
 
     /**
@@ -85,6 +92,15 @@ export class Emitter {
     }
 
     /**
+     * Clears all particles inside the emitter.
+     *
+     * @returns The number of cleared particles.
+     */
+    public clearParticles(): number {
+        return this.particles.splice(0).length;
+    }
+
+    /**
      * Processes a tick of the emitter, using the elapsed time.
      *
      * @remarks
@@ -96,50 +112,46 @@ export class Emitter {
      * @param delta The time, in seconds, passed since the last tick.
      */
     public tick(delta: number): void {
-        // Do not update expired particle systems.
-        if (this.isExpired) {
-            return;
-        }
+        if (!this.isExpired) {
+            this.durationTimer += delta;
+            if (this.durationTimer >= this.options.duration) {
+                this.currentLoop++;
 
-        this.durationTimer += delta;
-        if (this.durationTimer >= this.options.duration) {
-            this.currentLoop++;
-
-            if (this.isExpired) {
-                return;
+                // To start a new loop, the duration timer and attempted bursts are reset.
+                this.durationTimer = 0;
+                this.attemptedBurstIndices = [];
             }
 
-            // To start a new loop, the duration timer and attempted bursts are reset.
-            this.durationTimer = 0;
-            this.attemptedBurstIndices = [];
-        }
-
-        // Iterate over the bursts, attempting to execute them if the time is ready.
-        let burstIndex = 0;
-        for (const burst of this.emission.bursts) {
-            if (burst.time <= this.durationTimer) {
-                // Has the burst already been attempted? If not ...
-                if (!this.attemptedBurstIndices.includes(burstIndex)) {
-                    // Perform the burst, emitting a variable amount of particles.
-                    const count = evaluateVariation(burst.count);
-                    for (let i = 0; i < count; i++) {
-                        this.emitParticle();
+            // We need to check the expiry again, in case the added loop or duration changed something.
+            if (!this.isExpired) {
+                // Iterate over the bursts, attempting to execute them if the time is ready.
+                let burstIndex = 0;
+                for (const burst of this.emission.bursts) {
+                    if (burst.time <= this.durationTimer) {
+                        // Has the burst already been attempted? If not ...
+                        if (!this.attemptedBurstIndices.includes(burstIndex)) {
+                            // Perform the burst, emitting a variable amount of particles.
+                            const count = evaluateVariation(burst.count);
+                            for (let i = 0; i < count; i++) {
+                                this.emitParticle();
+                            }
+                            // Mark the burst as attempted.
+                            this.attemptedBurstIndices.push(burstIndex);
+                        }
                     }
-                    // Mark the burst as attempted.
-                    this.attemptedBurstIndices.push(burstIndex);
+                    burstIndex++;
+                }
+
+                // Handle the 'emission over time'. By using a while-loop instead of a simple
+                // if-condition, we take high deltas into account, and ensure that the correct
+                // number of particles will consistently be emitted.
+                this.emissionTimer += delta;
+                const delay = 1 / this.emission.rate;
+                while (this.emissionTimer > delay) {
+                    this.emissionTimer -= delay;
+                    this.emitParticle();
                 }
             }
-            burstIndex++;
-        }
-
-        // Handle the 'emission over time'. By using a while-loop instead of a simple
-        // if-condition, we take high deltas into account, and ensure that the correct
-        // number of particles will consistently be emitted.
-        this.emissionTimer += delta;
-        const delay = 1 / this.emission.rate;
-        while (this.emissionTimer > delay) {
-            this.emissionTimer -= delay;
-            this.emitParticle();
         }
 
         for (let i = this.particles.length - 1; i >= 0; i--) {

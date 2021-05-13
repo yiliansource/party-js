@@ -55,6 +55,26 @@ export class Scene {
         this.emitters.push(emitter);
         return emitter;
     }
+    /**
+     * Clears all emitters from the scene.
+     *
+     * @returns The number of cleared emitters.
+     */
+    public clearEmitters(): number {
+        return this.emitters.splice(0).length;
+    }
+    /**
+     * Clears the particles from all emitters in the scene.
+     * Note that this does not remove the actual emitter objects though.
+     *
+     * @returns The number of cleared particles.
+     */
+    public clearParticles(): number {
+        return this.emitters.reduce(
+            (sum, emitter) => sum + emitter.clearParticles(),
+            0
+        );
+    }
 
     /**
      * Schedules a tick in the scene.
@@ -89,7 +109,7 @@ export class Scene {
                 const emitter = this.emitters[i];
 
                 emitter.tick(delta);
-                if (emitter.isExpired) {
+                if (emitter.isExpired && emitter.canRemove) {
                     this.emitters.splice(i--, 1);
                 }
             }
