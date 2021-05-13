@@ -1,12 +1,18 @@
 html {
     margin: 0;
     padding: 0;
+
+    height: 100%;
 }
 
 body {
     margin: 0;
     padding: 0;
-    min-height: 100vh;
+
+    min-height: 200vh;
+}
+
+main {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -15,7 +21,7 @@ body {
 }
 
 header {
-    width: 100vw;
+    width: 100%;
     position: relative;
     text-align: center;
     pointer-events: none;
