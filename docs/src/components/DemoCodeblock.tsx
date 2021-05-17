@@ -4,7 +4,7 @@ import React from "react";
 import styles from "./DemoCodeblock.module.scss";
 
 interface DemoCodeblockProps {
-    method: (party: any, e: React.MouseEvent) => void;
+    method: (party: any, e: MouseEvent) => void;
     children?: React.ReactNode;
 }
 
@@ -23,7 +23,6 @@ export default class DemoCodeblock extends React.Component<DemoCodeblockProps> {
         );
     }
     clickHandler(e: React.MouseEvent) {
-        e.persist();
-        this.props.method(party, e);
+        this.props.method(party, e.nativeEvent);
     }
 }
