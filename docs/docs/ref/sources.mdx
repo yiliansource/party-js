@@ -6,16 +6,18 @@ title: Sources
 
 Sources denote the area where particles are emitted from. Template effects commonly support dynamic sources, which means you can pass any of the valid types, and the template will figure out the correct source type to use. The available source types include:
 
--   [`Circle`](./components#circle)
--   [`Rect`](./components#rect)
 -   `HTMLElement`
 -   `MouseEvent`
+-   [`Rect`](./components#rect)
+-   [`Circle`](./components#circle)
 
 :::note
 
-These objects are all passed by reference, so if you change their properties, the emitter will pick up those changes.
+Things to note when using sources:
 
-Additionally, `HTMLElement`s and `MouseEvent`s are converted to document-space `Rect`s before sampling.
+-   These objects are all passed by reference, so if you change their properties after creating the source, the emitter will pick up those changes.
+-   `HTMLElement`s and `MouseEvent`s are converted to document-space `Rect`s before sampling.
+-   The `dynamicSource(source)` sampler checks the type of the passed source using `instanceof` operators.
 
 :::
 
