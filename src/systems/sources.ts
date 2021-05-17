@@ -13,17 +13,17 @@ export type DynamicSourceType = Circle | Rect | HTMLElement | MouseEvent;
 /**
  * Dynamically infers a source sampler for the specified source type.
  */
-export function dynamicSource(source: DynamicSourceType): SourceSampler {
-    if ("radius" in source) {
-        return circleSource(source);
-    }
-    if ("width" in source) {
-        return rectSource(source);
-    }
-    if ("getBoundingClientRect" in source) {
+export function dynamicSource(source: unknown): SourceSampler {
+    if (source instanceof HTMLElement) {
         return elementSource(source);
     }
-    if ("clientX" in source) {
+    if (source instanceof Circle) {
+        return circleSource(source);
+    }
+    if (source instanceof Rect) {
+        return rectSource(source);
+    }
+    if (source instanceof MouseEvent) {
         return mouseSource(source);
     }
 
@@ -31,23 +31,12 @@ export function dynamicSource(source: DynamicSourceType): SourceSampler {
 }
 
 /**
- * Creates a sampler to retrieve random points inside a specified circle.
- */
-export function circleSource(source: Circle): SourceSampler {
-    return () => randomInsideCircle(source);
-}
-/**
- * Creates a sampler to retrieve random points inside a specified rectangle.
- */
-export function rectSource(source: Rect): SourceSampler {
-    return () => randomInsideRect(source);
-}
-/**
  * Creates a sampler to retrieve random points inside a specified HTMLElement.
  */
 export function elementSource(source: HTMLElement): SourceSampler {
     return () => randomInsideRect(Rect.fromElement(source));
 }
+
 /**
  * Creates a sampler to retrieve the position of a mouse event.
  */
@@ -57,4 +46,16 @@ export function mouseSource(source: MouseEvent): SourceSampler {
             window.scrollX + source.clientX,
             window.scrollY + source.clientY
         );
+}
+/**
+ * Creates a sampler to retrieve random points inside a specified rectangle.
+ */
+export function rectSource(source: Rect): SourceSampler {
+    return () => randomInsideRect(source);
+}
+/**
+ * Creates a sampler to retrieve random points inside a specified circle.
+ */
+export function circleSource(source: Circle): SourceSampler {
+    return () => randomInsideCircle(source);
 }
