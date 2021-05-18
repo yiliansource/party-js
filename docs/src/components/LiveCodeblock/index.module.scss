@@ -1,0 +1,78 @@
+.liveCodeblock {
+    position: relative;
+    color: rgb(248, 248, 242);
+    background: rgb(40, 42, 54);
+    border-radius: var(--ifm-global-radius);
+    overflow: hidden;
+    margin-bottom: 1em;
+
+    .toolbar {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-end;
+        padding: 0.5em;
+
+        & > button {
+            display: block;
+            color: white;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font: inherit;
+            font-size: 14px;
+            width: 22px;
+            padding: 0;
+            margin: 0 0.8em;
+
+            & > svg {
+                width: 100%;
+                height: 100%;
+                fill: currentColor;
+            }
+        }
+
+        .infoButton {
+            color: var(--ifm-color-info);
+            opacity: 0.3;
+
+            &.active {
+                filter: drop-shadow(0 0 2px rgba(white, 0.3));
+                opacity: 1;
+            }
+        }
+    }
+
+    .toolbar,
+    .infoPopup,
+    .errorPopup {
+        background: rgba(255, 255, 255, 0.05);
+    }
+
+    .infoPopup,
+    .errorPopup {
+        padding: 0.3em 0.6em;
+    }
+
+    .infoPopup {
+    }
+    .errorPopup {
+        font-family: var(--ifm-font-family-monospace);
+        color: var(--ifm-color-danger-lighter);
+    }
+
+    :global {
+        .CodeMirror {
+            height: unset;
+            font: var(--ifm-code-font-size) / var(--ifm-pre-line-height)
+                var(--ifm-font-family-monospace);
+            background: transparent;
+
+            .CodeMirror-scroll {
+                min-height: 150px;
+            }
+            .CodeMirror-lines {
+                padding: 1rem 0.75rem;
+            }
+        }
+    }
+}
