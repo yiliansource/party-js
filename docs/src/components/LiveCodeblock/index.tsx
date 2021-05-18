@@ -4,7 +4,7 @@ import "codemirror/mode/javascript/javascript";
 import "codemirror/theme/dracula.css";
 import party from "party-js";
 import React, { createRef } from "react";
-import { UnControlled as CodeMirror } from "react-codemirror2";
+import { Controlled as CodeMirror } from "react-codemirror2";
 
 import CancelSVG from "./img/cancel.svg";
 import CopySVG from "./img/copy.svg";
@@ -27,7 +27,7 @@ export default class LiveCodeblock extends React.Component<
     private codeblockRef: React.RefObject<HTMLDivElement>;
     private buttonRef: React.RefObject<HTMLButtonElement>;
 
-    private editor: CodeMirror;
+    private editor: CodeMirror.Editor;
 
     constructor(props: React.PropsWithChildren<unknown>) {
         super(props);
@@ -46,7 +46,8 @@ export default class LiveCodeblock extends React.Component<
             this.initialContentRef.current.querySelectorAll(".token-line")
         )
             .map((line: HTMLDivElement) => line.innerText)
-            .join("\n");
+            .join("\n")
+            .replace(/ {4}/g, "\t");
 
         this.setState({
             body: initialBody,
@@ -56,7 +57,7 @@ export default class LiveCodeblock extends React.Component<
     render() {
         return (
             <div className={styles.liveCodeblock}>
-                {!this.state.body && (
+                {this.state.body === null && (
                     <div ref={this.initialContentRef}>
                         {this.props.children}
                     </div>
@@ -86,16 +87,21 @@ export default class LiveCodeblock extends React.Component<
                         <code>runButton</code> objects in your code!
                     </div>
                 )}
-                {this.state.body && (
+                {this.state.body !== null && (
                     <CodeMirror
                         value={this.state.body}
                         options={{
                             theme: "dracula",
                             mode: "javascript",
+                            indentWithTabs: true,
+                            tabSize: 4,
+                            indentUnit: 4,
+                            smartIndent: true,
                         }}
-                        onChange={(editor, data, value) =>
-                            this.setState({ body: value })
-                        }
+                        editorDidMount={(editor) => (this.editor = editor)}
+                        onBeforeChange={(editor, data, value) => {
+                            this.setState({ body: value });
+                        }}
                     />
                 )}
                 {this.state.error && (

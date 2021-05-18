@@ -54,6 +54,12 @@
     }
 
     .infoPopup {
+        code {
+            background: none;
+            border: none;
+            color: inherit;
+            vertical-align: initial;
+        }
     }
     .errorPopup {
         font-family: var(--ifm-font-family-monospace);
