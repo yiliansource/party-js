@@ -1,15 +1,13 @@
 html {
     margin: 0;
     padding: 0;
-
-    height: 100%;
 }
 
 body {
     margin: 0;
     padding: 0;
 
-    min-height: 200vh;
+    min-height: 50vh;
 }
 
 main {

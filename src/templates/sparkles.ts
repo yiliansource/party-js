@@ -39,6 +39,7 @@ export function sparkles(
                 new ModuleBuilder()
                     .drive("rotation")
                     .by((t) => new Vector(0, 0, 200).scale(t))
+                    .relative()
                     .build(),
                 new ModuleBuilder()
                     .drive("size")

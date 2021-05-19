@@ -44,8 +44,10 @@ function createRootContainer(): HTMLElement {
     // Ensure that the root container is always the same size as the entire DOM.
     function fitToWindow() {
         if (isContainerActive(container)) {
-            container.style.height = document.body.offsetHeight + "px";
-            container.style.width = document.body.offsetWidth + "px";
+            container.style.height =
+                Math.max(window.innerHeight, document.body.offsetHeight) + "px";
+            container.style.width =
+                Math.max(window.innerWidth, document.body.offsetWidth) + "px";
         }
         window.requestAnimationFrame(fitToWindow);
     }

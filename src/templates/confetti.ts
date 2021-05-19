@@ -42,6 +42,7 @@ export function confetti(
                 new ModuleBuilder()
                     .drive("size")
                     .by((t) => Math.min(1, t * 3))
+                    .relative()
                     .build(),
                 new ModuleBuilder()
                     .drive("rotation")
