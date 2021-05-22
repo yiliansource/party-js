@@ -6,7 +6,7 @@ slug: /
 import TabItem from "@theme/TabItem";
 import Tabs from "@theme/Tabs";
 
-import DemoCodeblock from "../src/components/DemoCodeblock";
+import LiveCodeblock from "../src/components/LiveCodeblock";
 
 ## About
 
@@ -67,27 +67,41 @@ The library ships with pre-made [template](/docs/ref/templates) effects, to ensu
 
 As an example, we will implement the _confetti_ effect when a button is clicked.
 
+<Tabs
+    defaultValue="html"
+    values={[
+        { label: "HTML", value: "html" },
+        { label: "JavaScript", value: "js" }
+    ]}>
+<TabItem value="html">
+
 ```html
 <div class="button" onmousedown="party.confetti(this)">Click me!</div>
 ```
 
-This is the simplest way to play the effect. Templated effects offer additional customizeability via option overrides, best explained in the following code snippet.
-
-<DemoCodeblock method={(party, e) => {
-    party.confetti(e, {
-        count: party.variation.range(20, 40),
-    });
-}}>
+</TabItem>
+<TabItem value="js">
 
 ```js
 document.querySelector(".button").addEventListener("click", function (e) {
-    party.confetti(this, {
-        count: party.variation.range(20, 40),
-    });
+    party.confetti(this);
 });
 ```
 
-</DemoCodeblock>
+</TabItem>
+</Tabs>
+
+This is the simplest way to play the effect. Templated effects offer additional customizeability via option overrides, best explained in the following (interactive!) code snippet.
+
+<LiveCodeblock>
+
+```js
+party.confetti(runButton, {
+    count: party.variation.range(20, 40),
+});
+```
+
+</LiveCodeblock>
 
 The `party.range(...)` method is a [variation](/docs/ref/variations) method, used to make every instance of the effect unique, in this case by varying the amount of confetti emitted.
 

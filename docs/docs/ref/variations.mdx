@@ -2,7 +2,7 @@
 title: Variations
 ---
 
-import DemoCodeblock from "../../src/components/DemoCodeblock";
+import LiveCodeblock from "../../src/components/LiveCodeblock";
 
 ## Introduction
 
@@ -20,13 +20,9 @@ Variations can be evaluated by an internal helper method, so produce a raw value
 
 This makes variations a powerful tool to customize properties of emitters. If you happen to be in need of evaluating a variation, you can use the `party.variation.evaluateVariation` method.
 
-<DemoCodeblock method={(party, e) => {
-    party.confetti(e, {
-        count: party.variation.range(0, 20)
-    });
-}}>
+<LiveCodeblock>
 
-```js {5}
+```js
 party.confetti(mouseEvent, {
     // We want to randomize the amount of confetti that is emitted, so we
     // create a range from 0 to 20. When the particles are created, this
@@ -35,7 +31,7 @@ party.confetti(mouseEvent, {
 });
 ```
 
-</DemoCodeblock>
+</LiveCodeblock>
 
 ## Helper Methods
 

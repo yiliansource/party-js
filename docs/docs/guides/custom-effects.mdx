@@ -2,7 +2,7 @@
 title: Custom Effects
 ---
 
-import DemoCodeblock from "../../src/components/DemoCodeblock";
+import LiveCodeblock from "../../src/components/LiveCodeblock";
 import { hearts } from "../../src/util/demos";
 
 ## Introduction
@@ -12,8 +12,6 @@ As we've seen before, [templates](/docs/ref/templates) are powerful tools, but s
 ## Example
 
 To understand how custom effects work, let's break down the [confetti](/docs/ref/templates#confetti) template we saw before. Note that some parts are omitted for the sake of brevity.
-
-<DemoCodeblock method={(party, e) => party.confetti(e)}>
 
 ```ts
 function confetti(source, options): Emitter {
@@ -54,8 +52,6 @@ function confetti(source, options): Emitter {
     return emitter;
 }
 ```
-
-</DemoCodeblock>
 
 ## Breakdown
 
@@ -125,9 +121,7 @@ That's all there is to it! If you want to learn more about how to create custom 
 
 With the knowledge we just gained from learning how custom effects work, we can create more effects, such as the _hearts_ effect seen in the demo.
 
-<DemoCodeblock method={(party, e) => {
-    hearts(e)
-}}>
+<LiveCodeblock>
 
 ```js
 const heartPath = document.createElementNS(
@@ -167,7 +161,7 @@ party.scene.current.createEmitter({
     emissionOptions: {
         rate: 0,
         bursts: [{ time: 0, count: party.variation.skew(20, 10) }],
-        sourceSampler: party.sources.dynamicSource(source),
+        sourceSampler: party.sources.dynamicSource(runButton),
         angle: party.variation.range(0, 360),
         initialSpeed: 400,
         initialColor: party.variation.gradientSample(
@@ -184,4 +178,4 @@ party.scene.current.createEmitter({
 });
 ```
 
-</DemoCodeblock>
+</LiveCodeblock>

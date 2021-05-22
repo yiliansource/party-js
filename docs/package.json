@@ -12,13 +12,15 @@
         "clear": "docusaurus clear"
     },
     "dependencies": {
-        "@docusaurus/core": "^2.0.0-alpha.75",
-        "@docusaurus/preset-classic": "^2.0.0-alpha.75",
+        "@docusaurus/core": "^2.0.0-beta.0",
+        "@docusaurus/preset-classic": "^2.0.0-beta.0",
         "@mdx-js/react": "^1.6.21",
         "clsx": "^1.1.1",
+        "codemirror": "^5.61.0",
         "docusaurus-plugin-sass": "^0.1.14",
         "party-js": "link:../",
         "react": "^16.8.4",
+        "react-codemirror2": "^7.2.1",
         "react-dom": "^16.8.4",
         "sass": "^1.32.12"
     },
@@ -37,6 +39,7 @@
     "devDependencies": {
         "@docusaurus/module-type-aliases": "^2.0.0-alpha.73",
         "@tsconfig/docusaurus": "^1.0.2",
+        "@types/codemirror": "^5.60.0",
         "@types/react": "^17.0.4",
         "@types/react-helmet": "^6.1.1",
         "@types/react-router-dom": "^5.1.7",
