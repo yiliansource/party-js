@@ -1,4 +1,6 @@
+import BrowserOnly from "@docusaurus/BrowserOnly";
 import clsx from "clsx";
+import "codemirror/addon/selection/active-line";
 import "codemirror/lib/codemirror.css";
 import "codemirror/mode/javascript/javascript";
 import "codemirror/theme/dracula.css";
@@ -15,8 +17,8 @@ import styles from "./index.module.scss";
 
 export interface LiveCodeblockState {
     body: string;
-    showInfo: boolean;
     error: string;
+    hasCopied: boolean;
 }
 
 export default class LiveCodeblock extends React.Component<
@@ -25,7 +27,7 @@ export default class LiveCodeblock extends React.Component<
 > {
     private initialContentRef: React.RefObject<HTMLDivElement>;
     private codeblockRef: React.RefObject<HTMLDivElement>;
-    private buttonRef: React.RefObject<HTMLButtonElement>;
+    private runButtonRef: React.RefObject<HTMLButtonElement>;
 
     private editor: CodeMirror.Editor;
 
@@ -33,11 +35,13 @@ export default class LiveCodeblock extends React.Component<
         super(props);
 
         this.initialContentRef = createRef();
+        this.codeblockRef = createRef();
+        this.runButtonRef = createRef();
 
         this.state = {
             body: null,
-            showInfo: true,
-            error: "test",
+            error: null,
+            hasCopied: false,
         };
     }
 
@@ -56,37 +60,13 @@ export default class LiveCodeblock extends React.Component<
 
     render() {
         return (
-            <div className={styles.liveCodeblock}>
+            <div ref={this.codeblockRef} className={styles.liveCodeblock}>
                 {this.state.body === null && (
                     <div ref={this.initialContentRef}>
                         {this.props.children}
                     </div>
                 )}
 
-                <div className={styles.toolbar}>
-                    <button
-                        className={clsx(
-                            styles.infoButton,
-                            this.state.showInfo && styles.active
-                        )}
-                        onClick={this.handleInfoClick.bind(this)}
-                    >
-                        <InfoSVG />
-                    </button>
-                    <button>
-                        <CopySVG />
-                    </button>
-                    <button onClick={this.handleRunClick.bind(this)}>
-                        <PlaySVG />
-                    </button>
-                </div>
-                {this.state.showInfo && (
-                    <div className={styles.infoPopup}>
-                        You can use the global <code>party</code>,{" "}
-                        <code>codeblock</code>, <code>mouseEvent</code> and{" "}
-                        <code>runButton</code> objects in your code!
-                    </div>
-                )}
                 {this.state.body !== null && (
                     <CodeMirror
                         value={this.state.body}
@@ -97,27 +77,64 @@ export default class LiveCodeblock extends React.Component<
                             tabSize: 4,
                             indentUnit: 4,
                             smartIndent: true,
+                            lineNumbers: true,
+                            // @ts-ignore
+                            styleActiveLine: { nonEmpty: true },
                         }}
-                        editorDidMount={(editor) => (this.editor = editor)}
+                        editorDidMount={(editor) =>
+                            (this.editor = editor as any)
+                        }
                         onBeforeChange={(editor, data, value) => {
                             this.setState({ body: value });
                         }}
                     />
                 )}
-                {this.state.error && (
-                    <div className={styles.errorPopup}>{this.state.error}</div>
-                )}
+
+                <div className="toolbar">
+                    <div className="output">
+                        {this.state.error ? (
+                            <span className="error">
+                                <CancelSVG />
+                                {this.state.error}
+                            </span>
+                        ) : (
+                            <span className="info">
+                                You can use the following objects in your
+                                code:&nbsp;
+                                <code>party</code>, <code>codeblock</code>
+                                ,&nbsp;
+                                <code>mouseEvent</code>, <code>runButton</code>.
+                            </span>
+                        )}
+                    </div>
+                    <div className="controls">
+                        <button
+                            className="copy"
+                            onClick={this.handleCopyClick.bind(this)}
+                        >
+                            {this.state.hasCopied ? <TickSVG /> : <CopySVG />}
+                        </button>
+                        <button
+                            className="run"
+                            onClick={this.handleRunClick.bind(this)}
+                            ref={this.runButtonRef}
+                        >
+                            <PlaySVG />
+                        </button>
+                    </div>
+                </div>
             </div>
         );
     }
 
-    handleInfoClick(event: React.MouseEvent) {
-        this.setState({
-            showInfo: !this.state.showInfo,
+    handleCopyClick(event: React.MouseEvent) {
+        navigator.clipboard.writeText(this.editor.getValue()).then(() => {
+            this.setState({ hasCopied: true });
+            window.setTimeout(() => {
+                this.setState({ hasCopied: false });
+            }, 2000);
         });
     }
-
-    handleCopyClick(event: React.MouseEvent) {}
 
     handleRunClick(event: React.MouseEvent) {
         try {
@@ -126,7 +143,13 @@ export default class LiveCodeblock extends React.Component<
                 ...["party", "codeblock", "mouseEvent", "runButton"],
                 this.state.body
             );
-            fun.call(undefined, party, null, event.nativeEvent, null);
+            fun.call(
+                undefined,
+                party,
+                this.codeblockRef.current,
+                event.nativeEvent,
+                this.runButtonRef.current
+            );
         } catch (err) {
             this.setState({
                 error: err.message,

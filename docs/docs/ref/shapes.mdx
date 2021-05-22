@@ -2,7 +2,7 @@
 title: Shapes
 ---
 
-import DemoCodeblock from "../../src/components/DemoCodeblock";
+import LiveCodeblock from "../../src/components/LiveCodeblock";
 import Shapes from "../../src/components/Shapes";
 
 ## Introduction
@@ -21,16 +21,12 @@ party.resolvableShapes["myImage"] = `<img src="myImage.png"/>`;
 
 Shapes are used by the renderer to determine which kind of HTMLElement to spawn for a particular particle. [Templates](/docs/ref/templates) usually expose this to the user in the form of a `shapes` field. Note that this usually is a [variation](/docs/ref/variations), in this case of a resolvable `string` or a `HTMLElement`, so you can use a constant string or element, an array of either, or a function that returns either.
 
-<DemoCodeblock method={(party, e) => {
-    party.confetti(e, {
-        shapes: ["star", "roundedSquare"]
-    });
-}}>
+<LiveCodeblock>
 
-```ts {2}
+```ts
 party.confetti(mouseEvent, {
     shapes: ["star", "roundedSquare"],
 });
 ```
 
-</DemoCodeblock>
+</LiveCodeblock>

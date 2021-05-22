@@ -3,7 +3,7 @@ title: Using Templates
 ---
 
 import DemoButton from "../../src/components/DemoButton";
-import DemoCodeblock from "../../src/components/DemoCodeblock";
+import LiveCodeblock from "../../src/components/LiveCodeblock";
 import { confetti, sparkles } from "../../src/util/demos";
 
 Using [templates](/docs/ref/templates) is the easiest way to get effects playing using the library. Calling them is simple, but some examples are shown here nevertheless.
@@ -12,38 +12,30 @@ Using [templates](/docs/ref/templates) is the easiest way to get effects playing
 
 A demonstration of the [confetti template](/docs/ref/templates#confetti).
 
-<DemoCodeblock method={(party, e) => party.confetti(e, {
-    count: party.variation.range(0, 100),
-    size: party.variation.range(0.6, 1.4)
-})}>
+<LiveCodeblock>
 
 ```js
-const element = document.getElementById("demoConfetti");
-party.confetti(element, {
+party.confetti(runButton, {
     // Specify further (optional) configuration here.
     count: party.variation.range(0, 100),
     size: party.variation.range(0.6, 1.4),
 });
 ```
 
-</DemoCodeblock>
+</LiveCodeblock>
 
 ## Sparkles
 
 A demonstration of the [sparkles template](/docs/ref/templates#sparkles).
 
-<DemoCodeblock method={(party, e) => party.sparkles(e, {
-    count: party.variation.range(10, 60),
-    speed: party.variation.range(50, 300)
-})}>
+<LiveCodeblock>
 
 ```js
-const element = document.getElementById("demoSparkles");
-party.sparkles(element, {
+party.sparkles(runButton, {
     // Specify further (optional) configuration here.
     count: party.variation.range(10, 60),
     speed: party.variation.range(50, 300),
 });
 ```
 
-</DemoCodeblock>
+</LiveCodeblock>
