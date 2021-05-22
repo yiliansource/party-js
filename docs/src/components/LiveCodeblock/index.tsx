@@ -1,19 +1,21 @@
-import BrowserOnly from "@docusaurus/BrowserOnly";
-import clsx from "clsx";
-import "codemirror/addon/selection/active-line";
-import "codemirror/lib/codemirror.css";
-import "codemirror/mode/javascript/javascript";
-import "codemirror/theme/dracula.css";
 import party from "party-js";
-import React, { createRef } from "react";
+import React, { createRef, Fragment } from "react";
 import { Controlled as CodeMirror } from "react-codemirror2";
 
 import CancelSVG from "./img/cancel.svg";
 import CopySVG from "./img/copy.svg";
-import InfoSVG from "./img/info.svg";
 import PlaySVG from "./img/play.svg";
 import TickSVG from "./img/tick.svg";
 import styles from "./index.module.scss";
+
+if (typeof window !== "undefined") {
+    // react-codemirror2 offers SSR support, but the native CodeMirror library does not.
+    // Therefore, we only import these libraries into the script if we are running client-side.
+    require("codemirror/addon/selection/active-line");
+    require("codemirror/lib/codemirror.css");
+    require("codemirror/mode/javascript/javascript");
+    require("codemirror/theme/dracula.css");
+}
 
 export interface LiveCodeblockState {
     body: string;
@@ -58,6 +60,43 @@ export default class LiveCodeblock extends React.Component<
         });
     }
 
+    handleCopyClick(event: React.MouseEvent) {
+        navigator.clipboard.writeText(this.editor.getValue()).then(() => {
+            this.setState({ hasCopied: true });
+            window.setTimeout(() => {
+                this.setState({ hasCopied: false });
+            }, 2000);
+        });
+    }
+
+    handleRunClick(event: React.MouseEvent) {
+        try {
+            const fun: Function = Function.call(
+                undefined,
+                ...["party", "mouseEvent", "codeblock", "runButton"],
+                this.state.body
+            );
+
+            const context = this.getCodeblockContext();
+            context.mouseEvent = event.nativeEvent;
+
+            fun.call(undefined, ...Object.values(context));
+        } catch (err) {
+            this.setState({
+                error: err.message,
+            });
+        }
+    }
+
+    getCodeblockContext(): Record<string, any> {
+        return {
+            party: party,
+            mouseEvent: null,
+            codeblock: this.codeblockRef.current,
+            runButton: this.runButtonRef.current,
+        };
+    }
+
     render() {
         return (
             <div ref={this.codeblockRef} className={styles.liveCodeblock}>
@@ -99,11 +138,16 @@ export default class LiveCodeblock extends React.Component<
                             </span>
                         ) : (
                             <span className="info">
-                                You can use the following objects in your
-                                code:&nbsp;
-                                <code>party</code>, <code>codeblock</code>
-                                ,&nbsp;
-                                <code>mouseEvent</code>, <code>runButton</code>.
+                                You can use the following objects in your code:{" "}
+                                {Object.keys(this.getCodeblockContext()).map(
+                                    (c, i) => (
+                                        <Fragment key={i}>
+                                            {i > 0 && <span>, </span>}
+                                            <code>{c}</code>
+                                        </Fragment>
+                                    )
+                                )}
+                                .
                             </span>
                         )}
                     </div>
@@ -125,35 +169,5 @@ export default class LiveCodeblock extends React.Component<
                 </div>
             </div>
         );
-    }
-
-    handleCopyClick(event: React.MouseEvent) {
-        navigator.clipboard.writeText(this.editor.getValue()).then(() => {
-            this.setState({ hasCopied: true });
-            window.setTimeout(() => {
-                this.setState({ hasCopied: false });
-            }, 2000);
-        });
-    }
-
-    handleRunClick(event: React.MouseEvent) {
-        try {
-            const fun: Function = Function.call(
-                undefined,
-                ...["party", "codeblock", "mouseEvent", "runButton"],
-                this.state.body
-            );
-            fun.call(
-                undefined,
-                party,
-                this.codeblockRef.current,
-                event.nativeEvent,
-                this.runButtonRef.current
-            );
-        } catch (err) {
-            this.setState({
-                error: err.message,
-            });
-        }
     }
 }

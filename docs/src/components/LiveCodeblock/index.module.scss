@@ -40,6 +40,7 @@
                     font-size: 0.8em;
                     font-style: italic;
                     color: var(--ifm-color-gray-600);
+                    cursor: default;
 
                     code {
                         background: transparent;
@@ -97,6 +98,20 @@
             }
             .CodeMirror-activeline-background {
                 border-radius: 4px;
+            }
+
+            &:not(.CodeMirror-focused) .CodeMirror-activeline-background {
+                background: unset;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .liveCodeblock {
+        :global {
+            .output {
+                display: none;
             }
         }
     }
