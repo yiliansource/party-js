@@ -1,0 +1,236 @@
+@use "sass:math" as math;
+
+@mixin clip-path-wave(
+    $width: 1000,
+    $height: 200,
+    $offsetY: 150,
+    $offsetX: 4,
+    $amplitude: 5,
+    $frequency: 1.3
+) {
+    $units: $frequency * $width / 100;
+
+    $clipPathString: "polygon(100% 0%, 0% 0% ";
+
+    @for $i from 0 through 100 {
+        $val: $offsetY + $amplitude * math.cos($offsetX + $i / $units);
+        $val: $val / $height * 100;
+        $clipPathString: $clipPathString + ", " + $i + "% " + $val + "%";
+    }
+
+    $clipPathString: $clipPathString + ");";
+
+    clip-path: unquote($clipPathString);
+}
+
+.hero {
+    padding: 5rem 2rem 14rem;
+    margin-bottom: -7rem;
+
+    color: white;
+    background: linear-gradient(135deg, #ffa467 20%, #ff5164 80%);
+
+    @include clip-path-wave;
+
+    :global {
+        h1 {
+            font-family: "Dosis", "Open Sans", sans-serif;
+            font-weight: 100;
+            font-size: 6em;
+        }
+        h2 {
+            font-weight: 400;
+            font-size: 1.4em;
+            line-height: 1.3;
+        }
+
+        .infos {
+            display: grid;
+            grid-template-columns: 140px 1fr;
+            position: relative;
+
+            h1 {
+                filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.2));
+            }
+
+            h2,
+            .buttons {
+                filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.35));
+            }
+
+            .logo {
+                margin-top: 0.5em;
+                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.08));
+
+                :local {
+                    @keyframes float {
+                        from {
+                            transform: scale(1.4) translateY(0px);
+                        }
+                        to {
+                            transform: scale(1.4) translateY(4px);
+                        }
+                    }
+
+                    svg {
+                        top: 2em;
+                        left: -8em;
+                        transform-origin: top;
+                        pointer-events: none;
+                        animation: float 1s ease-in-out 0s infinite alternate;
+
+                        path {
+                            stroke: white;
+                            stroke-width: 0.8px;
+                        }
+                    }
+                }
+            }
+
+            .buttons {
+                margin-top: 2em;
+
+                .button {
+                    font-weight: 400;
+                    margin-right: 0.5em;
+
+                    --color-fill: white;
+                    color: white;
+                    background: transparent;
+                    border: 1px solid var(--color-fill);
+
+                    &:hover {
+                        color: white;
+                        background: var(--color-fill);
+                    }
+                }
+
+                .button--docs:hover {
+                    --color-fill: #ff5765;
+                }
+                .button--github:hover {
+                    --color-fill: #22272e;
+                }
+            }
+        }
+
+        .live-demo {
+            padding: 2em 0;
+        }
+    }
+}
+
+.frontBody {
+    section {
+        padding: 3em 0;
+    }
+}
+
+.features {
+    .feature {
+        width: 100%;
+        margin: 2em 0;
+        display: flex;
+        align-items: center;
+
+        :global {
+            h3 {
+                font-size: 2em;
+            }
+            .icon {
+                height: 170px;
+                flex: 0 0 400px;
+                text-align: center;
+                filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.15));
+
+                svg {
+                    height: 100%;
+                }
+            }
+            .description {
+                flex: 1 0;
+                padding: 1em;
+                overflow: auto;
+                max-width: 100vw;
+            }
+        }
+
+        &:nth-child(2n) {
+            flex-direction: row-reverse;
+        }
+    }
+}
+
+.features {
+    .feature {
+        :global {
+            .icon svg.settings {
+                :local {
+                    @keyframes rotate {
+                        from {
+                            transform: rotate(0deg);
+                        }
+                        to {
+                            transform: rotate(359deg);
+                        }
+                    }
+
+                    path:first-of-type {
+                        transform-origin: 33% 67%;
+                        animation: 7s linear 0s infinite running rotate;
+                    }
+                }
+            }
+
+            .icon svg.complex {
+                :local {
+                    @keyframes flap {
+                        from {
+                            transform: translateY(-5px) scaleX(1.1);
+                        }
+                        to {
+                            transform: translateY(5px) scaleX(0.8);
+                        }
+                    }
+
+                    animation: flap 1s ease-in-out 0s infinite alternate;
+                }
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .hero {
+        padding: 2em 0.5em 10rem;
+        font-size: 0.8em;
+
+        @include clip-path-wave($amplitude: 2);
+
+        :global {
+            .infos {
+                grid-template-columns: 1fr;
+
+                .logo {
+                    display: none;
+                }
+                .button {
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+
+    .features {
+        .feature {
+            flex-direction: column !important;
+            :global {
+                .icon {
+                    height: 150px;
+                    margin-bottom: 1em;
+                    flex: unset;
+                }
+            }
+        }
+    }
+}
