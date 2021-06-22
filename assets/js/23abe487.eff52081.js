@@ -1,0 +1,1 @@
+(self.webpackChunkparty_js_docs=self.webpackChunkparty_js_docs||[]).push([[9627],{1718:function(e,t,n){"use strict";n.r(t);var c=n(7294),l=n(5972),a=n(7775),r=n(2263);t.default=function(){var e=(0,r.default)().siteConfig;return c.createElement(l.Z,null,c.createElement("h2",null,"Site config"),c.createElement(a.Z,{src:e,collapseDepth:"3"}))}}}]);
