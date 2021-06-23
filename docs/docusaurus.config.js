@@ -1,3 +1,5 @@
+const glob = require("glob");
+
 module.exports = {
     title: "party.js",
     tagline:
@@ -14,7 +16,7 @@ module.exports = {
         [
             "docusaurus-plugin-typedoc",
             {
-                entryPoints: ["../src"],
+                entryPoints: glob.sync("../src/**/index.ts"),
                 tsconfig: "../tsconfig.json",
 
                 readme: "none",
