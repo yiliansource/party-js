@@ -25,7 +25,7 @@
         "react-dom": "^16.8.4",
         "sass": "^1.32.12",
         "typedoc": "^0.21.0",
-        "typedoc-plugin-markdown": "^3.10.0"
+        "typedoc-plugin-markdown": "3.10.1"
     },
     "browserslist": {
         "production": [
