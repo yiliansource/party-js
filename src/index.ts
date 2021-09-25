@@ -1,19 +1,13 @@
-import * as components from "./components";
-import { Emitter } from "./particles/emitter";
-import { Particle } from "./particles/particle";
 import { Scene } from "./scene";
-import { settings } from "./settings";
-import * as math from "./systems/math";
-import * as modules from "./systems/modules";
-import * as random from "./systems/random";
-import * as shapes from "./systems/shapes";
-import * as sources from "./systems/sources";
-import * as variation from "./systems/variation";
-import * as templates from "./templates";
-import * as util from "./util";
+import { Lazy } from "./util";
+
+export * from "./components";
+export * from "./templates";
+export * from "./systems/shapes";
+export * from "./systems/modules";
 
 // Create the lazy-initializing scene.
-const scene = new util.Lazy<Scene>(() => {
+export const scene = new Lazy<Scene>(() => {
     // The library requires the use of the DOM, hence it cannot run in non-browser environments.
     if (typeof document === "undefined" || typeof window === "undefined") {
         throw new Error(
@@ -23,37 +17,21 @@ const scene = new util.Lazy<Scene>(() => {
     return new Scene();
 });
 
-const PartyGlobal = {
-    // Export utility components at top level.
-    ...components,
-    // Export templates to quickly & easily create sample systems.
-    ...templates,
-    // Export shapes so new ones can be registered easily.
-    ...shapes,
-    // Export the module builder, so new modules can be built easily.
-    ...modules,
+export { settings } from "./settings";
+export { Particle } from "./particles/particle";
+export { Emitter } from "./particles/emitter";
 
-    // Export the scene and the global settings.
-    scene,
-    settings,
+export * as variation from "./systems/variation";
+export * as sources from "./systems/sources";
+export * as random from "./systems/random";
+export * as math from "./systems/math";
+export * as util from "./util";
 
-    // Export the emitter and particle types.
-    Particle,
-    Emitter,
+/**
+ * Forces the initialization of the otherwise lazy scene.
+ */
+export function forceInit(): void {
+    scene.current;
+}
 
-    // Export various utilities and objects.
-    variation,
-    sources,
-    random,
-    math,
-    util,
-
-    /**
-     * Forces the initialization of the otherwise lazy scene.
-     */
-    forceInit(): void {
-        scene.current;
-    },
-};
-
-export default PartyGlobal;
+export * as default from "./";

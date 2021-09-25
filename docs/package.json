@@ -18,11 +18,14 @@
         "clsx": "^1.1.1",
         "codemirror": "^5.61.0",
         "docusaurus-plugin-sass": "^0.1.14",
+        "docusaurus-plugin-typedoc": "^0.15.0",
         "party-js": "link:../",
         "react": "^16.8.4",
         "react-codemirror2": "^7.2.1",
         "react-dom": "^16.8.4",
-        "sass": "^1.32.12"
+        "sass": "^1.32.12",
+        "typedoc": "^0.21.0",
+        "typedoc-plugin-markdown": "3.10.1"
     },
     "browserslist": {
         "production": [
