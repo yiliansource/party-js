@@ -1,0 +1,115 @@
+html[data-theme="light"] {
+    .demoWidget {
+        color: #403f53;
+        background: #fbfbfb;
+
+        :global {
+            .demoArea {
+                background: #ededed;
+            }
+            svg path {
+                fill: #c5c5c5;
+            }
+        }
+    }
+}
+
+.demoWidget {
+    display: flex;
+    flex-direction: row;
+    color: #f8f8f2;
+    background: #292d3e;
+    border-radius: var(--ifm-global-radius);
+    min-height: 400px;
+    overflow: hidden;
+
+    @media screen and (max-width: 640px) {
+        flex-direction: column;
+
+        :global {
+            .demoArea {
+                flex-basis: 200px !important;
+            }
+        }
+    }
+
+    :global {
+        .templateSelect {
+            ul {
+                li {
+                    cursor: pointer;
+                    padding: 0.3em 2.5em;
+                    margin-bottom: 2px;
+                    border-radius: 6px;
+
+                    &.active {
+                        background: rgba(255, 255, 255, 0.05);
+                    }
+                    &:hover:not(.active) {
+                        background: rgba(0, 0, 0, 0.1);
+                    }
+                }
+            }
+        }
+        .demoArea {
+            display: flex;
+            flex: 1 0;
+            cursor: pointer;
+            background: #202431;
+
+            svg {
+                margin: auto;
+                height: 64px;
+                width: 64px;
+                filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.2));
+
+                path {
+                    fill: #292d3e;
+                }
+            }
+        }
+        .configuration {
+            ul {
+                li {
+                    margin-bottom: 8px;
+
+                    .name {
+                        margin: 0 0 0 0.5em;
+                        font-size: 0.9em;
+                    }
+                    .input {
+                        display: flex;
+                        flex-direction: row;
+                        align-items: center;
+
+                        input {
+                            flex: 1 0;
+                        }
+                        .current {
+                            margin: 0 0.5em 0 0;
+                            font-size: 0.8em;
+                            flex: 0 0 25px;
+                            text-align: right;
+                        }
+                    }
+                }
+            }
+        }
+        .templateSelect,
+        .configuration {
+            padding: 1em 0.5em;
+            box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+
+            h3 {
+                text-align: center;
+                font-size: 1em;
+                padding: 0 2em;
+            }
+            ul {
+                list-style: none;
+                padding: 0;
+            }
+        }
+    }
+}

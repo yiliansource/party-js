@@ -2,8 +2,7 @@ const glob = require("glob");
 
 module.exports = {
     title: "party.js",
-    tagline:
-        "A JavaScript library to brighten up your user's site experience with visual effects!",
+    tagline: "A JavaScript library to brighten up your user's site experience with visual effects!",
     url: "https://party.js.org/",
     baseUrl: "/",
     onBrokenLinks: "throw",
@@ -43,7 +42,8 @@ module.exports = {
             respectPrefersColorScheme: true,
         },
         prism: {
-            theme: require("prism-react-renderer/themes/dracula"),
+            theme: require("prism-react-renderer/themes/nightOwlLight"),
+            darkTheme: require("prism-react-renderer/themes/palenight"),
         },
         gtag: {
             trackingID: "G-EWQS5KE2B5",
@@ -110,7 +110,6 @@ module.exports = {
                     ],
                 },
             ],
-            copyright: `<div class="copynote">Copyright © ${new Date().getFullYear()} Ian Hornik. Built with <span style="color: #e31b23;">❤</span> and Docusaurus.<br><span style="opacity: 0.6">Icons made by <a href="https://www.flaticon.com/authors/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/" title="Flaticon">www.flaticon.com</a></span></div>`,
         },
     },
     presets: [
@@ -120,8 +119,7 @@ module.exports = {
                 debug: true,
                 docs: {
                     sidebarPath: require.resolve("./sidebars.js"),
-                    editUrl:
-                        "https://github.com/yiliansource/party-js/edit/main/docs/",
+                    editUrl: "https://github.com/yiliansource/party-js/edit/main/docs/",
                 },
                 theme: {
                     customCss: [require.resolve("./src/css/custom.scss")],

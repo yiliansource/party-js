@@ -1,0 +1,66 @@
+.footer {
+    padding: var(--ifm-footer-padding-vertical) var(--ifm-footer-padding-horizontal);
+    background: var(--ifm-footer-background-color);
+    box-shadow: var(--ifm-footer-shadow);
+
+    :global {
+        .footer-row {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            .footer-col {
+                flex: 1 0;
+                padding: 0 10px;
+            }
+
+            @media screen and (max-width: 640px) {
+                flex-direction: column;
+
+                .footer-col {
+                    padding: 10px 0;
+                }
+            }
+        }
+
+        .logo {
+            height: 44px;
+            width: 44px;
+            margin: 0.2em 0.1em;
+
+            path {
+                stroke: var(--ifm-font-color-base);
+                stroke-width: 1px;
+            }
+        }
+        .title {
+            display: flex;
+            font-family: "Dosis", "Open Sans", sans-serif;
+            margin-bottom: 0.3em;
+            font-size: 1.6em;
+            user-select: none;
+        }
+        .tagline {
+            font-size: 0.9em;
+            margin: 0;
+        }
+        .copyright {
+            margin: 0.8em 0 0;
+            font-size: 0.8em;
+        }
+
+        .category-title {
+        }
+        .category-links {
+            list-style: none;
+            padding: 0;
+
+            li {
+                a {
+                    font-size: 0.9em;
+                    color: var(--ifm-font-color-base);
+                }
+            }
+        }
+    }
+}

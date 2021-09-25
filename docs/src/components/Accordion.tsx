@@ -12,10 +12,7 @@ interface AccordionState {
     height: number;
 }
 
-export default class Accordion extends React.Component<
-    AccordionProps,
-    AccordionState
-> {
+export default class Accordion extends React.Component<AccordionProps, AccordionState> {
     content: React.MutableRefObject<HTMLDivElement>;
     constructor(props: AccordionProps) {
         super(props);
@@ -28,22 +25,11 @@ export default class Accordion extends React.Component<
 
     render(): React.ReactNode {
         return (
-            <div
-                className={`${styles.accordion} ${
-                    this.state.expanded ? "active" : ""
-                }`}
-            >
-                <div
-                    className={styles.header}
-                    onClick={this.toggleExpanded.bind(this)}
-                >
-                    {this.props.icon ? (
-                        <img className={styles.icon} src={this.props.icon} />
-                    ) : null}
+            <div className={`${styles.accordion} ${this.state.expanded ? "active" : ""}`}>
+                <div className={styles.header} onClick={this.toggleExpanded.bind(this)}>
+                    {this.props.icon ? <img className={styles.icon} src={this.props.icon} /> : null}
                     <span className={styles.title}>{this.props.title}</span>
-                    <Chevron
-                        direction={this.state.expanded ? "down" : "right"}
-                    />
+                    <Chevron direction={this.state.expanded ? "down" : "right"} />
                 </div>
                 <div
                     ref={this.content}

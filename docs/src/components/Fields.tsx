@@ -7,16 +7,9 @@ interface FieldProps {
     description?: string;
 }
 
-export const FieldList: FunctionComponent = ({ children }) => (
-    <div>{children}</div>
-);
+export const FieldList: FunctionComponent = ({ children }) => <div>{children}</div>;
 
-export const FieldItem: FunctionComponent<FieldProps> = ({
-    name,
-    type,
-    defaultValue,
-    description,
-}: FieldProps) => (
+export const FieldItem: FunctionComponent<FieldProps> = ({ name, type, defaultValue, description }: FieldProps) => (
     <div>
         <h3>
             <code>{name}</code>
