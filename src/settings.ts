@@ -22,10 +22,19 @@ export interface Settings {
      * @defaultValue 99999
      */
     zIndex: number;
+    /**
+     * Whether or not to respect the "prefers-reduced-motion" media query, in
+     * case users do not want particle effects flying around their screen. Note
+     * that this has to be set **before** the library initializes the renderer.
+     *
+     * @defaultValue true
+     */
+    respectReducedMotion: boolean;
 }
 
 export const settings: Settings = {
     debug: false,
     gravity: 800,
     zIndex: 99999,
+    respectReducedMotion: true,
 };
