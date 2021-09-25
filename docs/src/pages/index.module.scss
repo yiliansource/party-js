@@ -3,21 +3,28 @@
 @mixin clip-path-wave(
     $width: 1000,
     $height: 200,
-    $offsetY: 150,
-    $offsetX: 4,
-    $amplitude: 5,
-    $frequency: 1.3
+    $displacement: 150,
+    $offset: 3.8,
+    $amplitude: 8,
+    $frequency: 1.3,
+    $side: "bottom"
 ) {
     $units: $frequency * $width / 100;
 
-    $clipPathString: "polygon(100% 0%, 0% 0% ";
+    $clipPathString: "polygon(" +
+        map-get(
+            (
+                bottom: "100% 0%, 0% 0%",
+                top: "100% 100%, 0% 100%",
+            ),
+            $side
+        ) + " ";
 
     @for $i from 0 through 100 {
-        $val: $offsetY + $amplitude * math.cos($offsetX + $i / $units);
+        $val: $displacement + $amplitude * math.cos($offset + $i / $units);
         $val: $val / $height * 100;
         $clipPathString: $clipPathString + ", " + $i + "% " + $val + "%";
     }
-
     $clipPathString: $clipPathString + ");";
 
     clip-path: unquote($clipPathString);
@@ -30,7 +37,7 @@
     color: white;
     background: linear-gradient(135deg, #ffa467 20%, #ff5164 80%);
 
-    @include clip-path-wave;
+    @include clip-path-wave(1000, 200, 150, 3.8, 8, 1.3, "bottom");
 
     :global {
         h1 {
@@ -42,6 +49,7 @@
             font-weight: 400;
             font-size: 1.4em;
             line-height: 1.3;
+            max-width: 450px;
         }
 
         .infos {
@@ -53,14 +61,13 @@
                 filter: drop-shadow(2px 3px 2px rgba(0, 0, 0, 0.2));
             }
 
-            h2,
-            .buttons {
-                filter: drop-shadow(0px 1px 1px rgba(0, 0, 0, 0.35));
+            h2 {
+                filter: drop-shadow(1px 2px 1px rgba(0, 0, 0, 0.2));
             }
 
             .logo {
                 margin-top: 0.5em;
-                filter: drop-shadow(2px 2px 0px rgba(0, 0, 0, 0.08));
+                filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.1));
 
                 :local {
                     @keyframes float {
@@ -91,16 +98,21 @@
                 margin-top: 2em;
 
                 .button {
+                    padding: 0.7em 2.5em;
                     font-weight: 400;
                     margin-right: 0.5em;
+                    font-size: 1em;
 
                     --color-fill: white;
-                    color: white;
-                    background: transparent;
-                    border: 1px solid var(--color-fill);
+                    color: rgb(92, 92, 92);
+                    background: var(--color-fill);
+                    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.12);
+                    border: none;
+                    transition: color 0.3s, background-color 0.3s, box-shadow 0.3s;
 
                     &:hover {
                         color: white;
+                        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
                         background: var(--color-fill);
                     }
                 }
@@ -144,6 +156,7 @@
                 filter: drop-shadow(2px 2px 0 rgba(0, 0, 0, 0.15));
 
                 svg {
+                    width: auto;
                     height: 100%;
                 }
             }
@@ -153,6 +166,41 @@
                 overflow: auto;
                 max-width: 100vw;
             }
+
+            /* Define icon animations for the features. */
+            .icon svg {
+                &.settings {
+                    :local {
+                        @keyframes rotate {
+                            from {
+                                transform: rotate(0deg);
+                            }
+                            to {
+                                transform: rotate(359deg);
+                            }
+                        }
+
+                        path:first-of-type {
+                            transform-origin: 33% 67%;
+                            animation: 7s linear 0s infinite running rotate;
+                        }
+                    }
+                }
+                &.complex {
+                    :local {
+                        @keyframes flap {
+                            from {
+                                transform: translateY(-5px) scaleX(1.1);
+                            }
+                            to {
+                                transform: translateY(5px) scaleX(0.8);
+                            }
+                        }
+
+                        animation: flap 1s ease-in-out 0s infinite alternate;
+                    }
+                }
+            }
         }
 
         &:nth-child(2n) {
@@ -161,40 +209,57 @@
     }
 }
 
-.features {
-    .feature {
-        :global {
-            .icon svg.settings {
-                :local {
-                    @keyframes rotate {
-                        from {
-                            transform: rotate(0deg);
-                        }
-                        to {
-                            transform: rotate(359deg);
-                        }
-                    }
+.demos {
+    margin: 3rem 0 0;
+    padding: 5rem 0 6rem !important;
 
-                    path:first-of-type {
-                        transform-origin: 33% 67%;
-                        animation: 7s linear 0s infinite running rotate;
-                    }
+    color: white;
+    background: linear-gradient(135deg, #ffa467 20%, #ff5164 80%);
+
+    @include clip-path-wave(1000, 300, 20, 0.5, 13, 1.7, "top");
+
+    :global {
+        .header {
+            padding: 1em 0;
+
+            h1 {
+                text-align: center;
+                font-size: 2.5em;
+                text-shadow: 2px 3px 0px rgba(0, 0, 0, 0.2);
+            }
+        }
+    }
+
+    .demo {
+        margin: 1em 0;
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        border-radius: 10px;
+        height: 400px;
+        background: var(--ifm-background-color);
+
+        user-select: none;
+
+        :global {
+            .description {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                padding: 1em 1.5em;
+                pointer-events: none;
+
+                h3 {
+                    font-size: 1.8em;
+                    margin: 0 0 0.2em 0;
+                }
+                p {
+                    margin: 0;
                 }
             }
-
-            .icon svg.complex {
-                :local {
-                    @keyframes flap {
-                        from {
-                            transform: translateY(-5px) scaleX(1.1);
-                        }
-                        to {
-                            transform: translateY(5px) scaleX(0.8);
-                        }
-                    }
-
-                    animation: flap 1s ease-in-out 0s infinite alternate;
-                }
+            .demoArea {
+                height: 100%;
             }
         }
     }
@@ -205,7 +270,7 @@
         padding: 2em 0.5em 10rem;
         font-size: 0.8em;
 
-        @include clip-path-wave($amplitude: 2);
+        @include clip-path-wave(1000, 200, 150, 3.8, 2, 2, "bottom");
 
         :global {
             .infos {
@@ -231,6 +296,14 @@
                     flex: unset;
                 }
             }
+        }
+    }
+
+    .demos {
+        @include clip-path-wave(1000, 300, 15, 1, 4, 3, "top");
+
+        .demo {
+            height: 400px;
         }
     }
 }

@@ -6,9 +6,7 @@ interface DemoButtonProps {
     demoMethod: (source: HTMLElement) => void;
 }
 
-const DemoButton: FunctionComponent<DemoButtonProps> = ({
-    demoMethod,
-}: DemoButtonProps) => {
+const DemoButton: FunctionComponent<DemoButtonProps> = ({ demoMethod }: DemoButtonProps) => {
     const elementReference = useRef(null);
     return (
         <div

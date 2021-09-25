@@ -24,10 +24,7 @@ function demoHearts(id) {
             useGravity: false,
             initialSpeed: 400,
             initialColor: party.variation.gradientSample(
-                party.Gradient.simple(
-                    party.Color.fromHex("#ffa68d"),
-                    party.Color.fromHex("#fd3a84")
-                )
+                party.Gradient.simple(party.Color.fromHex("#ffa68d"), party.Color.fromHex("#fd3a84"))
             ),
         },
         emissionOptions: {
@@ -45,10 +42,8 @@ function demoHearts(id) {
     });
 
     const rotationModule = emitter.addModule(party.modules.RotationModifier);
-    rotationModule.rotation = (p) =>
-        new party.Vector(0, 0, 100).scale(p.initialLifetime - p.lifetime);
+    rotationModule.rotation = (p) => new party.Vector(0, 0, 100).scale(p.initialLifetime - p.lifetime);
 
     const sizeModule = emitter.addModule(party.modules.SizeModifier);
-    sizeModule.size = (p) =>
-        0.5 + 0.3 * (Math.cos((p.initialLifetime - p.lifetime) * 10) + 1);
+    sizeModule.size = (p) => 0.5 + 0.3 * (Math.cos((p.initialLifetime - p.lifetime) * 10) + 1);
 }

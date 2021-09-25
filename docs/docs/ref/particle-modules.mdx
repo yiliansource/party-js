@@ -17,10 +17,7 @@ Looks simple doesn't it? But don't be deceived - they are much more powerful tha
 Let's say you wanted to make your particle's sizes pulse over time using a sine wave. Well, then you just need to pass a function that does exactly that into your emitter's modules!
 
 ```ts
-emitter.options.modules.push(
-    (particle: Particle) =>
-        (particle.size = Math.sin(new Date().getTime() / 1000))
-);
+emitter.options.modules.push((particle: Particle) => (particle.size = Math.sin(new Date().getTime() / 1000)));
 ```
 
 However, writing functions like that for every single property you want to animate is boring and can get messy. You can still use them for more advanced cases, but for simple ones we will take a look at the `ModuleBuilder` class.
@@ -48,10 +45,7 @@ Specifies the particle property to drive through the module function. Currently 
 Specifies the value to drive the value by. This can either be a constant, a spline or a function that calculates a value from a factor and the particle as context.
 
 ```ts
-type ModuleDriverValue<T> =
-    | T
-    | Spline<T>
-    | ((factor: number, particle?: Particle) => T);
+type ModuleDriverValue<T> = T | Spline<T> | ((factor: number, particle?: Particle) => T);
 ```
 
 ### .through(factorType)
@@ -75,13 +69,7 @@ party.sparkles(mouseEvent, {
         modules: [
             new party.ModuleBuilder()
                 .drive("size")
-                .by(
-                    new party.NumericSpline(
-                        { time: 0, value: 0 },
-                        { time: 0.5, value: 1 },
-                        { time: 1, value: 0 }
-                    )
-                )
+                .by(new party.NumericSpline({ time: 0, value: 0 }, { time: 0.5, value: 1 }, { time: 1, value: 0 }))
                 .build(),
             new party.ModuleBuilder()
                 .drive("opacity")

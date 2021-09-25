@@ -7,12 +7,12 @@ import clsx from "clsx";
 import React from "react";
 
 import ComplexSVG from "../../static/img/butterfly.svg";
+import IceCreamSVG from "../../static/img/ice-cream.svg";
 import LogoSVG from "../../static/img/logo.svg";
 import SettingsSVG from "../../static/img/settings.svg";
-import DemoButton from "../components/DemoButton";
+import DemoWidget from "../components/DemoWidget";
 import LiveCodeblock from "../components/LiveCodeblock";
-import * as demoMethods from "../util/demos";
-import styles from "./styles.module.scss";
+import styles from "./index.module.scss";
 
 interface Feature {
     title: string;
@@ -20,22 +20,15 @@ interface Feature {
     description: JSX.Element;
 }
 
-interface Demo {
-    title: string;
-    demoMethod: (source: HTMLElement) => void;
-    description: JSX.Element;
-}
-
 const features: Feature[] = [
     {
         title: "Easy to Use",
-        image: "img/ice-cream.svg",
+        image: <IceCreamSVG className="easy" />,
         description: (
             <>
                 <p>
-                    Just include the library in your HTML file, or install it
-                    via npm, and you&apos;re ready to go! All of the setup is
-                    done internally, without you having to break a sweat.
+                    Just include the library in your HTML file, or install it via npm, and you&apos;re ready to go! All
+                    of the setup is done internally, without you having to break a sweat.
                 </p>
                 <CodeBlock className="html">{`<script src="https://cdn.jsdelivr.net/npm/party-js@latest/bundle/party.min.js"></script>`}</CodeBlock>
                 <CodeBlock className="bash">{`npm install party-js --save`}</CodeBlock>
@@ -48,10 +41,8 @@ const features: Feature[] = [
         description: (
             <>
                 <p>
-                    We believe that users should be able to decide for
-                    themselves how the effects should look. That&apos;s why
-                    every effect has default options, which can easily be
-                    overriden by the user.
+                    We believe that users should be able to decide for themselves how the effects should look.
+                    That&apos;s why every effect has default options, which can easily be overriden by the user.
                 </p>
                 <CodeBlock className="javascript">{`party.confetti(this, {
     count: party.variation.range(20, 40),
@@ -67,16 +58,15 @@ const features: Feature[] = [
         description: (
             <>
                 <p>
-                    You can call effects either with a single line of code, or
-                    with a huge block of options, fine-tuning every effect to
-                    your exact liking!
+                    You can call effects either with a single line of code, or with a huge block of options, fine-tuning
+                    every effect to your exact liking!
                 </p>
                 <CodeBlock className="javascript">{`party.scene.current.createEmitter({
     emitterOptions: {
-        // Customize the emitter behaviour ...
+        // Customize the emitter behaviour, ...
     },
     emissionOptions: {
-        // ... the emission of the particles ...
+        // ... the emission of the particles, ...
     },
     rendererOptions: {
         // ... and the appearance!
@@ -87,44 +77,11 @@ const features: Feature[] = [
     },
 ];
 
-const demos: Demo[] = [
-    {
-        title: "Confetti clicking!",
-        demoMethod: demoMethods.confetti,
-        description: (
-            <>Click the button to let some confetti explode from it!</>
-        ),
-    },
-    {
-        title: "Sparkly!",
-        demoMethod: demoMethods.sparkles,
-        description: (
-            <>Want to add some sparkles to something? That's possible aswell!</>
-        ),
-    },
-    {
-        title: "Spread the love!",
-        demoMethod: demoMethods.hearts,
-        description: (
-            <>Want to fill the screens of your users with hearts? Go for it!</>
-        ),
-    },
-];
-
-const FeatureElement: React.FunctionComponent<Feature> = function ({
-    title,
-    image,
-    description,
-}: Feature) {
+const FeatureElement: React.FunctionComponent<Feature> = function ({ title, image, description }: Feature) {
     return (
         <div className={styles.feature}>
             {typeof image === "string" ? (
-                <img
-                    className="icon"
-                    src={useBaseUrl(image)}
-                    alt={title}
-                    draggable={false}
-                />
+                <img className="icon" src={useBaseUrl(image)} alt={title} draggable={false} />
             ) : (
                 <div className="icon">{image}</div>
             )}
@@ -136,23 +93,9 @@ const FeatureElement: React.FunctionComponent<Feature> = function ({
     );
 };
 
-const DemoElement: React.FunctionComponent<Demo> = function ({
-    title,
-    demoMethod,
-    description,
-}: Demo) {
-    return (
-        <div className={clsx("demo col col--4", styles.demo)}>
-            <h3>{title}</h3>
-            <p>{description}</p>
-            <DemoButton demoMethod={demoMethod} />
-        </div>
-    );
-};
-
 export default function () {
     const context = useDocusaurusContext();
-    const { siteConfig = {} } = context;
+    const { siteConfig = {} } = context as any;
     return (
         <Layout title={`Hello!`} description={siteConfig.tagline}>
             <header className={clsx("hero hero--primary", styles.hero)}>
@@ -165,15 +108,10 @@ export default function () {
                             <div>
                                 <h1>party.js</h1>
                                 <h2>
-                                    A JavaScript library to brighten up your
-                                    <br />
-                                    user's site experience with visual effects!
+                                    A JavaScript library to brighten up your user's site experience with visual effects!
                                 </h2>
                                 <div className="buttons">
-                                    <Link
-                                        to={useBaseUrl("/docs")}
-                                        className="button button--lg button--docs"
-                                    >
+                                    <Link to={useBaseUrl("/docs")} className="button button--lg button--docs">
                                         Quick Start
                                     </Link>
                                     <a
@@ -200,32 +138,21 @@ export default function () {
                 {features && features.length > 0 && (
                     <section className={styles.features}>
                         <div className="container">
-                            <div className="row">
-                                {features.map((props, idx) => (
-                                    <FeatureElement key={idx} {...props} />
-                                ))}
-                            </div>
+                            {features.map((props, idx) => (
+                                <FeatureElement key={idx} {...props} />
+                            ))}
                         </div>
                     </section>
                 )}
 
-                {demos && demos.length > 0 && (
-                    <section className={styles.demos}>
-                        <div className="container">
-                            <h1>Check out the demos!</h1>
-                            <div className="row">
-                                {demos.map((props, idx) => (
-                                    <DemoElement key={idx} {...props} />
-                                ))}
-                            </div>
-                            <div className={styles.exampleLink}>
-                                <Link to="/docs/guides/using-templates">
-                                    Check out the guides to learn more!
-                                </Link>
-                            </div>
+                <section className={styles.demos}>
+                    <div className="container">
+                        <div className="header">
+                            <h1>Try it out!</h1>
                         </div>
-                    </section>
-                )}
+                        <DemoWidget />
+                    </div>
+                </section>
             </main>
         </Layout>
     );

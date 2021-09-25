@@ -34,8 +34,7 @@ html[data-theme="light"] {
 
                 .error {
                     color: var(--ifm-color-danger-light);
-                    font: 14px / var(--ifm-pre-line-height)
-                        var(--ifm-font-family-monospace);
+                    font: 14px / var(--ifm-pre-line-height) var(--ifm-font-family-monospace);
 
                     svg {
                         margin-right: 0.6em;
@@ -95,8 +94,7 @@ html[data-theme="light"] {
 
         .CodeMirror {
             height: unset;
-            font: var(--ifm-code-font-size) / var(--ifm-pre-line-height)
-                var(--ifm-font-family-monospace);
+            font: var(--ifm-code-font-size) / var(--ifm-pre-line-height) var(--ifm-font-family-monospace);
             background: transparent !important;
 
             .CodeMirror-lines {

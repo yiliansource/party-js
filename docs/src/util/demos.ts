@@ -9,19 +9,13 @@ export function sparkles(source: HTMLElement): void {
 }
 
 export function hearts(source: HTMLElement): void {
-    const heartPath = document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "path"
-    );
+    const heartPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
     heartPath.setAttribute(
         "d",
         "M316.722,29.761c66.852,0,121.053,54.202,121.053,121.041c0,110.478-218.893,257.212-218.893,257.212S0,266.569,0,150.801 C0,67.584,54.202,29.761,121.041,29.761c40.262,0,75.827,19.745,97.841,49.976C240.899,49.506,276.47,29.761,316.722,29.761z"
     );
 
-    const heartShape = (document.createElementNS(
-        "http://www.w3.org/2000/svg",
-        "svg"
-    ) as unknown) as HTMLElement;
+    const heartShape = document.createElementNS("http://www.w3.org/2000/svg", "svg") as unknown as HTMLElement;
     heartShape.setAttribute("viewBox", "0 0 512 512");
     heartShape.setAttribute("height", "20");
     heartShape.setAttribute("width", "20");
@@ -41,6 +35,11 @@ export function hearts(source: HTMLElement): void {
                     .by((t) => new party.Vector(0, 0, 100).scale(t))
                     .relative()
                     .build(),
+                new party.ModuleBuilder()
+                    .drive("opacity")
+                    .by(new party.NumericSpline({ time: 0.5, value: 1 }, { time: 1, value: 0 }))
+                    .through("relativeLifetime")
+                    .build(),
             ],
         },
         emissionOptions: {
@@ -50,13 +49,12 @@ export function hearts(source: HTMLElement): void {
             sourceSampler: party.sources.dynamicSource(source),
             angle: party.variation.range(0, 360),
 
-            initialSpeed: 400,
+            initialLifetime: party.variation.range(0.5, 1),
+            initialSpeed: party.variation.range(300, 500),
             initialColor: party.variation.gradientSample(
-                party.Gradient.simple(
-                    party.Color.fromHex("#ffa68d"),
-                    party.Color.fromHex("#fd3a84")
-                )
+                party.Gradient.simple(party.Color.fromHex("#ffa68d"), party.Color.fromHex("#fd3a84"))
             ),
+            initialRotation: () => new party.Vector(0, 0, party.random.randomRange(0, 360)),
         },
         rendererOptions: {
             shapeFactory: heartShape,

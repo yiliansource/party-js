@@ -27,10 +27,7 @@ export interface LiveCodeblockProps {
     code?: string;
 }
 
-export default function LiveCodeblock({
-    code,
-    children,
-}: React.PropsWithChildren<LiveCodeblockProps>): JSX.Element {
+export default function LiveCodeblock({ code, children }: React.PropsWithChildren<LiveCodeblockProps>): JSX.Element {
     const [body, setBody] = useState<string>(code || null);
     const [error, setError] = useState<string>(null);
     const [editor, setEditor] = useState<CodeMirror.Editor>(null);
@@ -44,9 +41,7 @@ export default function LiveCodeblock({
 
     useEffect(() => {
         if (!body && initialContentRef.current) {
-            const initialBody = Array.from(
-                initialContentRef.current.querySelectorAll(".token-line")
-            )
+            const initialBody = Array.from(initialContentRef.current.querySelectorAll(".token-line"))
                 .map((line: HTMLDivElement) => line.innerText)
                 .join("\n")
                 .replace(/ {4}/g, "\t");
@@ -75,11 +70,7 @@ export default function LiveCodeblock({
 
     const handleRunClick = (event: React.MouseEvent) => {
         try {
-            const fun: Function = Function.call(
-                undefined,
-                ...["party", "mouseEvent", "codeblock", "runButton"],
-                body
-            );
+            const fun: Function = Function.call(undefined, ...["party", "mouseEvent", "codeblock", "runButton"], body);
 
             const context = getCodeblockContext();
             context.mouseEvent = event.nativeEvent;
@@ -97,25 +88,27 @@ export default function LiveCodeblock({
             {body === null ? (
                 <div ref={initialContentRef}>{children}</div>
             ) : (
-                <CodeMirror
-                    value={body}
-                    options={{
-                        theme: isDarkTheme
-                            ? "material-palenight"
-                            : "nightowl-light",
-                        mode: "javascript",
-                        indentWithTabs: true,
-                        tabSize: 4,
-                        indentUnit: 4,
-                        smartIndent: true,
-                        lineNumbers: true,
-                        // @ts-ignore
-                        matchBrackets: true,
-                        styleActiveLine: { nonEmpty: true },
-                    }}
-                    editorDidMount={(editor) => setEditor(editor)}
-                    onBeforeChange={(editor, data, value) => setBody(value)}
-                />
+                <div className="editor">
+                    <CodeMirror
+                        value={body}
+                        options={{
+                            theme: isDarkTheme ? "material-palenight" : "nightowl-light",
+                            mode: "javascript",
+                            indentWithTabs: true,
+                            tabSize: 4,
+                            indentUnit: 4,
+                            smartIndent: true,
+                            lineNumbers: true,
+                            ...{
+                                // addon config
+                                matchBrackets: true,
+                                styleActiveLine: { nonEmpty: true },
+                            },
+                        }}
+                        editorDidMount={(editor) => setEditor(editor)}
+                        onBeforeChange={(editor, data, value) => setBody(value)}
+                    />
+                </div>
             )}
 
             <div className="toolbar">
@@ -142,11 +135,7 @@ export default function LiveCodeblock({
                     <button className="copy" onClick={handleCopyClick}>
                         {hasCopied ? <TickSVG /> : <CopySVG />}
                     </button>
-                    <button
-                        className="run"
-                        onClick={handleRunClick}
-                        ref={runButtonRef}
-                    >
+                    <button className="run" onClick={handleRunClick} ref={runButtonRef}>
                         <PlaySVG />
                     </button>
                 </div>

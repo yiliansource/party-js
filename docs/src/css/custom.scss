@@ -1,14 +1,8 @@
 @import "./variables.scss";
 
-@import url("https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=block");
-@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@200;400;600&display=swap");
-
 html,
 body {
     height: auto !important;
-}
-body {
-    font-family: "IBM Plex Sans", "Open Sans", sans-serif;
 }
 
 #__docusaurus {

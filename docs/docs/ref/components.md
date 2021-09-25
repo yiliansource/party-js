@@ -66,10 +66,7 @@ The library provides an abstract implementation of a spline, from which more spe
 A basic implementation of a numeric spline, with easing applied through cosine interpolation.
 
 ```ts
-const mySpline = new party.NumericSpline(
-    { time: 0, value: 0 },
-    { time: 1, value: 1 }
-);
+const mySpline = new party.NumericSpline({ time: 0, value: 0 }, { time: 1, value: 1 });
 const result = mySpline.evaluate(0.2); // 0.0955
 ```
 

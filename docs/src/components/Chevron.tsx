@@ -7,9 +7,7 @@ interface ChevronProps {
     direction?: "right" | "down";
 }
 
-const Chevron: FunctionComponent<ChevronProps> = ({
-    direction = "right",
-}: ChevronProps) => (
+const Chevron: FunctionComponent<ChevronProps> = ({ direction = "right" }: ChevronProps) => (
     <span className={`${styles.chevron} ${styles[direction]}`}>
         <ChevronSVG />
     </span>

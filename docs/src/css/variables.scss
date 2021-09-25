@@ -1,3 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@200;400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@200;400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Fira+Mono&display=swap");
+
 $lightest: white;
 $darkest: #202224;
 
@@ -18,6 +22,9 @@ $darkest: #202224;
     --ifm-navbar-link-hover-color: var(--ifm-color-primary-light);
 
     --ifm-code-font-size: 95%;
+    --ifm-line-height-base: 1.8;
+    --ifm-font-family-base: "Inter", "Open Sans", sans-serif;
+    --ifm-font-family-monospace: "Fira Mono", "Consolas", monospace;
 
     --ifm-hr-border-color: var(--ifm-color-emphasis-200);
 }
