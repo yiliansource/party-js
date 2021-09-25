@@ -1,5 +1,5 @@
 import { settings } from "./settings";
-import { Lazy } from "./util/lazy";
+import { getOuterSize, partialUpdateStyle, Lazy } from "./util";
 
 /**
  * The prefix to apply to the containers.
@@ -7,19 +7,9 @@ import { Lazy } from "./util/lazy";
 const elementPrefix = "party-js-";
 
 /**
- * A utility method to partially update the style of the specified element.
- */
-function partialUpdateStyle(
-    element: HTMLElement,
-    style: Partial<CSSStyleDeclaration>
-): void {
-    Object.assign(element.style, style);
-}
-
-/**
  * Checks if the specified container is 'active', meaning not undefined and attached to the DOM.
  */
-function isContainerActive(container: HTMLElement) {
+function isContainerActive(container: HTMLElement): boolean {
     return container && container.isConnected;
 }
 
@@ -35,23 +25,18 @@ function createRootContainer(): HTMLElement {
         position: "absolute",
         left: "0",
         top: "0",
+        minHeight: "100vh",
+        minWidth: "100vw",
         pointerEvents: "none",
         userSelect: "none",
         zIndex: settings.zIndex.toString(),
     });
     document.body.appendChild(container);
 
-    // Ensure that the root container is always the same size as the entire DOM.
-    function fitToWindow() {
-        if (isContainerActive(container)) {
-            container.style.height =
-                Math.max(window.innerHeight, document.body.offsetHeight) + "px";
-            container.style.width =
-                Math.max(window.innerWidth, document.body.offsetWidth) + "px";
-        }
-        window.requestAnimationFrame(fitToWindow);
-    }
-    window.requestAnimationFrame(fitToWindow);
+    // Stretches the root container to cover the entirety of the document's body (#71).
+    const [width, height] = getOuterSize(document.body);
+    container.style.width = width + "px";
+    container.style.height = height + "px";
 
     return container;
 }
@@ -90,22 +75,22 @@ function createParticleContainer(): HTMLElement {
         width: "100%",
         height: "100%",
         overflow: "hidden",
-        perspective: "100vw",
+        perspective: "1200px",
     });
     rootContainer.current.appendChild(container);
 
     return container;
 }
 
-export const rootContainer: Lazy<HTMLElement> = new Lazy<HTMLElement>(
+export const rootContainer = new Lazy<HTMLElement>(
     createRootContainer,
     isContainerActive
 );
-export const debugContainer: Lazy<HTMLElement> = new Lazy<HTMLElement>(
+export const debugContainer = new Lazy<HTMLElement>(
     createDebugContainer,
     isContainerActive
 );
-export const particleContainer: Lazy<HTMLElement> = new Lazy<HTMLElement>(
+export const particleContainer = new Lazy<HTMLElement>(
     createParticleContainer,
     isContainerActive
 );

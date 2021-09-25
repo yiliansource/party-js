@@ -11,6 +11,10 @@ body {
     font-family: "IBM Plex Sans", "Open Sans", sans-serif;
 }
 
+#__docusaurus {
+    min-height: 100vh !important;
+}
+
 .docusaurus-highlight-code-line {
     background-color: rgb(54, 57, 70);
     display: block;

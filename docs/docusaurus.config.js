@@ -1,3 +1,5 @@
+const glob = require("glob");
+
 module.exports = {
     title: "party.js",
     tagline:
@@ -9,7 +11,26 @@ module.exports = {
     favicon: "img/logo.svg",
     organizationName: "yiliansource",
     projectName: "party-js",
-    plugins: ["docusaurus-plugin-sass"],
+    plugins: [
+        "docusaurus-plugin-sass",
+        [
+            "docusaurus-plugin-typedoc",
+            {
+                entryPoints: glob.sync("../src/**/index.ts"),
+                tsconfig: "../tsconfig.json",
+
+                readme: "none",
+                includeVersion: true,
+                excludePrivate: true,
+                excludeProtected: true,
+                excludeInternal: true,
+
+                sidebar: {
+                    sidebarFile: null,
+                },
+            },
+        ],
+    ],
     themeConfig: {
         image: "img/banner.png",
         metadatas: [
@@ -37,10 +58,16 @@ module.exports = {
             },
             items: [
                 {
-                    to: "docs/",
-                    activeBasePath: "docs",
-                    label: "Docs",
+                    type: "doc",
+                    docId: "quick-start",
                     position: "left",
+                    label: "Docs",
+                },
+                {
+                    type: "doc",
+                    docId: "api/index",
+                    position: "left",
+                    label: "API",
                 },
                 {
                     href: "https://github.com/yiliansource/party-js",

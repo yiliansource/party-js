@@ -1,3 +1,4 @@
+import { settings } from "..";
 import { Vector } from "../components/vector";
 import { particleContainer } from "../containers";
 import { resolveShapeFactory } from "../systems/shapes";
@@ -29,7 +30,21 @@ export class Renderer {
     private renderedParticles: symbol[];
 
     /**
-     * Begins a new render block.
+     * Whether or not the renderer should actually draw particles.
+     */
+    private enabled = true;
+
+    public constructor() {
+        // Respect that users might prefer reduced motion.
+        // See: https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion
+        this.enabled =
+            !settings.respectReducedMotion ||
+            !window.matchMedia("(prefers-reduced-motion)").matches;
+    }
+
+    /**
+     * Begins a new render block. During the rendering phase, a list of rendered particles
+     * is tracked, so that stale particles can be removed later.
      */
     public begin(): void {
         this.renderedParticles = [];
@@ -64,6 +79,8 @@ export class Renderer {
      * @param emitter The system containing the particle.
      */
     public renderParticle(particle: Particle, emitter: Emitter): void {
+        if (!this.enabled) return;
+
         const options: RenderOptions = emitter.renderer;
 
         // Ensure that an element for the particle exists.

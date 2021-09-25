@@ -6,11 +6,6 @@
         <link rel="stylesheet" href="style.css" />
         <link rel="preconnect" href="https://fonts.gstatic.com" />
         <link
-            rel="shortcut icon"
-            href="../docs/static/img/logo.svg"
-            type="image/x-icon"
-        />
-        <link
             href="https://fonts.googleapis.com/css2?family=Dosis:wght@500&display=swap"
             rel="stylesheet"
         />
@@ -18,11 +13,13 @@
 
     <body>
         <header>
-            <img src="../.github/banner.svg" />
+            <img src="./banner.svg" />
             <p>Click around to see the confetti fly!</p>
         </header>
 
-        <script src="../bundle/party.js"></script>
+        <!-- Linked via magic path; see webpack dev server options. -->
+        <script src="./party.js"></script>
+        <!-- Testing runtime. -->
         <script src="./script.js"></script>
     </body>
 </html>

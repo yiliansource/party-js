@@ -43,4 +43,14 @@ module.exports = {
         }),
     ],
     stats: "errors-only",
+    devServer: {
+        static: {
+            directory: path.resolve(__dirname, "samples"),
+            watch: true,
+        },
+        watchFiles: ["src/**/*.ts"],
+        magicHtml: true,
+        compress: true,
+        port: 9000,
+    },
 };

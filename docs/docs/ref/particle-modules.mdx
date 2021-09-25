@@ -2,7 +2,7 @@
 title: Particle Modules
 ---
 
-import DemoCodeblock from "../../src/components/DemoCodeblock";
+import LiveCodeblock from "../../src/components/LiveCodeblock";
 
 ## Introduction
 
@@ -67,25 +67,7 @@ Chains the module function to be applied relative to the initial value. Note tha
 
 ## Example
 
-<DemoCodeblock 
-    method={(party, e) => {
-        party.sparkles(e, {
-            modules: [
-                new party.ModuleBuilder()
-                    .drive("size")
-                    .by(new party.NumericSpline(
-                        { time: 0, value: 0 }, 
-                        { time: 0.5, value: 1 }, 
-                        { time: 1, value: 0 }
-                    )).build(),
-                new party.ModuleBuilder()
-                    .drive("opacity")
-                    .by((t) => t)
-                    .through("size")
-                    .build()
-            ]
-        });
-    }}>
+<LiveCodeblock>
 
 ```ts
 party.sparkles(mouseEvent, {
@@ -93,19 +75,22 @@ party.sparkles(mouseEvent, {
         modules: [
             new party.ModuleBuilder()
                 .drive("size")
-                .by(new party.NumericSpline(
-                    { time: 0, value: 0 },
-                    { time: 0.5, value: 1 },
-                    { time: 1, value: 0 }
-                )).build(),
+                .by(
+                    new party.NumericSpline(
+                        { time: 0, value: 0 },
+                        { time: 0.5, value: 1 },
+                        { time: 1, value: 0 }
+                    )
+                )
+                .build(),
             new party.ModuleBuilder()
                 .drive("opacity")
                 .by((t) => t)
                 .through("size")
-                .build()
-        ]
-    }
-}
+                .build(),
+        ],
+    },
+});
 ```
 
-</DemoCodeblock>
+</LiveCodeblock>

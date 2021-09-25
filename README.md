@@ -5,7 +5,6 @@
 <p align="center">
     <a href="#installation">Installation</a> &bull;
     <a href="#usage">Usage</a> &bull;
-    <a href="#how-it-works">How it works</a> &bull;
     <a href="#contributing">Contributing</a>
 </p>
 
@@ -62,6 +61,14 @@ document.querySelector(".button").addEventListener("click", function (e) {
 ```
 
 If you want to learn more, check out the [quick start](https://party.js.org/docs/) guide!
+
+## Known Issues
+
+-   _"The particles are getting cut off inside the screen!"_  
+    When creating the particle container, the library calculates the document `<body>`'s size _once_. If your document size changes during the lifetime of your application you can either:
+
+    1. Remove the `#party-js-container`. This forces the library to re-initialize the container and will re-calculate the size. All particles will remain in memory, so nothing will be lost.
+    2. Manually calculate the needed container size and update it yourself. The library does **not** do this on a per-frame basis, in order not to unvoluntarily slow down older devices with timeout polling, and watching for document size changes is an expensive task, as of writing.
 
 ## Contributing
 

@@ -1,0 +1,118 @@
+.liveCodeblock {
+    position: relative;
+    color: rgb(248, 248, 242);
+    background: rgb(40, 42, 54);
+    border-radius: var(--ifm-global-radius);
+    overflow: hidden;
+    margin-bottom: 1em;
+
+    &:hover {
+        :global {
+            .toolbar {
+                opacity: 1;
+            }
+        }
+    }
+
+    :global {
+        .toolbar {
+            display: flex;
+            padding: 0.3em 0.8em;
+            opacity: 0.3;
+            transition: opacity 0.2s;
+
+            .output {
+                padding: 0 0.2em;
+
+                .error {
+                    color: var(--ifm-color-danger-light);
+                    font: 14px / var(--ifm-pre-line-height)
+                        var(--ifm-font-family-monospace);
+
+                    svg {
+                        margin-right: 0.6em;
+                        fill: currentColor;
+                        vertical-align: middle;
+                        height: 1em;
+                    }
+                }
+                .info {
+                    font-size: 0.8em;
+                    font-style: italic;
+                    color: var(--ifm-color-gray-600);
+                    cursor: default;
+
+                    code {
+                        background: transparent;
+                        border: none;
+                        vertical-align: initial;
+                        color: var(--ifm-color-gray-400);
+                        padding: 0;
+                    }
+                }
+            }
+
+            .controls {
+                margin-left: auto;
+
+                button {
+                    padding: 0.4em;
+                    margin-left: 0.2em;
+                    background: transparent;
+                    border: none;
+                    border-radius: 0.6em;
+                    color: white;
+                    height: 18px;
+                    box-sizing: content-box;
+                    cursor: pointer;
+
+                    &:hover {
+                        background: rgb(0, 0, 0, 0.4);
+                    }
+
+                    svg {
+                        fill: currentColor;
+
+                        height: 100%;
+                        width: auto;
+                    }
+
+                    &.run {
+                        color: var(--ifm-color-success-lighter);
+                    }
+                }
+            }
+        }
+
+        .CodeMirror {
+            height: unset;
+            font: var(--ifm-code-font-size) / var(--ifm-pre-line-height)
+                var(--ifm-font-family-monospace);
+            background: transparent;
+
+            .CodeMirror-lines {
+                padding: 1rem 0.75rem;
+            }
+            .CodeMirror-linenumber {
+                text-align: left;
+            }
+            .CodeMirror-activeline-background {
+                border-radius: 4px;
+            }
+
+            &:not(.CodeMirror-focused) .CodeMirror-activeline-background {
+                background: unset;
+            }
+        }
+    }
+}
+
+@media screen and (max-width: 1024px) {
+    .liveCodeblock {
+        :global {
+            .output {
+                display: none;
+            }
+        }
+    }
+}

@@ -3,8 +3,8 @@ title: Templates
 ---
 
 import Accordion from "../../src/components/Accordion";
-import DemoCodeblock from "../../src/components/DemoCodeblock";
 import { FieldList, FieldItem } from "../../src/components/Fields";
+import LiveCodeblock from "../../src/components/LiveCodeblock";
 
 ## Introduction
 
@@ -26,16 +26,15 @@ Templates return an `Emitter` object, which means that you can keep on customizi
 
 The library's signature effect. Allows you to let confetti pop from any element or point in the document! This effect supports _sources_.
 
-<DemoCodeblock method={(party, e) => party.confetti(e)}>
+<LiveCodeblock>
 
 ```js
-const element = document.querySelector(".confetti-sample");
-party.confetti(element, {
+party.confetti(runButton, {
     /* ... */
 });
 ```
 
-</DemoCodeblock>
+</LiveCodeblock>
 
 <Accordion icon="/img/settings.svg" title="Configuration" expanded={true}>
     <FieldList>
@@ -93,16 +92,15 @@ party.confetti(element, {
 
 Allows you to emit sparkling sparks from any element or point in the document. This effect supports _sources_.
 
-<DemoCodeblock method={(party, e) => party.sparkles(e)}>
+<LiveCodeblock>
 
 ```js
-const element = document.querySelector(".sparkles-sample");
-party.sparkles(element, {
+party.sparkles(runButton, {
     /* ... */
 });
 ```
 
-</DemoCodeblock>
+</LiveCodeblock>
 
 <Accordion icon="/img/settings.svg" title="Configuration" expanded={true}>
     <FieldList>
