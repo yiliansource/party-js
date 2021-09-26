@@ -1,10 +1,10 @@
 import { settings } from "./settings";
-import { getOuterSize, partialUpdateStyle, Lazy } from "./util";
+import { Lazy } from "./util";
 
 /**
  * The prefix to apply to the containers.
  */
-const elementPrefix = "party-js-";
+const containerPrefix = "party-js-";
 
 /**
  * Checks if the specified container is 'active', meaning not undefined and attached to the DOM.
@@ -14,83 +14,78 @@ function isContainerActive(container: HTMLElement): boolean {
 }
 
 /**
- * Returns the root container of the library. Creates it, if it doesn't exist yet.
+ * A generic factory method for creating a DOM container. Prefixes the specified name with the
+ * container prefix, applies the styles and adds it under the parent.
  */
-function createRootContainer(): HTMLElement {
+function makeContainer(
+    name: string,
+    styles: Partial<CSSStyleDeclaration>,
+    parent: HTMLElement
+): HTMLElement {
     const container = document.createElement("div");
-    container.id = elementPrefix + "container";
-    // Style the container to stretch across the full screen, without being interactable
-    // by the user. Also apply the z-index from the global settings.
-    partialUpdateStyle(container, {
-        position: "absolute",
-        left: "0",
-        top: "0",
-        minHeight: "100vh",
-        minWidth: "100vw",
-        pointerEvents: "none",
-        userSelect: "none",
-        zIndex: settings.zIndex.toString(),
-    });
-    document.body.appendChild(container);
-
-    // Stretches the root container to cover the entirety of the document's body (#71).
-    const [width, height] = getOuterSize(document.body);
-    container.style.width = width + "px";
-    container.style.height = height + "px";
-
-    return container;
+    container.id = containerPrefix + name;
+    Object.assign(container.style, styles);
+    return parent.appendChild(container);
 }
 
 /**
- * Returns the debugging container of the library. Creates it, if it doesn't exist yet.
+ * Represents the root container for DOM elements of the library.
  */
-function createDebugContainer(): HTMLElement {
-    const container = document.createElement("div");
-    container.id = elementPrefix + "debug";
-    // Style the container in a non-prominent, simplistic, yet clean way, in the top-left corner.
-    partialUpdateStyle(container, {
-        position: "absolute",
-        top: "0",
-        left: "0",
-        margin: "0.5em",
-        padding: "0.5em 1em",
-        border: "2px solid rgb(0, 0, 0, 0.2)",
-        background: "rgb(0, 0, 0, 0.1)",
-        color: "#555",
-        fontFamily: "monospace",
-    });
-    rootContainer.current.appendChild(container);
-
-    return container;
-}
-
-/**
- * Returns the particles container of the library. Creates it, if it doesn't exist yet.
- */
-function createParticleContainer(): HTMLElement {
-    const container = document.createElement("div");
-    container.id = elementPrefix + "particles";
-    // Style the container to stretch the full parent width, and apply a perspective distortion.
-    partialUpdateStyle(container, {
-        width: "100%",
-        height: "100%",
-        overflow: "hidden",
-        perspective: "1200px",
-    });
-    rootContainer.current.appendChild(container);
-
-    return container;
-}
-
 export const rootContainer = new Lazy<HTMLElement>(
-    createRootContainer,
+    () =>
+        makeContainer(
+            "container",
+            {
+                position: "fixed",
+                left: "0",
+                top: "0",
+                height: "100vh",
+                width: "100vw",
+                pointerEvents: "none",
+                userSelect: "none",
+                zIndex: settings.zIndex.toString(),
+            },
+            document.body
+        ),
     isContainerActive
 );
+/**
+ * Represents the debugging container of the library, only active if debugging is enabled.
+ */
 export const debugContainer = new Lazy<HTMLElement>(
-    createDebugContainer,
+    () =>
+        makeContainer(
+            "debug",
+            {
+                position: "absolute",
+                top: "0",
+                left: "0",
+                margin: "0.5em",
+                padding: "0.5em 1em",
+                border: "2px solid rgb(0, 0, 0, 0.2)",
+                background: "rgb(0, 0, 0, 0.1)",
+                color: "#555",
+                fontFamily: "monospace",
+            },
+            rootContainer.current
+        ),
     isContainerActive
 );
+/**
+ * Represents the particle container of the library.
+ * This is where the particle DOM elements get rendered into.
+ */
 export const particleContainer = new Lazy<HTMLElement>(
-    createParticleContainer,
+    () =>
+        makeContainer(
+            "particles",
+            {
+                width: "100%",
+                height: "100%",
+                overflow: "hidden",
+                perspective: "1200px",
+            },
+            rootContainer.current
+        ),
     isContainerActive
 );
