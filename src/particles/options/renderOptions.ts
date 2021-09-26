@@ -1,4 +1,4 @@
-import { Color } from "../../components/color";
+import { Color } from "../../components";
 import { Variation } from "../../systems/variation";
 import { Particle } from "../particle";
 
@@ -108,11 +108,14 @@ function defaultApplyLighting(lighting: number, element: HTMLElement): void {
 }
 /**
  * Applies the specified transform to the element as a 3D CSS transform.
+ * Also takes into account the current window scroll, to make sure that particles are
+ * rendered inside of the fixed container.
  */
 function defaultApplyTransform(particle: Particle, element: HTMLElement): void {
     element.style.transform =
-        `translateX(${particle.location.x.toFixed(3)}px) ` +
-        `translateY(${particle.location.y.toFixed(3)}px) ` +
+        // Make sure to take window scrolling into account.
+        `translateX(${(particle.location.x - window.scrollX).toFixed(3)}px) ` +
+        `translateY(${(particle.location.y - window.scrollY).toFixed(3)}px) ` +
         `translateZ(${particle.location.z.toFixed(3)}px) ` +
         `rotateX(${particle.rotation.x.toFixed(3)}deg) ` +
         `rotateY(${particle.rotation.y.toFixed(3)}deg) ` +
