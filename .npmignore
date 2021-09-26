@@ -1,6 +1,7 @@
 .eslintignore
 .eslintrc.js
 .prettierrc
+.prettierignore
 tsconfig.json
 webpack.config.js
 
