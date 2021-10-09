@@ -105,6 +105,12 @@ party.sparkles(runButton, {
 <Accordion icon="/img/settings.svg" title="Configuration" expanded={true}>
     <FieldList>
         <FieldItem
+            name="lifetime"
+            type="Variation<number>"
+            defaultValue="range(1, 2)"
+            description="How long the sparkles should stay alive before fading out."
+        />
+        <FieldItem
             name="count"
             type="Variation<number>"
             defaultValue="range(10, 20)"
