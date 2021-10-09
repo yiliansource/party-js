@@ -1,10 +1,11 @@
-import party from "../";
+import { scene } from "../";
 import { Color, Vector } from "../components";
 import { Emitter } from "../particles/emitter";
 import { ModuleBuilder, ModuleFunction } from "../systems/modules";
 import * as random from "../systems/random";
 import * as sources from "../systems/sources";
 import * as variation from "../systems/variation";
+import * as util from "../util";
 
 /**
  * The configuration to apply to the confetti.
@@ -30,12 +31,12 @@ export function confetti(
     source: sources.DynamicSourceType,
     options?: Partial<ConfettiConfiguration>
 ): Emitter {
-    const populated = party.util.overrideDefaults(
+    const populated = util.overrideDefaults(
         {
-            count: party.variation.range(20, 40),
-            spread: party.variation.range(35, 45),
-            speed: party.variation.range(300, 600),
-            size: party.variation.skew(1, 0.2),
+            count: variation.range(20, 40),
+            spread: variation.range(35, 45),
+            speed: variation.range(300, 600),
+            size: variation.skew(1, 0.2),
             rotation: () => random.randomUnitVector().scale(180),
             color: () => Color.fromHsl(random.randomRange(0, 360), 100, 70),
             modules: [
@@ -55,7 +56,7 @@ export function confetti(
         options
     );
 
-    const emitter = party.scene.current.createEmitter({
+    const emitter = scene.current.createEmitter({
         emitterOptions: {
             loops: 1,
             duration: 8,
@@ -71,7 +72,7 @@ export function confetti(
                 variation.evaluateVariation(populated.spread)
             ),
 
-            initialLifetime: variation.range(6, 8),
+            initialLifetime: 8,
             initialSpeed: populated.speed,
             initialSize: populated.size,
             initialRotation: populated.rotation,

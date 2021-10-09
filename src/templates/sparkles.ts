@@ -1,15 +1,17 @@
-import party from "../";
+import { scene } from "..";
 import { Color, NumericSpline, Vector } from "../components";
 import { Emitter } from "../particles/emitter";
 import { ModuleBuilder, ModuleFunction } from "../systems/modules";
 import * as random from "../systems/random";
 import * as sources from "../systems/sources";
 import * as variation from "../systems/variation";
+import * as util from "../util";
 
 /**
  * The configuration to apply to the sparkles.
  */
 export interface SparkleConfiguration {
+    lifetime: variation.Variation<number>;
     count: variation.Variation<number>;
     speed: variation.Variation<number>;
     size: variation.Variation<number>;
@@ -28,8 +30,9 @@ export function sparkles(
     source: sources.DynamicSourceType,
     options?: Partial<SparkleConfiguration>
 ): Emitter {
-    const populated = party.util.overrideDefaults(
+    const populated = util.overrideDefaults(
         {
+            lifetime: variation.range(1, 2),
             count: variation.range(10, 20),
             speed: variation.range(100, 200),
             size: variation.range(0.8, 1.8),
@@ -70,7 +73,7 @@ export function sparkles(
         options
     );
 
-    const emitter = party.scene.current.createEmitter({
+    const emitter = scene.current.createEmitter({
         emitterOptions: {
             loops: 1,
             duration: 3,
@@ -84,7 +87,7 @@ export function sparkles(
             sourceSampler: sources.dynamicSource(source),
             angle: variation.range(0, 360),
 
-            initialLifetime: variation.range(1, 2),
+            initialLifetime: populated.lifetime,
             initialSpeed: populated.speed,
             initialSize: populated.size,
             initialRotation: populated.rotation,
