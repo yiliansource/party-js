@@ -1,4 +1,6 @@
 .footer {
+    --ifm-footer-padding-vertical: calc(var(--ifm-spacing-horizontal) * 3);
+
     padding: var(--ifm-footer-padding-vertical) var(--ifm-footer-padding-horizontal);
     background: var(--ifm-footer-background-color);
     box-shadow: var(--ifm-footer-shadow);
@@ -42,23 +44,34 @@
         }
         .tagline {
             font-size: 0.9em;
+            color: var(--ifm-color-emphasis-700);
             margin: 0;
         }
         .copyright {
             margin: 0.8em 0 0;
             font-size: 0.8em;
+            color: var(--ifm-color-emphasis-500);
         }
 
         .category-title {
+            color: var(--ifm-color-emphasis-600);
         }
         .category-links {
             list-style: none;
             padding: 0;
 
             li {
+                line-height: 1.7;
+
                 a {
                     font-size: 0.9em;
-                    color: var(--ifm-font-color-base);
+                    color: var(--ifm-color-emphasis-500);
+                    text-decoration: none;
+
+                    &:hover,
+                    &:active {
+                        color: var(--ifm-color-emphasis-800);
+                    }
                 }
             }
         }

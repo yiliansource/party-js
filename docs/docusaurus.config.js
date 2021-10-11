@@ -104,6 +104,10 @@ module.exports = {
                             to: "docs/guides/using-templates",
                         },
                         {
+                            label: "Changelog",
+                            to: "docs/changelog",
+                        },
+                        {
                             label: "GitHub",
                             href: "https://github.com/yiliansource/party-js",
                         },
