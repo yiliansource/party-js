@@ -48,7 +48,7 @@ export default function LiveCodeblock({ code, children }: React.PropsWithChildre
 
             setBody(initialBody);
         }
-    });
+    }, []);
 
     function getCodeblockContext(): Record<string, any> {
         return {
@@ -62,23 +62,21 @@ export default function LiveCodeblock({ code, children }: React.PropsWithChildre
     const handleCopyClick = () => {
         navigator.clipboard.writeText(editor.getValue()).then(() => {
             setHasCopied(true);
-            window.setTimeout(() => {
-                setHasCopied(false);
-            }, 2000);
+            window.setTimeout(() => setHasCopied(false), 2000);
         });
     };
 
     const handleRunClick = (event: React.MouseEvent) => {
         try {
-            const fun: Function = Function.call(undefined, ...["party", "mouseEvent", "codeblock", "runButton"], body);
-
             const context = getCodeblockContext();
             context.mouseEvent = event.nativeEvent;
 
+            const fun = Function(...Object.keys(context), body);
             fun.call(undefined, ...Object.values(context));
         } catch (err) {
             if (err instanceof Error) {
-                setError(err.message);
+                console.log(err);
+                setError(err.name + ": " + err.message);
             }
         }
     };

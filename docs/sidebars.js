@@ -3,7 +3,7 @@ module.exports = {
         {
             type: "category",
             label: "Introduction",
-            items: ["quick-start", "design-principles", "contributing", "migrating-v1-v2"],
+            items: ["quick-start", "design-principles", "contributing", "migrating-v1-v2", "changelog"],
         },
         {
             type: "category",

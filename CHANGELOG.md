@@ -1,52 +1,48 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
-
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 Note that the changelog only dates back to release of [v2.0.0][2.0.0].
 
-## [2.1.1] - 2021-10-09
+## [2.1.1] (2021-10-09)
 
-### Added
+**New Feature**
 
 -   Exposed the `lifetime` parameter on the `sparkles` template, so you can now control the total range of the stars via `lifetime` and `speed` ([#72]).
 
-## [2.1.0] - 2021-09-26
+## [2.1.0] (2021-09-26)
 
 A lot of quality-of-life changes regarding the library and the respective documentation.
 
-### Added
+**New Feature**
 
 -   Added support for the `respect-reduced-motion` media query. The library now doesn't activate its effects if said query is detected. This can be disabled via a flag in the settings ([#74]).
 -   Added deployment workflows.
 -   Added "live codeblocks" to the docs, so you can play around with live examples.
 
-### Changed
+**Bug Fix**
+
+-   Fixed a bug where the container wouldn't stretch to cover the entire DOM, so particles should no longer be cut off somewhere ([#70], [#71]).
+-   Updated some development packages to fix potential security issues.
+
+**Polish**
 
 -   Revamped the style of the documentation site [party.js.org].
 -   Improved the generation of the docs and API ([#42]).
 -   Improved module exporting.
 
-### Removed
+**Removed**
 
 -   Removed stale-bot from the repository.
 
-### Fixed
+## [2.0.1] (2021-05-17)
 
--   Fixed a bug where the container wouldn't stretch to cover the entire DOM, so particles should no longer be cut off somewhere ([#70], [#71]).
--   Updated some development packages to fix potential security issues.
-
-###
-
-## [2.0.1] - 2021-05-17
-
-### Fixed
+**Bug Fix**
 
 -   Fixed a bug where the dynamic source sampler would confuse `Rect`s and `HTMLElement`s ([#60]).
 
-## [2.0.0] - 2021-04-18
+## [2.0.0] (2021-04-18)
 
 The huge rewrite of the entire library. The codebase is now properly structured, typed, tested and documented.
 
@@ -54,9 +50,9 @@ The huge rewrite of the entire library. The codebase is now properly structured,
 [2.1.0]: https://github.com/yiliansource/party-js/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/yiliansource/party-js/compare/v2.0.0...v2.0.1
 [2.0.0]: https://github.com/yiliansource/party-js/releases/tag/v2.0.0
-[#74]: https://github.com/yiliansource/party-js/issues/
+[#74]: https://github.com/yiliansource/party-js/issues/74
 [#72]: https://github.com/yiliansource/party-js/issues/72
-[#71]: https://github.com/yiliansource/party-js/issues/60
-[#70]: https://github.com/yiliansource/party-js/issues/60
+[#71]: https://github.com/yiliansource/party-js/issues/71
+[#70]: https://github.com/yiliansource/party-js/issues/70
 [#60]: https://github.com/yiliansource/party-js/issues/60
-[#42]: https://github.com/yiliansource/party-js/issues/60
+[#42]: https://github.com/yiliansource/party-js/issues/42
