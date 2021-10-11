@@ -12,7 +12,8 @@
         "build": "yarn clean && tsc && webpack",
         "test": "mocha -r ts-node/register 'tests/**/*.test.ts'",
         "lint": "eslint . --ext .js,.ts",
-        "dev": "webpack serve"
+        "dev": "webpack serve",
+        "prepublishOnly": "yarn build"
     },
     "repository": {
         "type": "git",
