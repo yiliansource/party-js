@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 Note that the changelog only dates back to release of [v2.0.0][2.0.0].
 
+## [2.1.3] (2022-06-07)
+
+**Bug Fix**
+
+-   Removed source maps from the npm package, since they were causing some issues.
+
 ## [2.1.1] (2021-10-09)
 
 **New Feature**
