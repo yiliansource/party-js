@@ -1,6 +1,6 @@
 {
     "name": "party-js",
-    "version": "2.1.2",
+    "version": "2.1.3",
     "description": "A JavaScript library to brighten up your user's site experience with visual effects!",
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
