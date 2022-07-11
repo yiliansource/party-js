@@ -5,7 +5,7 @@
     "main": "./lib/index.js",
     "types": "./lib/index.d.ts",
     "exports": {
-        ".": "./lib"
+        ".": "./lib/index.js"
     },
     "scripts": {
         "clean": "rimraf bundle lib",
