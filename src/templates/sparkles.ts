@@ -17,6 +17,7 @@ export interface SparkleConfiguration {
     size: variation.Variation<number>;
     rotation: variation.Variation<Vector>;
     color: variation.Variation<Color>;
+    shapes: variation.Variation<string | HTMLElement>;
     modules: ModuleFunction[];
 }
 
@@ -69,6 +70,7 @@ export function sparkles(
                     .through("relativeLifetime")
                     .build(),
             ],
+            shapes: "star",
         },
         options
     );
@@ -95,7 +97,7 @@ export function sparkles(
         },
         rendererOptions: {
             applyLighting: undefined,
-            shapeFactory: "star",
+            shapeFactory: populated.shapes,
         },
     });
 

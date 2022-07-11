@@ -75,15 +75,15 @@ party.confetti(runButton, {
             description="The initial color that particles are emitted with."
         />
         <FieldItem
-            name="modules"
-            type="ModuleFunction[]"
-            description="The module functions to pass to the emitter. By default, this contains module functions to animate scale and rotation."
-        />
-        <FieldItem
             name="shapes"
             type="Variation<string | HTMLElement>"
             defaultValue='["square", "circle"]'
             description="The confetti shapes that should be emitted."
+        />
+        <FieldItem
+            name="modules"
+            type="ModuleFunction[]"
+            description="The module functions to pass to the emitter. By default, this contains module functions to animate scale and rotation."
         />
     </FieldList>
 </Accordion>
@@ -139,6 +139,12 @@ party.sparkles(runButton, {
             type="Variation<Color>"
             defaultValue="Color.fromHsl(50, 100, random.randomRange(55, 85))"
             description="The initial color that sparkles should be emitted with. By default a gold-ish color."
+        />
+        <FieldItem
+            name="shapes"
+            type="Variation<string | HTMLElement>"
+            defaultValue='"star"'
+            description="The sparkle shapes that should be emitted."
         />
         <FieldItem
             name="modules"
