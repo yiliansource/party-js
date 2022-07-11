@@ -5,6 +5,17 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 Note that the changelog only dates back to release of [v2.0.0][2.0.0].
 
+## [2.2.0] (2022-07-11)
+
+**Bug Fix**
+
+-   Fixed exports in `package.json` that would cause issue with ECMAScript module loaders.
+-   Moved `webpackDevServer` to `optionalDependencies`.
+
+**New Feature**
+
+-   The sparkles template now supports the `shapes` option, similar to the confetti template.
+
 ## [2.1.3] (2022-06-07)
 
 **Bug Fix**
@@ -52,6 +63,8 @@ A lot of quality-of-life changes regarding the library and the respective docume
 
 The huge rewrite of the entire library. The codebase is now properly structured, typed, tested and documented.
 
+[2.2.0]: https://github.com/yiliansource/party-js/compare/v2.1.3...v2.2.0
+[2.1.3]: https://github.com/yiliansource/party-js/compare/v2.1.1...v2.1.3
 [2.1.1]: https://github.com/yiliansource/party-js/compare/v2.1.0...v2.1.1
 [2.1.0]: https://github.com/yiliansource/party-js/compare/v2.0.1...v2.1.0
 [2.0.1]: https://github.com/yiliansource/party-js/compare/v2.0.0...v2.0.1
