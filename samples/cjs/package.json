@@ -1,0 +1,12 @@
+{
+    "name": "party-js-samples-cjs",
+    "private": true,
+    "type": "commonjs",
+    "main": "index.cjs",
+    "devDependencies": {
+        "@types/node": "^20.4.7"
+    },
+    "dependencies": {
+        "party-js": "file:../.."
+    }
+}

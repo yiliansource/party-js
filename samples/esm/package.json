@@ -1,0 +1,9 @@
+{
+    "name": "party-js-sample-esm",
+    "version": "0.0.1",
+    "private": true,
+    "main": "index.mjs",
+    "dependencies": {
+        "party-js": "file:../.."
+    }
+}

@@ -6,7 +6,7 @@ Below you can find a set of resources and guidelines that you should follow for 
 
 ## I don't want to read this whole thing, I just have a question!!
 
-Since the community is still relatively small, you will probably get help fastest by [opening an issue][issues]. Later on, we might move questions to a seperate community to seperate new features or bugs from questions.
+Since the community is still relatively small, you will probably get help the fastest by [opening an issue][issues]. Later on, we might move questions to a separate community to separate new features or bugs from questions.
 
 ## What should I know before getting started?
 
@@ -14,20 +14,18 @@ The latest rewrite of the library was intended to provide a proper architectural
 
 ### Directory Structure
 
-<!-- prettier-ignore -->
-| Path | Description |
-| :--- | :--- |
-| docs | The root for the documentation of the project, written using Docusaurus. This will be deployed to a website. |
-| samples | Contains a sample HTML page that can also be used as a playground while testing new features. |
-| tests | Contains the static tests that are required to pass before a change is permitted. |
-| src | The root for the actual source code of the project. This directory already contains important scripts, like the `Scene` or the `Renderer`. |
-| src/components | Contains components that the library needs to function, like Vectors or Colors. Essentially, these should be types that can exist without dependancies on other parts of the library, although they may depend on eachother. |
-| src/particles | Contains the behaviour and types for emitters and particles, together with the definitions of what is configurable. |
-| src/particles/modules | Contains the particle modules that can be added to emitter objects. |
-| src/particles/options | Contains the option definitions for emitters, together with their defaults. |
-| src/systems | Defines modular systems for the library to use, like the `math` or `random` tools. Also contains the `ParticleModifier<T>`s and `Variation<T>`s. |
-| src/templates | Defines the templates (pre-made effects) that will be exposed to the user. Every template is expected to export a function that calls it, together with an (optional) object that represents the type definition for the configuration of the effect. |
-| src/util | Contains smaller utilities for configuration, conversions, etc. |
+| Path                  | Description                                                                                                                                                                                                                                           |
+|:----------------------|:------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| docs                  | The root for the documentation of the project, written using Docusaurus. This will be deployed to a website.                                                                                                                                          |
+| samples               | Contains a sample HTML page that can also be used as a playground while testing new features.                                                                                                                                                         |
+| src                   | The root for the actual source code of the project. This directory already contains important scripts, like the `Scene` or the `Renderer`.                                                                                                            |
+| src/components        | Contains components that the library needs to function, like Vectors or Colors. Essentially, these should be types that can exist without dependencies on other parts of the library, although they may depend on each other.                         |
+| src/particles         | Contains the behaviour and types for emitters and particles, together with the definitions of what is configurable.                                                                                                                                   |
+| src/particles/modules | Contains the particle modules that can be added to emitter objects.                                                                                                                                                                                   |
+| src/particles/options | Contains the option definitions for emitters, together with their defaults.                                                                                                                                                                           |
+| src/systems           | Defines modular systems for the library to use, like the `math` or `random` tools. Also contains the `ParticleModifier<T>`s and `Variation<T>`s.                                                                                                      |
+| src/templates         | Defines the templates (pre-made effects) that will be exposed to the user. Every template is expected to export a function that calls it, together with an (optional) object that represents the type definition for the configuration of the effect. |
+| src/util              | Contains smaller utilities for configuration, conversions, etc.                                                                                                                                                                                       |
 
 ## How can I contribute?
 
@@ -35,7 +33,7 @@ There are some pre-made issue templates, to make your contribution process easie
 
 ### Reporting bugs
 
-As we all know, bugs are annoying. I am glad about any bug you might find, as it helps to make the library for stable and safer to use.
+As we all know, bugs are annoying. I am glad about any bug you might find, as it helps to make the library more stable and safer to use.
 
 Before submitting a report, make sure you have done the following:
 
@@ -68,7 +66,7 @@ The following section will guide you through how to get the library running loca
 
 First, fork (so you have your "own" version to work on) and clone (so you get the changes to your local environment) the repository.
 
-You can install all developmental dependancies of the library using yarn. You _can_ use npm too, but make sure to not commit any package-lock.json files.
+You can install all developmental dependencies of the library using `yarn`.
 
 ```sh
 yarn install
@@ -80,10 +78,9 @@ Now you are ready to write code. If you are not sure where to look for things, t
 
 > Check out the [style guide](#style-guide) for more information on the linting of the project.
 
-Any change that you make will have to still pass all of the unit tests and linting rules that are set up. You can run package scripts to check if you're good to go. If neither command produces an error, you're good!
+Any change that you make will have to pass all the linting rules that are set up. You can run package scripts to check if you're good to go.
 
 ```
-yarn test
 yarn lint
 ```
 
@@ -93,7 +90,7 @@ Before creating the actual Pull Request, please make sure you have done the foll
 
 -   Successfully passed all tests and linting checks locally.
 -   Followed all instructions on contributing.
--   Followed the styleguides.
+-   Followed the styleguide.
 
 If you've done all that - congratulations! Please fill in the template and wait for all the status checks to pass. Your changes will be reviewed, and unless further changes are requested, merged!
 
@@ -106,7 +103,7 @@ If you've done all that - congratulations! Please fill in the template and wait 
 
 ### TypeScript Styleguide
 
-There's not much to say here. The codebase is linted using Prettier, which is highly recommended during development. This ensures a consistent appearance on the source code. If you have a suggestion on a linting rule that should be added/removed, feel free to [discuss it in an issue][issues].
+Make sure no linting errors occur. This includes formatting errors. If you have a suggestion on a linting rule that should be added/removed, feel free to [discuss it in an issue][issues].
 
 If you are writing code, make sure that it's properly documented, to allow later contributors to understand your changes. Avoid "magic numbers" as much as possible, but if you do need them, explain where they stem from.
 

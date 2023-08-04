@@ -1,6 +1,6 @@
 .github/ISSUE_TEMPLATE
 
-lib
+dist
 bundle
 node_modules
 

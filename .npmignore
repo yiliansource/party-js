@@ -1,7 +1,7 @@
 .eslintignore
-.eslintrc.js
-.prettierrc
+.eslintrc.json
 .prettierignore
+.prettierrc
 tsconfig.json
 webpack.config.js
 
@@ -10,4 +10,3 @@ docs/
 samples/
 node_modules/
 src/
-tests/

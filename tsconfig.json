@@ -1,11 +1,23 @@
 {
+    "compileOnSave": false,
     "compilerOptions": {
-        "outDir": "./lib",
-        "module": "CommonJS",
-        "target": "ES5",
-        "lib": ["ES2015", "DOM"],
+        "rootDir": ".",
+        "sourceMap": true,
         "declaration": true,
-        "sourceMap": false
+        "declarationMap": true,
+        "moduleResolution": "node",
+        "importHelpers": true,
+        "target": "ES2020",
+        "module": "ESNext",
+        "lib": ["ES2020", "DOM"],
+        "strict": true,
+        "esModuleInterop": true,
+        "noImplicitReturns": true,
+        "noFallthroughCasesInSwitch": true,
+        "noUncheckedIndexedAccess": true,
+        "baseUrl": "../..",
+        "resolveJsonModule": true,
+        "typeRoots": ["node_modules/@types", "packages/party-js/lib/@types"]
     },
-    "include": ["./src/**/*"]
+    "files": ["./lib/index.ts"]
 }

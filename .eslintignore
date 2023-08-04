@@ -1,12 +1,7 @@
-# ignore configs
-.eslintrc.js
-webpack.config.js
-
-# ignore built directories
-lib
+docs
+dist
 bundle
 node_modules
-
-# ignore samples and documentation
-docs
 samples
+
+tsup.config.ts

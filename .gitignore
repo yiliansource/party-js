@@ -1,6 +1,5 @@
-# ignore built files
-lib
-bundle
+.yarn
+.idea
 
-# ignore node packages
+dist
 node_modules
