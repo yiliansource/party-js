@@ -51,7 +51,7 @@ export function confetti(
                     .relative()
                     .build(),
             ],
-            shapes: ["square", "circle"],
+            shapes: ["square", "circle", "diamond"],
         },
         options
     );
