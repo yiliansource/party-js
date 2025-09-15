@@ -24,7 +24,7 @@ function makeContainer(
 ): HTMLElement {
     const container = document.createElement("div");
     container.id = containerPrefix + name;
-    Object.assign(container.style, styles);
+    Object.assign(container.style, { ...styles, direction: "ltr" });
     return parent.appendChild(container);
 }
 
