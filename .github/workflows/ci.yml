@@ -1,0 +1,27 @@
+name: CI
+
+on:
+    push:
+        branches: [v3]
+    pull_request:
+        branches: [v3]
+    workflow_dispatch:
+
+permissions:
+    contents: read
+
+concurrency:
+    group: ci-${{ github.ref }}
+    cancel-in-progress: true
+
+jobs:
+    ci:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v7
+            - uses: oven-sh/setup-bun@v2
+            - run: bun install --frozen-lockfile
+            - run: bun run lint
+            - run: bun run typecheck
+            - run: bun run test
+            - run: bun run build

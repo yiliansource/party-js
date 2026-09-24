@@ -1,0 +1,27 @@
+{
+	"compilerOptions": {
+		"target": "ES2022",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"types": ["bun-types"],
+
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"exactOptionalPropertyTypes": true,
+
+		"declaration": true,
+		"declarationMap": false,
+		"sourceMap": false,
+		"noEmit": true,
+
+		"esModuleInterop": true,
+		"isolatedModules": true,
+		"skipLibCheck": true,
+		"resolveJsonModule": true,
+
+		"jsx": "react-jsx"
+	},
+	"include": ["src/**/*", "tests/**/*", "tsup.config.ts"],
+	"exclude": ["dist", "bundle", "docs", "node_modules"]
+}

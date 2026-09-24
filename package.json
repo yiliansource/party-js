@@ -1,0 +1,48 @@
+{
+	"name": "party-js",
+	"version": "3.0.0",
+	"author": "Ian Hornik",
+	"license": "MIT",
+	"type": "module",
+	"sideEffects": false,
+	"main": "./dist/index.js",
+	"types": "./dist/index.d.ts",
+	"exports": {
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./physics": {
+			"types": "./dist/physics.d.ts",
+			"import": "./dist/physics.js"
+		}
+	},
+	"homepage": "https://party.js.org",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/yiliansource/party-js.git"
+	},
+	"bugs": {
+		"url": "https://github.com/yiliansource/party-js/issues"
+	},
+	"keywords": [
+		"party",
+		"confetti",
+		"particles"
+	],
+	"scripts": {
+		"build": "bunx --bun tsup",
+		"test": "bun test tests/*",
+		"typecheck": "tsc -b --noEmit",
+		"lint": "bunx --bun @biomejs/biome lint",
+		"format": "bunx --bun @biomejs/biome format"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "2.5.14",
+		"@types/bun": "latest",
+		"tsup": "^8.5.1"
+	},
+	"peerDependencies": {
+		"typescript": "^5"
+	}
+}
