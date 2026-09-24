@@ -1,0 +1,14 @@
+pre-commit:
+    parallel: true
+    commands:
+        biome:
+            glob: "*.{ts,json}"
+            run: bunx biome check --staged
+
+pre-push:
+    parallel: true
+    commands:
+        typecheck:
+            run: bun run typecheck
+        test:
+            run: bun run test

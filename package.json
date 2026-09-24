@@ -31,18 +31,23 @@
 		"particles"
 	],
 	"scripts": {
-		"build": "bunx --bun tsup",
+		"build": "tsup",
 		"test": "bun test tests/*",
 		"typecheck": "tsc -b --noEmit",
-		"lint": "bunx --bun @biomejs/biome lint",
-		"format": "bunx --bun @biomejs/biome format"
+		"lint": "biome lint",
+		"lint:fix": "biome format",
+		"postinstall": "lefthook install"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
 		"@types/bun": "latest",
+		"lefthook": "^2.1.14",
 		"tsup": "^8.5.1"
 	},
 	"peerDependencies": {
 		"typescript": "^5"
+	},
+	"dependencies": {
+		"party-js": "."
 	}
 }
