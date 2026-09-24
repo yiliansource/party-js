@@ -1,8 +1,0 @@
-.github/ISSUE_TEMPLATE
-
-lib
-bundle
-node_modules
-
-docs/build
-docs/.docusaurus
