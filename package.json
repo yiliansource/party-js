@@ -34,13 +34,14 @@
 		"build": "tsup",
 		"test": "bun test tests/*",
 		"typecheck": "tsc -b --noEmit",
-		"lint": "biome lint",
-		"lint:fix": "biome format",
+		"lint": "biome check",
+		"lint:fix": "biome check --write",
 		"postinstall": "lefthook install"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
 		"@types/bun": "latest",
+		"@types/culori": "^4.0.1",
 		"lefthook": "^2.1.14",
 		"tsup": "^8.5.1"
 	},
@@ -48,6 +49,6 @@
 		"typescript": "^5"
 	},
 	"dependencies": {
-		"party-js": "."
+		"culori": "^4.0.2"
 	}
 }
