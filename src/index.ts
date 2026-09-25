@@ -1,1 +1,4 @@
-export const version = "3.0.0";
+export * from "./color";
+export { PartyJSError } from "./errors";
+export * from "./random";
+export * from "./samplers";
