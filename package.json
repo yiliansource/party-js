@@ -36,6 +36,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
+		"@napi-rs/canvas": "^1.0.9",
 		"@types/bun": "latest",
 		"@types/culori": "^4.0.1",
 		"lefthook": "^2.1.14",

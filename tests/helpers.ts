@@ -91,7 +91,7 @@ export function makeTestParticle(overrides: Partial<Particle> = {}): Particle {
 		angularVelocity: vec3.zero,
 		size: 1,
 		color: { l: 1, a: 0, b: 0, alpha: 1 },
-		shape: {},
+		shape: { type: "circle" },
 		age: 0,
 		lifetime: 1,
 		data: new Map(),

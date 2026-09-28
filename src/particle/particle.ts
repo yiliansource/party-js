@@ -1,8 +1,7 @@
-import type { Color } from "../color";
+import type { Color } from "../color/color";
 import type { Quat } from "../math/quat";
 import type { Vec3 } from "../math/vec3";
-
-export type ParticleShape = unknown; // TODO
+import type { ParticleShape } from "../shapes/shape";
 
 export interface Particle {
 	position: Vec3;

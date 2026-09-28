@@ -1,0 +1,30 @@
+@import "tailwindcss";
+
+@import "@fontsource-variable/inter";
+@import "@fontsource/ibm-plex-mono";
+
+@theme {
+	--color-content-primary: var(--content-primary);
+	--color-content-secondary: var(--content-secondary);
+	--color-background: var(--background);
+	--color-card: var(--card);
+	--color-card-muted: var(--card-muted);
+
+	--font-primary: "Inter Variable", Arial, sans-serif;
+	--font-mono: "IBM Plex Mono", monospace;
+}
+
+:root {
+	--content-primary: hsl(0, 0%, 8%);
+	--content-secondary: hsl(0, 0%, 40%);
+	--background: hsl(50, 33%, 94%);
+	--card: hsl(50, 38%, 97%);
+	--card-muted: hsl(49, 21%, 90%);
+}
+
+body {
+	@apply bg-background;
+	@apply text-content-primary;
+
+	@apply font-primary font-normal;
+}

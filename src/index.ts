@@ -4,3 +4,4 @@ export * from "./errors";
 export * from "./particle";
 export * from "./random";
 export * from "./samplers";
+export * from "./shapes";
