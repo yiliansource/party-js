@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
-import { color } from "../../src/color/color";
-import { fromPolar, lerpHue, toPolar } from "../../src/color/oklch";
+import { color } from "@/color/color";
+import { fromPolar, lerpHue, toPolar } from "@/color/oklch";
 
 // reference values were computed independently with culori (oklab)
 

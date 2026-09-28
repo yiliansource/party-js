@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
-import { color } from "../../src/color/color";
-import { PartyJSError } from "../../src/errors";
+import { color } from "@/color/color";
+import { PartyJSError } from "@/errors";
 
 describe("color", () => {
 	test("parses black and white to oklab", () => {

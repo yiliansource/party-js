@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { createGradient, evaluateGradient } from "../../src/color/gradient";
+import { createGradient, evaluateGradient } from "@/color/gradient";
 
 // reference l,a,b values below were computed independently
 

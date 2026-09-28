@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { clamp, clamp01, deg2rad, lerp, rad2deg } from "../../src/math/scalar";
+import { clamp, clamp01, deg2rad, lerp, rad2deg } from "@/math/scalar";
 
 describe("lerp", () => {
 	test("at t=0 returns a", () => {

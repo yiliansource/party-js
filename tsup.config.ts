@@ -4,7 +4,6 @@ export default defineConfig([
 	{
 		entry: {
 			index: "src/index.ts",
-			physics: "src/physics.ts",
 		},
 		format: ["esm"],
 		dts: true,

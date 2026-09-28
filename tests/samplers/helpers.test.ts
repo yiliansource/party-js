@@ -1,17 +1,18 @@
 import { describe, expect, test } from "bun:test";
 
-import { createRng } from "../../src/random/rng";
-import { evaluate } from "../../src/samplers/helpers";
-import { createTestCtx } from "./helpers";
+import { createRng } from "@/random/rng";
+import { evaluate } from "@/samplers/helpers";
+
+import { makeTestCtx } from "./helpers";
 
 describe("evaluate", () => {
 	test("passes constants through unchanged", () => {
-		expect(evaluate(27, createTestCtx(createRng()))).toBe(27);
+		expect(evaluate(27, makeTestCtx(createRng()))).toBe(27);
 	});
 
 	test("calls a sampler function with the context", () => {
 		expect(
-			evaluate((c) => c.index, createTestCtx(createRng(), { index: 3 })),
+			evaluate((c) => c.index, makeTestCtx(createRng(), { index: 3 })),
 		).toBe(3);
 	});
 });

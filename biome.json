@@ -36,11 +36,55 @@
 							":BLANK_LINE:",
 							":PACKAGE:",
 							":BLANK_LINE:",
-							[":ALIAS:", ":PATH:"]
+							":ALIAS:",
+							":BLANK_LINE:",
+							":PATH:"
 						]
 					}
 				}
 			}
 		}
-	}
+	},
+	"overrides": [
+		{
+			"includes": ["src/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"patterns": [
+									{
+										"group": ["@/**"],
+										"message": "Import alias @/ is reserved for tests/; use a relative import in src/."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"includes": ["tests/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"patterns": [
+									{
+										"group": ["**/src/**"],
+										"message": "Test files should use the import alias @/ when importing src/ files."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		}
+	]
 }

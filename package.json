@@ -11,10 +11,6 @@
 		".": {
 			"types": "./dist/index.d.ts",
 			"import": "./dist/index.js"
-		},
-		"./physics": {
-			"types": "./dist/physics.d.ts",
-			"import": "./dist/physics.js"
 		}
 	},
 	"homepage": "https://party.js.org",

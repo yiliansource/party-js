@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { PartyJSError } from "../src/errors";
+import { PartyJSError } from "@/errors";
 
 describe("PartyJSError", () => {
 	test("prefixes the error message", () => {

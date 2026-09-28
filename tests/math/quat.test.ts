@@ -1,7 +1,8 @@
 import { describe, expect, test } from "bun:test";
 
-import * as quat from "../../src/math/quat";
-import * as vec3 from "../../src/math/vec3";
+import * as quat from "@/math/quat";
+import * as vec3 from "@/math/vec3";
+
 import { quatCloseTo, vec3CloseTo } from "./helper";
 
 describe("quat", () => {

@@ -1,9 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import { createRng } from "../../src/random/rng";
-import { spread } from "../../src/samplers/spread";
+import { createRng } from "@/random/rng";
+import { spread } from "@/samplers/spread";
+
 import { sampledMeanStdDev, sampledMinMax } from "../helpers";
-import { createTestCtx } from "./helpers";
+import { makeTestCtx } from "./helpers";
 
 describe("spread", () => {
 	test("output is in [center-deviation, center+deviation]", () => {
@@ -12,7 +13,7 @@ describe("spread", () => {
 		const sampler = spread(center, deviation);
 		const { min, max } = sampledMinMax(
 			100_000,
-			() => sampler(createTestCtx(rng)),
+			() => sampler(makeTestCtx(rng)),
 			(v) => v,
 		);
 		expect(min).toBeGreaterThanOrEqual(center - deviation);
@@ -24,7 +25,7 @@ describe("spread", () => {
 		const sampler = spread(0, 50);
 		const { mean } = sampledMeanStdDev(
 			100_000,
-			() => sampler(createTestCtx(rng)),
+			() => sampler(makeTestCtx(rng)),
 			(v) => v,
 		);
 		expect(mean).toBeCloseTo(0, 1);
@@ -35,7 +36,7 @@ describe("spread", () => {
 		const sampler = spread(50, 30);
 		const { min, max } = sampledMinMax(
 			100_000,
-			() => sampler(createTestCtx(rng, { index: 2, count: 3 })),
+			() => sampler(makeTestCtx(rng, { index: 2, count: 3 })),
 			(v) => v,
 		);
 		expect(min).toBeGreaterThanOrEqual(60);
