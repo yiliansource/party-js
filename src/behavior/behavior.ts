@@ -1,7 +1,7 @@
 import type { Particle } from "../particle/particle";
 import type { Rng } from "../random";
 
-export interface BehaviourInitContext {
+export interface BehaviorInitContext {
 	rng: Rng;
 }
 
@@ -10,9 +10,9 @@ export interface BehaviorUpdateContext {
 	dt: number;
 }
 
-export type BehaviourInit = (
+export type BehaviorInit = (
 	particle: Particle,
-	ctx: BehaviourInitContext,
+	ctx: BehaviorInitContext,
 ) => void;
 
 export type BehaviorUpdate = (
@@ -21,13 +21,13 @@ export type BehaviorUpdate = (
 ) => void;
 
 export interface BehaviorObject {
-	init?: BehaviourInit;
+	init?: BehaviorInit;
 	update: BehaviorUpdate;
 }
 
 export type Behavior = BehaviorUpdate | BehaviorObject;
 
-export function initBehaviour(
+export function initBehavior(
 	behavior: Behavior,
 	particle: Particle,
 	ctx: BehaviorUpdateContext,
