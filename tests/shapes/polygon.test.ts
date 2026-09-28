@@ -6,7 +6,7 @@ import { exceedsUnitBox } from "./helpers";
 
 describe("buildPolygonPath", () => {
 	test("stays inside unit box", () => {
-		for (let n = 3; n <= 9; n += 2) {
+		for (let n = 3; n <= 10; n++) {
 			expect(exceedsUnitBox(buildPolygonPath(n))).toBe(false);
 		}
 	});
