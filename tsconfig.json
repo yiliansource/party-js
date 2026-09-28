@@ -18,7 +18,7 @@
 		"skipLibCheck": true,
 		"resolveJsonModule": true,
 
-		"jsx": "react-jsx"
+		"paths": { "@/*": ["./src/*"] }
 	},
 	"include": ["src/**/*", "tests/**/*", "tsup.config.ts"],
 	"exclude": ["dist", "bundle", "docs", "node_modules"]

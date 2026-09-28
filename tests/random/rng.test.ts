@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
-import { createRng } from "../../src/random/rng";
+import { createRng } from "@/random/rng";
+
 import { sampledMeanStdDev, sampledMinMax } from "../helpers";
 
 describe("createRng", () => {

@@ -1,3 +1,7 @@
+import * as quat from "@/math/quat";
+import * as vec3 from "@/math/vec3";
+import type { Particle } from "@/particle/particle";
+
 export type BasicSampler<T> = () => T;
 
 export function sampledMinMax<T>(
@@ -77,4 +81,20 @@ export function sampledFrequencies<T>(
 		freq.set(v, old + 1);
 	}
 	return freq;
+}
+
+export function makeTestParticle(overrides: Partial<Particle> = {}): Particle {
+	return {
+		position: vec3.zero,
+		velocity: vec3.zero,
+		orientation: quat.identity,
+		angularVelocity: vec3.zero,
+		size: 1,
+		color: { l: 1, a: 0, b: 0, alpha: 1 },
+		shape: {},
+		age: 0,
+		lifetime: 1,
+		data: new Map(),
+		...overrides,
+	};
 }

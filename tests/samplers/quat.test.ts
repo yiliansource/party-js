@@ -1,10 +1,11 @@
 import { describe, expect, test } from "bun:test";
 
-import { length } from "../../src/math/quat";
-import { createRng } from "../../src/random/rng";
-import { randomOrientation } from "../../src/samplers/quat";
+import { length } from "@/math/quat";
+import { createRng } from "@/random/rng";
+import { randomOrientation } from "@/samplers/quat";
+
 import { sampledMaxAbsDeviation } from "../helpers";
-import { createTestCtx } from "./helpers";
+import { makeTestCtx } from "./helpers";
 
 describe("randomOrientation", () => {
 	test("should produce a unit quaternion", () => {
@@ -12,7 +13,7 @@ describe("randomOrientation", () => {
 		const sampler = randomOrientation();
 		const maxDev = sampledMaxAbsDeviation(
 			100_000,
-			() => sampler(createTestCtx(rng)),
+			() => sampler(makeTestCtx(rng)),
 			(q) => length(q),
 			1,
 		);

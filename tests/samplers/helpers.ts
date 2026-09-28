@@ -1,6 +1,6 @@
 import type { Rng, SamplerContext } from "../../src";
 
-export function createTestCtx(
+export function makeTestCtx(
 	rng: Rng,
 	overrides: Partial<SamplerContext> = {},
 ): SamplerContext {

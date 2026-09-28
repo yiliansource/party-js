@@ -1,7 +1,7 @@
 import { expect } from "bun:test";
 
-import type { Quat } from "../../src/math/quat";
-import type { Vec3 } from "../../src/math/vec3";
+import type { Quat } from "@/math/quat";
+import type { Vec3 } from "@/math/vec3";
 
 export function vec3CloseTo(a: Readonly<Vec3>, b: Readonly<Vec3>, digits = 9) {
 	expect(a).toEqual({

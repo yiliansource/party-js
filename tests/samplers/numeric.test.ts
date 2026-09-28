@@ -1,9 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import { createRng } from "../../src/random/rng";
-import { normal, range } from "../../src/samplers/numeric";
+import { createRng } from "@/random/rng";
+import { normal, range } from "@/samplers/numeric";
+
 import { sampledMeanStdDev, sampledMinMax } from "../helpers";
-import { createTestCtx } from "./helpers";
+import { makeTestCtx } from "./helpers";
 
 describe("range", () => {
 	test("output stays within [min, max]", () => {
@@ -12,7 +13,7 @@ describe("range", () => {
 		const sampler = range(min, max);
 		const { min: sampledMin, max: sampledMax } = sampledMinMax(
 			100_000,
-			() => sampler(createTestCtx(rng)),
+			() => sampler(makeTestCtx(rng)),
 			(v) => v,
 		);
 		expect(sampledMin).toBeGreaterThanOrEqual(min);
@@ -24,7 +25,7 @@ describe("range", () => {
 		const sampler = range(1, 5);
 		const { mean } = sampledMeanStdDev(
 			100_000,
-			() => sampler(createTestCtx(rng)),
+			() => sampler(makeTestCtx(rng)),
 			(v) => v,
 		);
 		expect(mean).toBeCloseTo(3, 2);
@@ -38,7 +39,7 @@ describe("normal", () => {
 		const sampler = normal(mean, stdDev);
 		const { mean: sampledMean, stdDev: sampledStdDev } = sampledMeanStdDev(
 			100_000,
-			() => sampler(createTestCtx(rng)),
+			() => sampler(makeTestCtx(rng)),
 			(v) => v,
 		);
 		expect(sampledMean).toBeCloseTo(mean, 2);

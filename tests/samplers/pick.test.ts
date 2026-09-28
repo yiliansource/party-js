@@ -1,9 +1,10 @@
 import { describe, expect, test } from "bun:test";
 
-import { createRng } from "../../src/random/rng";
-import { pick } from "../../src/samplers/pick";
+import { createRng } from "@/random/rng";
+import { pick } from "@/samplers/pick";
+
 import { sampledEvery, sampledFrequencies } from "../helpers";
-import { createTestCtx } from "./helpers";
+import { makeTestCtx } from "./helpers";
 
 describe("pick", () => {
 	test("picks an element of the provided values", () => {
@@ -12,7 +13,7 @@ describe("pick", () => {
 		const sampler = pick(values);
 		const res = sampledEvery(
 			100_000,
-			() => sampler(createTestCtx(rng)),
+			() => sampler(makeTestCtx(rng)),
 			(v) => values.includes(v),
 		);
 		expect(res).toEqual({ ok: true });
@@ -22,7 +23,7 @@ describe("pick", () => {
 		const rng = createRng(1);
 		const sampler = pick([1], [3]);
 		const n = 100_000;
-		const freq = sampledFrequencies(n, () => sampler(createTestCtx(rng)));
+		const freq = sampledFrequencies(n, () => sampler(makeTestCtx(rng)));
 		expect(freq.get(1)).toBe(n);
 	});
 
@@ -30,7 +31,7 @@ describe("pick", () => {
 		const rng = createRng(11);
 		const sampler = pick([1, 2, 3], [1, 0, 1]);
 		const freq = sampledFrequencies(100_000, () =>
-			sampler(createTestCtx(rng)),
+			sampler(makeTestCtx(rng)),
 		);
 		expect(freq.get(2) ?? 0).toBe(0);
 	});
@@ -39,7 +40,7 @@ describe("pick", () => {
 		const rng = createRng(2);
 		const sampler = pick([1, 2, 3], [2, 0, 1]);
 		const n = 100_000;
-		const freq = sampledFrequencies(n, () => sampler(createTestCtx(rng)));
+		const freq = sampledFrequencies(n, () => sampler(makeTestCtx(rng)));
 
 		const totalWeight = 3;
 		expect((freq.get(1) ?? 0) / n).toBeCloseTo(2 / totalWeight, 2);
