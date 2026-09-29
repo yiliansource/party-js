@@ -1,12 +1,9 @@
 import { describe, expect, test } from "bun:test";
 
 import { createShapeCache } from "@/shapes/cache";
-import { starPath } from "@/shapes/star";
 
 describe("createShapeCache", () => {
 	test("accurate caches a Path2D by key", () => {
-		starPath();
-
 		const resolve = createShapeCache();
 		let counter = 0;
 		const build = () => {

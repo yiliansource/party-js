@@ -1,3 +1,5 @@
+import { formatRgb } from "culori";
+
 import { PartyJSError } from "../errors";
 import { toOklab } from "./culori";
 
@@ -11,6 +13,11 @@ export interface Color {
 	alpha: number;
 }
 
+/**
+ * Produces a Oklab color instance from the given color string.
+ *
+ * Does nothing if the argument is already an Oklab color.
+ */
 export function color(input: string | Color): Color {
 	if (typeof input !== "string") return input;
 	const parsed = toOklab(input);
@@ -23,4 +30,13 @@ export function color(input: string | Color): Color {
 		b: parsed.b,
 		alpha: parsed.alpha ?? 1,
 	};
+}
+
+/**
+ * Converts an Oklab color to a CSS color string suitable for the canvas.
+ *
+ * This deliberately serializes to legacy rgb/rgba syntax for compatibility.
+ */
+export function toCssColor(color: Color): string {
+	return formatRgb({ mode: "oklab", ...color });
 }
