@@ -1,4 +1,4 @@
-import { formatRgb } from "culori";
+import { formatRgb } from "culori/fn";
 
 import { PartyJSError } from "../errors";
 import { toOklab } from "./culori";
