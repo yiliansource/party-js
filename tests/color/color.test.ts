@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { color } from "@/color/color";
+import { color, toCssColor } from "@/color/color";
 import { PartyJSError } from "@/errors";
 
 describe("color", () => {
@@ -67,5 +67,15 @@ describe("color", () => {
 
 	test("throws a PartyJSError on invalid input", () => {
 		expect(() => color("not-a-color")).toThrow(PartyJSError);
+	});
+});
+
+describe("toCssColor", () => {
+	test("round-trips correctly", () => {
+		const red = color("red");
+		expect(toCssColor(red)).toBe("rgb(255, 0, 0)");
+
+		const blueAlpha = color("rgba(0,0,255,0.4)");
+		expect(toCssColor(blueAlpha)).toBe("rgba(0, 0, 255, 0.4)");
 	});
 });
