@@ -1,15 +1,17 @@
 import { type InjectionKey, inject, provide, reactive } from "vue";
 
-interface PlaygroundState {
+interface ShapePlaygroundState {
 	accent: string;
 	dark: boolean;
 	guides: boolean;
 }
 
-const key: InjectionKey<PlaygroundState> = Symbol("playground-state");
+const key: InjectionKey<ShapePlaygroundState> = Symbol(
+	"shape-playground-state",
+);
 
-export function providePlaygroundState() {
-	const state = reactive<PlaygroundState>({
+export function provideShapePlaygroundState() {
+	const state = reactive<ShapePlaygroundState>({
 		accent: "#FC6D55",
 		dark: true,
 		guides: false,
@@ -18,11 +20,11 @@ export function providePlaygroundState() {
 	return state;
 }
 
-export function usePlaygroundState(): PlaygroundState {
+export function useShapePlaygroundState(): ShapePlaygroundState {
 	const state = inject(key);
 	if (!state)
 		throw new Error(
-			"usePlaygroundState() called outside providePlaygroundState()",
+			"useShapePlaygroundState() called outside provideShapePlaygroundState()",
 		);
 
 	return state;

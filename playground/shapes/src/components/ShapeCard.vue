@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { usePlaygroundState } from "../state.ts";
+import Card from "@ui/Card.vue";
+
+import { useShapePlaygroundState } from "../state.ts";
 import PathPreview from "./PathPreview.vue";
 
 const props = defineProps<{
@@ -8,11 +10,11 @@ const props = defineProps<{
 	path: Path2D;
 }>();
 
-const state = usePlaygroundState();
+const state = useShapePlaygroundState();
 </script>
 
 <template>
-	<div class="p-6 mb-auto bg-card border-2 border-card-muted rounded-2xl">
+	<Card>
 		<div class="flex flex-col gap-4">
 			<div class="flex flex-row justify-between items-center">
 				<p class="text-xl font-bold">{{ props.name }}</p>
@@ -32,5 +34,5 @@ const state = usePlaygroundState();
 				<slot />
 			</div>
 		</div>
-	</div>
+	</Card>
 </template>

@@ -1,0 +1,14 @@
+{
+	"extends": "@vue/tsconfig/tsconfig.dom.json",
+	"compilerOptions": {
+		"allowArbitraryExtensions": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"erasableSyntaxOnly": true,
+		"noFallthroughCasesInSwitch": true,
+		"paths": {
+			"@/*": ["../../src/*"]
+		}
+	},
+	"include": ["src/**/*.ts", "src/**/*.vue"]
+}

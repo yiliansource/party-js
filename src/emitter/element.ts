@@ -6,8 +6,8 @@ export function rectFromElement(
 	origin: ProjectionOrigin,
 ): RectEmissionShape {
 	const rect = element.getBoundingClientRect();
-	const centerX = rect.x + rect.width / 2;
-	const centerY = rect.y + rect.height / 2;
+	const centerX = rect.x + rect.width / 2 + window.scrollX;
+	const centerY = rect.y + rect.height / 2 + window.scrollY;
 	return {
 		type: "rect",
 		center: {

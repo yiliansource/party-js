@@ -5,6 +5,7 @@ import { polygonPath } from "../shapes/polygon";
 import type { ParticleShape } from "../shapes/shape";
 import { squarePath } from "../shapes/square";
 import { starPath } from "../shapes/star";
+import type { LightingFn } from "./lighting";
 import type { ProjectedTransform } from "./projection";
 
 export type DrawCommand =
@@ -24,13 +25,21 @@ export type DrawCommand =
 export function buildDrawCommand(
 	particle: Pick<Particle, "shape" | "color">,
 	transform: ProjectedTransform,
+	lightingCoefficient?: number,
+	lighting?: LightingFn,
 ): DrawCommand {
+	const color =
+		lightingCoefficient !== undefined && lighting !== undefined
+			? lighting(particle.color, lightingCoefficient)
+			: particle.color;
+	const fillStyle = toCssColor(color);
+
 	if (particle.shape.type === "custom") {
 		return {
 			kind: "custom",
 			draw: particle.shape.draw,
 			transform,
-			fillStyle: toCssColor(particle.color),
+			fillStyle,
 		};
 	}
 
@@ -38,7 +47,7 @@ export function buildDrawCommand(
 		kind: "path",
 		path: resolveShapePath(particle.shape),
 		transform,
-		fillStyle: toCssColor(particle.color),
+		fillStyle,
 	};
 }
 

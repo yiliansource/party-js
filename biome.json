@@ -51,7 +51,9 @@
 						"groups": [
 							[":BUN:", ":NODE:"],
 							":BLANK_LINE:",
-							":PACKAGE:",
+							[":PACKAGE:", "!@ui/**"],
+							":BLANK_LINE:",
+							"@ui/**",
 							":BLANK_LINE:",
 							":ALIAS:",
 							":BLANK_LINE:",
@@ -104,11 +106,34 @@
 			}
 		},
 		{
+			"includes": ["playground/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"patterns": [
+									{
+										"group": ["**/src/**"],
+										"message": "Playground files should use the import alias @/ when importing src/ files."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
 			"includes": ["**/*.vue"],
 			"linter": {
 				"rules": {
 					"correctness": {
 						"noUnusedVariables": "off"
+					},
+					"style": {
+						"noNonNullAssertion": "off"
 					}
 				}
 			}
