@@ -1,6 +1,9 @@
+import type { Vec3 } from "../math/vec3";
+import * as vec3 from "../math/vec3";
 import type { Particle } from "../particle/particle";
 import { executeDrawCommand } from "./canvas";
 import { buildDrawCommand } from "./drawCommand";
+import { computeLightingCoefficient, defaultLighting } from "./lighting";
 import { type ProjectionOrigin, project } from "./projection";
 
 /**
@@ -13,12 +16,24 @@ export function drawFrame(
 	origin: ProjectionOrigin,
 	width: number,
 	height: number,
+	light: Vec3 = vec3.unitZ,
+	lighting = defaultLighting,
 ): void {
 	ctx.clearRect(0, 0, width, height);
 
+	const normalizedLight = vec3.normalize(light);
 	for (const particle of particles) {
 		const transform = project(particle, origin);
-		const command = buildDrawCommand(particle, transform);
+		const coefficient = computeLightingCoefficient(
+			particle.orientation,
+			normalizedLight,
+		);
+		const command = buildDrawCommand(
+			particle,
+			transform,
+			coefficient,
+			lighting,
+		);
 		executeDrawCommand(ctx, command);
 	}
 }

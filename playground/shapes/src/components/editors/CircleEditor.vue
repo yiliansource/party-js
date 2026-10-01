@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-import { circlePath } from "../../../../../src/shapes/circle";
+import { circlePath } from "@/shapes/circle";
+
 import ShapeCard from "../ShapeCard.vue";
 
 const path = computed(() => circlePath());

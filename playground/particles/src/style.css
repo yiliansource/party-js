@@ -1,0 +1,13 @@
+@import "tailwindcss";
+
+@import "@fontsource-variable/inter";
+@import "@fontsource/ibm-plex-mono";
+
+@import "@ui/base.css";
+
+@source "../../ui/src";
+
+#app {
+	@apply h-dvh;
+	@apply flex flex-col;
+}

@@ -5,11 +5,15 @@
 		"types": ["vite/client"],
 		"allowArbitraryExtensions": true,
 
-		/* Linting */
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
 		"erasableSyntaxOnly": true,
-		"noFallthroughCasesInSwitch": true
+		"noFallthroughCasesInSwitch": true,
+
+		"paths": {
+			"@/*": ["../../src/*"],
+			"@ui/*": ["../ui/src/*"]
+		}
 	},
 	"include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
 }

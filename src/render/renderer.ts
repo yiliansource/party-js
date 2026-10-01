@@ -6,6 +6,7 @@ import type { ProjectionOrigin } from "./projection";
 const DEFAULT_Z_INDEX = 2147483647;
 
 export interface RendererOptions {
+	canvas?: HTMLCanvasElement;
 	zIndex?: number;
 }
 
@@ -19,20 +20,29 @@ export interface Renderer {
  * full-viewport, pointer-events-none overlay.
  */
 export function createRenderer(options: RendererOptions = {}): Renderer {
-	const canvas = document.createElement("canvas");
+	const canvas = options.canvas ?? document.createElement("canvas");
+	const ownsCanvas = options.canvas === undefined;
 
 	const supportsPopover = typeof canvas.showPopover === "function";
-	if (supportsPopover) {
+	if (ownsCanvas && supportsPopover) {
 		canvas.popover = "manual";
 	}
 
-	canvas.style.position = "fixed";
-	canvas.style.left = "0";
-	canvas.style.top = "0";
-	canvas.style.pointerEvents = "none";
-	canvas.style.userSelect = "none";
-	if (!supportsPopover)
-		canvas.style.zIndex = String(options.zIndex ?? DEFAULT_Z_INDEX);
+	if (ownsCanvas) {
+		Object.assign(canvas.style, {
+			position: "fixed",
+			inset: "0",
+			margin: "0",
+			border: "none",
+			padding: "0",
+			background: "transparent",
+			pointerEvents: "none",
+			userSelect: "none",
+			...(supportsPopover
+				? {}
+				: { zIndex: String(options.zIndex ?? DEFAULT_Z_INDEX) }),
+		} satisfies Partial<CSSStyleDeclaration>);
+	}
 
 	const maybeCtx = canvas.getContext("2d");
 	if (!maybeCtx) {
@@ -45,28 +55,32 @@ export function createRenderer(options: RendererOptions = {}): Renderer {
 
 	function resize(): void {
 		const dpr = window.devicePixelRatio || 1;
+
 		logicalWidth = window.innerWidth;
 		logicalHeight = window.innerHeight;
 
 		canvas.width = logicalWidth * dpr;
 		canvas.height = logicalHeight * dpr;
-		canvas.style.width = `${logicalWidth}px`;
-		canvas.style.height = `${logicalHeight}px`;
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 	}
 
+	if (ownsCanvas) {
+		document.body.appendChild(canvas);
+		if (supportsPopover) canvas.showPopover();
+	}
+
 	resize();
-	window.addEventListener("resize", resize);
-	document.body.appendChild(canvas);
-	if (supportsPopover) canvas.showPopover();
+
+	const resizeObserver = new ResizeObserver(resize);
+	resizeObserver.observe(canvas);
 
 	return {
 		drawFrame(particles, origin) {
 			drawFrame(ctx, particles, origin, logicalWidth, logicalHeight);
 		},
 		dispose() {
-			window.removeEventListener("resize", resize);
-			canvas.remove();
+			resizeObserver.disconnect();
+			if (ownsCanvas) canvas.remove();
 		},
 	};
 }

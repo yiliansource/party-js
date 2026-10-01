@@ -1,0 +1,39 @@
+@theme {
+	--color-primary: var(--primary);
+
+	--color-content-primary: var(--content-primary);
+	--color-content-secondary: var(--content-secondary);
+
+	--color-background: var(--background);
+
+	--color-card: var(--card);
+	--color-card-muted: var(--card-muted);
+
+	--color-control-background: var(--control-background);
+	--color-control-foreground: var(--control-foreground);
+
+	--font-primary: "Inter Variable", Arial, sans-serif;
+	--font-mono: "JetBrains Mono Variable", monospace;
+}
+
+:root {
+	--primary: #fc6d55;
+
+	--content-primary: hsl(0, 0%, 8%);
+	--content-secondary: hsl(0, 0%, 40%);
+
+	--background: hsl(50, 33%, 94%);
+
+	--card: hsl(50, 38%, 97%);
+	--card-muted: hsl(49, 21%, 90%);
+
+	--control-background: hsl(60, 19%, 90%);
+	--control-foreground: white;
+}
+
+body {
+	@apply bg-background;
+	@apply text-content-primary;
+
+	@apply font-primary font-normal;
+}

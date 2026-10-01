@@ -1,0 +1,10 @@
+{
+	"name": "playground-ui",
+	"private": true,
+	"type": "module",
+	"devDependencies": {
+		"@vue/tsconfig": "^0.9.1",
+		"typescript": "~6.0.2",
+		"vue": "^3.5.42"
+	}
+}
