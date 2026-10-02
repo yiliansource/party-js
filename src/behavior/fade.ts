@@ -21,7 +21,10 @@ export function fade(
 			const outFactor =
 				outDuration > 0 ? Math.min(remaining / outDuration, 1) : 1;
 
-			particle.color.alpha = base * ease(Math.min(inFactor, outFactor));
+			particle.color = {
+				...particle.color,
+				alpha: base * ease(Math.min(inFactor, outFactor)),
+			};
 		},
 	};
 }
