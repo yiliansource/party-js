@@ -12,10 +12,7 @@ export interface SamplerContext {
 	 * The index of the particle in the emitter.
 	 */
 	index: number;
-	/**
-	 * The total count of emitted particles in the case of a burst emission, and undefined otherwise.
-	 */
-	count?: number;
+	batch?: { index: number; size: number };
 }
 
 export type SamplerFn<T> = (ctx: SamplerContext) => T;

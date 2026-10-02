@@ -12,8 +12,7 @@ import type { SamplerFn } from "./types";
  */
 export function spread(center: number, deviation: number): SamplerFn<number> {
 	return (ctx) => {
-		const bins = ctx.count === undefined ? 1 : ctx.count;
-		const bin = ctx.count === undefined ? 0 : ctx.index;
+		const { index: bin, size: bins } = ctx.batch ?? { index: 0, size: 1 };
 		const binSize = (deviation * 2) / bins;
 
 		const min = center - deviation + bin * binSize;

@@ -31,12 +31,18 @@ describe("spread", () => {
 		expect(mean).toBeCloseTo(0, 1);
 	});
 
-	test("respects index and count, if provided", () => {
+	test("respects batching, if provided", () => {
 		const rng = createRng(14);
 		const sampler = spread(50, 30);
 		const { min, max } = sampledMinMax(
 			100_000,
-			() => sampler(makeTestCtx(rng, { index: 2, count: 3 })),
+			() =>
+				sampler(
+					makeTestCtx(rng, {
+						index: 0,
+						batch: { index: 2, size: 3 },
+					}),
+				),
 			(v) => v,
 		);
 		expect(min).toBeGreaterThanOrEqual(60);
