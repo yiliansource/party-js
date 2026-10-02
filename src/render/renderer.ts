@@ -1,6 +1,8 @@
 import { PartyJSError } from "../errors";
+import type { Vec3 } from "../math/vec3";
 import type { Particle } from "../particle/particle";
 import { drawFrame } from "./frame";
+import type { LightingFn } from "./lighting";
 import type { ProjectionOrigin } from "./projection";
 
 const DEFAULT_Z_INDEX = 2147483647;
@@ -11,7 +13,12 @@ export interface RendererOptions {
 }
 
 export interface Renderer {
-	drawFrame(particles: readonly Particle[], origin: ProjectionOrigin): void;
+	drawFrame(
+		particles: readonly Particle[],
+		origin: ProjectionOrigin,
+		light?: Vec3,
+		lighting?: LightingFn,
+	): void;
 	dispose(): void;
 }
 
@@ -56,8 +63,8 @@ export function createRenderer(options: RendererOptions = {}): Renderer {
 	function resize(): void {
 		const dpr = window.devicePixelRatio || 1;
 
-		logicalWidth = window.innerWidth;
-		logicalHeight = window.innerHeight;
+		logicalWidth = ownsCanvas ? window.innerWidth : canvas.clientWidth;
+		logicalHeight = ownsCanvas ? window.innerHeight : canvas.clientHeight;
 
 		canvas.width = logicalWidth * dpr;
 		canvas.height = logicalHeight * dpr;
@@ -75,8 +82,16 @@ export function createRenderer(options: RendererOptions = {}): Renderer {
 	resizeObserver.observe(canvas);
 
 	return {
-		drawFrame(particles, origin) {
-			drawFrame(ctx, particles, origin, logicalWidth, logicalHeight);
+		drawFrame(particles, origin, light, lighting) {
+			drawFrame(
+				ctx,
+				particles,
+				origin,
+				logicalWidth,
+				logicalHeight,
+				light,
+				lighting,
+			);
 		},
 		dispose() {
 			resizeObserver.disconnect();
