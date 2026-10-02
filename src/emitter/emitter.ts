@@ -58,6 +58,10 @@ export class Emitter {
 			const ctx: SamplerContext = {
 				rng: this.rng,
 				index: this.spawnedCount,
+				batch: {
+					index: i,
+					size: spawnCount,
+				},
 			};
 			this.particles.push(spawnParticle(this.particleInit, ctx));
 			this.spawnedCount++;
