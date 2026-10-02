@@ -36,7 +36,7 @@ describe("fade", () => {
 		}
 	});
 
-	test("in-phase: starts at 0 and reaches full size by inDuration, then stays there", () => {
+	test("in-phase: starts at 0 and reaches full alpha by inDuration, then stays there", () => {
 		const behavior = fade(0.5, 0);
 
 		const start = makeTestParticle({
@@ -72,7 +72,7 @@ describe("fade", () => {
 		expect(wellAfter.color.alpha).toBeCloseTo(1, 9);
 	});
 
-	test("out-phase: stays full size until outDuration remains, then ramps to 0 at death", () => {
+	test("out-phase: stays at full alpha until outDuration remains, then ramps to 0 at death", () => {
 		const early = makeTestParticle({
 			color: makeTestColor(),
 			age: 0,
@@ -123,7 +123,7 @@ describe("fade", () => {
 		expect(p.color.alpha).toBeCloseTo(sineIn()(t), 9);
 	});
 
-	test("snapshots each particle's own base size independently", () => {
+	test("snapshots each particle's own base alpha independently", () => {
 		const behavior = fade(0.5, 0);
 		const small = makeTestParticle({
 			color: makeTestColor(0.1),
@@ -150,10 +150,10 @@ describe("fade", () => {
 		});
 		initBehavior(behavior, p, ctx);
 		applyBehavior(behavior, p, ctx);
-		const first = p.size;
+		const first = p.color.alpha;
 		applyBehavior(behavior, p, ctx);
 		applyBehavior(behavior, p, ctx);
-		expect(p.size).toBeCloseTo(first, 9);
+		expect(p.color.alpha).toBeCloseTo(first, 9);
 	});
 
 	test("default ease is linear", () => {
@@ -170,6 +170,33 @@ describe("fade", () => {
 
 		run(withDefault, fade(0.5, 0));
 		run(withExplicitLinear, fade(0.5, 0, linear()));
-		expect(withDefault.size).toBeCloseTo(withExplicitLinear.size, 9);
+		expect(withDefault.color.alpha).toBeCloseTo(
+			withExplicitLinear.color.alpha,
+			9,
+		);
+	});
+
+	test("does not mutate a color object that may be shared by reference across particles", () => {
+		const sharedColor = makeTestColor(1);
+		const behavior = fade(0.5, 0);
+
+		const p1 = makeTestParticle({
+			color: sharedColor,
+			age: 0.25,
+			lifetime: 10,
+		});
+		const p2 = makeTestParticle({
+			color: sharedColor,
+			age: 0.1,
+			lifetime: 10,
+		});
+
+		expect(p1.color).toBe(p2.color);
+		run(p1, behavior);
+		expect(p1.color.alpha).toBeCloseTo(0.5, 9);
+		run(p2, behavior);
+		expect(p2.color.alpha).toBeCloseTo(0.2, 9);
+		expect(p1.color.alpha).toBeCloseTo(0.5, 9);
+		expect(sharedColor.alpha).toBe(1);
 	});
 });
