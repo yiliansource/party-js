@@ -1,4 +1,5 @@
 export { gradient, type RandomHueOptions, randomHue } from "./color";
+export { cone } from "./cone";
 export { normal, range } from "./numeric";
 export { pick } from "./pick";
 export { randomOrientation } from "./quat";
