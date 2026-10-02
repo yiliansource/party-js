@@ -21,8 +21,8 @@ let animationLoop: AnimationLoop;
 function origin() {
 	const canvas = canvasEl.value!;
 	return {
-		x: canvas.width / 2,
-		y: canvas.height / 2,
+		x: canvas.clientWidth / 2,
+		y: canvas.clientHeight / 2,
 	};
 }
 

@@ -32,7 +32,7 @@ export function provideParticlePlaygroundState() {
 			},
 			speedMin: 0,
 			speedMax: 0,
-			size: 15,
+			size: 10,
 			lifetime: 5,
 			color: {
 				type: "pick",
