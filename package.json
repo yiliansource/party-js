@@ -32,7 +32,9 @@
 		"typecheck": "tsc -b --noEmit",
 		"lint": "biome check",
 		"lint:fix": "biome check --write",
-		"postinstall": "lefthook install"
+		"postinstall": "lefthook install",
+		"build:site": "bun run scripts/build-site.ts",
+		"preview:site": "bunx serve dist-site"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
