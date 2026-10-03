@@ -13,7 +13,6 @@
 		"@fontsource-variable/jetbrains-mono": "^5.3.0",
 		"@lucide/vue": "^1.51.0",
 		"@tailwindcss/vite": "^4.3.3",
-		"bun": "^1.4.2",
 		"tailwindcss": "^4.3.3",
 		"vue": "^3.5.42"
 	},

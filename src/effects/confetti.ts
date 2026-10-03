@@ -49,9 +49,10 @@ export function confetti(
 		...options,
 	};
 
+	const rect = element.getBoundingClientRect();
 	const origin: Vec3 = {
-		x: element.offsetLeft + element.clientWidth / 2,
-		y: element.offsetTop + element.clientHeight / 2,
+		x: rect.x + rect.width / 2 + window.scrollX,
+		y: rect.y + rect.height / 2 + window.scrollY,
 		z: 0,
 	};
 	const shape = rectFromElement(element, origin);
@@ -74,7 +75,7 @@ export function confetti(
 				rate: 0,
 				bursts: [{ time: 0, count }],
 			},
-			rng: createRng(),
+			rng,
 			particleInit: {
 				position: emitFrom(shape),
 				velocity: cone(angle, spread, o.startVelocity),
