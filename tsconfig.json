@@ -20,6 +20,6 @@
 
 		"paths": { "@/*": ["./src/*"] }
 	},
-	"include": ["src/**/*", "tests/**/*", "tsup.config.ts"],
+	"include": ["src/**/*", "tests/**/*", "scripts/**/*", "tsup.config.ts"],
 	"exclude": ["dist", "bundle", "docs", "node_modules"]
 }
