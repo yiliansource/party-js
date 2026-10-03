@@ -1,5 +1,6 @@
 export * from "./behavior";
 export * from "./color";
+export * from "./effects";
 export * from "./emitter";
 export * from "./errors";
 export * from "./particle";
