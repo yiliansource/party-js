@@ -30,7 +30,7 @@ export type Behavior = BehaviorUpdate | BehaviorObject;
 export function initBehavior(
 	behavior: Behavior,
 	particle: Particle,
-	ctx: BehaviorUpdateContext,
+	ctx: BehaviorInitContext,
 ): void {
 	if (typeof behavior !== "function" && behavior.init !== undefined) {
 		behavior.init(particle, ctx);

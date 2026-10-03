@@ -1,4 +1,9 @@
-import type { Behavior, BehaviorUpdateContext } from "../behavior/behavior";
+import {
+	type Behavior,
+	type BehaviorInitContext,
+	type BehaviorUpdateContext,
+	initBehavior,
+} from "../behavior/behavior";
 import { isDead } from "../particle/lifecycle";
 import type { Particle } from "../particle/particle";
 import type { Rng } from "../random";
@@ -55,7 +60,7 @@ export class Emitter {
 		this.scheduleState = state;
 
 		for (let i = 0; i < spawnCount; i++) {
-			const ctx: SamplerContext = {
+			const spawnCtx: SamplerContext = {
 				rng: this.rng,
 				index: this.spawnedCount,
 				batch: {
@@ -63,7 +68,16 @@ export class Emitter {
 					size: spawnCount,
 				},
 			};
-			this.particles.push(spawnParticle(this.particleInit, ctx));
+			const particle = spawnParticle(this.particleInit, spawnCtx);
+
+			const initCtx: BehaviorInitContext = {
+				rng: this.rng,
+			};
+			for (const behaviour of this.behaviors) {
+				initBehavior(behaviour, particle, initCtx);
+			}
+
+			this.particles.push(particle);
 			this.spawnedCount++;
 		}
 
