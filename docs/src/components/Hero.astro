@@ -1,0 +1,151 @@
+---
+import { ArrowRightIcon, PauseIcon, PlayIcon } from "@lucide/astro";
+
+import { Image } from "astro:assets";
+
+import lightImage from "../assets/mark-l.svg";
+import darkImage from "../assets/mark-l-dark.svg";
+import { socials } from "../site";
+import BrandIcon from "./BrandIcon.astro";
+import Button from "./Button.astro";
+import InstallPill from "./InstallPill.astro";
+
+const { data } = Astro.locals.starlightRoute.entry;
+const { title = data.title, tagline = data.description } = data.hero ?? {};
+
+const imageAttrs = {
+	loading: "eager" as const,
+	decoding: "async" as const,
+	height: 164,
+	alt: "party.js logo",
+};
+
+const github = socials.find((s) => s.icon === "github")!;
+---
+
+<section class="not-content py-18 flex flex-col items-center">
+	<div>
+		<Image src={darkImage} {...imageAttrs} class="light:sl-hidden" />
+		<Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />
+	</div>
+	<div class="mb-8 flex flex-col items-center text-center">
+		<h1
+			class="mb-6 leading-none font-title font-medium text-ink dark:text-mist text-[88px]"
+		>
+			{title}
+		</h1>
+		<p class="max-w-lg text-xl text-muted">{tagline}</p>
+	</div>
+	<div class="flex flex-col items-center">
+		<div class="mb-6 flex flex-row gap-2">
+			<Button label="Quickstart" variant="primary" href="/quickstart/">
+				<ArrowRightIcon slot="icon" />
+			</Button>
+			<Button
+				label={github.label}
+				variant="secondary"
+				iconPlacement="start"
+				href={github.href}
+			>
+				<BrandIcon icon={github.brand} slot="icon" />
+			</Button>
+		</div>
+		<InstallPill />
+	</div>
+</section>
+
+<div class="not-content m-0 fixed inset-0 -z-10">
+	<canvas id="confetti-rain-canvas" class="w-full h-full"></canvas>
+</div>
+
+<div class="fixed right-0 bottom-0 m-6">
+	<Button
+		id="confetti-toggle"
+		label="Pause confetti"
+		variant="ghost"
+		iconPlacement="start"
+		aria-pressed="false"
+		class="group"
+	>
+		<Fragment slot="icon">
+			<PauseIcon class="group-aria-pressed:hidden" />
+			<PlayIcon class="hidden group-aria-pressed:block" />
+		</Fragment>
+	</Button>
+</div>
+
+<script>
+import {
+	color,
+	createEffect,
+	createRng,
+	emitFrom,
+	pick,
+	randomOrientation,
+	randomSpin,
+	range,
+} from "party-js";
+
+const canvas = document.getElementById(
+	"confetti-rain-canvas",
+) as HTMLCanvasElement;
+
+const effect = createEffect({
+	origin: { x: 0, y: 0 },
+	canvas,
+	emitterOptions: {
+		schedule: {
+			duration: 1,
+			loops: Number.POSITIVE_INFINITY,
+			rate: window.innerWidth < 640 ? 2 : 4,
+			bursts: [],
+		},
+		rng: createRng(),
+		particleInit: {
+			position: emitFrom(() => ({
+				type: "rect",
+				center: { x: window.innerWidth / 2, y: -40, z: 0 },
+				width: window.innerWidth,
+				height: 0,
+			})),
+			velocity: (ctx) => ({ x: 0, y: -60 - ctx.rng() * 60, z: 0 }),
+			orientation: randomOrientation(),
+			angularVelocity: randomSpin(80, 160),
+			size: range(12, 20),
+			lifetime: 20,
+			color: pick(
+				["#ff5a5f", "#ffb400", "#00a699", "#7b61ff"].map(color),
+			),
+			shape: pick([
+				{ type: "circle" },
+				{
+					type: "square",
+					cornerRadius: 0.2,
+				},
+				{
+					type: "square",
+					aspectRatio: 0.3,
+					cornerRadius: 0.1,
+				},
+				{
+					type: "star",
+				},
+			]),
+		},
+		behaviors: [],
+	},
+	lighting: (c) => c,
+});
+
+const toggle = document.querySelector<HTMLButtonElement>("#confetti-toggle")!;
+const toggleText = toggle.querySelector("span")!;
+toggle.addEventListener("click", () => {
+	const paused = toggle.getAttribute("aria-pressed") !== "true";
+
+	toggle.setAttribute("aria-pressed", String(paused));
+	toggleText.innerText = `${paused ? "Resume" : "Pause"} confetti`;
+
+	if (paused) effect.pause();
+	else effect.resume();
+});
+</script>

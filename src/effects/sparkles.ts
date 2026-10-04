@@ -1,7 +1,7 @@
 import { fade, scale } from "../behavior";
 import type { Color } from "../color";
 import { fromPolar } from "../color/oklch";
-import { emitFrom, rectFromElement } from "../emitter";
+import { emitFrom } from "../emitter";
 import { fromAxisAngle, type Quat } from "../math/quat";
 import { lerp } from "../math/scalar";
 import { unitZ, type Vec3 } from "../math/vec3";
@@ -15,7 +15,12 @@ import {
 	type SamplerContext,
 	type SamplerFn,
 } from "../samplers";
-import { createEffect, type Effect } from "./effect";
+import {
+	createEffect,
+	type Effect,
+	type EffectTarget,
+	resolveTarget,
+} from "./effect";
 
 export interface SparkleOptions {
 	count?: Sampler<number>;
@@ -32,7 +37,7 @@ const SPARKLE_DEFAULTS = {
 } satisfies Required<SparkleOptions>;
 
 export function sparkles(
-	element: HTMLElement,
+	target: EffectTarget,
 	options: SparkleOptions = {},
 ): Effect {
 	const o = {
@@ -40,16 +45,9 @@ export function sparkles(
 		...options,
 	};
 
-	const rect = element.getBoundingClientRect();
-	const origin: Vec3 = {
-		x: rect.x + rect.width / 2 + window.scrollX,
-		y: rect.y + rect.height / 2 + window.scrollY,
-		z: 0,
-	};
-	const shape = rectFromElement(element, origin);
-
 	const rng = createRng();
 	const resolveCtx: SamplerContext = { rng, index: 0 };
+	const { origin, shape } = resolveTarget(target);
 
 	const count = Math.round(evaluate(o.count, resolveCtx));
 

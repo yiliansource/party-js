@@ -1,0 +1,47 @@
+---
+import Search from "@astrojs/starlight/components/Search.astro";
+
+import { Image } from "astro:assets";
+
+import lightImage from "../assets/lockup.svg";
+import darkImage from "../assets/lockup-dark.svg";
+import { headerLinks } from "../site";
+import SocialIcons from "./SocialIcons.astro";
+import ThemeToggle from "./ThemeToggle.astro";
+
+const imageAttrs = {
+	loading: "eager" as const,
+	decoding: "async" as const,
+	height: 32,
+	alt: "party.js logo",
+};
+---
+
+<div class="h-full flex flex-row items-center justify-between">
+	<!-- biome-ignore lint/a11y/useAnchorContent: alt text applied via attrs -->
+	<a href="/" class="grid place-items-center">
+		<Image src={darkImage} {...imageAttrs} class="light:sl-hidden" />
+		<Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />
+	</a>
+	<div class="flex flex-row items-center">
+		<div class="flex flex-row items-center gap-8">
+			<div class="w-64">
+				<Search />
+			</div>
+			<div class="flex flex-row gap-8">
+				{headerLinks.map(({ label, href }) => (
+	<a href={href} rel="me" class="no-underline text-fg font-medium">
+		{label}
+	</a>
+))}
+			</div>
+		</div>
+		<div class="mx-6 h-6 border-r border-line"></div>
+		<div class="flex flex-row items-center gap-4">
+			<div class="flex flex-row gap-2">
+				<SocialIcons />
+			</div>
+			<ThemeToggle />
+		</div>
+	</div>
+</div>

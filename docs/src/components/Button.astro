@@ -1,0 +1,58 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+type Props = {
+	label: string;
+	variant?: "primary" | "secondary" | "accent" | "ghost" | "raised";
+	size?: "sm" | "md" | "lg";
+	iconPlacement?: "start" | "end";
+	href?: string;
+	class?: string;
+} & Omit<HTMLAttributes<"button">, "class"> &
+	Omit<HTMLAttributes<"a">, "class" | "type">;
+
+const {
+	label,
+	variant = "primary",
+	size = "md",
+	iconPlacement = "end",
+	href,
+	class: className,
+	...rest
+} = Astro.props;
+
+const Tag = href ? "a" : "button";
+const hasIcon = Astro.slots.has("icon");
+
+const base =
+	"inline-flex items-center justify-center gap-2 font-semibold no-underline " +
+	"cursor-pointer select-none transition-[background-color,opacity] duration-150 " +
+	"focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600 " +
+	"disabled:pointer-events-none disabled:opacity-50";
+
+const variants = {
+	primary: "bg-primary text-primary-fg hover:opacity-90",
+	secondary:
+		"bg-page text-fg ring-1 ring-inset ring-line-strong hover:bg-hover",
+	accent: "bg-coral text-ink hover:bg-accent-400",
+	ghost: "bg-surface text-muted hover:bg-hover hover:text-fg",
+	raised: "bg-raised text-fg hover:bg-hover",
+};
+
+const sizes = {
+	sm: "h-10 px-3 text-sm rounded-[9px] [&_svg]:size-4",
+	md: "h-12 px-5 text-base rounded-xl [&_svg]:size-[18px]",
+	lg: "h-13 px-6 text-base rounded-xl [&_svg]:size-[18px]",
+};
+---
+
+<Tag
+	{...rest}
+	href={href}
+	type={href ? undefined : (rest.type ?? "button")}
+	class:list={[base, variants[variant], sizes[size], className]}
+>
+	{hasIcon && iconPlacement === "start" && <slot name="icon" />}
+	<span>{label}</span>
+	{hasIcon && iconPlacement === "end" && <slot name="icon" />}
+</Tag>

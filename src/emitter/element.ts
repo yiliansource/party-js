@@ -13,7 +13,6 @@ export function rectFromElement(
 		center: {
 			x: centerX - origin.x,
 			y: origin.y - centerY,
-			z: 0,
 		},
 		width: rect.width,
 		height: rect.height,

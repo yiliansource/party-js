@@ -1,0 +1,62 @@
+---
+import { Copy } from "@lucide/astro";
+
+import Button from "./Button.astro";
+
+interface Props {
+	command?: string;
+}
+const { command = "npm install party-js" } = Astro.props;
+---
+
+<copy-command
+	data-command={command}
+	class="inline-flex items-center gap-1 rounded-xl bg-surface py-1 pr-1 pl-4 font-mono"
+>
+	<span class="text-subtle" aria-hidden="true">$</span>
+	<code class="px-2">{command}</code>
+	<Button
+		label="Copy"
+		variant="raised"
+		size="sm"
+		iconPlacement="start"
+		aria-label={`Copy "${command}"`}
+	>
+		<Copy slot="icon" />
+	</Button>
+	<span class="sr-only" aria-live="polite" data-status></span>
+</copy-command>
+
+<script>
+import { confetti } from "party-js";
+
+class CopyCommand extends HTMLElement {
+	connectedCallback() {
+		const button = this.querySelector("button")!;
+		const label = button.querySelector("span")!;
+		const status = this.querySelector<HTMLElement>("[data-status]")!;
+		const initialText = label.textContent;
+
+		let timer: number | undefined;
+
+		button.addEventListener("click", async () => {
+			try {
+				await navigator.clipboard.writeText(this.dataset.command ?? "");
+			} catch {
+				return;
+			}
+
+			label.textContent = "Copied!";
+			status.textContent = "Copied to clipboard";
+			confetti(button);
+
+			clearTimeout(timer);
+			timer = window.setTimeout(() => {
+				label.textContent = initialText;
+				status.textContent = "";
+			}, 1600);
+		});
+	}
+}
+customElements.define("copy-command", CopyCommand);
+</script>

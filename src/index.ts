@@ -3,6 +3,7 @@ export * from "./color";
 export * from "./effects";
 export * from "./emitter";
 export * from "./errors";
+export * from "./math";
 export * from "./particle";
 export * from "./random";
 export * from "./render";

@@ -1,7 +1,6 @@
 import { drag, fade, gravity, scale } from "../behavior";
 import { type Color, color } from "../color";
-import { emitFrom, rectFromElement } from "../emitter";
-import type { Vec3 } from "../math/vec3";
+import { emitFrom } from "../emitter";
 import { createRng } from "../random/rng";
 import {
 	cone,
@@ -14,7 +13,12 @@ import {
 	type Sampler,
 	type SamplerContext,
 } from "../samplers";
-import { createEffect, type Effect } from "./effect";
+import {
+	createEffect,
+	type Effect,
+	type EffectTarget,
+	resolveTarget,
+} from "./effect";
 
 export interface ConfettiOptions {
 	count?: Sampler<number>;
@@ -41,7 +45,7 @@ const CONFETTI_DEFAULTS = {
 } satisfies Required<ConfettiOptions>;
 
 export function confetti(
-	element: HTMLElement,
+	target: EffectTarget,
 	options: ConfettiOptions = {},
 ): Effect {
 	const o = {
@@ -49,16 +53,9 @@ export function confetti(
 		...options,
 	};
 
-	const rect = element.getBoundingClientRect();
-	const origin: Vec3 = {
-		x: rect.x + rect.width / 2 + window.scrollX,
-		y: rect.y + rect.height / 2 + window.scrollY,
-		z: 0,
-	};
-	const shape = rectFromElement(element, origin);
-
 	const rng = createRng();
 	const resolveCtx: SamplerContext = { rng, index: 0 };
+	const { origin, shape } = resolveTarget(target);
 
 	const angle = evaluate(o.angle, resolveCtx);
 	const spread = evaluate(o.spread, resolveCtx);
