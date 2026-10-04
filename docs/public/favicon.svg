@@ -1,0 +1,51 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="0 0 100 100"
+	width="100"
+	height="100"
+	role="img"
+	aria-label="party.js"
+>
+	<title>party.js</title>
+	<style>
+	.ink {
+		fill: #1a1a1a;
+	}
+	@media (prefers-color-scheme: dark) {
+		.ink {
+			fill: #ffffff;
+		}
+	}
+	</style>
+	<rect x="12" y="8" width="20" height="20" rx="5" class="ink" />
+	<rect
+		x="35"
+		y="8"
+		width="20"
+		height="20"
+		rx="5"
+		fill="#FFB400"
+		transform="translate(1.5 -1.5) rotate(-9 45 18)"
+	/>
+	<rect x="12" y="31" width="20" height="20" rx="5" class="ink" />
+	<rect
+		x="58"
+		y="31"
+		width="20"
+		height="20"
+		rx="5"
+		fill="#00A699"
+		transform="translate(1.5 0) rotate(7 68 41)"
+	/>
+	<rect x="12" y="54" width="20" height="20" rx="5" class="ink" />
+	<rect x="35" y="54" width="20" height="20" rx="5" class="ink" />
+	<rect x="12" y="77" width="20" height="20" rx="5" class="ink" />
+	<polygon
+		points="0,-1 0.2645,-0.3641 0.9511,-0.309 0.428,0.1391 0.5878,0.809 0,0.45 -0.5878,0.809 -0.428,0.1391 -0.9511,-0.309 -0.2645,-0.3641"
+		fill="#FF5A5F"
+		stroke="#FF5A5F"
+		stroke-width="0.14"
+		stroke-linejoin="round"
+		transform="translate(80 15) rotate(14) scale(11)"
+	/>
+</svg>

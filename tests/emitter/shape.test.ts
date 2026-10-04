@@ -14,7 +14,7 @@ describe("emitFrom disk", () => {
 	test("every sampled point stays within the disk's radius of its center", () => {
 		const sampler = emitFrom({
 			type: "disk",
-			center: { x: 5, y: -3, z: 0 },
+			center: { x: 5, y: -3 },
 			radius: 10,
 		});
 		const ctx = makeCtxWithRng();
@@ -32,28 +32,10 @@ describe("emitFrom disk", () => {
 		expect(result.ok).toBe(true);
 	});
 
-	test("leaves z at the shape's center (a flat disk in the XY plane)", () => {
-		const sampler = emitFrom({
-			type: "disk",
-			center: { x: 0, y: 0, z: 7 },
-			radius: 10,
-		});
-		const ctx = makeCtxWithRng();
-
-		const { min, max } = sampledMinMax(
-			1000,
-			() => sampler(ctx),
-			(p) => p.z,
-		);
-
-		expect(min).toBe(7);
-		expect(max).toBe(7);
-	});
-
 	test("is uniform by area, not by radius - about 25% of points fall within half the radius", () => {
 		const sampler = emitFrom({
 			type: "disk",
-			center: { x: 0, y: 0, z: 0 },
+			center: { x: 0, y: 0 },
 			radius: 10,
 		});
 		const ctx = makeCtxWithRng();
@@ -75,7 +57,7 @@ describe("emitFrom rect", () => {
 	test("every sampled point stays within the rect's bounds", () => {
 		const sampler = emitFrom({
 			type: "rect",
-			center: { x: 2, y: 4, z: 0 },
+			center: { x: 2, y: 4 },
 			width: 6,
 			height: 2,
 		});
@@ -97,29 +79,10 @@ describe("emitFrom rect", () => {
 		expect(result.ok).toBe(true);
 	});
 
-	test("leaves z at the shape's center (a flat rect in the XY plane)", () => {
-		const sampler = emitFrom({
-			type: "rect",
-			center: { x: 0, y: 0, z: -2 },
-			width: 4,
-			height: 4,
-		});
-		const ctx = makeCtxWithRng();
-
-		const { min, max } = sampledMinMax(
-			1000,
-			() => sampler(ctx),
-			(p) => p.z,
-		);
-
-		expect(min).toBe(-2);
-		expect(max).toBe(-2);
-	});
-
 	test("covers the full width and height, not just a narrow band", () => {
 		const sampler = emitFrom({
 			type: "rect",
-			center: { x: 0, y: 0, z: 0 },
+			center: { x: 0, y: 0 },
 			width: 10,
 			height: 10,
 		});

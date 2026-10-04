@@ -23,12 +23,12 @@ async function buildDocs(): Promise<void> {
 
 async function buildPlayground(name: string): Promise<void> {
 	const pgDir = path.join(ROOT, "playground", name);
-	const base = `/playgrounds/${name}/`;
+	const base = `/playground/${name}/`;
 
 	run("bun install --frozen-lockfile", pgDir);
 	run(`bun run build -- --base=${base}`, pgDir);
 
-	const dest = path.join(OUT_DIR, "playgrounds", name);
+	const dest = path.join(OUT_DIR, "playground", name);
 	await mkdir(dest, { recursive: true });
 	await cp(path.join(pgDir, "dist"), dest, { recursive: true });
 }

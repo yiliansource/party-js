@@ -53,6 +53,7 @@
 							":BLANK_LINE:",
 							[":PACKAGE:", "!@ui/**"],
 							":BLANK_LINE:",
+							":PACKAGE_WITH_PROTOCOL:",
 							"@ui/**",
 							":BLANK_LINE:",
 							":ALIAS:",
@@ -126,7 +127,7 @@
 			}
 		},
 		{
-			"includes": ["**/*.vue"],
+			"includes": ["**/*.vue", "**/*.astro"],
 			"linter": {
 				"rules": {
 					"correctness": {

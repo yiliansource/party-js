@@ -1,0 +1,142 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="0 128 320 62"
+	width="320"
+	height="62"
+	role="img"
+	aria-label="The party.js logo, fallen apart into scattered tiles"
+>
+	<line
+		x1="8"
+		y1="181"
+		x2="312"
+		y2="181"
+		stroke="currentColor"
+		stroke-opacity="0.15"
+		stroke-width="1.5"
+		stroke-linecap="round"
+	/>
+
+	<!-- settled confetti -->
+	<rect
+		x="44"
+		y="176.5"
+		width="7"
+		height="3.5"
+		rx="1"
+		fill="#FF5A5F"
+		transform="rotate(8 47.5 178.2)"
+	/>
+	<circle cx="88" cy="178.5" r="2" fill="#7B61FF" />
+	<rect
+		x="124"
+		y="177"
+		width="4"
+		height="4"
+		rx="1"
+		fill="#00A699"
+		transform="rotate(30 126 179)"
+	/>
+	<rect
+		x="182"
+		y="177"
+		width="6"
+		height="3"
+		rx="1"
+		fill="#FFB400"
+		transform="rotate(-6 185 178.5)"
+	/>
+	<circle cx="228" cy="178.6" r="2.2" fill="#FF5A5F" />
+	<rect
+		x="268"
+		y="176.8"
+		width="3"
+		height="7"
+		rx="1.5"
+		fill="#7B61FF"
+		transform="rotate(78 269.5 180.3)"
+	/>
+	<circle cx="304" cy="178.8" r="1.8" fill="#00A699" />
+	<rect
+		x="16"
+		y="177.4"
+		width="5"
+		height="3"
+		rx="1"
+		fill="#FFB400"
+		transform="rotate(-12 18.5 178.9)"
+	/>
+
+	<!-- fallen tiles -->
+	<rect
+		x="24"
+		y="158.2"
+		width="20"
+		height="20"
+		rx="5"
+		fill="currentColor"
+		transform="rotate(-20 34 168.2)"
+	/>
+	<rect
+		x="60"
+		y="159.1"
+		width="20"
+		height="20"
+		rx="5"
+		fill="currentColor"
+		transform="rotate(-12 70 169.1)"
+	/>
+	<rect
+		x="94"
+		y="160"
+		width="20"
+		height="20"
+		rx="5"
+		fill="currentColor"
+		transform="rotate(6 104 170)"
+	/>
+	<rect
+		x="146"
+		y="159.7"
+		width="20"
+		height="20"
+		rx="5"
+		fill="currentColor"
+		transform="rotate(8 156 169.7)"
+	/>
+	<rect
+		x="140"
+		y="139"
+		width="20"
+		height="20"
+		rx="5"
+		fill="currentColor"
+		transform="rotate(-22 150 149)"
+	/>
+	<rect
+		x="198"
+		y="159.7"
+		width="20"
+		height="20"
+		rx="5"
+		fill="#00A699"
+		transform="rotate(-8 208 169.7)"
+	/>
+	<rect
+		x="240"
+		y="158.4"
+		width="20"
+		height="20"
+		rx="5"
+		fill="#FFB400"
+		transform="rotate(18 250 168.4)"
+	/>
+	<polygon
+		points="0,-1 0.2645,-0.3641 0.9511,-0.309 0.428,0.1391 0.5878,0.809 0,0.45 -0.5878,0.809 -0.428,0.1391 -0.9511,-0.309 -0.2645,-0.3641"
+		fill="#FF5A5F"
+		stroke="#FF5A5F"
+		stroke-width="0.14"
+		stroke-linejoin="round"
+		transform="translate(284 170) rotate(35) scale(11)"
+	/>
+</svg>

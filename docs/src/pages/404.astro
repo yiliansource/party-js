@@ -1,0 +1,97 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+import { ArrowLeftIcon, SearchIcon } from "@lucide/astro";
+
+import NotFoundImage from "../assets/not-found.svg";
+import Button from "../components/Button.astro";
+import { socials } from "../site";
+
+const github = socials.find((s) => s.icon === "github")!;
+---
+
+<StarlightPage
+	frontmatter={{ title: "Page not found", template: "splash", pagefind: false, editUrl: false }}
+>
+	<div class="not-content flex flex-col items-center text-center gap-5 py-16">
+		<NotFoundImage
+			class="w-full max-w-md h-auto mt-26"
+			style="color: var(--sl-color-white)"
+		/>
+		<div class="mt-2 mb-4 flex flex-col items-center text-center">
+			<p class="mb-1 font-mono text-sm text-subtle uppercase">
+				Error 404
+			</p>
+			<h1
+				class="mb-4 leading-none font-title font-medium text-ink dark:text-mist text-7xl"
+			>
+				Oops.
+			</h1>
+			<p class="max-w-xl text-xl text-muted">
+				This page does not exist, or it was moved when the docs were
+				rebuilt for v3. Try a search, or head back to the docs.
+			</p>
+		</div>
+		<div class="flex flex-col items-center">
+			<div class="mb-8 flex flex-row gap-2">
+				<Button
+					label="Back to the docs"
+					variant="primary"
+					iconPlacement="start"
+					href="/introduction/"
+				>
+					<ArrowLeftIcon slot="icon" />
+				</Button>
+				<Button
+					id="search-docs"
+					label="Search docs"
+					variant="secondary"
+					iconPlacement="start"
+				>
+					<SearchIcon slot="icon" />
+				</Button>
+			</div>
+			<div>
+				<p class="text-muted">
+					<span class="">Followed a broken link?</span>{" "}
+					<a
+						class="font-medium text-muted underline underline-offset-4 decoration-2 decoration-gray-300 dark:decoration-gray-700"
+						href={github.href}
+						>Let us know on GitHub.</a
+					>
+				</p>
+			</div>
+		</div>
+	</div>
+</StarlightPage>
+
+<style is:global>
+.content-panel:has(#_top) {
+	padding: 0;
+}
+.content-panel + .content-panel {
+	border-top: 0;
+}
+#_top {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip-path: inset(50%);
+	white-space: nowrap;
+}
+</style>
+
+<script>
+const searchDocsBtn =
+	document.querySelector<HTMLButtonElement>("#search-docs")!;
+const siteSearchOpenBtn = document.querySelector<HTMLElement>(
+	"site-search button[data-open-modal]",
+);
+
+searchDocsBtn.addEventListener("click", (e) => {
+	if (!siteSearchOpenBtn) return;
+
+	siteSearchOpenBtn.click();
+	e.stopPropagation();
+});
+</script>

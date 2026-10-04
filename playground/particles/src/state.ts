@@ -27,7 +27,7 @@ export function provideParticlePlaygroundState() {
 			},
 			shape: {
 				type: "disk",
-				center: { x: 0, y: 0, z: 0 },
+				center: { x: 0, y: 0 },
 				radius: 100,
 			},
 			speedMin: 0,

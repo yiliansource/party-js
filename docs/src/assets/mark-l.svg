@@ -1,0 +1,99 @@
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="0 0 150 124"
+	width="150"
+	height="124"
+	role="img"
+	aria-label="party.js"
+>
+	<title>party.js</title>
+	<g transform="translate(10 24)">
+		<rect x="12" y="8" width="20" height="20" rx="5" fill="#1A1A1A" />
+		<rect
+			x="35"
+			y="8"
+			width="20"
+			height="20"
+			rx="5"
+			fill="#FFB400"
+			transform="translate(1.5 -1.5) rotate(-9 45 18)"
+		/>
+		<rect x="12" y="31" width="20" height="20" rx="5" fill="#1A1A1A" />
+		<rect
+			x="58"
+			y="31"
+			width="20"
+			height="20"
+			rx="5"
+			fill="#00A699"
+			transform="translate(1.5 0) rotate(7 68 41)"
+		/>
+		<rect x="12" y="54" width="20" height="20" rx="5" fill="#1A1A1A" />
+		<rect x="35" y="54" width="20" height="20" rx="5" fill="#1A1A1A" />
+		<rect x="12" y="77" width="20" height="20" rx="5" fill="#1A1A1A" />
+	</g>
+	<polygon
+		points="0,-1 0.2645,-0.3641 0.9511,-0.309 0.428,0.1391 0.5878,0.809 0,0.45 -0.5878,0.809 -0.428,0.1391 -0.9511,-0.309 -0.2645,-0.3641"
+		fill="#FF5A5F"
+		stroke="#FF5A5F"
+		stroke-width="0.14"
+		stroke-linejoin="round"
+		transform="translate(97 27) rotate(14) scale(12)"
+	/>
+	<circle cx="118" cy="47" r="5" fill="#FFB400" />
+	<rect
+		x="106.5"
+		y="5.5"
+		width="9"
+		height="9"
+		rx="2"
+		fill="#00A699"
+		transform="rotate(30 111 10)"
+	/>
+	<rect
+		x="127.75"
+		y="19"
+		width="4.5"
+		height="14"
+		rx="2.25"
+		fill="#7B61FF"
+		transform="rotate(55 130 26)"
+	/>
+	<polygon
+		points="0,-1 0.2645,-0.3641 0.9511,-0.309 0.428,0.1391 0.5878,0.809 0,0.45 -0.5878,0.809 -0.428,0.1391 -0.9511,-0.309 -0.2645,-0.3641"
+		fill="#FFB400"
+		stroke="#FFB400"
+		stroke-width="0.14"
+		stroke-linejoin="round"
+		transform="translate(138 54) rotate(-10) scale(6)"
+	/>
+	<polygon
+		points="83,13.5 93,13.5 88,4.8"
+		fill="#FF5A5F"
+		stroke="#FF5A5F"
+		stroke-width="1.2"
+		stroke-linejoin="round"
+		transform="rotate(20 88 10.6)"
+	/>
+	<circle cx="143" cy="12" r="3" fill="#00A699" />
+	<rect
+		x="124.25"
+		y="69.25"
+		width="5.5"
+		height="5.5"
+		rx="1.2"
+		fill="#FF5A5F"
+		transform="rotate(15 127 72)"
+	/>
+	<circle cx="146" cy="36" r="2.2" fill="#7B61FF" />
+	<rect
+		x="120.5"
+		y="0.5"
+		width="3"
+		height="9"
+		rx="1.5"
+		fill="#FFB400"
+		transform="rotate(-30 122 5)"
+	/>
+	<circle cx="105" cy="60" r="2" fill="#7B61FF" />
+</svg>
