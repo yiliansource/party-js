@@ -66,6 +66,11 @@ export function createRenderer(options: RendererOptions = {}): Renderer {
 		logicalWidth = ownsCanvas ? window.innerWidth : canvas.clientWidth;
 		logicalHeight = ownsCanvas ? window.innerHeight : canvas.clientHeight;
 
+		if (ownsCanvas) {
+			canvas.style.width = `${logicalWidth}px`;
+			canvas.style.height = `${logicalHeight}px`;
+		}
+
 		canvas.width = logicalWidth * dpr;
 		canvas.height = logicalHeight * dpr;
 		ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
