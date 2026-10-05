@@ -1,0 +1,22 @@
+---
+import { DEFAULT_THEME, THEME_KEY } from "../theme";
+---
+
+<script is:inline define:vars={{ THEME_KEY, DEFAULT_THEME }}>
+(() => {
+	let theme = null;
+	try {
+		theme = localStorage.getItem(THEME_KEY);
+	} catch {}
+
+	if (theme !== "dark" && theme !== "light") {
+		theme = window.matchMedia
+			? window.matchMedia("(prefers-color-scheme: dark)").matches
+				? "dark"
+				: "light"
+			: DEFAULT_THEME;
+	}
+
+	document.documentElement.dataset.theme = theme;
+})();
+</script>

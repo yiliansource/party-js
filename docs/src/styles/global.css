@@ -19,6 +19,8 @@
 		"Segoe UI Symbol";
 	--font-mono: "Geist Mono Variable", monospace;
 
+	--breakpoint-sl: 50rem;
+
 	--color-ink: #1a1a1a;
 	--color-mist: #f2f2f4;
 	--color-coral: #ff5a5f;
@@ -99,8 +101,22 @@
 		--sl-color-hairline-shade: var(--pj-line);
 
 		--sl-nav-height: 4.5rem;
-		--sl-nav-pad-x: 6rem;
+		--sl-nav-pad-x: 1rem;
 		--sl-nav-pad-y: 0.5rem;
+		--sl-nav-gap: 0.5rem;
+
+		--sl-menu-button-size: 32px;
+	}
+
+	@variant lg {
+		:root {
+			--sl-nav-pad-x: 4rem;
+		}
+	}
+	@variant xl {
+		:root {
+			--sl-nav-pad-x: 6rem;
+		}
 	}
 
 	site-search button[data-open-modal] {
@@ -135,5 +151,29 @@
 			font-size: 0.75rem;
 			color: var(--pj-subtle);
 		}
+	}
+
+	.sl-menu-button {
+		border-radius: 10px;
+		background-color: transparent;
+		color: var(--sl-color-white);
+		box-shadow: none;
+	}
+
+	.mobile-preferences {
+		align-items: center;
+	}
+	.mobile-preferences .social-icons {
+		gap: 1.5rem;
+	}
+}
+
+@variant sl {
+	html[data-has-hero][data-has-sidebar] {
+		--sl-content-inline-start: 0rem;
+		--sl-content-width: 67.5rem;
+	}
+	html[data-has-hero] .sidebar-pane {
+		display: none;
 	}
 }

@@ -13,6 +13,10 @@
 			"import": "./dist/index.js"
 		}
 	},
+	"files": [
+		"dist",
+		"bundle"
+	],
 	"homepage": "https://party.js.org",
 	"repository": {
 		"type": "git",

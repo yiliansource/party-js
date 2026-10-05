@@ -5,13 +5,10 @@ import { Image } from "astro:assets";
 
 import lightImage from "../assets/mark-l.svg";
 import darkImage from "../assets/mark-l-dark.svg";
-import { socials } from "../site";
+import { site, socials } from "../config/site";
 import BrandIcon from "./BrandIcon.astro";
 import Button from "./Button.astro";
 import InstallPill from "./InstallPill.astro";
-
-const { data } = Astro.locals.starlightRoute.entry;
-const { title = data.title, tagline = data.description } = data.hero ?? {};
 
 const imageAttrs = {
 	loading: "eager" as const,
@@ -23,18 +20,18 @@ const imageAttrs = {
 const github = socials.find((s) => s.icon === "github")!;
 ---
 
-<section class="not-content py-18 flex flex-col items-center">
+<section class="not-content py-8 lg:py-18 flex flex-col items-center">
 	<div>
 		<Image src={darkImage} {...imageAttrs} class="light:sl-hidden" />
 		<Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />
 	</div>
 	<div class="mb-8 flex flex-col items-center text-center">
 		<h1
-			class="mb-6 leading-none font-title font-medium text-ink dark:text-mist text-[88px]"
+			class="mb-6 leading-none font-title font-medium text-ink dark:text-mist text-7xl lg:text-[88px]"
 		>
-			{title}
+			{site.name}
 		</h1>
-		<p class="max-w-lg text-xl text-muted">{tagline}</p>
+		<p class="max-w-lg text-xl text-muted">{site.tagline}</p>
 	</div>
 	<div class="flex flex-col items-center">
 		<div class="mb-6 flex flex-row gap-2">
@@ -58,7 +55,7 @@ const github = socials.find((s) => s.icon === "github")!;
 	<canvas id="confetti-rain-canvas" class="w-full h-full"></canvas>
 </div>
 
-<div class="fixed right-0 bottom-0 m-6">
+<div class="hidden sl:block fixed right-0 bottom-0 m-6">
 	<Button
 		id="confetti-toggle"
 		label="Pause confetti"
