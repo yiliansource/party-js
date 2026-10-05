@@ -14,7 +14,7 @@ const { command = "npm install party-js" } = Astro.props;
 	class="inline-flex items-center gap-1 rounded-xl bg-surface py-1 pr-1 pl-4 font-mono"
 >
 	<span class="text-subtle select-none" aria-hidden="true">$</span>
-	<code class="px-2">{command}</code>
+	<code class="px-2 whitespace-nowrap">{command}</code>
 	<Button
 		label="Copy"
 		variant="raised"
