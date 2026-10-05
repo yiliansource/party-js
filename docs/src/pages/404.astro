@@ -4,9 +4,11 @@ import { ArrowLeftIcon, SearchIcon } from "@lucide/astro";
 
 import NotFoundImage from "../assets/not-found.svg";
 import Button from "../components/Button.astro";
-import { socials } from "../site";
+import { socials } from "../config/site";
 
 const github = socials.find((s) => s.icon === "github")!;
+
+Astro.locals.isNotFound = true;
 ---
 
 <StarlightPage
@@ -52,9 +54,9 @@ const github = socials.find((s) => s.icon === "github")!;
 			</div>
 			<div>
 				<p class="text-muted">
-					<span class="">Followed a broken link?</span>{" "}
+					<span>Followed a broken link?</span>{" "}
 					<a
-						class="font-medium text-muted underline underline-offset-4 decoration-2 decoration-gray-300 dark:decoration-gray-700"
+						class="font-medium text-muted hover:text-fg underline underline-offset-4 decoration-2 decoration-gray-300 dark:decoration-gray-700"
 						href={github.href}
 						>Let us know on GitHub.</a
 					>

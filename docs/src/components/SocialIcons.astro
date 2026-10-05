@@ -1,11 +1,11 @@
 ---
-import { socials } from "../site";
+import { socials } from "../config/site";
 import BrandIcon from "./BrandIcon.astro";
 ---
 
 {socials.length > 0 &&
 	socials.map(({ label, href, brand }) => (
-		<a {href} rel="me" class="leading-1 text-fg">
+		<a {href} rel="me" class="leading-1 text-muted hover:text-fg">
 			<span class="sr-only">{label}</span>
 			<BrandIcon icon={brand} size={22} />
 		</a>

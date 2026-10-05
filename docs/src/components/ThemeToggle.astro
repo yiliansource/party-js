@@ -3,46 +3,29 @@ import { MoonIcon, SunIcon } from "@lucide/astro";
 ---
 
 <theme-toggle>
-	<button type="button" class="cursor-pointer bg-transparent leading-1 block">
+	<button
+		type="button"
+		class="cursor-pointer bg-transparent leading-1 block text-muted hover:text-fg"
+	>
 		<MoonIcon class="dark:hidden" size={26} />
 		<SunIcon class="not-dark:hidden" size={26} />
 	</button>
 </theme-toggle>
 
 <script>
-type Theme = "dark" | "light";
-
-const storageKey = "starlight-theme";
-
-const parseTheme = (theme: unknown): Theme =>
-	theme === "dark" || theme === "light" ? theme : "light";
-
-const loadTheme = (): Theme =>
-	parseTheme(
-		typeof localStorage !== "undefined" && localStorage.getItem(storageKey),
-	);
-
-function storeTheme(theme: Theme): void {
-	if (typeof localStorage !== "undefined") {
-		localStorage.setItem(
-			storageKey,
-			theme === "light" || theme === "dark" ? theme : "",
-		);
-	}
-}
+import { getTheme, storeTheme, type Theme } from "../theme";
 
 function onThemeChange(theme: Theme): void {
 	document.documentElement.dataset.theme = theme;
 	storeTheme(theme);
 }
 
-class StarlightThemeSelect extends HTMLElement {
+class ThemeToggle extends HTMLElement {
 	connectedCallback() {
-		onThemeChange(loadTheme());
 		this.querySelector("button")?.addEventListener("click", () => {
-			onThemeChange(loadTheme() === "dark" ? "light" : "dark");
+			onThemeChange(getTheme() === "dark" ? "light" : "dark");
 		});
 	}
 }
-customElements.define("theme-toggle", StarlightThemeSelect);
+customElements.define("theme-toggle", ThemeToggle);
 </script>
