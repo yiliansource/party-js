@@ -25,7 +25,13 @@ export interface EmitterOptions {
 	behaviors?: Behavior[];
 }
 
+/**
+ * @group Emitter
+ */
 export class Emitter {
+	/**
+	 * The particles owned by the emitter.
+	 */
 	public readonly particles: Particle[] = [];
 
 	private readonly schedule: EmissionSchedule;
@@ -43,14 +49,25 @@ export class Emitter {
 		this.rng = options.rng;
 	}
 
+	/**
+	 * Checks if the the emitter has completed all of its loops.
+	 */
 	public get isExpired(): boolean {
 		return isScheduleExpired(this.schedule, this.scheduleState);
 	}
 
+	/**
+	 * Checks if the emitter and all of its particles have expired.
+	 */
 	public get isDone(): boolean {
 		return this.isExpired && this.particles.length === 0;
 	}
 
+	/**
+	 * Advances the emitter by the specified timestep.
+	 *
+	 * @param dt - The time to advance the emitter by, in seconds.
+	 */
 	public tick(dt: number): void {
 		const { state, spawnCount } = advanceSchedule(
 			this.schedule,

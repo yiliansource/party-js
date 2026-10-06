@@ -44,6 +44,24 @@ const CONFETTI_DEFAULTS = {
 	drag: 500,
 } satisfies Required<ConfettiOptions>;
 
+/**
+ * Fires a burst of confetti in an upwards cone from the specified target.
+ *
+ * @summary Emits a burst of confetti.
+ *
+ * @param target The target the confetti bursts out of. Its position and size are read once, when the effect starts.
+ * @param options Overrides of the default options. See {@link ConfettiOptions} for all fields.
+ *
+ * @returns A handle to the running effect.
+ *
+ * @example
+ * const effect = confetti(button, { spread: 70 });
+ *
+ * // e.g. when the component unmounts
+ * effect.stop();
+ *
+ * @group Effects
+ */
 export function confetti(
 	target: EffectTarget,
 	options: ConfettiOptions = {},

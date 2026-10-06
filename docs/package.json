@@ -11,6 +11,7 @@
 		"astro": "astro"
 	},
 	"dependencies": {
+		"@astrojs/markdown-satteri": "^0.4.3",
 		"@astrojs/starlight": "^0.42.5",
 		"@astrojs/starlight-tailwind": "^5.0.0",
 		"@fontsource-variable/fredoka": "^5.3.0",
@@ -23,10 +24,19 @@
 		"@resvg/resvg-js": "^2.6.2",
 		"@tailwindcss/vite": "^4.3.3",
 		"astro": "^7.2.10",
+		"hast": "^1.0.0",
 		"satori": "^0.35.0",
 		"satori-html": "^0.3.2",
+		"satteri": "^0.10.5",
 		"sharp": "^0.35.3",
 		"simple-icons": "^16.34.0",
-		"tailwindcss": "^4.3.3"
+		"tailwindcss": "^4.3.3",
+		"yaml": "^2.9.1"
+	},
+	"devDependencies": {
+		"prettier": "^3.9.9",
+		"starlight-typedoc": "0.23.1",
+		"typedoc": "0.28.20",
+		"typedoc-plugin-markdown": "4.13.1"
 	}
 }

@@ -7,6 +7,7 @@ import type { SamplerFn } from "./types";
  * @param arr The array to pick from.
  * @param weights The (optional) non-negative weights of the values, with positive sum.
  *
+ * @group Samplers
  */
 export function pick<T>(arr: T[], weights?: number[]): SamplerFn<T> {
 	if (arr.length === 0)

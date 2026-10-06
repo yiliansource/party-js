@@ -1,10 +1,11 @@
+import type { Vec2 } from "../math/vec2";
 import type { Vec3 } from "../math/vec3";
 import * as vec3 from "../math/vec3";
 import type { Particle } from "../particle/particle";
 import { executeDrawCommand } from "./canvas";
 import { buildDrawCommand } from "./drawCommand";
 import { computeLightingCoefficient, defaultLighting } from "./lighting";
-import { type ProjectionOrigin, project } from "./projection";
+import { project } from "./projection";
 
 /**
  * Clears the context and draws every particle, projecting each one from its
@@ -13,7 +14,7 @@ import { type ProjectionOrigin, project } from "./projection";
 export function drawFrame(
 	ctx: CanvasRenderingContext2D,
 	particles: readonly Particle[],
-	origin: ProjectionOrigin,
+	origin: Vec2,
 	width: number,
 	height: number,
 	light: Vec3 = vec3.unitZ,

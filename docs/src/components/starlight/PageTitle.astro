@@ -1,18 +1,42 @@
 ---
+import { kindLabel } from "../../config/reference";
 import { sectionOf, sections } from "../../config/sections";
 import Glyph from "../Glyph.astro";
 
 const entry = Astro.locals.starlightRoute.entry;
-const { title, description } = entry.data;
+const { title, description, reference } = entry.data;
 const section = sectionOf(entry.id);
 const sectionData = section !== null ? sections[section] : null;
+const referenceGroup = reference !== undefined ? entry.id.split("/")[1] : null;
 ---
 
 <div class="mt-4 flex flex-col">
-	{sectionData !== null && <p class="mb-3 flex flex-row items-center gap-2">
-        <Glyph key={sectionData.glyph} class="size-4" style={{ color: sectionData.accent }} />
-        <span class="font-mono text-sm tracking-wider text-subtle uppercase">{sectionData.label}</span>
-    </p>}
-	<h1 id="_top" class="mb-5 text-5xl">{title}</h1>
+	{sectionData !== null && (
+	    <p class="mb-3 flex flex-row items-center gap-2">
+	    	<Glyph
+	    		key={sectionData.glyph}
+	    		class="size-4"
+	    		style={{ color: sectionData.accent }}
+	    	/>
+	    	<span class="inline-flex flex-row items-center gap-2.5 font-mono text-sm tracking-wider text-subtle uppercase">
+	    		<span>{sectionData.label}</span>
+	    		{reference && (
+	    			<>
+	    				<span>/</span>
+	    				<span>{referenceGroup}</span>
+	    				<span class="ml-1 px-3 py-1 -my-1 rounded-lg bg-gray-800 text-muted">
+	    					{kindLabel[reference.kind]}
+	    				</span>
+	    			</>
+	    		)}
+	    	</span>
+	    </p>
+    )}
+	<h1
+		id="_top"
+		class:list={["mb-5 text-white text-5xl scroll-mt-[100vh]", reference && "font-mono"]}
+	>
+		{title}
+	</h1>
 	<p class="text-xl text-muted">{description}</p>
 </div>

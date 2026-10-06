@@ -35,7 +35,10 @@ const isPrev = type === "prev";
 		<ArrowIcon size={16} />
 		<span>{isPrev ? "Previous" : "Next"}</span>
 	</span>
-	<span class="text-lg font-medium leading-tight">{link.label}</span>
+	<span
+		class:list={["text-lg font-medium leading-tight", section === "reference" && "font-mono"]}
+		>{link.label}</span
+	>
 	{section && (
 	<span class="mt-2 font-mono text-sm text-subtle">
 		{sectionLabel(section)}

@@ -51,16 +51,16 @@ export function sectionOf(entryId: string): SectionKey | null {
 			) ?? null
 		);
 	} else {
+		if (entryId === "api") return "reference";
 		if (entryId !== "index") return "start";
 	}
 	return null;
 }
 
-export const sectionOfHref = (href: string): SectionKey | null =>
-	sectionOf(
-		href.slice(import.meta.env.BASE_URL.length).replace(/\/$/, "") ??
-			"index",
-	);
+export const sectionOfHref = (href: string): SectionKey | null => {
+	const id = href.slice(import.meta.env.BASE_URL.length).replace(/\/$/, "");
+	return sectionOf(id ?? "index");
+};
 
 export const sectionByLabel = (label: string): SectionKey | null =>
 	(Object.keys(sections) as SectionKey[]).find(

@@ -1,9 +1,9 @@
-import type { ProjectionOrigin } from "../render/projection";
+import type { Vec2 } from "../math/vec2";
 import type { RectEmissionShape } from "./shape";
 
 export function rectFromElement(
 	element: HTMLElement,
-	origin: ProjectionOrigin,
+	origin: Vec2,
 ): RectEmissionShape {
 	const rect = element.getBoundingClientRect();
 	const centerX = rect.x + rect.width / 2 + window.scrollX;

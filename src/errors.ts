@@ -1,3 +1,6 @@
+/**
+ * @group Utilities
+ */
 export class PartyJSError extends Error {
 	constructor(message: string) {
 		super(`[party-js] ${message}`);

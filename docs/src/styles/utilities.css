@@ -1,0 +1,31 @@
+@utility scrollbar-thin {
+	scrollbar-width: thin;
+
+	&:hover {
+		scrollbar-color: var(--color-subtle) transparent;
+	}
+
+	&::-webkit-scrollbar {
+		width: 10px;
+		height: 10px;
+	}
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	&::-webkit-scrollbar-thumb {
+		background: var(--color-line-strong);
+		border: 3px solid transparent;
+		border-radius: 999px;
+		background-clip: padding-box;
+	}
+	&:hover::-webkit-scrollbar-thumb {
+		background-color: var(--color-subtle);
+	}
+}
+
+@utility scrollbar-none {
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}

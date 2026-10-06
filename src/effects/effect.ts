@@ -8,7 +8,6 @@ import {
 	createAnimationLoop,
 	createRenderer,
 	type LightingFn,
-	type ProjectionOrigin,
 } from "../render";
 
 export interface Effect {
@@ -17,11 +16,11 @@ export interface Effect {
 	resume(): void;
 }
 
-export type EffectTarget = HTMLElement | ProjectionOrigin;
+export type EffectTarget = HTMLElement | Vec2;
 
 export interface CreateEffectOptions {
 	emitterOptions: EmitterOptions;
-	origin: Live<ProjectionOrigin>;
+	origin: Live<Vec2>;
 	canvas?: HTMLCanvasElement;
 	light?: Vec3;
 	lighting?: LightingFn;
@@ -40,6 +39,7 @@ export function resolveTarget(target: EffectTarget): {
 		};
 		return { origin, shape: rectFromElement(target, origin) };
 	}
+
 	return {
 		origin: { x: target.x, y: target.y },
 		shape: { type: "disk", center: { x: 0, y: 0 }, radius: 0 },
