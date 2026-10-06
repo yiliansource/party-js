@@ -1,0 +1,8 @@
+:root {
+	scrollbar-color: var(--color-line-strong) transparent;
+}
+
+a:not(.not-content *) {
+	font-weight: 500;
+	text-underline-offset: 3px;
+}

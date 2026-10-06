@@ -23,7 +23,14 @@ const font = (family: string, file: string) =>
 
 const geistRegular = await font("geist", "geist-latin-400-normal.woff");
 const geistBold = await font("geist", "geist-latin-700-normal.woff");
-const geistMono = await font("geist-mono", "geist-mono-latin-400-normal.woff");
+const geistMonoRegular = await font(
+	"geist-mono",
+	"geist-mono-latin-400-normal.woff",
+);
+const geistMonoBold = await font(
+	"geist-mono",
+	"geist-mono-latin-700-normal.woff",
+);
 const fredoka = await font("fredoka", "fredoka-latin-500-normal.woff");
 
 const logoBase64 = Buffer.from(LogoMark).toString("base64");
@@ -134,6 +141,10 @@ const buildDocsCard = (
 						style: {
 							marginTop: "28px",
 							maxWidth: "600px",
+							fontFamily:
+								section === "reference"
+									? "Geist Mono"
+									: "inherit",
 							fontWeight: 700,
 							fontSize: "84px",
 							lineHeight: 1,
@@ -210,8 +221,14 @@ export const GET: APIRoute = async ({ props }) => {
 			},
 			{
 				name: "Geist Mono",
-				data: geistMono,
+				data: geistMonoRegular,
 				weight: 400,
+				style: "normal",
+			},
+			{
+				name: "Geist Mono",
+				data: geistMonoBold,
+				weight: 700,
 				style: "normal",
 			},
 			{

@@ -13,8 +13,13 @@ export function computeLightingCoefficient(
 	return vec3.dot(quat.basis(orientation).z, light);
 }
 
+export interface CreateLightingOptions {
+	ambient?: number;
+	intensity?: number;
+}
+
 export function createLighting(
-	options: { ambient?: number; intensity?: number } = {},
+	options: CreateLightingOptions = {},
 ): LightingFn {
 	const ambient = options.ambient ?? 0.5;
 	const intensity = options.intensity ?? 1;

@@ -1,0 +1,42 @@
+---
+import { CodeIcon } from "@lucide/astro";
+
+import { type CollectionEntry, getCollection } from "astro:content";
+
+import GuideCard from "../GuideCard.astro";
+import Pagination from "./Pagination.astro";
+
+const { entry } = Astro.locals.starlightRoute;
+const { reference } = entry.data;
+const guides = reference
+	? await getCollection("docs", ({ data }: CollectionEntry<"docs">) =>
+			data.api?.includes(reference.name),
+		)
+	: [];
+---
+
+<footer class="flex flex-col">
+	{reference && (
+	<>
+		{guides.length > 0 && (
+			<div class="mt-4 mb-12 flex flex-col">
+				{guides.map((guide) => (
+					<GuideCard entry={guide} />
+				))}
+			</div>
+		)}
+		<div class="mb-6 flex flex-col sm:flex-row gap-2">
+			{reference.source && <p class="ml-0 mr-auto inline-flex items-center text-xs text-gray-400 font-mono">
+				<CodeIcon size={14} class="mr-2" />
+				<span class="mr-1">Defined in:</span>
+				<a href={reference.source.url} class:list={["text-inherit no-underline", reference.source.url && "hover:underline"]}>
+					<span>{reference.source.file}</span>:<span>{reference.source.line}</span>
+				</a>
+			</p>}
+			<p class="sm:ml-auto sm:mr-0 text-sm text-gray-400">Generated from the source</p>
+		</div>
+	</>
+)}
+
+	<Pagination />
+</footer>

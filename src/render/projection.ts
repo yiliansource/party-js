@@ -1,4 +1,5 @@
 import * as quat from "../math/quat";
+import type { Vec2 } from "../math/vec2";
 import type { Particle } from "../particle/particle";
 
 /**
@@ -17,11 +18,6 @@ export interface ProjectedTransform {
 	f: number;
 }
 
-export interface ProjectionOrigin {
-	x: number;
-	y: number;
-}
-
 /**
  * Projects a particle's 3D position and orientation onto the 2D canvas.
  *
@@ -31,7 +27,7 @@ export interface ProjectionOrigin {
  */
 export function project(
 	particle: Pick<Particle, "position" | "orientation" | "size">,
-	origin: ProjectionOrigin,
+	origin: Vec2,
 ): ProjectedTransform {
 	const basis = quat.basis(particle.orientation);
 	const { size, position } = particle;

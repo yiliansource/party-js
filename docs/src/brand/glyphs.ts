@@ -18,7 +18,7 @@ export const glyphs = {
 		body: '<rect x="8" y="1" width="10" height="22" rx="5" transform="rotate(35 12 12)" />',
 	},
 	tile: {
-		viewBox: "0 0 10 10",
+		viewBox: "0 0 24 24",
 		body: '<rect x="3" y="3" width="18" height="18" rx="4" />',
 	},
 } as const satisfies Record<string, Glyph>;

@@ -1,9 +1,9 @@
 import { PartyJSError } from "../errors";
+import type { Vec2 } from "../math/vec2";
 import type { Vec3 } from "../math/vec3";
 import type { Particle } from "../particle/particle";
 import { drawFrame } from "./frame";
 import type { LightingFn } from "./lighting";
-import type { ProjectionOrigin } from "./projection";
 
 const DEFAULT_Z_INDEX = 2147483647;
 
@@ -15,7 +15,7 @@ export interface RendererOptions {
 export interface Renderer {
 	drawFrame(
 		particles: readonly Particle[],
-		origin: ProjectionOrigin,
+		origin: Vec2,
 		light?: Vec3,
 		lighting?: LightingFn,
 	): void;
