@@ -1,0 +1,48 @@
+---
+import SidebarRestorePoint from "@astrojs/starlight/components/SidebarRestorePoint.astro";
+import { ChevronRight } from "@lucide/astro";
+
+import { sectionByLabel, sections } from "../../config/sections";
+import Glyph from "../Glyph.astro";
+import SidebarItems from "./SidebarItems.astro";
+import { hasCurrent, type SidebarGroup } from "./types";
+
+interface Props {
+	group: SidebarGroup;
+}
+const { group } = Astro.props;
+
+const sectionKey = sectionByLabel(group.label);
+const section = sectionKey ? sections[sectionKey] : null;
+
+const isCurrent = hasCurrent(group);
+---
+
+<details
+	class="group open:mb-4"
+	data-section={sectionKey}
+	data-current={isCurrent ? '' : undefined}
+	open={isCurrent || !group.collapsed}
+>
+	<summary
+		class="flex h-9 cursor-pointer list-none items-center gap-2.5 rounded-lg px-3 text-sm font-bold select-none hover:bg-hover [&::-webkit-details-marker]:hidden"
+	>
+		{section ? (
+			<Glyph
+				key={section.glyph}
+				class="size-2.5 shrink-0"
+				style={{ color: section.accent }}
+			/>
+		) : (
+			<span class="size-2.5 shrink-0" />
+		)}
+		<span class="grow">{group.label}</span>
+		<ChevronRight
+			size={16}
+			aria-hidden="true"
+			class="text-subtle transition-transform group-open:rotate-90 motion-reduce:transition-none"
+		/>
+	</summary>
+	<SidebarRestorePoint />
+	<SidebarItems entries={group.entries} />
+</details>

@@ -1,0 +1,18 @@
+---
+import { sectionOf, sections } from "../../config/sections";
+import Glyph from "../Glyph.astro";
+
+const entry = Astro.locals.starlightRoute.entry;
+const { title, description } = entry.data;
+const section = sectionOf(entry.id);
+const sectionData = section !== null ? sections[section] : null;
+---
+
+<div class="mt-4 flex flex-col">
+	{sectionData !== null && <p class="mb-3 flex flex-row items-center gap-2">
+        <Glyph key={sectionData.glyph} class="size-4" style={{ color: sectionData.accent }} />
+        <span class="font-mono text-sm tracking-wider text-subtle uppercase">{sectionData.label}</span>
+    </p>}
+	<h1 id="_top" class="mb-5 text-5xl">{title}</h1>
+	<p class="text-xl text-muted">{description}</p>
+</div>

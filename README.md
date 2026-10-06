@@ -71,9 +71,9 @@ That's it! If you want to customize the visuals, every effect takes an options o
 import { confetti, range } from "party-js";
 
 confetti(button, {
-  count: range(40, 60),
-  spread: 70,
-  colors: ["#FF5A5F", "#FFB400", "#00A699", "#7B61FF"],
+	count: range(40, 60),
+	spread: 70,
+	colors: ["#FF5A5F", "#FFB400", "#00A699", "#7B61FF"],
 });
 ```
 

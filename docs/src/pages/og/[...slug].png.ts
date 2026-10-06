@@ -8,9 +8,9 @@ import satori from "satori";
 import { type CollectionEntry, getCollection } from "astro:content";
 
 import LogoMark from "../../assets/mark-l-dark.svg?raw";
-import { glyphs } from "../../brand/glyphs";
+import { glyphSvg } from "../../brand/glyphs";
 import {
-	type Section,
+	type SectionKey,
 	sectionLabel,
 	sectionOf,
 	sections,
@@ -33,15 +33,13 @@ const h = (type: string, props: Record<string, unknown>) => ({
 	props,
 });
 
-const glyphNode = (key: Section, size = 20) => {
-	const glyphKey = sections[key].glyph;
-	const glyph = glyphs[glyphKey];
+const glyphNode = (key: SectionKey, size = 24) => {
+	const sectionData = sections[key];
 
-	return h("svg", {
+	return h("img", {
+		src: `data:image/svg+xml;base64,${Buffer.from(glyphSvg(sectionData.glyph, sectionData.accent)).toString("base64")}`,
 		width: size,
 		height: size,
-		viewBox: glyph.viewBox,
-		children: glyph.shape,
 	});
 };
 
@@ -87,7 +85,11 @@ const buildDefaultCard = () =>
 		],
 	});
 
-const buildDocsCard = (section: Section, title: string, description?: string) =>
+const buildDocsCard = (
+	section: SectionKey,
+	title: string,
+	description?: string,
+) =>
 	h("div", {
 		style: {
 			display: "flex",
@@ -182,7 +184,7 @@ export const getStaticPaths = (async () => {
 }) satisfies GetStaticPaths;
 
 export const GET: APIRoute = async ({ props }) => {
-	const section = props.section as Section | null;
+	const section = props.section as SectionKey | null;
 	const entry = props.entry as CollectionEntry<"docs">;
 
 	const card =

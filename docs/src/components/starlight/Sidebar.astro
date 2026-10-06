@@ -1,0 +1,35 @@
+---
+import MobileMenuFooter from "@astrojs/starlight/components/MobileMenuFooter.astro";
+import SidebarPersister from "@astrojs/starlight/components/SidebarPersister.astro";
+
+import SidebarLink from "../sidebar/SidebarLink.astro";
+import SidebarSection from "../sidebar/SidebarSection.astro";
+
+const { sidebar } = Astro.locals.starlightRoute;
+---
+
+<SidebarPersister>
+	<ul class="flex flex-col gap-1 list-none pl-0">
+		{sidebar.map((entry) => (
+			<li>
+				{entry.type === "group" ? (
+					<SidebarSection group={entry} />
+				) : (
+					<SidebarLink link={entry} />
+				)}
+			</li>
+		))}
+	</ul>
+</SidebarPersister>
+
+<script is:inline>
+document
+	.querySelectorAll("#starlight__sidebar details[data-current]")
+	.forEach((d) => {
+		d.open = true;
+	});
+</script>
+
+<div class="md:sl-hidden">
+	<MobileMenuFooter />
+</div>

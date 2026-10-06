@@ -1,0 +1,19 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+import { type GlyphKey, glyphs } from "../brand/glyphs";
+
+interface Props extends HTMLAttributes<"svg"> {
+	key: GlyphKey;
+}
+const { key, ...rest } = Astro.props;
+const { viewBox, body } = glyphs[key];
+---
+
+<svg
+	viewBox={viewBox}
+	fill="currentColor"
+	aria-hidden="true"
+	{...rest}
+	set:html={body}
+/>

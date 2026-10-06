@@ -1,0 +1,44 @@
+---
+import { ArrowLeftIcon, ArrowRightIcon } from "@lucide/astro";
+
+import { sectionLabel, sectionOfHref } from "../../config/sections";
+
+type Props = {
+	link: {
+		label: string;
+		href: string;
+	};
+	type: "prev" | "next";
+};
+
+const { link, type } = Astro.props;
+
+const ArrowIcon = type === "prev" ? ArrowLeftIcon : ArrowRightIcon;
+const section = sectionOfHref(link.href);
+const isPrev = type === "prev";
+---
+
+<a
+	class:list={[
+		"flex-1 px-6 py-5 flex flex-col bg-surface hover:bg-hover rounded-2xl text-fg no-underline",
+		isPrev ? "items-start text-left" : "items-end text-right"
+	]}
+	href={link.href}
+	rel={type}
+>
+	<span
+		class:list={[
+	"mb-1 inline-flex items-center gap-2 text-sm text-subtle",
+	isPrev ? "flex-row" : "flex-row-reverse",
+]}
+	>
+		<ArrowIcon size={16} />
+		<span>{isPrev ? "Previous" : "Next"}</span>
+	</span>
+	<span class="text-lg font-medium leading-tight">{link.label}</span>
+	{section && (
+	<span class="mt-2 font-mono text-sm text-subtle">
+		{sectionLabel(section)}
+	</span>
+)}
+</a>

@@ -1,0 +1,24 @@
+---
+import type { SidebarLink } from "./types";
+
+interface Props {
+	link: SidebarLink;
+}
+const { link } = Astro.props;
+const { class: className, ...attrs } = link.attrs;
+---
+
+<a
+	href={link.href}
+	aria-current={link.isCurrent ? "page" : undefined}
+	{...attrs}
+	class:list={[
+    	"flex min-h-8.5 items-center rounded-lg py-2 pr-3 pl-8 text-[14.5px] leading-snug text-subtle no-underline",
+    	"hover:bg-hover hover:text-muted",
+    	"aria-[current=page]:bg-surface aria-[current=page]:font-semibold aria-[current=page]:text-fg",
+    	"group-data-[section=reference]:min-h-7.5 group-data-[section=reference]:font-mono group-data-[section=reference]:text-[13.5px]",
+    	className,
+  	]}
+>
+	{link.label}
+</a>
