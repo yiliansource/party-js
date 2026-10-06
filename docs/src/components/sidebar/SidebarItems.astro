@@ -1,0 +1,26 @@
+---
+import SidebarLink from "./SidebarLink.astro";
+import type { SidebarEntry } from "./types";
+
+interface Props {
+	entries: SidebarEntry[];
+}
+const { entries } = Astro.props;
+---
+
+<ul class="mt-0.5 flex flex-col gap-px list-none pl-0">
+	{entries.map((entry) => (
+	<li>
+		{entry.type === "link" ? (
+			<SidebarLink link={entry} />
+		) : (
+			<>
+				<p class="mt-2.5 pt-1.5 pr-3 pb-1 pl-8 font-mono text-[11.5px] tracking-[0.08em] text-subtle uppercase">
+					{entry.label}
+				</p>
+				<Astro.self entries={entry.entries} />
+			</>
+		)}
+	</li>
+))}
+</ul>

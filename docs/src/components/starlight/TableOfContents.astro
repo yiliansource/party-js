@@ -1,0 +1,41 @@
+---
+import { CircleAlertIcon } from "@lucide/astro";
+
+import { site } from "../../config/site";
+import TocList from "../toc/TocList.astro";
+
+const { toc, entry } = Astro.locals.starlightRoute;
+const issueUrl = `${site.repo}/issues/new?title=${encodeURIComponent(`docs: ${entry.data.title}`)}`;
+---
+
+{toc && (
+	<div class="flex flex-col gap-3.5 pt-8">
+		<starlight-toc
+			data-min-h={toc.minHeadingLevel}
+			data-max-h={toc.maxHeadingLevel}
+		>
+			<nav
+				aria-labelledby="starlight__on-this-page"
+				class="flex flex-col gap-3.5"
+			>
+				<h2
+					id="starlight__on-this-page"
+					class="m-0 font-mono text-[12.5px] leading-none font-normal tracking-[0.08em] text-subtle uppercase"
+				>
+					{Astro.locals.t("tableOfContents.onThisPage")}
+				</h2>
+				<TocList items={toc.items} />
+			</nav>
+		</starlight-toc>
+
+		<hr class="my-1.5 border-b border-line" />
+
+		<a
+			href={issueUrl}
+			class="inline-flex min-h-8 items-center gap-2 text-sm text-subtle no-underline hover:text-fg"
+		>
+			<CircleAlertIcon size={15} aria-hidden="true" />
+			Report an issue
+		</a>
+	</div>
+)}

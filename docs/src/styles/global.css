@@ -94,6 +94,12 @@
 	--color-primary-fg: var(--pj-primary-fg);
 }
 
+@layer base {
+	:root {
+		scrollbar-color: var(--color-line-strong) transparent;
+	}
+}
+
 @layer components {
 	:root {
 		--sl-color-bg-nav: var(--sl-color-black);
@@ -105,18 +111,38 @@
 		--sl-nav-pad-y: 0.5rem;
 		--sl-nav-gap: 0.5rem;
 
+		--sl-sidebar-pad-x: 1rem;
+
 		--sl-menu-button-size: 32px;
 	}
 
+	:root[data-has-sidebar] {
+		--sl-content-pad-x: 1.5rem;
+	}
+
+	@variant md {
+		:root[data-has-sidebar] {
+			--sl-content-pad-x: 2.5rem;
+		}
+	}
 	@variant lg {
 		:root {
 			--sl-nav-pad-x: 4rem;
+		}
+
+		:root[data-has-sidebar] {
+			--sl-content-pad-x: 5rem;
 		}
 	}
 	@variant xl {
 		:root {
 			--sl-nav-pad-x: 6rem;
 		}
+	}
+
+	a:not(.not-content *) {
+		font-weight: 500;
+		text-underline-offset: 2px;
 	}
 
 	site-search button[data-open-modal] {
@@ -166,6 +192,23 @@
 	.mobile-preferences .social-icons {
 		gap: 1.5rem;
 	}
+
+	.content-panel {
+		border-top: none;
+
+		.sl-container {
+			margin: 0;
+			max-width: unset;
+		}
+	}
+
+	.sidebar-pane {
+		@apply scrollbar-thin;
+	}
+
+	.right-sidebar {
+		border-inline-start: none;
+	}
 }
 
 @variant sl {
@@ -174,6 +217,37 @@
 		--sl-content-width: 67.5rem;
 	}
 	html[data-has-hero] .sidebar-pane {
+		display: none;
+	}
+}
+@utility scrollbar-thin {
+	scrollbar-width: thin;
+
+	&:hover {
+		scrollbar-color: var(--color-subtle) transparent;
+	}
+
+	&::-webkit-scrollbar {
+		width: 10px;
+		height: 10px;
+	}
+	&::-webkit-scrollbar-track {
+		background: transparent;
+	}
+	&::-webkit-scrollbar-thumb {
+		background: var(--color-line-strong);
+		border: 3px solid transparent;
+		border-radius: 999px;
+		background-clip: padding-box;
+	}
+	&:hover::-webkit-scrollbar-thumb {
+		background-color: var(--color-subtle);
+	}
+}
+
+@utility scrollbar-none {
+	scrollbar-width: none;
+	&::-webkit-scrollbar {
 		display: none;
 	}
 }

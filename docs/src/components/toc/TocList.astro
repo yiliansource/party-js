@@ -1,0 +1,31 @@
+---
+import type { StarlightRouteData } from "@astrojs/starlight/route-data";
+
+type TocItem = NonNullable<StarlightRouteData["toc"]>["items"][number];
+interface Props {
+	items: TocItem[];
+	depth?: number;
+}
+
+const { items, depth = 0 } = Astro.props;
+---
+
+<ul class:list={["m-0 flex list-none flex-col p-0", depth > 0 && "pl-4"]}>
+	{items.map((item) => (
+		<li>
+			<a
+				href={`#${item.slug}`}
+				class="group flex min-h-8 items-center gap-2.5 text-sm text-subtle no-underline hover:text-fg aria-current:font-semibold aria-current:text-fg"
+			>
+				<span
+					aria-hidden="true"
+					class="size-1.5 shrink-0 rotate-45 rounded-[1.5px] group-aria-current:bg-coral"
+				/>
+				<span>{item.text}</span>
+			</a>
+			{item.children.length > 0 && (
+				<Astro.self items={item.children} depth={depth + 1} />
+			)}
+		</li>
+	))}
+</ul>

@@ -13,7 +13,7 @@ import { MoonIcon, SunIcon } from "@lucide/astro";
 </theme-toggle>
 
 <script>
-import { getTheme, storeTheme, type Theme } from "../theme";
+import { getTheme, storeTheme, type Theme } from "../../theme";
 
 function onThemeChange(theme: Theme): void {
 	document.documentElement.dataset.theme = theme;

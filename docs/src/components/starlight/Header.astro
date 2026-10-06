@@ -3,9 +3,9 @@ import Search from "@astrojs/starlight/components/Search.astro";
 
 import { Image } from "astro:assets";
 
-import lightImage from "../assets/lockup.svg";
-import darkImage from "../assets/lockup-dark.svg";
-import { headerLinks } from "../config/site";
+import lightImage from "../../assets/lockup.svg";
+import darkImage from "../../assets/lockup-dark.svg";
+import { headerLinks } from "../../config/site";
 import SocialIcons from "./SocialIcons.astro";
 import ThemeToggle from "./ThemeToggle.astro";
 
@@ -33,14 +33,19 @@ const notFound = Astro.locals.isNotFound === true;
 			</div>
 			<div class="hidden sl:flex flex-row gap-8">
 				{headerLinks.map((link) => (
-					<a
-						href={link.href}
-						rel="me"
-						class:list={["no-underline", !notFound && link.isActive(pathname) ? "font-bold text-fg" : "font-medium text-muted hover:text-fg"]}
-					>
-						{link.label}
-					</a>
-				))}
+	<a
+		href={link.href}
+		rel="me"
+		class:list={[
+			"no-underline",
+			!notFound && link.isActive(pathname)
+				? "font-bold text-fg"
+				: "font-medium text-muted hover:text-fg",
+		]}
+	>
+		{link.label}
+	</a>
+))}
 			</div>
 		</div>
 		<div class="hidden sl:block mx-6 h-6 border-r border-line"></div>
