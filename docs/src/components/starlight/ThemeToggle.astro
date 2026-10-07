@@ -6,6 +6,7 @@ import { MoonIcon, SunIcon } from "@lucide/astro";
 	<button
 		type="button"
 		class="cursor-pointer bg-transparent leading-1 block text-muted hover:text-fg"
+		aria-label="Dark mode"
 	>
 		<MoonIcon class="dark:hidden" size={26} />
 		<SunIcon class="not-dark:hidden" size={26} />
@@ -13,17 +14,16 @@ import { MoonIcon, SunIcon } from "@lucide/astro";
 </theme-toggle>
 
 <script>
-import { getTheme, storeTheme, type Theme } from "../../theme";
-
-function onThemeChange(theme: Theme): void {
-	document.documentElement.dataset.theme = theme;
-	storeTheme(theme);
-}
+import { applyTheme, getTheme } from "../../theme";
 
 class ThemeToggle extends HTMLElement {
 	connectedCallback() {
-		this.querySelector("button")?.addEventListener("click", () => {
-			onThemeChange(getTheme() === "dark" ? "light" : "dark");
+		const button = this.querySelector("button")!;
+		button.setAttribute("aria-pressed", String(getTheme() === "dark"));
+		button.addEventListener("click", () => {
+			const newTheme = getTheme() === "dark" ? "light" : "dark";
+			button.setAttribute("aria-pressed", String(newTheme === "dark"));
+			applyTheme(newTheme);
 		});
 	}
 }

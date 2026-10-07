@@ -52,7 +52,11 @@ const github = socials.find((s) => s.icon === "github")!;
 </section>
 
 <div class="not-content m-0 fixed inset-0 -z-10">
-	<canvas id="confetti-rain-canvas" class="w-full h-full"></canvas>
+	<canvas
+		id="confetti-rain-canvas"
+		class="w-full h-full"
+		aria-hidden="true"
+	></canvas>
 </div>
 
 <div class="hidden sl:block fixed right-0 bottom-0 m-6">
@@ -61,12 +65,12 @@ const github = socials.find((s) => s.icon === "github")!;
 		label="Pause confetti"
 		variant="ghost"
 		iconPlacement="start"
-		aria-pressed="false"
+		data-paused="false"
 		class="group"
 	>
 		<Fragment slot="icon">
-			<PauseIcon class="group-aria-pressed:hidden" />
-			<PlayIcon class="hidden group-aria-pressed:block" />
+			<PauseIcon class="hidden group-data-[paused=false]:block" />
+			<PlayIcon class="hidden group-data-[paused=true]:block" />
 		</Fragment>
 	</Button>
 </div>
@@ -137,9 +141,9 @@ const effect = createEffect({
 const toggle = document.querySelector<HTMLButtonElement>("#confetti-toggle")!;
 const toggleText = toggle.querySelector("span")!;
 toggle.addEventListener("click", () => {
-	const paused = toggle.getAttribute("aria-pressed") !== "true";
+	const paused = toggle.dataset.paused !== "true";
 
-	toggle.setAttribute("aria-pressed", String(paused));
+	toggle.dataset.paused = String(paused);
 	toggleText.innerText = `${paused ? "Resume" : "Pause"} confetti`;
 
 	if (paused) effect.pause();

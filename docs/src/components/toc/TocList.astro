@@ -5,9 +5,11 @@ type TocItem = NonNullable<StarlightRouteData["toc"]>["items"][number];
 interface Props {
 	items: TocItem[];
 	depth?: number;
+	code?: boolean;
+	codeSections?: Set<string>;
 }
 
-const { items, depth = 0 } = Astro.props;
+const { items, depth = 0, code = false, codeSections } = Astro.props;
 ---
 
 <ul class:list={["m-0 flex list-none flex-col p-0", depth > 0 && "pl-4"]}>
@@ -21,10 +23,11 @@ const { items, depth = 0 } = Astro.props;
 					aria-hidden="true"
 					class="size-1.5 shrink-0 rotate-45 rounded-[1.5px] group-aria-current:bg-coral"
 				/>
-				<span>{item.text}</span>
+				<span class:list={[code && "font-mono"]}>{item.text}</span>
 			</a>
+
 			{item.children.length > 0 && (
-				<Astro.self items={item.children} depth={depth + 1} />
+				<Astro.self items={item.children} depth={depth + 1} code={codeSections?.has(item.text) ?? false} codeSections={codeSections} />
 			)}
 		</li>
 	))}

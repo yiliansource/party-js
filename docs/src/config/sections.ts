@@ -52,6 +52,7 @@ export function sectionOf(entryId: string): SectionKey | null {
 		);
 	} else {
 		if (entryId === "api") return "reference";
+		if (entryId === "404") return null;
 		if (entryId !== "index") return "start";
 	}
 	return null;
@@ -59,7 +60,7 @@ export function sectionOf(entryId: string): SectionKey | null {
 
 export const sectionOfHref = (href: string): SectionKey | null => {
 	const id = href.slice(import.meta.env.BASE_URL.length).replace(/\/$/, "");
-	return sectionOf(id ?? "index");
+	return sectionOf(id || "index");
 };
 
 export const sectionByLabel = (label: string): SectionKey | null =>

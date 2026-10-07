@@ -1,8 +1,11 @@
 import type { Element, ElementContent } from "hast";
 import type { HastVisitorContext } from "satteri";
 
-import { ensure, expect, type RowWithName, replaceSection } from "../rows";
-import { el, isElement, jsonClone, type Section } from "../tree";
+import { ensure, expect } from "../read";
+import { type RowWithName, renderRows } from "../rows";
+import { replaceBody, type Section } from "../section";
+import { el, isElement, textOf } from "../tree";
+import { jsonClone } from "../util";
 import type { SectionHandler } from "../walk";
 
 const COLUMN = {
@@ -34,9 +37,7 @@ export function readPropertyTable(
 		"table contains no body",
 	);
 
-	const headers = childElements(headerRow, "th").map((th) =>
-		ctx.textContent(th).trim(),
-	);
+	const headers = childElements(headerRow, "th").map((th) => textOf(th, ctx));
 
 	ensure(headers.includes(COLUMN.name), "table contains no name column");
 	ensure(headers.includes(COLUMN.type), "table contains no type column");
@@ -50,7 +51,7 @@ export function readPropertyTable(
 		return readProperty(cell, ctx);
 	});
 
-	ensure(rows.length > 0, "table rows were malformed");
+	ensure(rows.length > 0, "table has no rows");
 
 	return rows as RowWithName[];
 }
@@ -66,7 +67,7 @@ function readProperty(
 		nameCell.children.find((child) => isElement(child, "code")),
 		"name code was empty",
 	);
-	const rawName = ctx.textContent(nameCode).trim();
+	const rawName = textOf(nameCode, ctx);
 	const optional = rawName.endsWith("?");
 	const anchor = nameCell.children.find(
 		(child) => child.type === "raw" && child.value.includes(' id="'),
@@ -85,11 +86,9 @@ function readProperty(
 		: [];
 
 	const defaultCell = cell(COLUMN.default);
-	const defaultText = defaultCell ? ctx.textContent(defaultCell).trim() : "";
+	const defaultText = defaultCell ? textOf(defaultCell, ctx) : "";
 	const descriptionCell = cell(COLUMN.description);
-	const descriptionText = descriptionCell
-		? ctx.textContent(descriptionCell).trim()
-		: "";
+	const descriptionText = descriptionCell ? textOf(descriptionCell, ctx) : "";
 
 	return {
 		id,
@@ -130,6 +129,13 @@ export function readPropertiesSection(
 	return readPropertyTable(table as Element, ctx);
 }
 
+/**
+ * Replaces a "Properties" section with a rendered table of properties.
+ */
 export const properties: SectionHandler = (section, { ctx }) => {
-	replaceSection(section, () => readPropertiesSection(section, ctx), ctx);
+	replaceBody(
+		section,
+		() => renderRows(readPropertiesSection(section, ctx)),
+		ctx,
+	);
 };

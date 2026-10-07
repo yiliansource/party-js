@@ -33,19 +33,17 @@ const notFound = Astro.locals.isNotFound === true;
 			</div>
 			<div class="hidden sl:flex flex-row gap-8">
 				{headerLinks.map((link) => (
-	<a
-		href={link.href}
-		rel="me"
-		class:list={[
-			"no-underline",
-			!notFound && link.isActive(pathname)
-				? "font-bold text-fg"
-				: "font-medium text-muted hover:text-fg",
-		]}
-	>
-		{link.label}
-	</a>
-))}
+					<a
+						href={link.href}
+						aria-current={!notFound && link.isActive(pathname) ? "page" : undefined}
+						class:list={[
+							"no-underline font-medium text-muted hover:text-fg",
+							"aria-[current=page]:font-bold aria-[current=page]:text-fg"
+						]}
+					>
+						{link.label}
+					</a>
+				))}
 			</div>
 		</div>
 		<div class="hidden sl:block mx-6 h-6 border-r border-line"></div>

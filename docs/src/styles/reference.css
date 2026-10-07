@@ -5,7 +5,7 @@
 }
 .ref-param {
 	margin: 0;
-	padding: 1rem 1.25rem;
+	padding: 16px 20px;
 }
 .ref-param + .ref-param {
 	border-top: 1px solid var(--color-line);
@@ -15,24 +15,27 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: baseline;
-	gap: 0.625rem;
+	gap: 1px 10px;
 }
 .ref-param-name {
 	color: var(--color-fg);
 	font-weight: 600;
+	font-size: 13px;
 	background: none;
 	padding: 0;
 }
-.ref-param-optional {
+.ref-param-optional,
+.ref-param-modifier {
 	font-family: var(--font-mono);
-	font-size: 0.75rem;
-	padding: 0.125rem 0.4rem;
+	font-size: 12px;
+	font-weight: 500;
+	padding: 2px 8px;
 	border-radius: 6px;
 	background: var(--color-surface);
 	color: var(--color-subtle);
 }
 .ref-param-type {
-	font-size: 0.875rem;
+	font-size: 13px;
 	color: var(--color-subtle);
 
 	code {
@@ -41,9 +44,32 @@
 		background: transparent;
 	}
 }
+.ref-param-default {
+	display: inline-flex;
+	align-items: baseline;
+	gap: 8px;
+	margin-left: auto;
+}
+.ref-param-default-label {
+	font-size: 12px;
+	font-weight: 400;
+	color: var(--color-subtle);
+}
+.ref-param-default-value {
+	background: var(--color-surface);
+	padding: 2px 8px;
+	line-height: 1.3;
+	border-radius: 6px;
+
+	code {
+		padding: 0;
+		font-weight: 500;
+		background: transparent;
+	}
+}
 
 .ref-param-description {
-	margin: 0.375rem 0 0;
+	margin: 6px 0 0;
 	padding: 0;
 	color: var(--color-muted);
 	font-size: 15px;
@@ -55,4 +81,57 @@
 
 .ref-member-name {
 	font-family: var(--font-mono);
+}
+
+.ref-heritage {
+	margin-top: -28px;
+	display: flex;
+	flex-direction: column;
+	gap: 4px;
+}
+.ref-relation {
+	margin: var(--sl-content-gap-y) 0 0 0;
+	display: flex;
+	flex-direction: row;
+	align-items: baseline;
+	font-size: 13px;
+	font-family: var(--font-mono);
+	color: var(--color-subtle);
+}
+.ref-heritage .ref-relation {
+	margin: 0;
+}
+.ref-relation-label {
+	margin-right: 8px;
+}
+.ref-relation-target {
+	background: var(--color-surface);
+	font-size: 14px;
+	padding: 2px 8px;
+	line-height: 1.3;
+	border-radius: 6px;
+
+	code {
+		padding: 0;
+		font-weight: 500;
+		background: transparent;
+	}
+}
+.ref-relation-comma {
+	margin-right: 4px;
+}
+
+.ref-relation a[href^="http"] {
+	position: relative;
+	padding-right: 12px;
+	&::after {
+		position: absolute;
+		right: -2px;
+		top: 50%;
+		transform: translateY(-45%);
+		font-family: var(--font-sans);
+		font-size: 12px;
+		vertical-align: top;
+		content: "↗";
+	}
 }

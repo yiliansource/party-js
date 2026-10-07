@@ -6,3 +6,21 @@
 		--sl-content-inline-start: 0rem;
 	}
 }
+
+.expressive-code .frame.has-title:not(.is-terminal) {
+	--button-spacing: 6px;
+}
+.expressive-code .frame.has-title .copy {
+	inset-inline-end: 6px;
+}
+.expressive-code .frame .copy button {
+	width: 36px;
+	height: 36px;
+	border-radius: 8px;
+}
+.expressive-code .frame.has-title .copy button {
+	opacity: 1;
+}
+.expressive-code .frame .copy button::after {
+	margin: 10px;
+}

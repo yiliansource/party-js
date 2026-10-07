@@ -31,11 +31,13 @@ export function createRenderer(options: RendererOptions = {}): Renderer {
 	const ownsCanvas = options.canvas === undefined;
 
 	const supportsPopover = typeof canvas.showPopover === "function";
-	if (ownsCanvas && supportsPopover) {
-		canvas.popover = "manual";
-	}
 
 	if (ownsCanvas) {
+		if (supportsPopover) canvas.popover = "manual";
+
+		canvas.setAttribute("data-party-js", "");
+		canvas.setAttribute("aria-hidden", "true");
+
 		Object.assign(canvas.style, {
 			position: "fixed",
 			inset: "0",

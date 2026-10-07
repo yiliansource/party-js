@@ -1,8 +1,9 @@
-import type { Element } from "hast";
 import type { HastVisitorContext } from "satteri";
 
-import { ensure, expect, type RowWithName, replaceSection } from "../rows";
-import { isElement, type Section, splitByHeading } from "../tree";
+import { expect } from "../read";
+import { type RowWithName, renderRows } from "../rows";
+import { replaceBody, type Section } from "../section";
+import { isElement, splitByHeading, textOf } from "../tree";
 import type { SectionHandler } from "../walk";
 
 function readAccessor(
@@ -10,9 +11,11 @@ function readAccessor(
 	level: number,
 	ctx: HastVisitorContext,
 ): RowWithName {
+	const name = textOf(heading, ctx);
 	const signatures = splitByHeading(body, level + 1).sections;
 	const findSignature = (title: string) =>
-		signatures.find((s) => ctx.textContent(s.heading).trim() === title);
+		signatures.find((s) => textOf(s.heading, ctx) === title);
+
 	const get = expect(
 		findSignature("Get Signature"),
 		"accessor did not contain a getter",
@@ -20,12 +23,12 @@ function readAccessor(
 	const set = findSignature("Set Signature");
 
 	const { intro, sections } = splitByHeading(get.body, level + 2);
-	const returns = sections.find(
-		(s) => ctx.textContent(s.heading).trim() === "Returns",
-	);
+	const returns = sections.find((s) => textOf(s.heading, ctx) === "Returns");
 	const maybeType = returns?.body[0];
-	ensure(!!maybeType && isElement(maybeType, "p"), "malformed type");
-	const type = maybeType as Element;
+	const type = expect(
+		isElement(maybeType, "p") && maybeType,
+		`accessor "${name}" has no type paragraph`,
+	);
 
 	const description = intro.filter(
 		(node) => !(node.type === "element" && node.tagName === "pre"),
@@ -37,7 +40,7 @@ function readAccessor(
 		: [];
 
 	return {
-		name: ctx.textContent(heading).trim(),
+		name,
 		optional: false,
 		modifiers: set ? [] : ["readonly"],
 		type: type.children,
@@ -55,10 +58,13 @@ export function readAccessorsSection(
 	);
 }
 
+/**
+ * Replaces an "Accessors" section with a rendered table of accessors.
+ */
 export const accessors: SectionHandler = (section, { level, ctx }) => {
-	replaceSection(
+	replaceBody(
 		section,
-		() => readAccessorsSection(section, level, ctx),
+		() => renderRows(readAccessorsSection(section, level, ctx)),
 		ctx,
 	);
 };

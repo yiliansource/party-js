@@ -6,6 +6,7 @@ import TocList from "../toc/TocList.astro";
 
 const { toc, entry } = Astro.locals.starlightRoute;
 const issueUrl = `${site.repo}/issues/new?title=${encodeURIComponent(`docs: ${entry.data.title}`)}`;
+const codeSections = new Set(["Methods"]);
 ---
 
 {toc && (
@@ -24,7 +25,7 @@ const issueUrl = `${site.repo}/issues/new?title=${encodeURIComponent(`docs: ${en
 				>
 					{Astro.locals.t("tableOfContents.onThisPage")}
 				</h2>
-				<TocList items={toc.items} />
+				<TocList items={toc.items} codeSections={codeSections} />
 			</nav>
 		</starlight-toc>
 

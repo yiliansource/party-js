@@ -8,8 +8,10 @@ interface FakeCanvas {
 	height: number;
 	clientWidth: number;
 	clientHeight: number;
+	attributes: Record<string, string>;
 	getContext(): unknown;
 	remove(): void;
+	setAttribute(name: string, value: string): void;
 }
 
 function makeFakeCanvas(): FakeCanvas {
@@ -20,8 +22,12 @@ function makeFakeCanvas(): FakeCanvas {
 		height: 0,
 		clientWidth: 0,
 		clientHeight: 0,
+		attributes: {},
 		getContext: () => ctx,
 		remove() {},
+		setAttribute(name, value) {
+			this.attributes[name] = value;
+		},
 	};
 }
 
@@ -90,5 +96,21 @@ describe("createRenderer (owned canvas)", () => {
 		expect(canvas.height).toBe(1500);
 		expect(canvas.style.width).toBe("300px");
 		expect(canvas.style.height).toBe("500px");
+	});
+
+	test("marks the canvas and hides it from assistive technology", () => {
+		createRenderer();
+
+		expect(canvas.attributes["aria-hidden"]).toBe("true");
+		expect(canvas.attributes).toHaveProperty("data-party-js");
+	});
+});
+
+describe("createRenderer (provided canvas)", () => {
+	test("leaves a provided canvas's attributes alone", () => {
+		const own = makeFakeCanvas();
+		createRenderer({ canvas: own as unknown as HTMLCanvasElement });
+
+		expect(own.attributes).toEqual({});
 	});
 });
