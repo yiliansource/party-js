@@ -7,10 +7,12 @@ import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import starlightTypeDoc from "starlight-typedoc";
 
+import { codeTheme } from "./src/brand/code-theme.mjs";
 import { referenceGroups } from "./src/config/reference";
 import { sections } from "./src/config/sections";
 import { site } from "./src/config/site";
 import { reference } from "./src/plugins/reference";
+import { THEME_COLORS } from "./src/theme";
 
 // https://astro.build/config
 export default defineConfig({
@@ -33,16 +35,7 @@ export default defineConfig({
 					tag: "meta",
 					attrs: {
 						name: "theme-color",
-						content: "#FFFFFF",
-						media: "(prefers-color-scheme: light)",
-					},
-				},
-				{
-					tag: "meta",
-					attrs: {
-						name: "theme-color",
-						content: "#1A1A1A",
-						media: "(prefers-color-scheme: dark)",
+						content: THEME_COLORS.dark,
 					},
 				},
 				{
@@ -102,8 +95,45 @@ export default defineConfig({
 			},
 			routeMiddleware: "./src/routeData.ts",
 			expressiveCode: {
-				defaultProps: {
-					wrap: true,
+				themes: [codeTheme],
+				useStarlightDarkModeSwitch: false,
+				defaultProps: { wrap: true },
+				styleOverrides: {
+					borderRadius: "14px",
+					borderColor: "var(--pj-code-line)",
+					codeBackground: "var(--pj-code-bg)",
+					codeForeground: "#E8E8EC",
+					codeFontFamily: "var(--sl-font-mono)",
+					codeFontSize: "14.5px",
+					codeLineHeight: "1.75",
+					codePaddingBlock: "18px",
+					codePaddingInline: "20px",
+					uiFontFamily: "var(--sl-font-mono)",
+					uiFontSize: "13px",
+					uiPaddingBlock: "12px",
+					uiPaddingInline: "18px",
+					frames: {
+						frameBoxShadowCssValue: "none",
+						editorBackground: "var(--pj-code-bg)",
+						editorTabBarBackground: "var(--pj-code-bg)",
+						editorTabBarBorderColor: "var(--pj-code-line)",
+						editorTabBarBorderBottomColor: "#26262B",
+						editorActiveTabBackground: "transparent",
+						editorActiveTabForeground: "#A3A3AD",
+						editorActiveTabBorderColor: "transparent",
+						editorActiveTabIndicatorTopColor: "transparent",
+						editorActiveTabIndicatorBottomColor: "transparent",
+						terminalBackground: "var(--pj-code-bg)",
+						terminalTitlebarBackground: "var(--pj-code-bg)",
+						terminalTitlebarForeground: "#A3A3AD",
+						terminalTitlebarBorderBottomColor: "#26262B",
+						terminalTitlebarDotsForeground: "#A3A3AD",
+						terminalTitlebarDotsOpacity: "0.3",
+						inlineButtonForeground: "#A3A3AD",
+						inlineButtonBackground: "#A3A3AD",
+						inlineButtonBackgroundHoverOrFocusOpacity: "0.15",
+						inlineButtonBorder: "transparent",
+					},
 				},
 			},
 			plugins: [
@@ -115,6 +145,7 @@ export default defineConfig({
 						name: "API reference",
 						lang: "en",
 						router: "group",
+						basePath: "..",
 						entryFileName: "index",
 						groupOrder: [
 							...referenceGroups,
@@ -124,11 +155,15 @@ export default defineConfig({
 							"Methods",
 							"*",
 						],
-						plugin: ["./typedoc/reference-frontmatter.mjs"],
+						plugin: [
+							"typedoc-plugin-mdn-links",
+							"./typedoc/reference-frontmatter.mjs",
+						],
 						useCodeBlocks: true,
 						formatWithPrettier: true,
 						prettierConfigFile: "./.prettierrc.typedoc.json",
 						excludeExternals: true,
+						sourceLinkExternal: true,
 						expandParameters: true,
 						interfacePropertiesFormat: "table",
 						classPropertiesFormat: "table",

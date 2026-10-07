@@ -2,6 +2,13 @@ import { ReflectionKind } from "typedoc";
 import { MarkdownPageEvent } from "typedoc-plugin-markdown";
 import { parse, stringify } from "yaml";
 
+const UNTAGGED_FOLDERS = [
+	"Functions/",
+	"Interfaces/",
+	"Type_Aliases",
+	"Variables/",
+];
+
 /** @param {import('typedoc').Application} app */
 export function load(app) {
 	app.renderer.on(
@@ -9,16 +16,19 @@ export function load(app) {
 		(page) => {
 			const model = page.model;
 			const match = page.contents?.match(/^---\n([\s\S]*?)\n---\n/);
-			if (
-				!match ||
-				!("kindOf" in model) ||
-				model.kindOf(ReflectionKind.Project)
-			)
-				return;
+			if (!match || !("kindOf" in model)) return;
+
+			if (UNTAGGED_FOLDERS.some((f) => page.url.startsWith(f))) {
+				app.logger.warn(`${model.name}: missing @group tag`);
+			}
+
+			const extraFrontmatter = model.kindOf(ReflectionKind.Project)
+				? { draft: true }
+				: referenceFrontmatter(model, app);
 
 			const frontmatter = {
 				...parse(match[1]),
-				...referenceFrontmatter(model, app),
+				...extraFrontmatter,
 			};
 			const body = page.contents
 				.slice(match[0].length)
@@ -42,7 +52,7 @@ function referenceFrontmatter(model, app) {
 	if (summary?.content.some((part) => part.kind !== "text")) {
 		app.logger.warn(`${model.name}: @summary should be plain text`);
 	}
-	if (!summary && model.kindOf(ReflectionKind.Function)) {
+	if (!summary && isFunction) {
 		app.logger.warn(`${model.name}: missing @summary on function`);
 	}
 

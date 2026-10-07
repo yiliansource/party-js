@@ -5,7 +5,7 @@ import Glyph from "../Glyph.astro";
 
 const entry = Astro.locals.starlightRoute.entry;
 const { title, description, reference } = entry.data;
-const section = sectionOf(entry.id);
+const section = !Astro.locals.isNotFound ? sectionOf(entry.id) : null;
 const sectionData = section !== null ? sections[section] : null;
 const referenceGroup = reference !== undefined ? entry.id.split("/")[1] : null;
 ---
@@ -22,9 +22,9 @@ const referenceGroup = reference !== undefined ? entry.id.split("/")[1] : null;
 	    		<span>{sectionData.label}</span>
 	    		{reference && (
 	    			<>
-	    				<span>/</span>
+	    				<span aria-hidden="true">/</span>
 	    				<span>{referenceGroup}</span>
-	    				<span class="ml-1 px-3 py-1 -my-1 rounded-lg bg-gray-800 text-muted">
+	    				<span class="ml-1 px-3 py-1 -my-1 rounded-lg bg-surface text-muted">
 	    					{kindLabel[reference.kind]}
 	    				</span>
 	    			</>
@@ -34,9 +34,9 @@ const referenceGroup = reference !== undefined ? entry.id.split("/")[1] : null;
     )}
 	<h1
 		id="_top"
-		class:list={["mb-5 text-white text-5xl scroll-mt-[100vh]", reference && "font-mono"]}
+		class:list={["text-fg text-5xl scroll-mt-[100vh]", reference && "font-mono"]}
 	>
 		{title}
 	</h1>
-	<p class="text-xl text-muted">{description}</p>
+	{description && <p class="mt-5 text-xl text-muted">{description}</p>}
 </div>

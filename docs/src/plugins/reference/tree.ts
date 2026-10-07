@@ -1,13 +1,13 @@
-import type { Element, ElementContent, RootContent } from "hast";
+import type { Element, ElementContent, Nodes, RootContent, Text } from "hast";
 import type { HastVisitorContext } from "satteri";
 
-export interface Section {
-	heading: Element;
-	body: RootContent[];
-}
+import type { Section } from "./section";
 
-export const isElement = (node: RootContent, tag: string): node is Element =>
-	node.type === "element" && node.tagName === tag;
+export const isElement = <T extends string>(
+	node: Nodes | undefined,
+	tagName: T,
+): node is Element & { tagName: T } =>
+	node?.type === "element" && node.tagName === tagName;
 
 export const isHeading = (node: RootContent, level: number): node is Element =>
 	isElement(node, `h${level}`);
@@ -16,10 +16,26 @@ export const isIgnorable = (node: RootContent): boolean =>
 	(node.type === "text" && node.value.trim() === "") ||
 	(node.type === "element" && node.tagName === "hr");
 
-export const headingText = (
-	node: RootContent,
-	ctx: HastVisitorContext,
-): string => ctx.textContent(node).trim();
+export const textOf = (node: RootContent, ctx: HastVisitorContext): string =>
+	ctx.textContent(node).trim();
+
+export const el = (
+	tagName: string,
+	className: string | undefined,
+	children: ElementContent[],
+): Element => ({
+	type: "element",
+	tagName,
+	properties: {
+		...(className !== undefined ? { className: [className] } : {}),
+	},
+	children,
+});
+
+export const text = (value: string): Text => ({
+	type: "text",
+	value,
+});
 
 export function splitByHeading(
 	nodes: readonly RootContent[],
@@ -39,21 +55,9 @@ export function splitByHeading(
 	return { intro, sections };
 }
 
-export function jsonClone<T>(node: T): T {
-	return JSON.parse(JSON.stringify(node));
-}
-
-export function el(
-	tagName: string,
-	className: string | undefined,
-	children: ElementContent[],
-): Element {
-	return {
-		type: "element",
-		tagName,
-		properties: {
-			className: className !== undefined ? [className] : undefined,
-		},
-		children,
-	};
+export function trimLeadingPipe(nodes: ElementContent[]): ElementContent[] {
+	const [first, ...rest] = nodes;
+	if (first?.type !== "text") return nodes;
+	const value = first.value.replace(/^\s*\|\s*/, "");
+	return value ? [text(value), ...rest] : rest;
 }

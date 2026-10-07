@@ -59,6 +59,8 @@
 	--pj-hover: var(--color-gray-700);
 	--pj-primary: var(--color-white);
 	--pj-primary-fg: var(--color-gray-900);
+	--pj-code-bg: var(--color-gray-950);
+	--pj-code-line: var(--color-gray-800);
 }
 :root[data-theme="light"] {
 	--pj-page: var(--color-white);
@@ -72,6 +74,8 @@
 	--pj-hover: var(--color-gray-200);
 	--pj-primary: var(--color-gray-900);
 	--pj-primary-fg: var(--color-white);
+	--pj-code-bg: var(--color-gray-900);
+	--pj-code-line: var(--color-gray-900);
 }
 
 @theme inline {

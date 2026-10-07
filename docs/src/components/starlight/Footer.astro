@@ -17,26 +17,40 @@ const guides = reference
 
 <footer class="flex flex-col">
 	{reference && (
-	<>
-		{guides.length > 0 && (
-			<div class="mt-4 mb-12 flex flex-col">
-				{guides.map((guide) => (
-					<GuideCard entry={guide} />
-				))}
+		<>
+			{guides.length > 0 && (
+				<div class="mt-4 mb-12 flex flex-col">
+					{guides.map((guide) => (
+						<GuideCard entry={guide} />
+					))}
+				</div>
+			)}
+			<div class="mb-6 flex flex-col sm:flex-row gap-2 text-subtle">
+				{reference.source && (
+					<p class="ml-0 mr-auto inline-flex items-center text-xs font-mono">
+						<CodeIcon size={14} class="mr-2" />
+						<span class="mr-1">Defined in:</span>
+						{reference.source.url ? (
+							<a
+								href={reference.source.url}
+								class={"text-inherit no-underline hover:underline"}
+							>
+								<span>{reference.source.file}</span>:
+								<span>{reference.source.line}</span>
+							</a>
+						) : (
+							<span>
+								<span>{reference.source.file}</span>:
+								<span>{reference.source.line}</span>
+							</span>
+						)}
+					</p>
+				)}
+				<p class="sm:ml-auto sm:mr-0 text-sm">
+					Generated from the source
+				</p>
 			</div>
-		)}
-		<div class="mb-6 flex flex-col sm:flex-row gap-2">
-			{reference.source && <p class="ml-0 mr-auto inline-flex items-center text-xs text-gray-400 font-mono">
-				<CodeIcon size={14} class="mr-2" />
-				<span class="mr-1">Defined in:</span>
-				<a href={reference.source.url} class:list={["text-inherit no-underline", reference.source.url && "hover:underline"]}>
-					<span>{reference.source.file}</span>:<span>{reference.source.line}</span>
-				</a>
-			</p>}
-			<p class="sm:ml-auto sm:mr-0 text-sm text-gray-400">Generated from the source</p>
-		</div>
-	</>
-)}
-
+		</>
+	)}
 	<Pagination />
 </footer>

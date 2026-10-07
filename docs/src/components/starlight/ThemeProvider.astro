@@ -1,8 +1,8 @@
 ---
-import { DEFAULT_THEME, THEME_KEY } from "../../theme";
+import { DEFAULT_THEME, THEME_COLORS, THEME_KEY } from "../../theme";
 ---
 
-<script is:inline define:vars={{ THEME_KEY, DEFAULT_THEME }}>
+<script is:inline define:vars={{ THEME_KEY, DEFAULT_THEME, THEME_COLORS }}>
 (() => {
 	let theme = null;
 	try {
@@ -18,5 +18,8 @@ import { DEFAULT_THEME, THEME_KEY } from "../../theme";
 	}
 
 	document.documentElement.dataset.theme = theme;
+	document
+		.querySelector('meta[name="theme-color"]')
+		?.setAttribute("content", THEME_COLORS[theme]);
 })();
 </script>

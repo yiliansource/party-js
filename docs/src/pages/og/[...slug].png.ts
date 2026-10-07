@@ -167,7 +167,7 @@ const buildDocsCard = (
 							fontFamily: "Fredoka",
 							fontSize: "44px",
 						},
-						children: "party.js",
+						children: site.name,
 					}),
 				],
 			}),

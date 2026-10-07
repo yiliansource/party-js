@@ -1,18 +1,18 @@
-import type { Element } from "hast";
 import type { HastVisitorContext } from "satteri";
 
-import { ensure, type Row, replaceSection } from "../rows";
-import { isElement, type Section } from "../tree";
+import { expect } from "../read";
+import { type Row, renderRows } from "../rows";
+import { replaceBody, type Section } from "../section";
+import { isElement, textOf } from "../tree";
 import type { SectionHandler } from "../walk";
 
-function readReturn(
-	{ body }: Section,
-	_level: number,
-	_ctx: HastVisitorContext,
-): Row {
+function readReturn({ body }: Section, ctx: HastVisitorContext): Row | null {
 	const [maybeType, ...description] = body;
-	ensure(!!maybeType && isElement(maybeType, "p"), "malformed type");
-	const type = maybeType as Element;
+	const type = expect(
+		isElement(maybeType, "p") && maybeType,
+		"return type has no paragraph",
+	);
+	if (description.length === 0 && textOf(type, ctx) === "void") return null;
 
 	return {
 		type: type.children,
@@ -20,6 +20,13 @@ function readReturn(
 	};
 }
 
-export const returns: SectionHandler = (section, { level, ctx }) => {
-	replaceSection(section, () => [readReturn(section, level, ctx)], ctx);
+export const returns: SectionHandler = (section, { ctx }) => {
+	replaceBody(
+		section,
+		() => {
+			const row = readReturn(section, ctx);
+			return row && renderRows([row]);
+		},
+		ctx,
+	);
 };
