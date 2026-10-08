@@ -139,6 +139,16 @@
 					}
 				}
 			}
+		},
+		{
+			"includes": ["docs/**/*.demo.ts"],
+			"assist": {
+				"actions": {
+					"source": {
+						"organizeImports": "off"
+					}
+				}
+			}
 		}
 	]
 }

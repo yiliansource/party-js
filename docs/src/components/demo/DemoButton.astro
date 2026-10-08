@@ -1,0 +1,34 @@
+---
+import type { AstroComponent as AstroIconComponent } from "@lucide/astro";
+
+interface Props {
+	label: string;
+	icon?: AstroIconComponent;
+	size?: "full" | "compact";
+}
+
+const { label, icon: Icon, size = "full" } = Astro.props;
+const sizes = {
+	full: [
+		"px-6 py-2.5",
+		"-translate-y-1.5 hover:-translate-y-1 active:translate-y-0",
+		"shadow-[0_6px_0_var(--color-accent-700)] hover:shadow-[0_4px_0_var(--color-accent-700)] active:shadow-none",
+	],
+	compact: [
+		"px-6 py-1.5",
+		"-translate-y-1 hover:-translate-y-0.5 active:translate-y-0",
+		"shadow-[0_4px_0_var(--color-accent-700)] hover:shadow-[0_2px_0_var(--color-accent-700)] active:shadow-none",
+	],
+};
+---
+
+<button
+	type="button"
+	class:list={[
+		...sizes[size],
+		"flex flex-row items-center gap-2 cursor-pointer text-ink font-semibold bg-accent-500 rounded-xl",
+	]}
+>
+	{Icon && <Icon size={22} />}
+	<span>{label}</span>
+</button>
