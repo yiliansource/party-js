@@ -1,0 +1,80 @@
+---
+import { Code } from "@astrojs/starlight/components";
+import type { AstroComponent as AstroIconComponent } from "@lucide/astro";
+
+import { demoCode } from "../../demos/regions";
+import DemoButton from "./DemoButton.astro";
+
+interface Props {
+	demo: string;
+	size?: "full" | "compact" | "row";
+	label?: string;
+	icon?: AstroIconComponent;
+}
+
+const sources = import.meta.glob<string>("../../demos/*.demo.ts", {
+	query: "?raw",
+	import: "default",
+	eager: true,
+});
+
+const { demo, size = "full", label = "Click me", icon } = Astro.props;
+const source = sources[`../../demos/${demo}.demo.ts`];
+if (source === undefined) throw new Error(`[LiveDemo] unknown demo "${demo}"`);
+
+const code = demoCode(source);
+const multiline = code?.includes("\n") ?? false;
+---
+
+<live-demo data-demo={demo} class="block bg-surface rounded-2xl not-content">
+	{(size === "full" || size === "compact") && (
+		<>
+			<div
+				class:list={[
+					"relative grid place-items-center pointer-events-none *:pointer-events-auto",
+					size === "full" && "h-60",
+					size === "compact" && "h-40",
+				]}
+			>
+				{<p class="absolute top-5 left-5 text-sm font-mono font-light tracking-wide uppercase text-subtle">
+					Live Demo
+				</p>}
+				<DemoButton label={label} icon={icon} size={size} />
+			</div>
+			{code && !multiline && <div class="-mt-11 z-10 px-5 py-4 flex flex-row items-center">
+				<code class="text-muted text-sm">{code}</code>
+			</div>}
+		</>
+	)}
+	{size === "row" && <div class="px-5 py-4 flex flex-row items-center gap-4">
+		{code && !multiline && <code class="text-muted text-sm">{code}</code>}
+		<div class="ml-auto mr-0 shrink-0">
+			<DemoButton label={label} icon={icon} size="compact" />
+		</div>
+	</div>}
+	{code && multiline && <Code code={code} lang="ts" />}
+</live-demo>
+
+<!-- {code
+        ? multiline
+            ? <Code code={code} lang="ts" />
+            : <code class="…">{code}</code>
+        : undefined} -->
+
+<script>
+import type { Demo } from "../../demos/types";
+
+const modules = import.meta.glob<{ run: Demo }>("../../demos/*.demo.ts");
+
+class LiveDemo extends HTMLElement {
+	connectedCallback() {
+		const ready = modules[`../../demos/${this.dataset.demo}.demo.ts`]();
+		const button = this.querySelector("button")!;
+		button.addEventListener("click", async (event) => {
+			const { run } = await ready;
+			run({ button, event });
+		});
+	}
+}
+customElements.define("live-demo", LiveDemo);
+</script>

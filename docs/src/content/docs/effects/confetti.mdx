@@ -4,6 +4,11 @@ description: Paper-like confetti that bursts in an upwards cone.
 api: [confetti, ConfettiOptions]
 ---
 
+import LiveDemo from "../../../components/demo/LiveDemo.astro";
+import { PartyPopperIcon } from "@lucide/astro";
+
+<LiveDemo demo="confetti-basic" label="Fire confetti" icon={PartyPopperIcon} />
+
 ## Usage
 
 Pass the element the confetti should come from. Particles spawn across its whole area rather than from a single point, so a wide button gets a wide burst.

@@ -24,3 +24,11 @@
 .expressive-code .frame .copy button::after {
 	margin: 10px;
 }
+
+live-demo {
+	.expressive-code .frame > pre {
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		border-top: none;
+	}
+}
