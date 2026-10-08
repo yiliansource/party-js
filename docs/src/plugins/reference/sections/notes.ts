@@ -13,10 +13,7 @@ export const note = (label: NoteLabel): SectionHandler => {
 	return (section, { ctx }) => {
 		replaceSection(
 			section,
-			() => {
-				if (label === "overrides") return null;
-				return renderRelation(label, readRefs(section.body, ctx));
-			},
+			() => renderRelation(label, readRefs(section.body, ctx)),
 			ctx,
 		);
 	};

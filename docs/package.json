@@ -23,7 +23,7 @@
 		"@lucide/astro": "^1.52.0",
 		"@resvg/resvg-js": "^2.6.2",
 		"@tailwindcss/vite": "^4.3.3",
-		"astro": "^7.2.10",
+		"astro": "^7.3.8",
 		"satori": "^0.35.0",
 		"satteri": "^0.10.5",
 		"sharp": "^0.35.3",

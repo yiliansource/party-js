@@ -3,14 +3,17 @@ import { CodeIcon } from "@lucide/astro";
 
 import { type CollectionEntry, getCollection } from "astro:content";
 
+import { isPublished } from "../../utils/drafts";
 import EntryCard from "../EntryCard.astro";
 import Pagination from "./Pagination.astro";
 
 const { entry } = Astro.locals.starlightRoute;
 const { reference } = entry.data;
 const guides = reference
-	? await getCollection("docs", ({ data }: CollectionEntry<"docs">) =>
-			data.api?.includes(reference.name),
+	? await getCollection(
+			"docs",
+			(entry: CollectionEntry<"docs">) =>
+				isPublished(entry) && entry.data.api?.includes(reference.name),
 		)
 	: [];
 ---

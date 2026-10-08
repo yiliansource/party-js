@@ -16,6 +16,7 @@ import {
 	sections,
 } from "../../config/sections";
 import { site } from "../../config/site";
+import { isPublished } from "../../utils/drafts";
 
 const require = createRequire(import.meta.url);
 const font = (family: string, file: string) =>
@@ -184,7 +185,7 @@ const buildDocsCard = (
 	});
 
 export const getStaticPaths = (async () => {
-	const entries = await getCollection("docs");
+	const entries = await getCollection("docs", isPublished);
 	return entries.map((entry) => ({
 		params: { slug: entry.id },
 		props: {

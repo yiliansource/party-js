@@ -36,9 +36,9 @@ const multiline = code?.includes("\n") ?? false;
 					size === "compact" && "h-40",
 				]}
 			>
-				{<p class="absolute top-5 left-5 text-sm font-mono font-light tracking-wide uppercase text-subtle">
+				<p class="absolute top-5 left-5 text-sm font-mono font-light tracking-wide uppercase text-subtle">
 					Live Demo
-				</p>}
+				</p>
 				<DemoButton label={label} icon={icon} size={size} />
 			</div>
 			{code && !multiline && <div class="-mt-11 z-10 px-5 py-4 flex flex-row items-center">
@@ -54,12 +54,6 @@ const multiline = code?.includes("\n") ?? false;
 	</div>}
 	{code && multiline && <Code code={code} lang="ts" />}
 </live-demo>
-
-<!-- {code
-        ? multiline
-            ? <Code code={code} lang="ts" />
-            : <code class="…">{code}</code>
-        : undefined} -->
 
 <script>
 import type { Demo } from "../../demos/types";

@@ -32,3 +32,9 @@ live-demo {
 		border-top: none;
 	}
 }
+
+@media (scripting: none) {
+	live-demo {
+		display: none;
+	}
+}
