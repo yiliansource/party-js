@@ -9,11 +9,11 @@ const { entries } = Astro.props;
 ---
 
 <ul class="mt-0.5 flex flex-col gap-px list-none pl-0">
-	{entries.map((entry) => (
+	{entries.filter(e => e.type === "link" || e.entries.length > 0).map((entry) => (
 		<li>
 			{entry.type === "link" ? (
 				<SidebarLink link={entry} />
-			) : entry.entries.length > 0 ? (
+			) : (
 				<>
 					<p class="mt-1 pt-1.5 pr-3 pb-1 pl-8 font-mono text-[11.5px] tracking-[0.08em] text-subtle uppercase">
 						{entry.label}
@@ -22,7 +22,7 @@ const { entries } = Astro.props;
 						<Astro.self entries={entry.entries} />
 					</div>
 				</>
-			) : undefined}
+			)}
 		</li>
 	))}
 </ul>

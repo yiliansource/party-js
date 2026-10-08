@@ -5,7 +5,7 @@ import { parse, stringify } from "yaml";
 const UNTAGGED_FOLDERS = [
 	"Functions/",
 	"Interfaces/",
-	"Type_Aliases",
+	"Type_Aliases/",
 	"Variables/",
 ];
 

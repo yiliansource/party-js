@@ -163,7 +163,6 @@ export default defineConfig({
 						formatWithPrettier: true,
 						prettierConfigFile: "./.prettierrc.typedoc.json",
 						excludeExternals: true,
-						sourceLinkExternal: true,
 						expandParameters: true,
 						interfacePropertiesFormat: "table",
 						classPropertiesFormat: "table",

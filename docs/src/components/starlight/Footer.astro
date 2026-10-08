@@ -3,7 +3,7 @@ import { CodeIcon } from "@lucide/astro";
 
 import { type CollectionEntry, getCollection } from "astro:content";
 
-import GuideCard from "../GuideCard.astro";
+import EntryCard from "../EntryCard.astro";
 import Pagination from "./Pagination.astro";
 
 const { entry } = Astro.locals.starlightRoute;
@@ -21,7 +21,7 @@ const guides = reference
 			{guides.length > 0 && (
 				<div class="mt-4 mb-12 flex flex-col">
 					{guides.map((guide) => (
-						<GuideCard entry={guide} />
+						<EntryCard entry={guide} />
 					))}
 				</div>
 			)}
@@ -29,7 +29,7 @@ const guides = reference
 				{reference.source && (
 					<p class="ml-0 mr-auto inline-flex items-center text-xs font-mono">
 						<CodeIcon size={14} class="mr-2" />
-						<span class="mr-1">Defined in:</span>
+						<span class="mr-2">Defined in</span>
 						{reference.source.url ? (
 							<a
 								href={reference.source.url}
@@ -46,9 +46,7 @@ const guides = reference
 						)}
 					</p>
 				)}
-				<p class="sm:ml-auto sm:mr-0 text-sm">
-					Generated from the source
-				</p>
+				<p class="sm:ml-auto sm:mr-0 text-sm">Generated from the source</p>
 			</div>
 		</>
 	)}

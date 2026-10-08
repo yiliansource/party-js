@@ -1,7 +1,7 @@
 import type { Element, ElementContent, RootContent } from "hast";
 import type { HastVisitorContext } from "satteri";
 
-import { expect, ReadError } from "./read";
+import { ensure, ReadError } from "./read";
 import { el, isElement, text, textOf } from "./tree";
 import { jsonClone } from "./util";
 
@@ -44,14 +44,14 @@ export function readRefs(
 	{ splitDots = false } = {},
 ): Element[] {
 	const [node, ...rest] = body;
-	expect(
+	ensure(
 		rest.length === 0,
 		"expected a single list, paragraph or code block",
 	);
 
 	if (isElement(node, "ul")) {
 		const items = node.children.filter((child) => isElement(child, "li"));
-		expect(items.length > 0, "empty list");
+		ensure(items.length > 0, "empty list");
 		return items.flatMap((item) =>
 			splitDots ? splitAtDots(item.children) : [ref(item.children)],
 		);

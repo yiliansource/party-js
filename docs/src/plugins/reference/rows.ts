@@ -1,6 +1,6 @@
 import type { Element, ElementContent, RootContent } from "hast";
 
-import { el, text, trimLeadingPipe } from "./tree";
+import { el, text } from "./tree";
 import { jsonClone } from "./util";
 
 export interface Row {
@@ -14,6 +14,13 @@ export interface Row {
 }
 
 export type RowWithName = Row & Required<Pick<Row, "name">>;
+
+function trimLeadingPipe(nodes: ElementContent[]): ElementContent[] {
+	const [first, ...rest] = nodes;
+	if (first?.type !== "text") return nodes;
+	const value = first.value.replace(/^\s*\|\s*/, "");
+	return value ? [text(value), ...rest] : rest;
+}
 
 function renderRow(row: Row): Element {
 	const head: ElementContent[] = [];
@@ -51,7 +58,7 @@ function renderRow(row: Row): Element {
 		);
 	}
 
-	return el("div", "ref-param", body);
+	return el("div", "ref-param", body, { id: row.id });
 }
 
 export function renderRows(rows: Row[]): Element {

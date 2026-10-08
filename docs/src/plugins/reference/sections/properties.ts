@@ -1,4 +1,4 @@
-import type { Element, ElementContent } from "hast";
+import type { Element } from "hast";
 import type { HastVisitorContext } from "satteri";
 
 import { ensure, expect } from "../read";
@@ -53,7 +53,7 @@ export function readPropertyTable(
 
 	ensure(rows.length > 0, "table has no rows");
 
-	return rows as RowWithName[];
+	return rows;
 }
 
 function readProperty(
@@ -95,22 +95,14 @@ function readProperty(
 		name: optional ? rawName.slice(0, -1) : rawName,
 		optional,
 		modifiers,
-		type: jsonClone(typeCell.children) as ElementContent[],
+		type: jsonClone(typeCell.children),
 		default:
 			defaultCell && !["", "-", "undefined"].includes(defaultText)
-				? (jsonClone(defaultCell.children) as ElementContent[])
+				? jsonClone(defaultCell.children)
 				: undefined,
 		description:
 			descriptionCell && !["", "-"].includes(descriptionText)
-				? [
-						el(
-							"p",
-							undefined,
-							jsonClone(
-								descriptionCell.children,
-							) as ElementContent[],
-						),
-					]
+				? [el("p", undefined, jsonClone(descriptionCell.children))]
 				: [],
 	};
 }
@@ -119,14 +111,14 @@ export function readPropertiesSection(
 	section: Section,
 	ctx: HastVisitorContext,
 ): RowWithName[] {
-	const [table, ...rest] = section.body;
+	const [first, ...rest] = section.body;
 
-	ensure(
-		rest.length === 0 && isElement(table, "table"),
+	const table = expect(
+		rest.length === 0 && isElement(first, "table") && first,
 		"properties sections was not emitted as a table",
 	);
 
-	return readPropertyTable(table as Element, ctx);
+	return readPropertyTable(table, ctx);
 }
 
 /**
