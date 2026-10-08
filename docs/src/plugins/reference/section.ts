@@ -34,7 +34,7 @@ export function replaceBody(
 	section: Section,
 	build: Build,
 	ctx: HastVisitorContext,
-) {
+): void {
 	const result = run(section, build, ctx);
 	if ("reason" in result) return;
 
@@ -50,11 +50,27 @@ export function replaceSection(
 	section: Section,
 	build: Build,
 	ctx: HastVisitorContext,
-) {
+): void {
 	const result = run(section, build, ctx);
 	if ("reason" in result) return;
 
 	for (const node of section.body) ctx.removeNode(node);
 	if (result.value) ctx.replaceNode(section.heading, result.value);
 	else ctx.removeNode(section.heading);
+}
+
+/**
+ * Removes the section and returns the built element.
+ */
+export function extractSection(
+	section: Section,
+	build: Build,
+	ctx: HastVisitorContext,
+): Element | null | undefined {
+	const result = run(section, build, ctx);
+	if ("reason" in result) return undefined;
+
+	for (const node of section.body) ctx.removeNode(node);
+	ctx.removeNode(section.heading);
+	return result.value;
 }

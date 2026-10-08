@@ -1,4 +1,11 @@
-import type { Element, ElementContent, Nodes, RootContent, Text } from "hast";
+import type {
+	Element,
+	ElementContent,
+	Nodes,
+	Properties,
+	RootContent,
+	Text,
+} from "hast";
 import type { HastVisitorContext } from "satteri";
 
 import type { Section } from "./section";
@@ -23,11 +30,13 @@ export const el = (
 	tagName: string,
 	className: string | undefined,
 	children: ElementContent[],
+	props: Partial<Properties> = {},
 ): Element => ({
 	type: "element",
 	tagName,
 	properties: {
 		...(className !== undefined ? { className: [className] } : {}),
+		...props,
 	},
 	children,
 });
@@ -53,11 +62,4 @@ export function splitByHeading(
 		else intro.push(node);
 	}
 	return { intro, sections };
-}
-
-export function trimLeadingPipe(nodes: ElementContent[]): ElementContent[] {
-	const [first, ...rest] = nodes;
-	if (first?.type !== "text") return nodes;
-	const value = first.value.replace(/^\s*\|\s*/, "");
-	return value ? [text(value), ...rest] : rest;
 }

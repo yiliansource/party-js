@@ -40,6 +40,7 @@ function readAccessor(
 		: [];
 
 	return {
+		id: name.toLowerCase(),
 		name,
 		optional: false,
 		modifiers: set ? [] : ["readonly"],

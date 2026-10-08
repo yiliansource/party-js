@@ -2,13 +2,12 @@ import { defineHastPlugin } from "satteri";
 
 import { accessors } from "./sections/accessors";
 import { constructors } from "./sections/constructors";
-import { type HeritageKind, heritage } from "./sections/heritage";
+import { flushHeritage, heritage } from "./sections/heritage";
 import { members } from "./sections/members";
 import { note } from "./sections/notes";
 import { parameters } from "./sections/parameters";
 import { properties } from "./sections/properties";
 import { returns } from "./sections/returns";
-import { el } from "./tree";
 import { createWalker, type PageState, type SectionHandler } from "./walk";
 
 const handlers: Record<string, SectionHandler> = {
@@ -19,12 +18,12 @@ const handlers: Record<string, SectionHandler> = {
 	Accessors: accessors,
 	Returns: returns,
 	Methods: members,
-	Extends: heritage,
-	Implements: heritage,
-	"Extended by": heritage,
-	Overrides: note,
-	"Inherited from": note,
-	"Implementation of": note,
+	Extends: heritage("extends"),
+	Implements: heritage("implements"),
+	"Extended by": heritage("extended by"),
+	Overrides: note("overrides"),
+	"Inherited from": note("inherited from"),
+	"Implementation of": note("implements"),
 };
 
 const plugin = defineHastPlugin({
@@ -32,11 +31,7 @@ const plugin = defineHastPlugin({
 	before(root, ctx) {
 		const page: PageState = { heritage: new Map() };
 		createWalker(handlers, ctx, page)(root.children, 2);
-
-		const order: HeritageKind[] = ["extends", "implements", "extended by"];
-		const lines = order.flatMap((kind) => page.heritage.get(kind) ?? []);
-		if (lines.length > 0)
-			ctx.prependChild(root, el("div", "ref-heritage", lines));
+		flushHeritage(page, root, ctx);
 	},
 	element: {
 		filter: ["hr"],

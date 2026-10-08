@@ -1,8 +1,10 @@
-import { attempt } from "../read";
+import type { Root } from "hast";
+import type { HastVisitorContext } from "satteri";
+
 import { readRefs, renderRelation } from "../relations";
-import { textOf } from "../tree";
-import { warn } from "../util";
-import type { SectionHandler } from "../walk";
+import { extractSection } from "../section";
+import { el } from "../tree";
+import type { PageState, SectionHandler } from "../walk";
 
 const KINDS = {
 	Extends: "extends",
@@ -11,18 +13,32 @@ const KINDS = {
 } as const;
 export type HeritageKind = (typeof KINDS)[keyof typeof KINDS];
 
-export const heritage: SectionHandler = (section, { ctx, page }) => {
-	const kind = KINDS[textOf(section.heading, ctx) as keyof typeof KINDS];
-	const result = attempt(() =>
-		renderRelation(
-			kind,
-			readRefs(section.body, ctx, { splitDots: kind === "extends" }),
-		),
-	);
-	if ("reason" in result)
-		return warn(ctx, `"${kind}" left as is: ${result.reason}`);
+const ORDER: HeritageKind[] = ["extends", "implements", "extended by"];
 
-	for (const node of section.body) ctx.removeNode(node);
-	ctx.removeNode(section.heading);
-	page.heritage.set(kind, result.value);
+export function flushHeritage(
+	page: PageState,
+	root: Root,
+	ctx: HastVisitorContext,
+): void {
+	const lines = ORDER.flatMap((kind) => page.heritage.get(kind) ?? []);
+	if (lines.length > 0)
+		ctx.prependChild(root, el("div", "ref-heritage", lines));
+}
+
+export const heritage = (kind: HeritageKind): SectionHandler => {
+	return (section, { ctx, page }) => {
+		const result = extractSection(
+			section,
+			() =>
+				renderRelation(
+					kind,
+					readRefs(section.body, ctx, {
+						splitDots: kind === "extends",
+					}),
+				),
+			ctx,
+		);
+
+		if (result) page.heritage.set(kind, result);
+	};
 };

@@ -4,6 +4,6 @@ export function warn(ctx: HastVisitorContext, text: string): void {
 	console.warn(`[${ctx.fileURL}] ${text}`);
 }
 
-export function jsonClone<T>(node: T): T {
-	return JSON.parse(JSON.stringify(node));
+export function jsonClone<T>(value: T): T {
+	return JSON.parse(JSON.stringify(value));
 }

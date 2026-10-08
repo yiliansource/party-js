@@ -3,7 +3,7 @@ import { ArrowRightIcon } from "@lucide/astro";
 
 import type { CollectionEntry } from "astro:content";
 
-import { sectionOf, sections } from "../config/sections";
+import { sectionLabel, sectionOf, sections } from "../config/sections";
 import Glyph from "./Glyph.astro";
 
 type Props = {
@@ -30,7 +30,7 @@ const sectionData = section ? sections[section] : null;
 	</span>
 )}
 	<span class="flex flex-col">
-		<span class="mb-0.5 text-xs">Guide</span>
+		{section && <span class="mb-0.5 text-xs">{sectionLabel(section)}</span>}
 		<span class="text-[15px] text-fg font-semibold leading-none"
 			>{entry.data.title}</span
 		>

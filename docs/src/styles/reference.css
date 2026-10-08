@@ -36,6 +36,7 @@
 }
 .ref-param-type {
 	font-size: 13px;
+	font-family: var(--font-mono);
 	color: var(--color-subtle);
 
 	code {
