@@ -10,7 +10,7 @@ const { sidebar } = Astro.locals.starlightRoute;
 
 <SidebarPersister>
 	<ul class="flex flex-col gap-1 list-none pl-0">
-		{sidebar.map((entry) => (
+		{sidebar.filter(e => e.type === "link" || e.entries.length > 0).map((entry) => (
 			<li>
 				{entry.type === "group" ? (
 					<SidebarSection group={entry} />

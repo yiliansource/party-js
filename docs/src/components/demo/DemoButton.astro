@@ -27,6 +27,8 @@ const sizes = {
 	class:list={[
 		...sizes[size],
 		"flex flex-row items-center gap-2 cursor-pointer text-ink font-semibold bg-accent-500 rounded-xl",
+		"focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-accent-600",
+		"transition-[translate,box-shadow] duration-50 motion-reduce:transition-none"
 	]}
 >
 	{Icon && <Icon size={22} />}
