@@ -1,8 +1,9 @@
 export const referenceGroups = [
 	"Effects",
+	"Custom effects",
 	"Samplers",
+	"Particles",
 	"Behaviors",
-	"Emitter",
 	"Utilities",
 ];
 
@@ -15,3 +16,12 @@ export const kindLabel = {
 	Enum: "Enum",
 	Namespace: "Namespace",
 } as const;
+
+export const groupDirectory = (group: string): string =>
+	group.replace(/[^\p{L}\p{N}()+,\-._]/gu, "_");
+
+export const referenceGroupOf = (entryId: string): string | undefined =>
+	referenceGroups.find(
+		(group) =>
+			groupDirectory(group).toLowerCase() === entryId.split("/")[1],
+	);

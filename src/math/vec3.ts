@@ -1,5 +1,8 @@
 import { lerp as lerpScalar } from "./scalar";
 
+/**
+ * @group Utilities
+ */
 export interface Vec3 {
 	x: number;
 	y: number;

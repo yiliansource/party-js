@@ -9,6 +9,8 @@ import type { SamplerFn } from "./types";
  *
  * @param center The center of the spread cone.
  * @param deviation The deviation angle to either side of the center.
+ *
+ * @group Samplers
  */
 export function spread(center: number, deviation: number): SamplerFn<number> {
 	return (ctx) => {

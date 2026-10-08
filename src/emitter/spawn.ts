@@ -6,6 +6,9 @@ import { evaluateSampler } from "../samplers/helpers";
 import type { Sampler, SamplerContext } from "../samplers/types";
 import type { ParticleShape } from "../shapes/shape";
 
+/**
+ * @group Custom effects
+ */
 export interface ParticleInit {
 	position: Sampler<Vec3>;
 	velocity: Sampler<Vec3>;

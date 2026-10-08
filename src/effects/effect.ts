@@ -1,30 +1,44 @@
+import type { Behavior } from "../behavior";
+import type { EmissionSchedule, ParticleInit } from "../emitter";
 import { rectFromElement } from "../emitter/element";
-import { Emitter, type EmitterOptions } from "../emitter/emitter";
+import { Emitter } from "../emitter/emitter";
 import { type Live, resolveLive } from "../emitter/live";
 import type { EmissionShape } from "../emitter/shape";
 import type { Vec2 } from "../math/vec2";
 import type { Vec3 } from "../math/vec3";
 import { createFixedTimestepLoop } from "../physics/loop";
-import {
-	createAnimationLoop,
-	createRenderer,
-	type LightingFn,
-} from "../render";
+import { createRng, type Rng } from "../random/rng";
+import type { LightingFn } from "../render";
+import { createAnimationLoop } from "../render/loop";
+import { createRenderer } from "../render/renderer";
 
+/**
+ * @group Effects
+ */
 export interface Effect {
 	stop(): void;
 	pause(): void;
 	resume(): void;
 }
 
+/**
+ * @group Effects
+ */
 export type EffectTarget = HTMLElement | Vec2;
 
+/**
+ * @group Custom effects
+ */
 export interface CreateEffectOptions {
-	emitterOptions: EmitterOptions;
 	origin: Live<Vec2>;
+	schedule: EmissionSchedule;
+	particleInit: ParticleInit;
+	behaviors?: Behavior[];
 	canvas?: HTMLCanvasElement;
 	light?: Live<Vec3>;
 	lighting?: LightingFn;
+	seed?: number;
+	rng?: Rng;
 	onComplete?: () => void;
 }
 
@@ -47,8 +61,16 @@ export function resolveTarget(target: EffectTarget): {
 	};
 }
 
+/**
+ * @group Custom effects
+ */
 export function createEffect(options: CreateEffectOptions): Effect {
-	const emitter = new Emitter(options.emitterOptions);
+	const emitter = new Emitter({
+		schedule: options.schedule,
+		particleInit: options.particleInit,
+		rng: options.rng ?? createRng(options.seed),
+		behaviors: options.behaviors,
+	});
 	const renderer = createRenderer({ canvas: options.canvas });
 
 	const fixedLoop = createFixedTimestepLoop({

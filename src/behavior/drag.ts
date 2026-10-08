@@ -9,6 +9,8 @@ import type { Behavior } from "./behavior";
  * this should usually be calculated as `gravityStrength / dragStrength ** 2`.
  *
  * @see http://hyperphysics.phy-astr.gsu.edu/hbase/Mechanics/quadvfall.html
+ *
+ * @group Behaviors
  */
 export function drag(coefficient: number): Behavior {
 	return {

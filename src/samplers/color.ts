@@ -10,6 +10,8 @@ import type { SamplerFn } from "./types";
 
 /**
  * Creates a sampler for picking a color from a gradient.
+ *
+ * @group Samplers
  */
 export function gradient(
 	colors: (string | Color)[] | GradientStop[],
@@ -18,6 +20,9 @@ export function gradient(
 	return (ctx) => evaluateGradient(g, ctx.rng());
 }
 
+/**
+ * @group Samplers
+ */
 export interface RandomHueOptions {
 	l: number;
 	c: number;
@@ -26,6 +31,8 @@ export interface RandomHueOptions {
 
 /**
  * Creates a sampler for adding a random hue to a partial Oklch color that produces an Oklab color.
+ *
+ * @group Samplers
  */
 export function randomHue(options: RandomHueOptions): SamplerFn<Color> {
 	const { l, c, alpha = 1 } = options;

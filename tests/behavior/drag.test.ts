@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { applyBehavior } from "@/behavior";
+import { applyBehavior } from "@/behavior/behavior";
 import { drag } from "@/behavior/drag";
 import { gravity } from "@/behavior/gravity";
 import * as vec3 from "@/math/vec3";

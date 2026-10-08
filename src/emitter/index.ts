@@ -1,5 +1,4 @@
-export { rectFromElement } from "./element";
-export { Emitter, type EmitterOptions } from "./emitter";
+export type { Live } from "./live";
 export type { EmissionBurst, EmissionSchedule } from "./schedule";
 export {
 	type DiskEmissionShape,

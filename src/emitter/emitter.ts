@@ -6,7 +6,7 @@ import {
 } from "../behavior/behavior";
 import { isDead } from "../particle/lifecycle";
 import type { Particle } from "../particle/particle";
-import type { Rng } from "../random";
+import { createRng, type Rng } from "../random/rng";
 import type { SamplerContext } from "../samplers/types";
 import { stepParticles } from "../simulation/step";
 import {
@@ -21,7 +21,7 @@ import { type ParticleInit, spawnParticle } from "./spawn";
 export interface EmitterOptions {
 	schedule: EmissionSchedule;
 	particleInit: ParticleInit;
-	rng: Rng;
+	rng?: Rng;
 	behaviors?: Behavior[];
 }
 
@@ -46,7 +46,7 @@ export class Emitter {
 		this.schedule = options.schedule;
 		this.particleInit = options.particleInit;
 		this.behaviors = options.behaviors ?? [];
-		this.rng = options.rng;
+		this.rng = options.rng ?? createRng();
 	}
 
 	/**

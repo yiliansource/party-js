@@ -2,6 +2,9 @@ import { deg2rad } from "./scalar";
 import type { Vec3 } from "./vec3";
 import * as vec3 from "./vec3";
 
+/**
+ * @group Utilities
+ */
 export interface Quat {
 	x: number;
 	y: number;

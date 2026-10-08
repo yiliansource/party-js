@@ -5,6 +5,8 @@ import { toOklab } from "./culori";
 
 /**
  * A color representation in the Oklab color space.
+ *
+ * @group Utilities
  */
 export interface Color {
 	l: number;
@@ -17,6 +19,8 @@ export interface Color {
  * Produces a Oklab color instance from the given color string.
  *
  * Does nothing if the argument is already an Oklab color.
+ *
+ * @group Utilities
  */
 export function color(input: string | Color): Color {
 	if (typeof input !== "string") return input;

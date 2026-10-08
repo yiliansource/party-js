@@ -1,27 +1,38 @@
 ---
 import SidebarLink from "./SidebarLink.astro";
-import type { SidebarEntry } from "./types";
+import SidebarSubgroup from "./SidebarSubgroup.astro";
+import { isFunctionEntry, type SidebarEntry } from "./types";
 
 interface Props {
 	entries: SidebarEntry[];
+	tree?: boolean;
 }
-const { entries } = Astro.props;
+const { entries, tree = false } = Astro.props;
+
+const visible = entries.filter(
+	(e) => e.type === "link" || e.entries.length > 0,
+);
+
+const startsTypes = (index: number) =>
+	index > 0 &&
+	isFunctionEntry(visible[index - 1]) &&
+	!isFunctionEntry(visible[index]);
 ---
 
-<ul class="mt-0.5 flex flex-col gap-px list-none pl-0">
-	{entries.filter(e => e.type === "link" || e.entries.length > 0).map((entry) => (
-		<li>
+<ul
+	class:list={[
+		"flex list-none flex-col gap-px",
+		tree
+			? "mt-0.5 mb-1.5 ml-5 border-l border-line-strong pl-2.25"
+			: "mt-0.5 pl-0",
+	]}
+>
+	{visible.map((entry, index) => (
+		<li class:list={[startsTypes(index) && "mt-3"]}>
 			{entry.type === "link" ? (
-				<SidebarLink link={entry} />
+				<SidebarLink link={entry} tree={tree} />
 			) : (
-				<>
-					<p class="mt-1 pt-1.5 pr-3 pb-1 pl-8 font-mono text-[11.5px] tracking-[0.08em] text-subtle uppercase">
-						{entry.label}
-					</p>
-					<div class="mb-2">
-						<Astro.self entries={entry.entries} />
-					</div>
-				</>
+				<SidebarSubgroup group={entry} />
 			)}
 		</li>
 	))}

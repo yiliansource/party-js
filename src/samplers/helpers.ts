@@ -1,5 +1,8 @@
 import type { Sampler, SamplerContext, SamplerFn } from "./types";
 
+/**
+ * @group Samplers
+ */
 export function evaluateSampler<T>(
 	sampler: Sampler<T>,
 	ctx: SamplerContext,

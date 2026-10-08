@@ -10,6 +10,8 @@ import type { SamplerFn } from "./types";
  * @param max The maximum speed.
  *
  * @see https://mathworld.wolfram.com/SpherePointPicking.html
+ *
+ * @group Samplers
  */
 export function randomSpin(min: number, max: number): SamplerFn<Vec3> {
 	return (ctx) => {

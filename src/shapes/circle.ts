@@ -1,3 +1,6 @@
+/**
+ * @group Particles
+ */
 export interface CircleShape {
 	type: "circle";
 }

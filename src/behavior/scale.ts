@@ -1,6 +1,9 @@
 import type { Behavior } from "./behavior";
 import { type Easing, linear } from "./easing";
 
+/**
+ * @group Behaviors
+ */
 export function scale(
 	inDuration: number,
 	outDuration: number,

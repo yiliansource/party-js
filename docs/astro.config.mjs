@@ -8,7 +8,7 @@ import { defineConfig } from "astro/config";
 import starlightTypeDoc from "starlight-typedoc";
 
 import { codeTheme } from "./src/brand/code-theme.mjs";
-import { referenceGroups } from "./src/config/reference";
+import { groupDirectory, referenceGroups } from "./src/config/reference";
 import { sections } from "./src/config/sections";
 import { site } from "./src/config/site";
 import { reference } from "./src/plugins/reference";
@@ -74,7 +74,11 @@ export default defineConfig({
 						...referenceGroups.map((group) => ({
 							label: group,
 							items: [
-								{ autogenerate: { directory: `api/${group}` } },
+								{
+									autogenerate: {
+										directory: `api/${groupDirectory(group)}`,
+									},
+								},
 							],
 						})),
 					],
