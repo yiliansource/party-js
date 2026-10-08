@@ -1,6 +1,7 @@
 import { rectFromElement } from "../emitter/element";
 import { Emitter, type EmitterOptions } from "../emitter/emitter";
-import { type EmissionShape, type Live, resolve } from "../emitter/shape";
+import { type Live, resolveLive } from "../emitter/live";
+import type { EmissionShape } from "../emitter/shape";
 import type { Vec2 } from "../math/vec2";
 import type { Vec3 } from "../math/vec3";
 import { createFixedTimestepLoop } from "../physics/loop";
@@ -22,7 +23,7 @@ export interface CreateEffectOptions {
 	emitterOptions: EmitterOptions;
 	origin: Live<Vec2>;
 	canvas?: HTMLCanvasElement;
-	light?: Vec3;
+	light?: Live<Vec3>;
 	lighting?: LightingFn;
 	onComplete?: () => void;
 }
@@ -56,15 +57,10 @@ export function createEffect(options: CreateEffectOptions): Effect {
 	});
 
 	const loop = createAnimationLoop(fixedLoop, () => {
-		const origin = resolve(options.origin);
-		const screenOrigin = {
-			x: origin.x - window.scrollX,
-			y: origin.y - window.scrollY,
-		};
 		renderer.drawFrame(
 			emitter.particles,
-			screenOrigin,
-			options.light,
+			resolveLive(options.origin),
+			resolveLive(options.light),
 			options.lighting,
 		);
 		if (emitter.isDone) stop(true);

@@ -7,6 +7,8 @@ import {
 	isScheduleExpired,
 } from "@/emitter/schedule";
 
+const rng = () => 0;
+
 describe("advanceSchedule", () => {
 	test("a burst at time 0 fires on the very first tick", () => {
 		const schedule: EmissionSchedule = {
@@ -19,6 +21,7 @@ describe("advanceSchedule", () => {
 			schedule,
 			initialScheduleState,
 			0.016,
+			rng,
 		);
 		expect(spawnCount).toBe(5);
 	});
@@ -30,8 +33,13 @@ describe("advanceSchedule", () => {
 			rate: 0,
 			bursts: [{ time: 0, count: 5 }],
 		};
-		const first = advanceSchedule(schedule, initialScheduleState, 0.016);
-		const second = advanceSchedule(schedule, first.state, 0.016);
+		const first = advanceSchedule(
+			schedule,
+			initialScheduleState,
+			0.016,
+			rng,
+		);
+		const second = advanceSchedule(schedule, first.state, 0.016, rng);
 		expect(second.spawnCount).toBe(0);
 	});
 
@@ -42,10 +50,15 @@ describe("advanceSchedule", () => {
 			rate: 0,
 			bursts: [{ time: 0.5, count: 3 }],
 		};
-		const before = advanceSchedule(schedule, initialScheduleState, 0.4);
+		const before = advanceSchedule(
+			schedule,
+			initialScheduleState,
+			0.4,
+			rng,
+		);
 		expect(before.spawnCount).toBe(0);
 
-		const after = advanceSchedule(schedule, before.state, 0.2);
+		const after = advanceSchedule(schedule, before.state, 0.2, rng);
 		expect(after.spawnCount).toBe(3);
 	});
 
@@ -60,6 +73,7 @@ describe("advanceSchedule", () => {
 			schedule,
 			initialScheduleState,
 			2,
+			rng,
 		);
 		expect(spawnCount).toBe(3);
 	});
@@ -75,6 +89,7 @@ describe("advanceSchedule", () => {
 			schedule,
 			initialScheduleState,
 			0.12,
+			rng,
 		);
 		expect(spawnCount).toBe(1);
 	});
@@ -89,7 +104,7 @@ describe("advanceSchedule", () => {
 		let state = initialScheduleState;
 		let total = 0;
 		for (let i = 0; i < 10; i++) {
-			const result = advanceSchedule(schedule, state, 0.09);
+			const result = advanceSchedule(schedule, state, 0.09, rng);
 			state = result.state;
 			total += result.spawnCount;
 		}
@@ -107,6 +122,7 @@ describe("advanceSchedule", () => {
 			schedule,
 			initialScheduleState,
 			1,
+			rng,
 		);
 		expect(spawnCount).toBe(10);
 	});
@@ -118,8 +134,8 @@ describe("advanceSchedule", () => {
 			rate: 10,
 			bursts: [{ time: 2, count: 99 }],
 		};
-		const past = advanceSchedule(schedule, initialScheduleState, 3);
-		const again = advanceSchedule(schedule, past.state, 1);
+		const past = advanceSchedule(schedule, initialScheduleState, 3, rng);
+		const again = advanceSchedule(schedule, past.state, 1, rng);
 		expect(again.spawnCount).toBe(0);
 	});
 
@@ -130,7 +146,12 @@ describe("advanceSchedule", () => {
 			rate: 0,
 			bursts: [],
 		};
-		const { state } = advanceSchedule(schedule, initialScheduleState, 5);
+		const { state } = advanceSchedule(
+			schedule,
+			initialScheduleState,
+			5,
+			rng,
+		);
 		expect(state.currentLoop).toBe(5);
 		expect(state.elapsed).toBe(0);
 	});
@@ -145,7 +166,7 @@ describe("advanceSchedule", () => {
 		let state = initialScheduleState;
 		let total = 0;
 		for (let i = 0; i < 3; i++) {
-			const result = advanceSchedule(schedule, state, 1);
+			const result = advanceSchedule(schedule, state, 1, rng);
 			state = result.state;
 			total += result.spawnCount;
 		}
@@ -163,6 +184,7 @@ describe("advanceSchedule", () => {
 			schedule,
 			initialScheduleState,
 			3.5,
+			rng,
 		);
 		expect(spawnCount).toBe(20);
 	});
@@ -174,7 +196,12 @@ describe("advanceSchedule", () => {
 			rate: 0,
 			bursts: [],
 		};
-		const { state } = advanceSchedule(schedule, initialScheduleState, 1000);
+		const { state } = advanceSchedule(
+			schedule,
+			initialScheduleState,
+			1000,
+			rng,
+		);
 		expect(isScheduleExpired(schedule, state)).toBe(false);
 	});
 
@@ -186,7 +213,7 @@ describe("advanceSchedule", () => {
 			bursts: [],
 		};
 		expect(() =>
-			advanceSchedule(schedule, initialScheduleState, 0.016),
+			advanceSchedule(schedule, initialScheduleState, 0.016, rng),
 		).toThrow();
 	});
 });
@@ -209,7 +236,12 @@ describe("isScheduleExpired", () => {
 			rate: 0,
 			bursts: [],
 		};
-		const { state } = advanceSchedule(schedule, initialScheduleState, 1);
+		const { state } = advanceSchedule(
+			schedule,
+			initialScheduleState,
+			1,
+			rng,
+		);
 		expect(isScheduleExpired(schedule, state)).toBe(true);
 	});
 
@@ -220,7 +252,12 @@ describe("isScheduleExpired", () => {
 			rate: 0,
 			bursts: [],
 		};
-		const { state } = advanceSchedule(schedule, initialScheduleState, 1);
+		const { state } = advanceSchedule(
+			schedule,
+			initialScheduleState,
+			1,
+			rng,
+		);
 		expect(isScheduleExpired(schedule, state)).toBe(false);
 	});
 });

@@ -77,7 +77,6 @@ export function confetti(
 
 	const angle = evaluate(o.angle, resolveCtx);
 	const spread = evaluate(o.spread, resolveCtx);
-	const count = Math.round(evaluate(o.count, resolveCtx));
 	const gravityStrength = evaluate(o.gravity, resolveCtx);
 	const dragStrength = evaluate(o.drag, resolveCtx);
 
@@ -88,7 +87,7 @@ export function confetti(
 				duration: 1 / 60,
 				loops: 1,
 				rate: 0,
-				bursts: [{ time: 0, count }],
+				bursts: [{ time: 0, count: o.count }],
 			},
 			rng,
 			particleInit: {
@@ -108,7 +107,7 @@ export function confetti(
 			},
 			behaviors: [
 				gravity(gravityStrength),
-				drag(dragStrength, gravityStrength),
+				drag(gravityStrength / dragStrength ** 2),
 				scale(0.2, 0),
 				fade(0, 1),
 			],
