@@ -90,10 +90,14 @@ export function createRenderer(options: RendererOptions = {}): Renderer {
 
 	return {
 		drawFrame(particles, origin, light, lighting) {
+			const local = ownsCanvas
+				? { x: origin.x - window.scrollX, y: origin.y - window.scrollY }
+				: origin;
+
 			drawFrame(
 				ctx,
 				particles,
-				origin,
+				local,
 				logicalWidth,
 				logicalHeight,
 				light,

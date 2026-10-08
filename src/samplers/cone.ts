@@ -1,5 +1,5 @@
 import type { Vec3 } from "../math/vec3";
-import { evaluate } from "./helpers";
+import { evaluateSampler } from "./helpers";
 import { spread } from "./spread";
 import type { Sampler, SamplerFn } from "./types";
 
@@ -14,7 +14,7 @@ export function cone(
 	const angleSampler = spread(angle, deviation);
 	return (ctx) => {
 		const theta = (angleSampler(ctx) * Math.PI) / 180;
-		const r = evaluate(speed, ctx);
+		const r = evaluateSampler(speed, ctx);
 		return {
 			x: Math.cos(theta) * r,
 			y: Math.sin(theta) * r,

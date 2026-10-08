@@ -2,7 +2,7 @@ import type { Color } from "../color/color";
 import type { Quat } from "../math/quat";
 import type { Vec3 } from "../math/vec3";
 import type { Particle } from "../particle/particle";
-import { evaluate } from "../samplers/helpers";
+import { evaluateSampler } from "../samplers/helpers";
 import type { Sampler, SamplerContext } from "../samplers/types";
 import type { ParticleShape } from "../shapes/shape";
 
@@ -22,15 +22,15 @@ export function spawnParticle(
 	ctx: SamplerContext,
 ): Particle {
 	return {
-		position: evaluate(init.position, ctx),
-		velocity: evaluate(init.velocity, ctx),
-		orientation: evaluate(init.orientation, ctx),
-		angularVelocity: evaluate(init.angularVelocity, ctx),
-		size: evaluate(init.size, ctx),
-		color: evaluate(init.color, ctx),
-		shape: evaluate(init.shape, ctx),
+		position: evaluateSampler(init.position, ctx),
+		velocity: evaluateSampler(init.velocity, ctx),
+		orientation: evaluateSampler(init.orientation, ctx),
+		angularVelocity: evaluateSampler(init.angularVelocity, ctx),
+		size: evaluateSampler(init.size, ctx),
+		color: evaluateSampler(init.color, ctx),
+		shape: evaluateSampler(init.shape, ctx),
 		age: 0,
-		lifetime: evaluate(init.lifetime, ctx),
+		lifetime: evaluateSampler(init.lifetime, ctx),
 		data: new Map(),
 	};
 }

@@ -91,21 +91,23 @@ const canvas = document.getElementById(
 	"confetti-rain-canvas",
 ) as HTMLCanvasElement;
 
+const headerHeight = document.querySelector("header")?.offsetHeight ?? 0;
+
 const effect = createEffect({
-	origin: { x: 0, y: 0 },
+	origin: () => ({ x: 0, y: headerHeight - window.scrollY }),
 	canvas,
 	emitterOptions: {
 		schedule: {
 			duration: 1,
 			loops: Number.POSITIVE_INFINITY,
-			rate: window.innerWidth < 640 ? 2 : 4,
+			rate: () => (window.innerWidth < 640 ? 2 : 4),
 			bursts: [],
 		},
 		rng: createRng(),
 		particleInit: {
 			position: emitFrom(() => ({
 				type: "rect",
-				center: { x: window.innerWidth / 2, y: -40, z: 0 },
+				center: { x: window.innerWidth / 2, y: 20 },
 				width: window.innerWidth,
 				height: 0,
 			})),

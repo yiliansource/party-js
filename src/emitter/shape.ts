@@ -1,6 +1,7 @@
 import { type Vec2, zero as vec2Zero } from "../math/vec2";
 import type { Vec3 } from "../math/vec3";
 import type { SamplerContext, SamplerFn } from "../samplers/types";
+import { type Live, resolveLive } from "./live";
 
 export interface DiskEmissionShape {
 	type: "disk";
@@ -17,15 +18,9 @@ export interface RectEmissionShape {
 
 export type EmissionShape = DiskEmissionShape | RectEmissionShape;
 
-export type Live<T> = T | (() => T);
-
-export function resolve<T>(value: Live<T>): T {
-	return typeof value === "function" ? (value as () => T)() : value;
-}
-
 export function emitFrom(shape: Live<EmissionShape>): SamplerFn<Vec3> {
 	return (ctx) => {
-		const s = resolve(shape);
+		const s = resolveLive(shape);
 		switch (s.type) {
 			case "disk":
 				return sampleDisk(s, ctx);

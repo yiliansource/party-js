@@ -73,6 +73,7 @@ export class Emitter {
 			this.schedule,
 			this.scheduleState,
 			dt,
+			this.rng,
 		);
 		this.scheduleState = state;
 

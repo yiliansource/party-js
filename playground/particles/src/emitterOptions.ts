@@ -96,9 +96,7 @@ function buildBehaviors(config: ParticleBehaviorConfig): Behavior[] {
 		behaviors.push(gravity(config.gravity.strength));
 	}
 	if (config.drag.enabled) {
-		behaviors.push(
-			drag(config.drag.terminalVelocity, config.gravity.strength),
-		);
+		behaviors.push(drag(config.drag.terminalVelocity)); // TODO: not correct anymore
 	}
 
 	return behaviors;

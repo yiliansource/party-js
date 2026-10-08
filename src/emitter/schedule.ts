@@ -1,14 +1,17 @@
 import { PartyJSError } from "../errors";
+import type { Rng } from "../random";
+import { evaluate, type Sampler } from "../samplers";
+import { type Live, resolveLive } from "./live";
 
 export interface EmissionBurst {
 	time: number;
-	count: number;
+	count: Sampler<number>;
 }
 
 export interface EmissionSchedule {
 	duration: number;
 	loops: number;
-	rate: number;
+	rate: Live<number>;
 	bursts: EmissionBurst[];
 }
 
@@ -44,6 +47,7 @@ export function advanceSchedule(
 	schedule: EmissionSchedule,
 	state: ScheduleState,
 	dt: number,
+	rng: Rng,
 ): ScheduleAdvanceResult {
 	if (schedule.duration < 1e-6) {
 		throw new PartyJSError(
@@ -72,7 +76,10 @@ export function advanceSchedule(
 				burst.time <= newElapsed &&
 				!firedBurstIndices.includes(index)
 			) {
-				spawnCount += burst.count;
+				spawnCount += evaluate(burst.count, {
+					rng,
+					index: currentLoop,
+				});
 				firedBurstIndices = [...firedBurstIndices, index];
 			}
 		}
@@ -88,8 +95,9 @@ export function advanceSchedule(
 	}
 
 	let emissionTimer = state.emissionTimer + dt;
-	if (schedule.rate > 0) {
-		const delay = 1 / schedule.rate;
+	const rate = resolveLive(schedule.rate);
+	if (rate > 0) {
+		const delay = 1 / rate;
 		while (emissionTimer >= delay) {
 			emissionTimer -= delay;
 			spawnCount += 1;

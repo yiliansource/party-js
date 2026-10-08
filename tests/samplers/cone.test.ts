@@ -4,7 +4,7 @@ import { length } from "@/math/vec3";
 import { createRng } from "@/random/rng";
 import { range } from "@/samplers";
 import { cone } from "@/samplers/cone";
-import { evaluate } from "@/samplers/helpers";
+import { evaluateSampler } from "@/samplers/helpers";
 
 import { sampledMaxAbsDeviation, sampledMinMax } from "../helpers";
 import { vec3CloseTo } from "../math/helper";
@@ -14,7 +14,7 @@ describe("cone", () => {
 	test("zero deviation returns exact result", () => {
 		const sampler = cone(90, 0, 10);
 		const rng = createRng(2);
-		vec3CloseTo(evaluate(sampler, makeTestCtx(rng)), {
+		vec3CloseTo(evaluateSampler(sampler, makeTestCtx(rng)), {
 			x: 0,
 			y: 10,
 			z: 0,
@@ -26,7 +26,7 @@ describe("cone", () => {
 		const rng = createRng(7);
 		const maxDev = sampledMaxAbsDeviation(
 			100_000,
-			() => evaluate(sampler, makeTestCtx(rng)),
+			() => evaluateSampler(sampler, makeTestCtx(rng)),
 			(v) => length(v),
 			20,
 		);
@@ -38,7 +38,7 @@ describe("cone", () => {
 		const rng = createRng(4);
 		const { min, max } = sampledMinMax(
 			100_000,
-			() => evaluate(sampler, makeTestCtx(rng)),
+			() => evaluateSampler(sampler, makeTestCtx(rng)),
 			(v) => (Math.atan2(v.y, v.x) * 180) / Math.PI,
 		);
 		expect(min).toBeGreaterThanOrEqual(45);
@@ -50,7 +50,7 @@ describe("cone", () => {
 		const rng = createRng(5);
 		const maxDev = sampledMaxAbsDeviation(
 			100_000,
-			() => evaluate(sampler, makeTestCtx(rng)),
+			() => evaluateSampler(sampler, makeTestCtx(rng)),
 			(v) => v.z,
 			0,
 		);
@@ -62,7 +62,7 @@ describe("cone", () => {
 		const rng = createRng(1);
 		const maxDev = sampledMaxAbsDeviation(
 			100_000,
-			() => evaluate(sampler, makeTestCtx(rng)),
+			() => evaluateSampler(sampler, makeTestCtx(rng)),
 			(v) => length(v),
 			15,
 		);
@@ -74,7 +74,7 @@ describe("cone", () => {
 		const rng = createRng(9);
 		const { min, max } = sampledMinMax(
 			100_000,
-			() => evaluate(sampler, makeTestCtx(rng)),
+			() => evaluateSampler(sampler, makeTestCtx(rng)),
 			(v) => length(v),
 		);
 		expect(min).toBeGreaterThanOrEqual(10);
