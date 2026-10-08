@@ -4,7 +4,7 @@ import { emitFrom } from "../emitter";
 import { createRng } from "../random/rng";
 import {
 	cone,
-	evaluate,
+	evaluateSampler,
 	pick,
 	randomHue,
 	randomOrientation,
@@ -20,6 +20,9 @@ import {
 	resolveTarget,
 } from "./effect";
 
+/**
+ * @group Effects
+ */
 export interface ConfettiOptions {
 	count?: Sampler<number>;
 	angle?: Sampler<number>;
@@ -75,42 +78,40 @@ export function confetti(
 	const resolveCtx: SamplerContext = { rng, index: 0 };
 	const { origin, shape } = resolveTarget(target);
 
-	const angle = evaluate(o.angle, resolveCtx);
-	const spread = evaluate(o.spread, resolveCtx);
-	const gravityStrength = evaluate(o.gravity, resolveCtx);
-	const dragStrength = evaluate(o.drag, resolveCtx);
+	const angle = evaluateSampler(o.angle, resolveCtx);
+	const spread = evaluateSampler(o.spread, resolveCtx);
+	const gravityStrength = evaluateSampler(o.gravity, resolveCtx);
+	const dragStrength = evaluateSampler(o.drag, resolveCtx);
 
 	return createEffect({
 		origin,
-		emitterOptions: {
-			schedule: {
-				duration: 1 / 60,
-				loops: 1,
-				rate: 0,
-				bursts: [{ time: 0, count: o.count }],
-			},
-			rng,
-			particleInit: {
-				position: emitFrom(shape),
-				velocity: cone(angle, spread, o.startVelocity),
-				orientation: randomOrientation(),
-				angularVelocity: randomSpin(180, 360),
-				size: o.size,
-				lifetime: o.lifetime,
-				color: Array.isArray(o.colors)
-					? pick(o.colors.map(color))
-					: o.colors,
-				shape: pick([
-					{ type: "square", cornerRadius: 0.2 },
-					{ type: "circle" },
-				]),
-			},
-			behaviors: [
-				gravity(gravityStrength),
-				drag(gravityStrength / dragStrength ** 2),
-				scale(0.2, 0),
-				fade(0, 1),
-			],
+		schedule: {
+			duration: 1 / 60,
+			loops: 1,
+			rate: 0,
+			bursts: [{ time: 0, count: o.count }],
 		},
+		rng,
+		particleInit: {
+			position: emitFrom(shape),
+			velocity: cone(angle, spread, o.startVelocity),
+			orientation: randomOrientation(),
+			angularVelocity: randomSpin(180, 360),
+			size: o.size,
+			lifetime: o.lifetime,
+			color: Array.isArray(o.colors)
+				? pick(o.colors.map(color))
+				: o.colors,
+			shape: pick([
+				{ type: "square", cornerRadius: 0.2 },
+				{ type: "circle" },
+			]),
+		},
+		behaviors: [
+			gravity(gravityStrength),
+			drag(gravityStrength / dragStrength ** 2),
+			scale(0.2, 0),
+			fade(0, 1),
+		],
 	});
 }

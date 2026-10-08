@@ -3,8 +3,9 @@ import type { SidebarLink } from "./types";
 
 interface Props {
 	link: SidebarLink;
+	tree?: boolean;
 }
-const { link } = Astro.props;
+const { link, tree = false } = Astro.props;
 const { class: className, ...attrs } = link.attrs;
 ---
 
@@ -13,12 +14,18 @@ const { class: className, ...attrs } = link.attrs;
 	aria-current={link.isCurrent ? "page" : undefined}
 	{...attrs}
 	class:list={[
-    	"flex min-h-8.5 items-center rounded-lg py-2 pr-3 pl-8 text-[14.5px] leading-snug text-muted no-underline",
-    	"hover:bg-hover",
-    	"aria-[current=page]:bg-surface aria-[current=page]:font-semibold aria-[current=page]:text-fg",
-    	"group-data-[section=reference]:min-h-7.5 group-data-[section=reference]:font-mono group-data-[section=reference]:text-[13.5px]",
-    	className,
-  	]}
+		"flex min-h-8.5 items-center rounded-lg py-2 pr-3 text-[14.5px] leading-snug text-muted no-underline",
+		"hover:bg-hover",
+		"aria-[current=page]:bg-surface aria-[current=page]:font-semibold aria-[current=page]:text-fg",
+		"group-data-[section=reference]:min-h-7.5 group-data-[section=reference]:font-mono group-data-[section=reference]:text-[13.5px]",
+		tree
+			? [
+				"relative pl-3",
+				"before:absolute before:top-1.25 before:bottom-1.25 before:-left-2.5 before:w-0.5 before:rounded-full",
+				"aria-[current=page]:before:bg-coral",
+			] : "pl-8",
+		className,
+	]}
 >
 	{link.label}
 </a>

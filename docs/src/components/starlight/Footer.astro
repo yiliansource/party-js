@@ -22,13 +22,13 @@ const guides = reference
 	{reference && (
 		<>
 			{guides.length > 0 && (
-				<div class="mt-4 mb-12 flex flex-col">
+				<div class="mt-8 mb-4 flex flex-col">
 					{guides.map((guide) => (
 						<EntryCard entry={guide} />
 					))}
 				</div>
 			)}
-			<div class="mb-6 flex flex-col sm:flex-row gap-2 text-subtle">
+			<div class="mt-8 mb-6 flex flex-col sm:flex-row gap-2 text-subtle">
 				{reference.source && (
 					<p class="ml-0 mr-auto inline-flex items-center text-xs font-mono">
 						<CodeIcon size={14} class="mr-2" />

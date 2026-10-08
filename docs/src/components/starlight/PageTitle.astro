@@ -1,5 +1,5 @@
 ---
-import { kindLabel } from "../../config/reference";
+import { kindLabel, referenceGroupOf } from "../../config/reference";
 import { sectionOf, sections } from "../../config/sections";
 import Glyph from "../Glyph.astro";
 
@@ -7,7 +7,8 @@ const entry = Astro.locals.starlightRoute.entry;
 const { title, description, reference } = entry.data;
 const section = !Astro.locals.isNotFound ? sectionOf(entry.id) : null;
 const sectionData = section !== null ? sections[section] : null;
-const referenceGroup = reference !== undefined ? entry.id.split("/")[1] : null;
+const referenceGroup =
+	reference !== undefined ? referenceGroupOf(entry.id) : null;
 ---
 
 <div class="mt-4 flex flex-col">

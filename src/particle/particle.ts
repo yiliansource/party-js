@@ -3,6 +3,9 @@ import type { Quat } from "../math/quat";
 import type { Vec3 } from "../math/vec3";
 import type { ParticleShape } from "../shapes/shape";
 
+/**
+ * @group Particles
+ */
 export interface Particle {
 	position: Vec3;
 	velocity: Vec3;

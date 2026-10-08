@@ -6,6 +6,8 @@ import type { SamplerFn } from "./types";
  *
  * @param min The lower bound.
  * @param max The upper bound.
+ *
+ * @group Samplers
  */
 export function range(min: number, max: number): SamplerFn<number> {
 	return (ctx) => lerp(min, max, ctx.rng());
@@ -19,6 +21,8 @@ export function range(min: number, max: number): SamplerFn<number> {
  * @param stdDev The distribution's standard deviation.
  *
  * @see https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform
+ *
+ * @group Samplers
  */
 export function normal(mean: number, stdDev: number): SamplerFn<number> {
 	return (ctx) => {

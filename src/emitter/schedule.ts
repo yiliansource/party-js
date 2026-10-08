@@ -1,13 +1,19 @@
 import { PartyJSError } from "../errors";
 import type { Rng } from "../random";
-import { evaluate, type Sampler } from "../samplers";
+import { evaluateSampler, type Sampler } from "../samplers";
 import { type Live, resolveLive } from "./live";
 
+/**
+ * @group Custom effects
+ */
 export interface EmissionBurst {
 	time: number;
 	count: Sampler<number>;
 }
 
+/**
+ * @group Custom effects
+ */
 export interface EmissionSchedule {
 	duration: number;
 	loops: number;
@@ -76,7 +82,7 @@ export function advanceSchedule(
 				burst.time <= newElapsed &&
 				!firedBurstIndices.includes(index)
 			) {
-				spawnCount += evaluate(burst.count, {
+				spawnCount += evaluateSampler(burst.count, {
 					rng,
 					index: currentLoop,
 				});

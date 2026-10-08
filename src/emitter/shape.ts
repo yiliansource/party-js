@@ -3,12 +3,18 @@ import type { Vec3 } from "../math/vec3";
 import type { SamplerContext, SamplerFn } from "../samplers/types";
 import { type Live, resolveLive } from "./live";
 
+/**
+ * @group Custom effects
+ */
 export interface DiskEmissionShape {
 	type: "disk";
 	center?: Vec2;
 	radius: number;
 }
 
+/**
+ * @group Custom effects
+ */
 export interface RectEmissionShape {
 	type: "rect";
 	center?: Vec2;
@@ -16,8 +22,14 @@ export interface RectEmissionShape {
 	height: number;
 }
 
+/**
+ * @group Custom effects
+ */
 export type EmissionShape = DiskEmissionShape | RectEmissionShape;
 
+/**
+ * @group Custom effects
+ */
 export function emitFrom(shape: Live<EmissionShape>): SamplerFn<Vec3> {
 	return (ctx) => {
 		const s = resolveLive(shape);

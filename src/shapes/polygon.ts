@@ -2,6 +2,9 @@ import { PartyJSError } from "../errors";
 import { createShapeCache } from "./cache";
 import { buildRegularPolygonPath } from "./utils";
 
+/**
+ * @group Particles
+ */
 export interface PolygonShape {
 	type: "polygon";
 	sides: number;

@@ -6,6 +6,8 @@ import type { Behavior } from "./behavior";
  * (-y) by a constant amount, simulating gravity.
  *
  * @param strength The downward acceleration applied per second, in units/s².
+ *
+ * @group Behaviors
  */
 export function gravity(strength: number): Behavior {
 	return (particle, ctx) => {

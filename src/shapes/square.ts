@@ -1,5 +1,8 @@
 import { createShapeCache } from "./cache";
 
+/**
+ * @group Particles
+ */
 export interface SquareShape {
 	type: "square";
 	aspectRatio?: number;

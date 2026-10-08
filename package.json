@@ -37,8 +37,7 @@
 		"lint": "biome check",
 		"lint:fix": "biome check --write",
 		"postinstall": "lefthook install",
-		"build:site": "bun run scripts/build-site.ts",
-		"preview:site": "bunx serve dist-site"
+		"build:docs": "bun run --cwd docs build"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",

@@ -5,6 +5,8 @@ import type { SamplerFn } from "./types";
  * Creates a sampler for a uniformly-distributed random rotation, using Shoemake's algorithm.
  *
  * @see Shoemake, K. (1992). "III.6 - Uniform Random Rotations."
+ *
+ * @group Samplers
  */
 export function randomOrientation(): SamplerFn<Quat> {
 	return (ctx) => {

@@ -1,0 +1,43 @@
+---
+import SidebarRestorePoint from "@astrojs/starlight/components/SidebarRestorePoint.astro";
+import { ChevronRight } from "@lucide/astro";
+
+import SidebarItems from "./SidebarItems.astro";
+import { countLinks, hasCurrent, type SidebarGroup } from "./types";
+
+interface Props {
+	group: SidebarGroup;
+}
+const { group } = Astro.props;
+
+const isCurrent = hasCurrent(group);
+---
+
+<details
+	class="group/sub"
+	data-current={isCurrent ? "" : undefined}
+	open={isCurrent}
+>
+	<summary
+		class:list={[
+			"mt-1 flex h-8 cursor-pointer list-none items-center gap-2 rounded-lg pr-3 pl-3.5 select-none [&::-webkit-details-marker]:hidden",
+			"font-mono text-[11.5px] tracking-[0.08em] text-muted uppercase hover:bg-hover hover:text-fg",
+		]}
+	>
+		<ChevronRight
+			size={13}
+			stroke-width={2.25}
+			aria-hidden="true"
+			class="shrink-0 text-subtle transition-transform group-open/sub:rotate-90 motion-reduce:transition-none"
+		/>
+		<span class="grow">{group.label}</span>
+		<span
+			class="text-[11px] tracking-normal text-subtle"
+			aria-hidden="true"
+		>
+			{countLinks(group)}
+		</span>
+	</summary>
+	<SidebarRestorePoint />
+	<SidebarItems entries={group.entries} tree />
+</details>

@@ -1,3 +1,6 @@
+/**
+ * @group Utilities
+ */
 export type Rng = () => number;
 
 function randomSeed(): number {

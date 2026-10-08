@@ -5,6 +5,8 @@ import type { Sampler, SamplerFn } from "./types";
 
 /**
  * Creates a sampler for a 2D directional cone, with a provided angle in degrees, measured counter-clockwise from +x.
+ *
+ * @group Samplers
  */
 export function cone(
 	angle: number,

@@ -3,6 +3,9 @@ import * as scalar from "../math/scalar";
 import { type Color, color } from "./color";
 import * as oklch from "./oklch";
 
+/**
+ * @group Samplers
+ */
 export interface GradientStop {
 	offset: number;
 	color: Color;

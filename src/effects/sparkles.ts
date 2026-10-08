@@ -6,15 +6,7 @@ import { fromAxisAngle, type Quat } from "../math/quat";
 import { lerp } from "../math/scalar";
 import { unitZ, type Vec3 } from "../math/vec3";
 import { createRng } from "../random/rng";
-import {
-	cone,
-	evaluate,
-	pick,
-	range,
-	type Sampler,
-	type SamplerContext,
-	type SamplerFn,
-} from "../samplers";
+import { cone, pick, range, type Sampler, type SamplerFn } from "../samplers";
 import {
 	createEffect,
 	type Effect,
@@ -22,6 +14,9 @@ import {
 	resolveTarget,
 } from "./effect";
 
+/**
+ * @group Effects
+ */
 export interface SparkleOptions {
 	count?: Sampler<number>;
 	startVelocity?: Sampler<number>;
@@ -36,6 +31,9 @@ const SPARKLE_DEFAULTS = {
 	lifetime: range(0.5, 1),
 } satisfies Required<SparkleOptions>;
 
+/**
+ * @group Effects
+ */
 export function sparkles(
 	target: EffectTarget,
 	options: SparkleOptions = {},
@@ -46,33 +44,28 @@ export function sparkles(
 	};
 
 	const rng = createRng();
-	const resolveCtx: SamplerContext = { rng, index: 0 };
 	const { origin, shape } = resolveTarget(target);
-
-	const count = Math.round(evaluate(o.count, resolveCtx));
 
 	return createEffect({
 		origin,
-		emitterOptions: {
-			schedule: {
-				duration: 1 / 60,
-				loops: 1,
-				rate: 0,
-				bursts: [{ time: 0, count }],
-			},
-			rng,
-			particleInit: {
-				position: emitFrom(shape),
-				velocity: cone(0, 180, o.startVelocity),
-				orientation: randomZRotation(),
-				angularVelocity: randomZSpin(),
-				size: o.size,
-				lifetime: o.lifetime,
-				color: randomSparkleColor(),
-				shape: pick([{ type: "star" }]),
-			},
-			behaviors: [scale(0.3, 0), fade(0, 0.5)],
+		schedule: {
+			duration: 1 / 60,
+			loops: 1,
+			rate: 0,
+			bursts: [{ time: 0, count: o.count }],
 		},
+		rng,
+		particleInit: {
+			position: emitFrom(shape),
+			velocity: cone(0, 180, o.startVelocity),
+			orientation: randomZRotation(),
+			angularVelocity: randomZSpin(),
+			size: o.size,
+			lifetime: o.lifetime,
+			color: randomSparkleColor(),
+			shape: pick([{ type: "star" }]),
+		},
+		behaviors: [scale(0.3, 0), fade(0, 0.5)],
 	});
 }
 

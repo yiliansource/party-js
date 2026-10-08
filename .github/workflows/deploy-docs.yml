@@ -19,10 +19,12 @@ jobs:
         steps:
             - uses: actions/checkout@v7
             - uses: oven-sh/setup-bun@v2
-            - run: bun run build:site
+            - run: bun install --frozen-lockfile
+            - run: bun install --frozen-lockfile --cwd docs
+            - run: bun run build:docs
             - uses: cloudflare/wrangler-action@v4
               with:
                   apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
                   accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-                  command: pages deploy dist-site --project-name=party-js-v3
+                  command: pages deploy docs/dist --project-name=party-js-v3
                   gitHubToken: ${{ secrets.GITHUB_TOKEN }}

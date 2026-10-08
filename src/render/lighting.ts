@@ -4,20 +4,22 @@ import * as quat from "../math/quat";
 import type { Vec3 } from "../math/vec3";
 import * as vec3 from "../math/vec3";
 
+/**
+ * @group Custom effects
+ */
 export type LightingFn = (color: Color, coefficient: number) => Color;
 
-export function computeLightingCoefficient(
-	orientation: Readonly<Quat>,
-	light: Readonly<Vec3>,
-): number {
-	return vec3.dot(quat.basis(orientation).z, light);
-}
-
+/**
+ * @group Custom effects
+ */
 export interface CreateLightingOptions {
 	ambient?: number;
 	intensity?: number;
 }
 
+/**
+ * @group Custom effects
+ */
 export function createLighting(
 	options: CreateLightingOptions = {},
 ): LightingFn {
@@ -31,3 +33,10 @@ export function createLighting(
 }
 
 export const defaultLighting: LightingFn = createLighting();
+
+export function computeLightingCoefficient(
+	orientation: Readonly<Quat>,
+	light: Readonly<Vec3>,
+): number {
+	return vec3.dot(quat.basis(orientation).z, light);
+}
