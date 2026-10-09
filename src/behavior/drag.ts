@@ -8,6 +8,8 @@ import type { Behavior } from "./behavior";
  * @param coefficient - The acceleration-level drag coefficient. When gravity is present,
  * this should usually be calculated as `gravityStrength / dragStrength ** 2`.
  *
+ * @summary Applies quadratic drag to a particle.
+ *
  * @see http://hyperphysics.phy-astr.gsu.edu/hbase/Mechanics/quadvfall.html
  *
  * @group Behaviors
