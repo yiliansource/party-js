@@ -2,13 +2,18 @@ import type { Behavior } from "./behavior";
 import { type Easing, linear } from "./easing";
 
 /**
- * Creates a behavior that scales a particle in and out over the specified durations.
+ * Creates a behavior that grows a particle from 0 to its sampled size and shrinks it back back
+ * to 0 over the specified durations.
  *
- * @param inDuration - The duration it takes for the particle to scale in fully, or
- * 0 if no scaling should be applied.
- * @param outDuration - The duration it takes for the particle to scale out fully, or
- * 0 if no scaling should be applied.
- * @param ease - The easing that should be applied to the scaling transition. Linear by default.
+ * The growing takes place during the first `inDuration` seconds of a particle's lifetime, while
+ * the shrinking happens during the last `outDuration` seconds of the particle's lifetime. The
+ * supplied easing is applied forwards when growing, and in reverse when shrinking.
+ *
+ * @param inDuration - The duration in seconds it takes for the particle to grow from 0 to its
+ * sampled size, or 0 if it should start at its sampled size.
+ * @param outDuration - The duration in seconds it takes for the particle to shrink back to 0,
+ * or 0 if it should end at its sampled size.
+ * @param ease - How the transition progresses. Defaults to {@link linear | linear()}.
  *
  * @summary Scales a particle in and out.
  *

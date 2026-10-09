@@ -2,12 +2,12 @@ import * as vec3 from "../math/vec3";
 import type { Behavior } from "./behavior";
 
 /**
- * Creates a behavior that continuously accelerates a particle downward
- * (-y) by a constant amount, simulating gravity.
+ * Creates a behavior that continuously accelerates a particle downward by a constant amount, simulating gravity.
  *
- * @param strength The downward acceleration applied per second, in units/s².
+ * @param strength - The downward acceleration applied per second, in px/s². A positive value pulls towards -y
+ * in particle space, which is down in screen space.
  *
- * @summary Applies gravity to a particle.
+ * @summary Pulls particles down with a constant acceleration.
  *
  * @group Behaviors
  */

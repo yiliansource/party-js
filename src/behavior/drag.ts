@@ -2,13 +2,14 @@ import * as vec3 from "../math/vec3";
 import type { Behavior } from "./behavior";
 
 /**
- * Creates a behavior that applies quadratic drag, decelerating a particle towards
- * a terminal velocity rather than damping it at a fixed rate.
+ * Creates a behavior that applies quadratic drag, decelerating a particle towards a terminal
+ * velocity rather than damping it at a fixed rate.
  *
- * @param coefficient - The acceleration-level drag coefficient. When gravity is present,
- * this should usually be calculated as `gravityStrength / dragStrength ** 2`.
+ * @param coefficient - The acceleration-level drag coefficient, measured in 1/px.
+ * When gravity is present, this should usually be calculated as `gravity / terminalVelocity ** 2`.
+ * Values between 0.0005 and 0.02 are usually sensible.
  *
- * @summary Applies quadratic drag to a particle.
+ * @summary Slows particles down, more strongly the faster they move.
  *
  * @see http://hyperphysics.phy-astr.gsu.edu/hbase/Mechanics/quadvfall.html
  *
