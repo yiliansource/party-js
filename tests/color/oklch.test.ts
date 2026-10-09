@@ -1,7 +1,7 @@
 import { describe, expect, test } from "bun:test";
 
 import { color } from "@/color/color";
-import { fromPolar, lerpHue, toPolar } from "@/color/oklch";
+import { fromPolar, lerpHue, lerpOklch, toPolar } from "@/color/oklch";
 
 // reference values were computed independently with culori (oklab)
 
@@ -81,5 +81,24 @@ describe("lerpHue", () => {
 			expect(h).toBeGreaterThanOrEqual(0);
 			expect(h).toBeLessThan(360);
 		}
+	});
+});
+
+describe("lerpOklch", () => {
+	test("a neutral color takes on the other color's hue", () => {
+		const red = color("#ff0000");
+		const mid = lerpOklch(color("#ffffff"), red, 0.5);
+		expect(toPolar(mid).h).toBeCloseTo(toPolar(red).h, 5);
+	});
+
+	test("works the same with the neutral color second", () => {
+		const blue = color("#0000ff");
+		const mid = lerpOklch(blue, color("#000000"), 0.5);
+		expect(toPolar(mid).h).toBeCloseTo(toPolar(blue).h, 5);
+	});
+
+	test("two neutral colors stay neutral", () => {
+		const mid = lerpOklch(color("#ffffff"), color("#000000"), 0.5);
+		expect(toPolar(mid).c).toBeLessThan(1e-6);
 	});
 });

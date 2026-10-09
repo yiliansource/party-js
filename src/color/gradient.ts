@@ -76,14 +76,5 @@ export function evaluateGradient(gradient: Gradient, t: number): Color {
 	const span = b.offset - a.offset;
 	const localT = span === 0 ? 0 : (clamped - a.offset) / span;
 
-	const pa = oklch.toPolar(a.color);
-	const pb = oklch.toPolar(b.color);
-	return oklch.fromPolar(
-		{
-			l: scalar.lerp(pa.l, pb.l, localT),
-			c: scalar.lerp(pa.c, pb.c, localT),
-			h: oklch.lerpHue(pa.h, pb.h, localT),
-		},
-		scalar.lerp(a.color.alpha, b.color.alpha, localT),
-	);
+	return oklch.lerpOklch(a.color, b.color, localT);
 }
