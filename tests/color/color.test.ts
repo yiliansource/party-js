@@ -1,81 +1,27 @@
 import { describe, expect, test } from "bun:test";
 
-import { color, toCssColor } from "@/color/color";
+import { type Color, color } from "@/color/color";
+import { parse } from "@/color/parse";
 import { PartyJSError } from "@/errors";
 
 describe("color", () => {
-	test("parses black and white to oklab", () => {
-		expect(color("#ffffff")).toEqual({
-			l: expect.closeTo(1, 6),
-			a: expect.closeTo(0, 6),
-			b: expect.closeTo(0, 6),
-			alpha: 1,
-		});
-		expect(color("#000000")).toEqual({
-			l: expect.closeTo(0, 6),
-			a: expect.closeTo(0, 6),
-			b: expect.closeTo(0, 6),
-			alpha: 1,
-		});
-	});
-
-	test("parses pure red to to oklab", () => {
-		expect(color("#ff0000")).toEqual({
-			l: expect.closeTo(0.6279553639214311, 6),
-			a: expect.closeTo(0.22486306842627443, 6),
-			b: expect.closeTo(0.12584627733058495, 6),
-			alpha: 1,
-		});
-	});
-
-	test("parses pure blue to oklab", () => {
-		expect(color("#0000ff")).toEqual({
-			l: expect.closeTo(0.45201371817442365, 6),
-			a: expect.closeTo(-0.032456975170797764, 6),
-			b: expect.closeTo(-0.31152816567757763, 6),
-			alpha: 1,
-		});
-	});
-
-	test("parses gray to mid lightness", () => {
-		expect(color("#808080")).toEqual({
-			l: expect.closeTo(0.5998708056221468, 6),
-			a: expect.closeTo(0, 6),
-			b: expect.closeTo(0, 6),
-			alpha: 1,
-		});
-	});
-
-	test("different colors do not produce the same value", () => {
-		const red = color("#ff0000");
-		const blue = color("#0000ff");
-		expect(red).not.toEqual(blue);
-	});
-
-	test("equivalent hex and rgb inputs parse to the same color", () => {
-		expect(color("#ff0000")).toEqual(color("rgb(255, 0, 0)"));
-	});
-
-	test("preserves alpha when specified", () => {
-		expect(color("rgba(255, 0, 0, 0.5)").alpha).toBeCloseTo(0.5, 2);
-	});
-
-	test("is idempotent on converted colors", () => {
-		const c = color("#ff8800");
+	test("returns Color objects unchanged", () => {
+		const c = { l: 0.5, a: 0.1, b: -0.1, alpha: 1 };
 		expect(color(c)).toBe(c);
+	});
+
+	test("parses color strings", () => {
+		expect(color("#ff8800")).toEqual(parse("#ff8800") as Color);
 	});
 
 	test("throws a PartyJSError on invalid input", () => {
 		expect(() => color("not-a-color")).toThrow(PartyJSError);
+		expect(() => color("not-a-color")).toThrow(
+			'invalid color "not-a-color"',
+		);
 	});
-});
 
-describe("toCssColor", () => {
-	test("round-trips correctly", () => {
-		const red = color("red");
-		expect(toCssColor(red)).toBe("rgb(255, 0, 0)");
-
-		const blueAlpha = color("rgba(0,0,255,0.4)");
-		expect(toCssColor(blueAlpha)).toBe("rgba(0, 0, 255, 0.4)");
+	test("does not support named colors", () => {
+		expect(() => color("red")).toThrow(PartyJSError);
 	});
 });

@@ -1,4 +1,4 @@
-import { toCssColor } from "../color/color";
+import { format as formatColor } from "../color/format";
 import type { Particle } from "../particle/particle";
 import { circlePath } from "../shapes/circle";
 import { polygonPath } from "../shapes/polygon";
@@ -32,7 +32,7 @@ export function buildDrawCommand(
 		lightingCoefficient !== undefined && lighting !== undefined
 			? lighting(particle.color, lightingCoefficient)
 			: particle.color;
-	const fillStyle = toCssColor(color);
+	const fillStyle = formatColor(color);
 
 	if (particle.shape.type === "custom") {
 		return {
