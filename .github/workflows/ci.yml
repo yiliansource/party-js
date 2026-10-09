@@ -38,6 +38,7 @@ jobs:
                           - *shared
                           - src/**
                           - tests/**
+                          - scripts/**
                           - tsup.config.ts
                       docs:
                           - *shared
@@ -63,6 +64,7 @@ jobs:
             - run: bun run typecheck
             - run: bun run test
             - run: bun run build
+            - run: bun run size
 
     docs:
         needs: changes
@@ -79,6 +81,7 @@ jobs:
               with:
                   name: docs-dist
                   path: docs/dist
+                  retention-days: 1
 
     deploy:
         needs: [library, docs]
