@@ -36,6 +36,7 @@
 		"typecheck": "tsc -b --noEmit",
 		"lint": "biome check",
 		"lint:fix": "biome check --write",
+		"size": "bun run scripts/check-size.ts",
 		"prepare": "lefthook install"
 	},
 	"devDependencies": {
