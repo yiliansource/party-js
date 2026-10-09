@@ -2,7 +2,7 @@ import type { Behavior } from "./behavior";
 import { type Easing, linear } from "./easing";
 
 /**
- * Creates a behavior that grows a particle from 0 to its sampled size and shrinks it back back
+ * Creates a behavior that grows a particle from 0 to its sampled size and shrinks it back
  * to 0 over the specified durations.
  *
  * The growing takes place during the first `inDuration` seconds of a particle's lifetime, while

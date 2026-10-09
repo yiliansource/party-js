@@ -4,8 +4,8 @@ import type { Behavior } from "./behavior";
 /**
  * Creates a behavior that continuously accelerates a particle downward by a constant amount, simulating gravity.
  *
- * @param strength - The downward acceleration applied per second, in px/s². A positive value pulls towards -y
- * in particle space, which is down in screen space.
+ * @param strength - The downward acceleration, in px/s². A positive value pulls towards -y in particle space,
+ * which is down in screen space.
  *
  * @summary Pulls particles down with a constant acceleration.
  *
