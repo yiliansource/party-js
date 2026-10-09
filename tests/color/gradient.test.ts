@@ -5,7 +5,7 @@ import { createGradient, evaluateGradient } from "@/color/gradient";
 // reference l,a,b values below were computed independently
 
 describe("evaluateGradient", () => {
-	const redToBlue = createGradient(["red", "blue"]);
+	const redToBlue = createGradient(["#f00", "#00f"]);
 
 	test("interpolates a point 1/4th of the way between two stops", () => {
 		const c = evaluateGradient(redToBlue, 0.25);
@@ -46,10 +46,10 @@ describe("evaluateGradient", () => {
 
 	test("interior offset lands on a middle stop in a 3-stop gradient", () => {
 		const middle = evaluateGradient(
-			createGradient(["red", "green", "blue"]),
+			createGradient(["#f00", "#0f0", "#00f"]),
 			0.5,
 		);
-		const green = evaluateGradient(createGradient(["green"]), 0);
+		const green = evaluateGradient(createGradient(["#0f0"]), 0);
 
 		expect(middle).toEqual({
 			l: expect.closeTo(green.l, 9),

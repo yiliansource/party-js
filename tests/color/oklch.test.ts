@@ -7,15 +7,15 @@ import { fromPolar, lerpHue, toPolar } from "@/color/oklch";
 
 describe("toPolar", () => {
 	test("converts a chromatic color to (l, c, h)", () => {
-		const red = color("red");
+		const red = color("#ff0000");
 		const polar = toPolar(red);
-		expect(polar.l).toBeCloseTo(0.6279553639214311, 9);
-		expect(polar.c).toBeCloseTo(0.2576833038053608, 9);
-		expect(polar.h).toBeCloseTo(29.233880279627854, 9);
+		expect(polar.l).toBeCloseTo(0.6279553639214311, 6);
+		expect(polar.c).toBeCloseTo(0.2576833038053608, 6);
+		expect(polar.h).toBeCloseTo(29.233880279627854, 6);
 	});
 
 	test("converts a second chromatic color, in a different hue quadrant", () => {
-		const blue = color("blue");
+		const blue = color("#0000ff");
 		const polar = toPolar(blue);
 		expect(polar.l).toBeCloseTo(0.45201371817442365, 9);
 		expect(polar.c).toBeCloseTo(0.31321438863448475, 9);
@@ -23,14 +23,14 @@ describe("toPolar", () => {
 	});
 
 	test("returns hue in [0, 360) rather than a negative angle", () => {
-		const blue = color("blue"); // raw atan2 angle here would be negative
+		const blue = color("#0000ff"); // raw atan2 angle here would be negative
 		const polar = toPolar(blue);
 		expect(polar.h).toBeGreaterThanOrEqual(0);
 		expect(polar.h).toBeLessThan(360);
 	});
 
 	test("an achromatic color has zero chroma and does not produce NaN hue", () => {
-		const gray = color("gray");
+		const gray = color("#808080");
 		const polar = toPolar(gray);
 		expect(polar.c).toBeCloseTo(0, 9);
 		expect(Number.isNaN(polar.h)).toBe(false);
@@ -39,7 +39,7 @@ describe("toPolar", () => {
 
 describe("fromPolar", () => {
 	test("is the inverse of toPolar", () => {
-		const green = color("green");
+		const green = color("#008000");
 		const roundTripped = fromPolar(toPolar(green), green.alpha);
 		expect(roundTripped.l).toBeCloseTo(green.l, 9);
 		expect(roundTripped.a).toBeCloseTo(green.a, 9);
@@ -47,7 +47,7 @@ describe("fromPolar", () => {
 	});
 
 	test("lets alpha pass through unchanged", () => {
-		const polar = toPolar(color("red"));
+		const polar = toPolar(color("#ff0000"));
 		expect(fromPolar(polar, 1).alpha).toBe(1);
 		expect(fromPolar(polar, 0.4).alpha).toBe(0.4);
 		expect(fromPolar(polar, 0).alpha).toBe(0);

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 
-import { toCssColor } from "@/color/color";
+import { format as formatColor } from "@/color/format";
 import { buildDrawCommand } from "@/render/drawCommand";
 import { circlePath } from "@/shapes/circle";
 import { polygonPath } from "@/shapes/polygon";
@@ -89,7 +89,7 @@ describe("buildDrawCommand", () => {
 
 		expect(cmd.kind).toBe("path");
 		if (cmd.kind === "path") {
-			expect(cmd.fillStyle).toBe(toCssColor(particle.color));
+			expect(cmd.fillStyle).toBe(formatColor(particle.color));
 		}
 	});
 });
