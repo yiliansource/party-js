@@ -38,7 +38,7 @@ export interface BehaviorUpdateContext {
  *
  * Called once per particle right after it has been constructed, but before its first update.
  * Initializations are called in the order that the behaviors are listed in.
- * A common usecase is to store initial particle data in {@link Particle.data} or choosing
+ * A common use case is to store initial particle data in {@link Particle.data} or to choose
  * a random initial value for a behavior via the random number generator.
  *
  * @param particle - The new particle.
@@ -57,7 +57,7 @@ export type BehaviorInit = (
  * A function that updates a particle by a single simulation step.
  *
  * Called for every particle on every step, in the order that the behaviors are listed in.
- * Any "per-second" changes should be scaled by `ctx.dt` to make the behavior independant of the step size.
+ * Any "per-second" changes should be scaled by `ctx.dt` to make the behavior independent of the step size.
  *
  * @param particle - The particle to be updated.
  * @param ctx - The context supplied to the update, including the random number generator and the time step.
@@ -76,7 +76,7 @@ export type BehaviorUpdate = (
  *
  * This can be used to store initial state in {@link Particle.data} under a {@link Symbol}.
  * Symbols should be created in your behavior's factory function, to ensure that two behavior instances
- * do not overwrite with each other.
+ * do not overwrite each other.
  *
  * @summary A behavior with an optional setup step for each particle.
  *
@@ -84,7 +84,7 @@ export type BehaviorUpdate = (
  * ```ts
  * const shrink = (): Behavior => {
  *     const startSize = Symbol("startSize");
- * 	   return {
+ *     return {
  *         init(particle) {
  *             particle.data.set(startSize, particle.size);
  *         },
@@ -100,7 +100,7 @@ export type BehaviorUpdate = (
  */
 export interface BehaviorObject {
 	/**
-	 * The initialization function of the behavior, called on every particle once after it was spawned.
+	 * The initialization function of the behavior, called once for each particle, right after it spawns.
 	 */
 	init?: BehaviorInit;
 	/**
@@ -110,7 +110,7 @@ export interface BehaviorObject {
 }
 
 /**
- * Modifies a particle over their lifetime, for example gravity, drag or fading.
+ * Modifies a particle over its lifetime, for example gravity, drag or fading.
  *
  * Either a plain update function, called for every particle on every step, or a {@link BehaviorObject} when
  * the behavior also needs to perform setup for each new particle. Behaviors run in the order they are listed in.
