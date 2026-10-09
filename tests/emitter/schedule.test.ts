@@ -205,6 +205,24 @@ describe("advanceSchedule", () => {
 		expect(isScheduleExpired(schedule, state)).toBe(false);
 	});
 
+	test("an non-integer burst count is rounded to the nearest integer", () => {
+		const schedule: EmissionSchedule = {
+			duration: 2,
+			loops: 3,
+			rate: 0,
+			bursts: [
+				{ time: 0, count: 3.4 },
+				{ time: 1, count: 4.6 },
+			],
+		};
+
+		const first = advanceSchedule(schedule, initialScheduleState, 0.5, rng);
+		const second = advanceSchedule(schedule, first.state, 1, rng);
+
+		expect(first.spawnCount).toBe(3);
+		expect(second.spawnCount).toBe(5);
+	});
+
 	test("throws for a non-positive duration, rather than getting stuck looping forever", () => {
 		const schedule: EmissionSchedule = {
 			duration: 0,
