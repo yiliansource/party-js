@@ -12,3 +12,6 @@ pre-push:
             run: bun run typecheck
         test:
             run: bun run test
+        astro-check:
+            glob: "{docs,src}/**/*"
+            run: bun run --cwd docs check

@@ -18,7 +18,7 @@ export interface EmissionSchedule {
 	duration: number;
 	loops: number;
 	rate: Live<number>;
-	bursts: EmissionBurst[];
+	bursts?: EmissionBurst[];
 }
 
 export interface ScheduleState {
@@ -76,17 +76,19 @@ export function advanceSchedule(
 		const step = Math.min(remaining, schedule.duration - elapsed);
 		const newElapsed = elapsed + step;
 
-		for (let index = 0; index < schedule.bursts.length; index++) {
-			const burst = schedule.bursts[index];
-			if (
-				burst.time <= newElapsed &&
-				!firedBurstIndices.includes(index)
-			) {
-				spawnCount += evaluateSampler(burst.count, {
-					rng,
-					index: currentLoop,
-				});
-				firedBurstIndices = [...firedBurstIndices, index];
+		if (schedule.bursts && schedule.bursts.length > 0) {
+			for (let index = 0; index < schedule.bursts.length; index++) {
+				const burst = schedule.bursts[index];
+				if (
+					burst.time <= newElapsed &&
+					!firedBurstIndices.includes(index)
+				) {
+					spawnCount += evaluateSampler(burst.count, {
+						rng,
+						index: currentLoop,
+					});
+					firedBurstIndices = [...firedBurstIndices, index];
+				}
 			}
 		}
 

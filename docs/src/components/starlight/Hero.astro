@@ -95,45 +95,39 @@ const headerHeight = document.querySelector("header")?.offsetHeight ?? 0;
 const effect = createEffect({
 	origin: () => ({ x: 0, y: headerHeight - window.scrollY }),
 	canvas,
-	emitterOptions: {
-		schedule: {
-			duration: 1,
-			loops: Number.POSITIVE_INFINITY,
-			rate: () => (window.innerWidth < 640 ? 2 : 4),
-			bursts: [],
-		},
-		particleInit: {
-			position: emitFrom(() => ({
-				type: "rect",
-				center: { x: window.innerWidth / 2, y: 20 },
-				width: window.innerWidth,
-				height: 0,
-			})),
-			velocity: (ctx) => ({ x: 0, y: -60 - ctx.rng() * 60, z: 0 }),
-			orientation: randomOrientation(),
-			angularVelocity: randomSpin(80, 160),
-			size: range(12, 20),
-			lifetime: 20,
-			color: pick(
-				["#ff5a5f", "#ffb400", "#00a699", "#7b61ff"].map(color),
-			),
-			shape: pick([
-				{ type: "circle" },
-				{
-					type: "square",
-					cornerRadius: 0.2,
-				},
-				{
-					type: "square",
-					aspectRatio: 0.3,
-					cornerRadius: 0.1,
-				},
-				{
-					type: "star",
-				},
-			]),
-		},
-		behaviors: [],
+	schedule: {
+		duration: 1,
+		loops: Number.POSITIVE_INFINITY,
+		rate: () => (window.innerWidth < 640 ? 2 : 4),
+	},
+	particleInit: {
+		position: emitFrom(() => ({
+			type: "rect",
+			center: { x: window.innerWidth / 2, y: 20 },
+			width: window.innerWidth,
+			height: 0,
+		})),
+		velocity: (ctx) => ({ x: 0, y: -60 - ctx.rng() * 60, z: 0 }),
+		orientation: randomOrientation(),
+		angularVelocity: randomSpin(80, 160),
+		size: range(12, 20),
+		lifetime: 20,
+		color: pick(["#ff5a5f", "#ffb400", "#00a699", "#7b61ff"].map(color)),
+		shape: pick([
+			{ type: "circle" },
+			{
+				type: "square",
+				cornerRadius: 0.2,
+			},
+			{
+				type: "square",
+				aspectRatio: 0.3,
+				cornerRadius: 0.1,
+			},
+			{
+				type: "star",
+			},
+		]),
 	},
 	lighting: (c) => c,
 });

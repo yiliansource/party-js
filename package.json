@@ -36,8 +36,7 @@
 		"typecheck": "tsc -b --noEmit",
 		"lint": "biome check",
 		"lint:fix": "biome check --write",
-		"postinstall": "lefthook install",
-		"build:docs": "bun run --cwd docs build"
+		"postinstall": "lefthook install"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
@@ -45,10 +44,8 @@
 		"@types/bun": "latest",
 		"@types/culori": "^4.0.1",
 		"lefthook": "^2.1.14",
-		"tsup": "^8.5.1"
-	},
-	"peerDependencies": {
-		"typescript": "^5"
+		"tsup": "^8.5.1",
+		"typescript": "~6.0.3"
 	},
 	"dependencies": {
 		"culori": "^4.0.2"
