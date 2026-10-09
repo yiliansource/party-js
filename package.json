@@ -36,12 +36,12 @@
 		"typecheck": "tsc -b --noEmit",
 		"lint": "biome check",
 		"lint:fix": "biome check --write",
-		"postinstall": "lefthook install"
+		"prepare": "lefthook install"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
 		"@napi-rs/canvas": "^1.0.9",
-		"@types/bun": "latest",
+		"@types/bun": "^1.4.2",
 		"@types/culori": "^4.0.1",
 		"lefthook": "^2.1.14",
 		"tsup": "^8.5.1",

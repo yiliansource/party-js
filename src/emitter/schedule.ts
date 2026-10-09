@@ -76,19 +76,20 @@ export function advanceSchedule(
 		const step = Math.min(remaining, schedule.duration - elapsed);
 		const newElapsed = elapsed + step;
 
-		if (schedule.bursts && schedule.bursts.length > 0) {
-			for (let index = 0; index < schedule.bursts.length; index++) {
-				const burst = schedule.bursts[index];
-				if (
-					burst.time <= newElapsed &&
-					!firedBurstIndices.includes(index)
-				) {
-					spawnCount += evaluateSampler(burst.count, {
+		const bursts = schedule.bursts ?? [];
+		for (let index = 0; index < bursts.length; index++) {
+			const burst = bursts[index];
+			if (
+				burst.time <= newElapsed &&
+				!firedBurstIndices.includes(index)
+			) {
+				spawnCount += Math.round(
+					evaluateSampler(burst.count, {
 						rng,
 						index: currentLoop,
-					});
-					firedBurstIndices = [...firedBurstIndices, index];
-				}
+					}),
+				);
+				firedBurstIndices = [...firedBurstIndices, index];
 			}
 		}
 
@@ -113,7 +114,12 @@ export function advanceSchedule(
 	}
 
 	return {
-		state: { elapsed, emissionTimer, firedBurstIndices, currentLoop },
+		state: {
+			elapsed,
+			emissionTimer,
+			firedBurstIndices,
+			currentLoop,
+		},
 		spawnCount,
 	};
 }

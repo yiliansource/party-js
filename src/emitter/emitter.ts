@@ -25,9 +25,6 @@ export interface EmitterOptions {
 	behaviors?: Behavior[];
 }
 
-/**
- * @group Emitter
- */
 export class Emitter {
 	/**
 	 * The particles owned by the emitter.
