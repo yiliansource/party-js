@@ -2,6 +2,16 @@ import type { Behavior } from "./behavior";
 import { type Easing, linear } from "./easing";
 
 /**
+ * Creates a behavior that fades a particle in and out over the specified durations.
+ *
+ * @param inDuration - The duration it takes for the particle to fade in fully, or
+ * 0 if no fade in should be applied.
+ * @param outDuration - The duration it takes for the particle to fade out fully, or
+ * 0 if no fade out should be applied.
+ * @param ease - The easing that should be applied to the fade transition. Linear by default.
+ *
+ * @summary Fades a particle in and out.
+ *
  * @group Behaviors
  */
 export function fade(

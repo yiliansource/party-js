@@ -7,6 +7,8 @@ import type { Behavior } from "./behavior";
  *
  * @param strength The downward acceleration applied per second, in units/s².
  *
+ * @summary Applies gravity to a particle.
+ *
  * @group Behaviors
  */
 export function gravity(strength: number): Behavior {

@@ -205,7 +205,7 @@ describe("advanceSchedule", () => {
 		expect(isScheduleExpired(schedule, state)).toBe(false);
 	});
 
-	test("an non-integer burst count is rounded to the nearest integer", () => {
+	test("a non-integer burst count is rounded to the nearest integer", () => {
 		const schedule: EmissionSchedule = {
 			duration: 2,
 			loops: 3,
