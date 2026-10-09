@@ -1,6 +1,6 @@
 /**
  * A function that reshapes progress from 0 to 1, used by behaviors like {@link fade | fade()} and
- * {@link scale | gravity()} to make a transition start or end softly.
+ * {@link scale | scale()} to make a transition start or end softly.
  *
  * It receives a progress `t` from 0 to 1 and returns the eased value. It is expected to return 0 at `t = 0`
  * and 1 at `t = 1`. In between, its shape determines how fast the transition moves.
