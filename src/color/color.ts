@@ -39,7 +39,8 @@ export interface Color {
  * Accepts hex colors (`#f00`, `#ff5a5f`, `#ff000080`) and the `rgb()`/`rgba()`,
  * `hsl()`/`hsla()`, `oklab()` and `oklch()` functions. A {@link Color} passed in is returned unchanged.
  *
- * Note that named colors are **not** supported, to minimize bundle size.
+ * Note that named colors are **not** supported, to minimize bundle size. In particular, `transparent`
+ * is not a valid color input.
  *
  * @param input - A CSS color string, or an existing color.
  *

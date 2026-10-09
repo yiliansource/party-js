@@ -14,7 +14,7 @@ const lin2sRGB = (c: number): number => {
  * Formats an Oklab color as a CSS color string.
  *
  * Serializes to legacy rgb/rgba syntax for compatibility. Colors outside the sRGB gamut are clipped per channel, and
- * alpha is rounded to two decimals.
+ * alpha is rounded to three decimals.
  *
  * Full-precision constants are taken from culori (MIT).
  *
@@ -42,7 +42,7 @@ export function format({ l: L, a, b, alpha }: Color): string {
 			1.7076146940746117 * s,
 	);
 
-	const opacity = Math.round(clamp01(alpha) * 100) / 100;
+	const opacity = Math.round(clamp01(alpha) * 1000) / 1000;
 	return opacity === 1
 		? `rgb(${red}, ${green}, ${blue})`
 		: `rgba(${red}, ${green}, ${blue}, ${opacity})`;

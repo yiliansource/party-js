@@ -76,13 +76,15 @@ describe("format", () => {
 		expect(format({ ...BLUE, alpha: 0 })).toBe("rgba(0, 0, 255, 0)");
 	});
 
-	test("rounds alpha to two decimals", () => {
-		expect(format({ ...RED, alpha: 1 / 3 })).toBe("rgba(255, 0, 0, 0.33)");
-		expect(format({ ...RED, alpha: 0.666 })).toBe("rgba(255, 0, 0, 0.67)");
+	test("rounds alpha to three decimals", () => {
+		expect(format({ ...RED, alpha: 1 / 3 })).toBe("rgba(255, 0, 0, 0.333)");
+		expect(format({ ...RED, alpha: 0.6667 })).toBe(
+			"rgba(255, 0, 0, 0.667)",
+		);
 	});
 
 	test("uses rgb when alpha rounds to 1", () => {
-		expect(format({ ...RED, alpha: 0.999 })).toBe("rgb(255, 0, 0)");
+		expect(format({ ...RED, alpha: 0.99999 })).toBe("rgb(255, 0, 0)");
 	});
 
 	test("clamps alpha to [0, 1]", () => {
