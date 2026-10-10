@@ -77,7 +77,7 @@ const github = socials.find((s) => s.icon === "github")!;
 
 <script>
 import {
-	color,
+	cone,
 	createEffect,
 	emitFrom,
 	pick,
@@ -107,7 +107,7 @@ const effect = createEffect({
 			width: window.innerWidth,
 			height: 0,
 		})),
-		velocity: (ctx) => ({ x: 0, y: -60 - ctx.rng() * 60, z: 0 }),
+		velocity: cone(-90, 0, range(60, 120)),
 		orientation: randomOrientation(),
 		angularVelocity: randomSpin(80, 160),
 		size: range(12, 20),
@@ -124,9 +124,7 @@ const effect = createEffect({
 				aspectRatio: 0.3,
 				cornerRadius: 0.1,
 			},
-			{
-				type: "star",
-			},
+			{ type: "star" },
 		]),
 	},
 	lighting: (c) => c,

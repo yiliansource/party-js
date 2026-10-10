@@ -3,10 +3,17 @@ import { createShapeCache } from "./cache";
 import { buildRegularPolygonPath } from "./utils";
 
 /**
+ * A regular polygonal shape, centered at (0, 0), with a specified number of sides.
+ *
+ * @summary Draws a particle as a regular polygon.
+ *
  * @group Particles
  */
 export interface PolygonShape {
 	type: "polygon";
+	/**
+	 * The number of sides the regular polygon should have, which is expected to be an integer >= 3.
+	 */
 	sides: number;
 }
 

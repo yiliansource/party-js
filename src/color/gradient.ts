@@ -4,7 +4,7 @@ import { type Color, color } from "./color";
 import * as oklch from "./oklch";
 
 /**
- * A color at a specific position along a gradient, to be used with {@link gradient | gradient()}
+ * A color at a specific position along a gradient, to be used with the {@link gradient | gradient()}
  * sampler when the colors should not be spaced evenly.
  *
  * Because {@link gradient | gradient()} chooses a (uniformly) random position along it for each particle,

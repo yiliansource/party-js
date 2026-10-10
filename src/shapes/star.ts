@@ -3,10 +3,17 @@ import { createShapeCache } from "./cache";
 import { buildRegularPolygonPath } from "./utils";
 
 /**
+ * A regular, pointed star, centered at (0, 0), with a specified number of points.
+ *
+ * @summary Draws a particle as a regular, pointed star.
+ *
  * @group Particles
  */
 export interface StarShape {
 	type: "star";
+	/**
+	 * The number of points the star should have, which is expected to be an integer >= 3.
+	 */
 	points?: number;
 }
 
