@@ -1,4 +1,16 @@
 /**
+ * A function that returns a pseudo-random number from 0 (inclusive) to 1 (exclusive),
+ * like {@link Math.random | Math.random()}.
+ *
+ * Every effect has one, created from its `seed`, to ensure that seeded effects play out
+ * the same way every time. Samplers and behaviors receive it as `ctx.rng`. It is recommended
+ * that you use it instead of `Math.random()` in your own samplers and behaviors, so they
+ * stay reproducible too.
+ *
+ * @summary A source of random numbers from 0 to 1.
+ *
+ * @returns A pseudo-random number from 0 (inclusive) to 1 (exclusive).
+ *
  * @group Utilities
  */
 export type Rng = () => number;

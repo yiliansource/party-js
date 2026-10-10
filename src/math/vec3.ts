@@ -1,6 +1,10 @@
 import { lerp as lerpScalar } from "./scalar";
 
 /**
+ * A vector in 3D space, usually used to represent a particle's position or velocity.
+ *
+ * @summary A 3D vector.
+ *
  * @group Utilities
  */
 export interface Vec3 {

@@ -23,7 +23,9 @@ export interface ProjectedTransform {
  *
  * This is an orthographic projection; the particle's local z axis is dropped.
  *
- * This also flips the y-axis, since the physics world is y-up, but the canvas is y-down.
+ * Particle space is y-up while the canvas is y-down, so positions and basis vectors are flipped vertically.
+ * Shape space, however, is y-down (to be consistent with a regular canvas), so a shape's +y maps to the
+ * particle's -y basis vector.
  */
 export function project(
 	particle: Pick<Particle, "position" | "orientation" | "size">,
@@ -35,8 +37,8 @@ export function project(
 	return {
 		a: basis.x.x * size,
 		b: -basis.x.y * size,
-		c: basis.y.x * size,
-		d: -basis.y.y * size,
+		c: -basis.y.x * size,
+		d: basis.y.y * size,
 		e: origin.x + position.x,
 		f: origin.y - position.y,
 	};

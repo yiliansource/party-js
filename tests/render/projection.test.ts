@@ -7,7 +7,7 @@ import { project } from "@/render/projection";
 import { makeTestParticle } from "../helpers";
 
 describe("project", () => {
-	test("identity orientation only flips y and translates by position + origin", () => {
+	test("identity orientation translates by position + origin", () => {
 		const particle = makeTestParticle({
 			position: { x: 10, y: 20, z: 0 },
 			orientation: quat.identity,
@@ -20,7 +20,7 @@ describe("project", () => {
 			a: expect.closeTo(1, 9),
 			b: expect.closeTo(0, 9),
 			c: expect.closeTo(0, 9),
-			d: expect.closeTo(-1, 9),
+			d: expect.closeTo(1, 9),
 			e: expect.closeTo(110, 9),
 			f: expect.closeTo(180, 9),
 		});
@@ -39,7 +39,7 @@ describe("project", () => {
 			a: expect.closeTo(3, 9),
 			b: expect.anything(),
 			c: expect.anything(),
-			d: expect.closeTo(-3, 9),
+			d: expect.closeTo(3, 9),
 			e: expect.closeTo(5, 9),
 			f: expect.anything(),
 		});
@@ -56,8 +56,8 @@ describe("project", () => {
 		expect(t).toEqual({
 			a: expect.closeTo(Math.cos(angle), 9),
 			b: expect.closeTo(-Math.sin(angle), 9),
-			c: expect.closeTo(-Math.sin(angle), 9),
-			d: expect.closeTo(-Math.cos(angle), 9),
+			c: expect.closeTo(Math.sin(angle), 9),
+			d: expect.closeTo(Math.cos(angle), 9),
 			e: expect.anything(),
 			f: expect.anything(),
 		});

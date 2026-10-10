@@ -1,4 +1,8 @@
 /**
+ * A circular shape, centered at (0, 0) with a radius of 0.5.
+ *
+ * @summary Draws a particle as a circle.
+ *
  * @group Particles
  */
 export interface CircleShape {

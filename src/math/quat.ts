@@ -3,6 +3,13 @@ import type { Vec3 } from "./vec3";
 import * as vec3 from "./vec3";
 
 /**
+ * A rotation in 3D, stored as a unit quaternion. Used for a particle's orientation.
+ *
+ * You rarely need to build one by hand: {@link randomOrientation | randomOrientation()} covers
+ * the common case of generating a random initial rotation.
+ *
+ * @summary A 3D rotation, stored as a unit quaternion.
+ *
  * @group Utilities
  */
 export interface Quat {
