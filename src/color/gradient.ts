@@ -4,26 +4,48 @@ import { type Color, color } from "./color";
 import * as oklch from "./oklch";
 
 /**
+ * A color at a specific position along a gradient, to be used with {@link gradient | gradient()}
+ * sampler when the colors should not be spaced evenly.
+ *
+ * Because {@link gradient | gradient()} chooses a (uniformly) random position along it for each particle,
+ * the spacing of the stops determines how common a color is: the wider the gap between two stops, the more
+ * particles get a color that is sampled between those stops.
+ *
+ * Stops can be listed in any order, and two stops at the same offset create a hard edge instead of a blend.
+ *
+ * @summary A color at a chosen position along a gradient.
+ *
+ * @example
+ * ```ts
+ * // Mostly pinks, with a short blend into gold at the end.
+ * gradient([
+ *     { offset: 0, color: "#ff5a5f" },
+ *     { offset: 0.8, color: "#ff8fa3" },
+ *     { offset: 1, color: "#ffb400" },
+ * ]);
+ * ```
  * @group Samplers
  */
 export interface GradientStop {
+	/**
+	 * The position of the stop, from 0 (the start of the gradient) to 1 (the end).
+	 * Values outside this range throw a {@link PartyJSError}.
+	 */
 	offset: number;
-	color: Color;
+	/**
+	 * The color at this position. Accepts anything {@link color | color()} accepts.
+	 */
+	color: string | Color;
 }
 
-export interface Gradient {
-	stops: GradientStop[];
-}
+export type Gradient = { offset: number; color: Color }[];
 
-function isGradientStop(x: unknown): x is GradientStop {
-	return (
-		typeof x === "object" &&
-		x !== null &&
-		"offset" in x &&
-		typeof (x as GradientStop).offset === "number" &&
-		"color" in x
-	);
-}
+const isGradientStopArray = (
+	input: (string | Color)[] | GradientStop[],
+): input is GradientStop[] => {
+	const first = input[0];
+	return typeof first !== "string" && "offset" in first;
+};
 
 export function createGradient(
 	input: (string | Color)[] | GradientStop[],
@@ -32,47 +54,39 @@ export function createGradient(
 		throw new PartyJSError("gradient requires at least one color");
 	}
 
-	const flags = input.map(isGradientStop);
-	const allStops = flags.every(Boolean);
-	const noneStops = flags.every((f) => !f);
-
-	if (!allStops && !noneStops) {
-		throw new PartyJSError(
-			"gradient input mixes colors and explicit stops",
-		);
-	}
-
-	if (allStops) {
-		const stops = (input as GradientStop[]).map((s) => {
-			if (s.offset < 0 || s.offset > 1) {
+	if (isGradientStopArray(input)) {
+		for (const { offset } of input) {
+			if (offset < 0 || offset > 1) {
 				throw new PartyJSError(
-					`gradient stop offset ${s.offset} is out of range [0, 1]`,
+					`gradient stop offset ${offset} is out of range [0, 1]`,
 				);
 			}
-			return { offset: s.offset, color: color(s.color) };
-		});
-		return { stops: stops.sort((a, b) => a.offset - b.offset) };
+		}
+
+		return input
+			.map((stop) => ({
+				offset: stop.offset,
+				color: color(stop.color),
+			}))
+			.sort((a, b) => a.offset - b.offset);
 	}
 
-	const n = input.length;
-	return {
-		stops: (input as (string | Color)[]).map((c, i) => ({
-			offset: n === 1 ? 0 : i / (n - 1),
-			color: color(c),
-		})),
-	};
+	const last = input.length - 1;
+	return input.map((c, i) => ({
+		offset: last === 0 ? 0 : i / last,
+		color: color(c),
+	}));
 }
 
 export function evaluateGradient(gradient: Gradient, t: number): Color {
-	const stops = gradient.stops;
-	if (stops.length === 1) return stops[0].color;
+	if (gradient.length === 1) return gradient[0].color;
 
 	const clamped = scalar.clamp01(t);
 	let i = 0;
-	while (i < stops.length - 2 && stops[i + 1].offset < clamped) i++;
+	while (i < gradient.length - 2 && gradient[i + 1].offset < clamped) i++;
 
-	const a = stops[i];
-	const b = stops[i + 1];
+	const a = gradient[i];
+	const b = gradient[i + 1];
 	const span = b.offset - a.offset;
 	const localT = span === 0 ? 0 : (clamped - a.offset) / span;
 

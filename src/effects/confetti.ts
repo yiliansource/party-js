@@ -1,5 +1,5 @@
 import { drag, fade, gravity, scale } from "../behavior";
-import { type Color, color } from "../color";
+import type { Color } from "../color";
 import { emitFrom } from "../emitter";
 import { createRng } from "../random/rng";
 import {
@@ -30,7 +30,7 @@ export interface ConfettiOptions {
 	startVelocity?: Sampler<number>;
 	size?: Sampler<number>;
 	lifetime?: Sampler<number>;
-	colors?: string[] | Sampler<Color>;
+	colors?: string[] | Sampler<string | Color>;
 	gravity?: Sampler<number>;
 	drag?: Sampler<number>;
 }
@@ -99,9 +99,7 @@ export function confetti(
 			angularVelocity: randomSpin(180, 360),
 			size: o.size,
 			lifetime: o.lifetime,
-			color: Array.isArray(o.colors)
-				? pick(o.colors.map(color))
-				: o.colors,
+			color: Array.isArray(o.colors) ? pick(o.colors) : o.colors,
 			shape: pick([
 				{ type: "square", cornerRadius: 0.2 },
 				{ type: "circle" },

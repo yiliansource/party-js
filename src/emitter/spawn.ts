@@ -1,4 +1,4 @@
-import type { Color } from "../color/color";
+import { type Color, color } from "../color/color";
 import type { Quat } from "../math/quat";
 import type { Vec3 } from "../math/vec3";
 import type { Particle } from "../particle/particle";
@@ -15,7 +15,7 @@ export interface ParticleInit {
 	orientation: Sampler<Quat>;
 	angularVelocity: Sampler<Vec3>;
 	size: Sampler<number>;
-	color: Sampler<Color>;
+	color: Sampler<string | Color>;
 	shape: Sampler<ParticleShape>;
 	lifetime: Sampler<number>;
 }
@@ -30,7 +30,7 @@ export function spawnParticle(
 		orientation: evaluateSampler(init.orientation, ctx),
 		angularVelocity: evaluateSampler(init.angularVelocity, ctx),
 		size: evaluateSampler(init.size, ctx),
-		color: evaluateSampler(init.color, ctx),
+		color: color(evaluateSampler(init.color, ctx)),
 		shape: evaluateSampler(init.shape, ctx),
 		age: 0,
 		lifetime: evaluateSampler(init.lifetime, ctx),
