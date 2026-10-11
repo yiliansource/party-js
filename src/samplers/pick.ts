@@ -2,10 +2,24 @@ import { PartyJSError } from "../errors";
 import type { SamplerFn } from "./types";
 
 /**
- * Creates a sampler to choose values from an array with (optionally) weighted values.
+ * Creates a sampler that picks one of the given values at random, either with equal chances or weighted ones.
  *
- * @param arr The array to pick from.
- * @param weights The (optional) non-negative weights of the values, with positive sum.
+ * Weights are relative and don't need to add up to 1: `[3, 1]` will make the first value three times as likely
+ * as the second one.
+ *
+ * @param arr - The values to pick from.
+ * @param weights - Optional relative chances, one per value.
+ *
+ * @throws {@link PartyJSError} If `arr` is empty, if the number of weights doesn't match the number of values,
+ * if a weight is negative or if all weights are zero.
+ *
+ * @summary Picks one of several values at random.
+ *
+ * @example
+ * ```ts
+ * // Mostly circles with an occasional star.
+ * pick([{ type: "circle" }, { type: "star" }], [4, 1]),
+ * ```
  *
  * @group Samplers
  */

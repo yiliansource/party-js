@@ -3,11 +3,12 @@ import { scale, type Vec3 } from "../math/vec3";
 import type { SamplerFn } from "./types";
 
 /**
- * Creates a sampler to produce a random 3D angular velocity, i.e.
- * a uniformly-distributed random axis scaled by a uniformly speed from [min, max].
+ * Creates a sampler for spinning in a random direction: a random rotation axis, with a speed between `min` and `max`.
  *
- * @param min The minimum speed.
- * @param max The maximum speed.
+ * @param min - The slowest spin, in degrees per second.
+ * @param max - The fastest spin, in degrees per second.
+ *
+ * @summary Picks a random spin axis and speed.
  *
  * @see https://mathworld.wolfram.com/SpherePointPicking.html
  *

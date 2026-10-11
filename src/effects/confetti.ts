@@ -54,7 +54,6 @@ const CONFETTI_DEFAULTS = {
  *
  * @param target The target the confetti bursts out of. Its position and size are read once, when the effect starts.
  * @param options Overrides of the default options. See {@link ConfettiOptions} for all fields.
- *
  * @returns A handle to the running effect.
  *
  * @example

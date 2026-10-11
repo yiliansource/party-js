@@ -43,7 +43,6 @@ export interface Color {
  * is not a valid color input.
  *
  * @param input - A CSS color string, or an existing color.
- *
  * @returns The Oklab color.
  *
  * @throws {@link PartyJSError} If the string isn't a supported color.

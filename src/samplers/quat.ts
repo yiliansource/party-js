@@ -2,7 +2,9 @@ import type { Quat } from "../math/quat";
 import type { SamplerFn } from "./types";
 
 /**
- * Creates a sampler for a uniformly-distributed random rotation, using Shoemake's algorithm.
+ * Creates a sampler for random rotations, with each orientation being equally likely.
+ *
+ * @summary Picks a random rotation.
  *
  * @see Shoemake, K. (1992). "III.6 - Uniform Random Rotations."
  *
