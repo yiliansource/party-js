@@ -45,6 +45,7 @@ describe("resolveSchedule", () => {
 	test("validates loops", () => {
 		expect(() => resolveSchedule({ loops: -2, rate: 1 })).toThrow();
 		expect(() => resolveSchedule({ loops: 3.5, rate: 1 })).toThrow();
+		expect(() => resolveSchedule({ loops: NaN, rate: 1 })).toThrow();
 		expect(() =>
 			resolveSchedule({ loops: Number.NEGATIVE_INFINITY, rate: 1 }),
 		).toThrow();
@@ -52,6 +53,7 @@ describe("resolveSchedule", () => {
 
 	test("validates rate", () => {
 		expect(() => resolveSchedule({ rate: -3 })).toThrow();
+		expect(() => resolveSchedule({ rate: NaN })).toThrow();
 		expect(() =>
 			resolveSchedule({ rate: Number.POSITIVE_INFINITY }),
 		).toThrow();
@@ -125,6 +127,25 @@ describe("advanceSchedule", () => {
 		expect(before.spawnCount).toBe(0);
 
 		const after = advanceSchedule(schedule, before.state, 0.2, rng);
+		expect(after.spawnCount).toBe(3);
+	});
+
+	test("a burst scheduled at the emitter's duration still fires", () => {
+		const schedule: ResolvedEmissionSchedule = {
+			duration: 1,
+			loops: 1,
+			rate: 0,
+			bursts: [{ time: 1, count: 3 }],
+		};
+		const before = advanceSchedule(
+			schedule,
+			initialScheduleState,
+			0.5,
+			rng,
+		);
+		expect(before.spawnCount).toBe(0);
+
+		const after = advanceSchedule(schedule, before.state, 0.5, rng);
 		expect(after.spawnCount).toBe(3);
 	});
 

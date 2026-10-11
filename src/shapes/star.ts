@@ -1,4 +1,4 @@
-import { PartyJSError } from "../errors";
+import { invalidOption } from "../errors";
 import { createShapeCache } from "./cache";
 import { buildRegularPolygonPath } from "./utils";
 
@@ -29,8 +29,10 @@ export function starPath(points: number = 5): Path2D {
 
 export function buildStarPath(points: number): Path2D {
 	if (!Number.isInteger(points) || points < 3) {
-		throw new PartyJSError(
-			`star()'s points has to be an integer >= 3, got ${points}`,
+		throw invalidOption(
+			"star shape's points",
+			"an integer of at least 3",
+			points,
 		);
 	}
 

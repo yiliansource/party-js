@@ -13,8 +13,8 @@ import { createAnimationLoop } from "../render/loop";
 import { createRenderer } from "../render/renderer";
 
 /**
- * A running effect, returned by {@link createEffect | createEffect()} and custom effects, such as
- * {@link confetti | confetti()}.
+ * A running effect, returned by {@link createEffect | createEffect()} and custom effects and the built-in
+ * effects, such as {@link confetti | confetti()}.
  *
  * An effect starts as soon as it's created, and ends by itself once its schedule is finished and the last particle
  * has expired (i.e. died). You can use this handle to pause it, or to end it early.
@@ -35,7 +35,7 @@ export interface Effect {
 	/**
 	 * Ends the effect immediately and removes its particles. A canvas that party.js created is removed.
 	 * A canvas you provided is cleared and left in place. `onComplete` will not be called, and the effect
-	 * can't resumed afterwards. Calling it again has no effect.
+	 * can't be resumed afterwards. Calling it again has no effect.
 	 */
 	stop(): void;
 	/**
@@ -43,7 +43,7 @@ export interface Effect {
 	 * has no effect.
 	 *
 	 * If you did not supply a canvas, pausing the default fullscreen one that is created results in particles
-	 * being frozen in the _viewport_, not the page.
+	 * being frozen in the _viewport_, not the page, since nothing is redrawn while paused.
 	 */
 	pause(): void;
 	/**
@@ -83,7 +83,7 @@ export type EffectTarget = HTMLElement | Vec2;
  */
 export interface CreateEffectOptions {
 	/**
-	 * The point particle positions are measured from. Read again on every frame, so a function make
+	 * The point particle positions are measured from. Read again on every frame, so a function can
 	 * make the whole effect follow something or, for example, react to the window size.
 	 *
 	 * Without a `canvas`, party.js draws onto its own fullscreen canvas, and the origin is in page coordinates, i.e.
@@ -133,7 +133,7 @@ export interface CreateEffectOptions {
 	 */
 	rng?: Rng;
 	/**
-	 * Called one the schedule is finished and the last particle has expired (i.e. died). Will not be called
+	 * Called once the schedule is finished and the last particle has expired (i.e. died). Will not be called
 	 * if the effect is stopped early via {@link Effect.stop | Effect.stop()}.
 	 */
 	onComplete?: () => void;
@@ -173,7 +173,7 @@ export function resolveTarget(target: EffectTarget): {
  * ```ts
  * createEffect({
  *     origin: { x: 200, y: 300 },
- *     schedule: { duration: 1, loops: 1, rate: 0, bursts: [{ time: 0, count: 30 }] },
+ *     schedule: { bursts: [{ time: 0, count: 30 }] },
  *     particleInit: {
  *         position: emitFrom({ type: "disk", radius: 20 }),
  *         velocity: cone(90, 30, range(200, 400)),
@@ -222,9 +222,24 @@ export function createEffect(options: CreateEffectOptions): Effect {
 
 	loop.start();
 
+	let stopped = false;
+
 	return {
-		stop: () => stop(false),
-		pause: () => loop.stop(),
-		resume: () => loop.start(),
+		stop: () => {
+			if (stopped) return;
+
+			stopped = true;
+			stop(false);
+		},
+		pause: () => {
+			if (stopped) return;
+
+			loop.stop();
+		},
+		resume: () => {
+			if (stopped) return;
+
+			loop.start();
+		},
 	};
 }

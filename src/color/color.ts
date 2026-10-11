@@ -59,6 +59,10 @@ export interface Color {
 export function color(input: string | Color): Color {
 	if (typeof input !== "string") return input;
 	const parsed = parse(input);
-	if (!parsed) throw new PartyJSError(`invalid color "${input}"`);
+	if (!parsed)
+		throw new PartyJSError(
+			`invalid color "${input}": expected a hex color, or an rgb(), hsl(), oklab() or oklch() function. ` +
+				`Named colors aren't supported`,
+		);
 	return parsed;
 }

@@ -23,3 +23,20 @@ export class PartyJSError extends Error {
 		this.name = "PartyJSError";
 	}
 }
+
+/**
+ * Quotes strings, so that, for example, `"5"` and `5` can be told apart.
+ */
+const show = (value: unknown): string =>
+	typeof value === "string" ? JSON.stringify(value) : String(value);
+
+/**
+ * Builds the error for an option whose value breaks a rule, in the form "`where` must be `rule`, got `value`".
+ */
+export function invalidOption(
+	where: string,
+	rule: string,
+	value: unknown,
+): PartyJSError {
+	return new PartyJSError(`${where} must be ${rule}, got ${show(value)}`);
+}

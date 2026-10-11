@@ -12,7 +12,7 @@ import type { Sampler, SamplerFn } from "./types";
  *
  * @param angle - The direction of the cone's center, in degrees.
  * @param deviation - How far a particle's direction may lie from `angle`, in degrees, in either direction.
- * @param speed - The speed, in pixels per second. Can itself be a sampler.
+ * @param speed - The speed, in px/s. Can itself be a sampler.
  *
  * @summary Creates velocities in a direction, with some random spread.
  *

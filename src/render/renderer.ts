@@ -54,9 +54,10 @@ export function createRenderer(options: RendererOptions = {}): Renderer {
 	}
 
 	const maybeCtx = canvas.getContext("2d");
-	if (!maybeCtx) {
-		throw new PartyJSError("failed to acquire a 2d canvas context");
-	}
+	if (!maybeCtx)
+		throw new PartyJSError(
+			"couldn't get a 2D context from the canvas. It may already be used with a different context type, such as WebGL",
+		);
 	const ctx: CanvasRenderingContext2D = maybeCtx;
 
 	let logicalWidth = 0;
