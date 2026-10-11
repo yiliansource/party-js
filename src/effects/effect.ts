@@ -13,32 +13,129 @@ import { createAnimationLoop } from "../render/loop";
 import { createRenderer } from "../render/renderer";
 
 /**
+ * A running effect, returned by {@link createEffect | createEffect()} and custom effects, such as
+ * {@link confetti | confetti()}.
+ *
+ * An effect starts as soon as it's created, and ends by itself once its schedule is finished and the last particle
+ * has expired (i.e. died). You can use this handle to pause it, or to end it early.
+ *
+ * @summary A handle to control a running effect.
+ *
+ * @example
+ * ```ts
+ * const effect = confetti(button);
+ * effect.pause();
+ * effect.resume();
+ * effect.stop();
+ * ```
+ *
  * @group Effects
  */
 export interface Effect {
+	/**
+	 * Ends the effect immediately and removes its particles. A canvas that party.js created is removed.
+	 * A canvas you provided is cleared and left in place. `onComplete` will not be called, and the effect
+	 * can't resumed afterwards. Calling it again has no effect.
+	 */
 	stop(): void;
+	/**
+	 * Freezes the effect: particles stop moving and stay visible where they are. Calling it while already paused
+	 * has no effect.
+	 *
+	 * If you did not supply a canvas, pausing the default fullscreen one that is created results in particles
+	 * being frozen in the _viewport_, not the page.
+	 */
 	pause(): void;
+	/**
+	 * Continues a paused effect from where it was paused. The time spent paused is skipped, so particles
+	 * do not jump ahead. Does nothing if the effect isn't paused or has already ended.
+	 */
 	resume(): void;
 }
 
 /**
+ * What a built-in effect bursts out of: an element on the page, or a point.
+ *
+ * For an element, particles are emitted from the whole area. For a point, they spawn exactly there, in page
+ * coordinates, i.e. in pixels from the top-left corner of the document, with +y pointing down. Either way,
+ * the position is read only once, when the effect starts; moving or scrolling afterwards does not move
+ * the effect.
+ *
+ * @summary An element or point that an effect bursts out of.
+ *
+ * @example
+ * ```ts
+ * confetti(document.querySelector("#submit")!);
+ * confetti({ x: event.pageX, y: event.pageY });
+ * ```
+ *
  * @group Effects
  */
 export type EffectTarget = HTMLElement | Vec2;
 
 /**
+ * Options for {@link createEffect | createEffect()}, with everything that defines a custom effect: where it
+ * happens, when particles are emitted, how they start out and how they change.
+ *
+ * @summary Everything that defines a custom effect.
+ *
  * @group Custom effects
  */
 export interface CreateEffectOptions {
+	/**
+	 * The point particle positions are measured from. Read again on every frame, so a function make
+	 * make the whole effect follow something or, for example, react to the window size.
+	 *
+	 * Without a `canvas`, party.js draws onto its own fullscreen canvas, and the origin is in page coordinates, i.e.
+	 * pixels from the top-left of the document, with +y pointing down. With a `canvas`, it's in that canvas'
+	 * coordinate system instead, i.e. pixels from its top-left corner.
+	 */
 	origin: Live<Vec2>;
+	/**
+	 * When and how many particles are emitted.
+	 */
 	schedule: EmissionSchedule;
+	/**
+	 * How new particles start out.
+	 */
 	particleInit: ParticleInit;
+	/**
+	 * How particles change over their lifetime, run in this order on every simulation step.
+	 * See {@link Behavior}.
+	 */
 	behaviors?: Behavior[];
+	/**
+	 * A canvas to draw onto. If none is provided, party.js creates its own fullscreen canvas and removes it
+	 * once the effect ends. See `origin` for how the coordinates behave when a canvas is supplied, versus when not.
+	 */
 	canvas?: HTMLCanvasElement;
+	/**
+	 * The direction that light comes from, in particle space. The vector's length does not matter.
+	 * This value is read every frame. The default value points straight from the viewer.
+	 *
+	 * @defaultValue { x: 0, y: 0, z: 1 }
+	 */
 	light?: Live<Vec3>;
+	/**
+	 * How a particle's color changes with the angle between its face and the light. See
+	 * {@link createLighting | createLighting()}. Pass `(c) => c` to disable lighting.
+	 *
+	 * @defaultValue createLighting()
+	 */
 	lighting?: LightingFn;
+	/**
+	 * A seed for the effect's random number generator. The same seed with the same options produces the same
+	 * visuals each time. Without one, a random seed is generated and every run of the effect looks different.
+	 */
 	seed?: number;
+	/**
+	 * A random number generator to use instead of the built-in one. This takes precedence over `seed`.
+	 */
 	rng?: Rng;
+	/**
+	 * Called one the schedule is finished and the last particle has expired (i.e. died). Will not be called
+	 * if the effect is stopped early via {@link Effect.stop | Effect.stop()}.
+	 */
 	onComplete?: () => void;
 }
 
@@ -62,6 +159,35 @@ export function resolveTarget(target: EffectTarget): {
 }
 
 /**
+ * Creates and starts a custom effect, using the provided options.
+ *
+ * The built-in effects like {@link confetti | confetti()} are made using this function. You can use it directly
+ * if your needs are not covered by them.
+ *
+ * @param options - Everything that defines the effect.
+ * @returns A handle to pause, resume or stop the effect early.
+ *
+ * @summary Creates and starts a custom effect.
+ *
+ * @example
+ * ```ts
+ * createEffect({
+ *     origin: { x: 200, y: 300 },
+ *     schedule: { duration: 1, loops: 1, rate: 0, bursts: [{ time: 0, count: 30 }] },
+ *     particleInit: {
+ *         position: emitFrom({ type: "disk", radius: 20 }),
+ *         velocity: cone(90, 30, range(200, 400)),
+ *         orientation: randomOrientation(),
+ *         angularVelocity: randomSpin(90, 270),
+ *         size: range(8, 14),
+ *         color: pick(["#ff5a5f", "#ffb400", "#00a699"]),
+ *         shape: { type: "circle" },
+ *         lifetime: range(2, 3),
+ *     },
+ *     behaviors: [gravity(800), fade(0, 0.5)],
+ * });
+ * ```
+ *
  * @group Custom effects
  */
 export function createEffect(options: CreateEffectOptions): Effect {

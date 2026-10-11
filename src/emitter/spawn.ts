@@ -1,4 +1,5 @@
 import { type Color, color } from "../color/color";
+import { PartyJSError } from "../errors";
 import { type Quat, identity as quatIdentity } from "../math/quat";
 import { type Vec3, zero as vec3Zero } from "../math/vec3";
 import type { Particle } from "../particle/particle";
@@ -86,29 +87,44 @@ export interface ParticleInit {
 	lifetime: Sampler<number>;
 }
 
+export type ResolvedParticleInit = Required<ParticleInit>;
+
 const own = <T extends object>(value: T): T => ({ ...value });
 
+export function resolveParticleInit(init: ParticleInit): ResolvedParticleInit {
+	const resolved: ResolvedParticleInit = {
+		position: init.position ?? vec3Zero,
+		velocity: init.velocity ?? vec3Zero,
+		orientation: init.orientation ?? quatIdentity,
+		angularVelocity: init.angularVelocity ?? vec3Zero,
+		size: init.size,
+		color: init.color,
+		shape: init.shape,
+		lifetime: init.lifetime,
+	};
+
+	if (typeof resolved.size === "number" && resolved.size < 0)
+		throw new PartyJSError(`particle size cannot be negative`);
+
+	if (typeof resolved.color !== "function") {
+		color(resolved.color); // throws if the color is invalid
+	}
+
+	if (typeof resolved.lifetime === "number" && resolved.lifetime <= 0)
+		throw new PartyJSError(`particle lifetime must be positive`);
+
+	return resolved;
+}
+
 export function spawnParticle(
-	init: ParticleInit,
+	init: ResolvedParticleInit,
 	ctx: SamplerContext,
 ): Particle {
 	return {
-		position: own(
-			init.position ? evaluateSampler(init.position, ctx) : vec3Zero,
-		),
-		velocity: own(
-			init.velocity ? evaluateSampler(init.velocity, ctx) : vec3Zero,
-		),
-		orientation: own(
-			init.orientation
-				? evaluateSampler(init.orientation, ctx)
-				: quatIdentity,
-		),
-		angularVelocity: own(
-			init.angularVelocity
-				? evaluateSampler(init.angularVelocity, ctx)
-				: vec3Zero,
-		),
+		position: own(evaluateSampler(init.position, ctx)),
+		velocity: own(evaluateSampler(init.velocity, ctx)),
+		orientation: own(evaluateSampler(init.orientation, ctx)),
+		angularVelocity: own(evaluateSampler(init.angularVelocity, ctx)),
 		size: evaluateSampler(init.size, ctx),
 		color: own(color(evaluateSampler(init.color, ctx))),
 		shape: own(evaluateSampler(init.shape, ctx)),

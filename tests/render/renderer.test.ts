@@ -10,18 +10,25 @@ interface FakeCanvas {
 	clientWidth: number;
 	clientHeight: number;
 	attributes: Record<string, string>;
+	removed: boolean;
 	drawnAt: { x: number; y: number }[]; // a history of the positions where particles where drawn at
+	calls: { name: string; args: unknown[] }[]; // a history of setTransform and clearRect calls
 	getContext(): unknown;
 	remove(): void;
 	setAttribute(name: string, value: string): void;
 }
 
 function makeFakeCanvas(): FakeCanvas {
-	const drawnAt: { x: number; y: number }[] = [];
+	const drawnAt: FakeCanvas["drawnAt"] = [];
+	const calls: FakeCanvas["calls"] = [];
 	const ctx = {
 		fillStyle: "",
-		setTransform() {},
-		clearRect() {},
+		setTransform(...args: number[]) {
+			calls.push({ name: "setTransform", args });
+		},
+		clearRect(...args: number[]) {
+			calls.push({ name: "clearRect", args });
+		},
 		save() {},
 		restore() {},
 		transform(
@@ -43,8 +50,12 @@ function makeFakeCanvas(): FakeCanvas {
 		clientHeight: 0,
 		attributes: {},
 		drawnAt,
+		calls,
+		removed: false,
 		getContext: () => ctx,
-		remove() {},
+		remove() {
+			this.removed = true;
+		},
 		setAttribute(name, value) {
 			this.attributes[name] = value;
 		},
@@ -157,6 +168,16 @@ describe("createRenderer (owned canvas)", () => {
 		expect(canvas.attributes["aria-hidden"]).toBe("true");
 		expect(canvas.attributes).toHaveProperty("data-party-js");
 	});
+
+	test("removes its own canvas when disposed, without clearing it", () => {
+		const renderer = createRenderer();
+		canvas.calls.length = 0; // ignore the calls made during setup
+
+		renderer.dispose();
+
+		expect(canvas.calls).toEqual([]);
+		expect(canvas.removed).toBe(true);
+	});
 });
 
 describe("createRenderer (provided canvas)", () => {
@@ -178,5 +199,23 @@ describe("createRenderer (provided canvas)", () => {
 		renderer.drawFrame([particleAtOrigin()], { x: 100, y: 500 });
 
 		expect(own.drawnAt).toEqual([{ x: 100, y: 500 }]);
+	});
+
+	test("clears a provided canvas and resets its transform when disposed", () => {
+		const own = makeFakeCanvas();
+		own.clientWidth = 300;
+		own.clientHeight = 150;
+		const renderer = createRenderer({
+			canvas: own as unknown as HTMLCanvasElement,
+		});
+		own.calls.length = 0; // ignore the calls made during setup
+
+		renderer.dispose();
+
+		expect(own.calls).toEqual([
+			{ name: "setTransform", args: [1, 0, 0, 1, 0, 0] },
+			{ name: "clearRect", args: [0, 0, 600, 300] },
+		]);
+		expect(own.removed).toBe(false);
 	});
 });

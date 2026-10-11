@@ -190,4 +190,34 @@ describe("Emitter", () => {
 
 		expect(emitter.isExpired).toBe(false);
 	});
+
+	test("validates the emitter options", () => {
+		expect(() => {
+			new Emitter({
+				particleInit: {
+					color: "#ff0000",
+					shape: { type: "circle" },
+					size: -2,
+					lifetime: 5,
+				},
+				schedule: {
+					rate: 5,
+				},
+			});
+		}).toThrow();
+
+		expect(() => {
+			new Emitter({
+				particleInit: {
+					color: "#ff0000",
+					shape: { type: "circle" },
+					size: 5,
+					lifetime: 5,
+				},
+				schedule: {
+					rate: -2,
+				},
+			});
+		}).toThrow();
+	});
 });

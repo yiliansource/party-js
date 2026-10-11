@@ -96,7 +96,6 @@ const effect = createEffect({
 	origin: () => ({ x: 0, y: headerHeight - window.scrollY }),
 	canvas,
 	schedule: {
-		duration: 1,
 		loops: Number.POSITIVE_INFINITY,
 		rate: () => (window.innerWidth < 640 ? 2 : 4),
 	},

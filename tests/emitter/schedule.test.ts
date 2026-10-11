@@ -2,16 +2,82 @@ import { describe, expect, test } from "bun:test";
 
 import {
 	advanceSchedule,
-	type EmissionSchedule,
 	initialScheduleState,
 	isScheduleExpired,
+	type ResolvedEmissionSchedule,
+	resolveSchedule,
 } from "@/emitter/schedule";
 
 const rng = () => 0;
 
+describe("resolveSchedule", () => {
+	test("fills in default values", () => {
+		expect(
+			resolveSchedule({
+				rate: 1,
+			}),
+		).toEqual({
+			duration: 1,
+			loops: 1,
+			rate: 1,
+			bursts: [],
+		});
+
+		expect(
+			resolveSchedule({
+				bursts: [{ count: 10 }],
+			}),
+		).toEqual({
+			duration: 1,
+			loops: 1,
+			rate: 0,
+			bursts: [{ time: 0, count: 10 }],
+		});
+	});
+
+	test("validates duration", () => {
+		expect(() => resolveSchedule({ duration: -2, rate: 1 })).toThrow();
+		expect(() =>
+			resolveSchedule({ duration: Number.POSITIVE_INFINITY, rate: 1 }),
+		).toThrow();
+	});
+
+	test("validates loops", () => {
+		expect(() => resolveSchedule({ loops: -2, rate: 1 })).toThrow();
+		expect(() => resolveSchedule({ loops: 3.5, rate: 1 })).toThrow();
+		expect(() =>
+			resolveSchedule({ loops: Number.NEGATIVE_INFINITY, rate: 1 }),
+		).toThrow();
+	});
+
+	test("validates rate", () => {
+		expect(() => resolveSchedule({ rate: -3 })).toThrow();
+		expect(() =>
+			resolveSchedule({ rate: Number.POSITIVE_INFINITY }),
+		).toThrow();
+	});
+
+	test("validates bursts", () => {
+		expect(() =>
+			resolveSchedule({
+				bursts: [{ count: 10 }, { time: -2, count: 5 }],
+			}),
+		).toThrow();
+		expect(() =>
+			resolveSchedule({
+				bursts: [{ count: -5 }],
+			}),
+		).toThrow();
+	});
+
+	test("validates emission", () => {
+		expect(() => resolveSchedule({})).toThrow();
+	});
+});
+
 describe("advanceSchedule", () => {
 	test("a burst at time 0 fires on the very first tick", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: 1,
 			rate: 0,
@@ -27,7 +93,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("a burst does not fire again on a later tick within the same loop", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: 1,
 			rate: 0,
@@ -44,7 +110,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("a burst scheduled later fires once elapsed time reaches it", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: 1,
 			rate: 0,
@@ -63,7 +129,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("a large dt still fires a burst it steps over, exactly once", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 5,
 			loops: 1,
 			rate: 0,
@@ -79,7 +145,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("continuous rate spawns exactly one particle per interval", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: 1,
 			rate: 10,
@@ -95,7 +161,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("continuous rate accumulates a fractional remainder across ticks", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: 1,
 			rate: 10,
@@ -112,7 +178,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("continuous rate catches up correctly after a large dt", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 5,
 			loops: 1,
 			rate: 10,
@@ -128,7 +194,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("spawning stops for good once a finite loop count is exhausted", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: 1,
 			rate: 10,
@@ -140,7 +206,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("elapsed never overshoots duration, even across several exact-multiple loop wraps", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: Number.POSITIVE_INFINITY,
 			rate: 0,
@@ -157,7 +223,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("a burst re-fires on every loop", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: 3,
 			rate: 0,
@@ -174,7 +240,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("a dt spanning several whole loops fires the burst once per loop crossed", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: Number.POSITIVE_INFINITY,
 			rate: 0,
@@ -190,7 +256,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("an infinite loop count never expires, however many loops pass", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: Number.POSITIVE_INFINITY,
 			rate: 0,
@@ -206,7 +272,7 @@ describe("advanceSchedule", () => {
 	});
 
 	test("a non-integer burst count is rounded to the nearest integer", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 2,
 			loops: 3,
 			rate: 0,
@@ -222,23 +288,11 @@ describe("advanceSchedule", () => {
 		expect(first.spawnCount).toBe(3);
 		expect(second.spawnCount).toBe(5);
 	});
-
-	test("throws for a non-positive duration, rather than getting stuck looping forever", () => {
-		const schedule: EmissionSchedule = {
-			duration: 0,
-			loops: 1,
-			rate: 0,
-			bursts: [],
-		};
-		expect(() =>
-			advanceSchedule(schedule, initialScheduleState, 0.016, rng),
-		).toThrow();
-	});
 });
 
 describe("isScheduleExpired", () => {
 	test("false before duration has elapsed", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: 1,
 			rate: 0,
@@ -248,7 +302,7 @@ describe("isScheduleExpired", () => {
 	});
 
 	test("true once the only loop's duration has elapsed", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: 1,
 			rate: 0,
@@ -264,7 +318,7 @@ describe("isScheduleExpired", () => {
 	});
 
 	test("false after one of several loops has elapsed", () => {
-		const schedule: EmissionSchedule = {
+		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,
 			loops: 3,
 			rate: 0,

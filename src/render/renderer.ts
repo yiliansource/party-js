@@ -106,7 +106,12 @@ export function createRenderer(options: RendererOptions = {}): Renderer {
 		},
 		dispose() {
 			resizeObserver.disconnect();
-			if (ownsCanvas) canvas.remove();
+			if (ownsCanvas) {
+				canvas.remove();
+			} else {
+				ctx.setTransform(1, 0, 0, 1, 0, 0);
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+			}
 		},
 	};
 }

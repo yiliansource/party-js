@@ -4,30 +4,80 @@ import type { SamplerContext, SamplerFn } from "../samplers/types";
 import { type Live, resolveLive } from "./live";
 
 /**
+ * A filled circle that particles spawn from, with every point inside it equally likely.
+ *
+ * @summary A circular area that particles spawn from.
+ *
  * @group Custom effects
  */
 export interface DiskEmissionShape {
 	type: "disk";
+	/**
+	 * The center of the circle, in pixels from the origin.
+	 *
+	 * @defaultValue { x: 0, y: 0 }
+	 */
 	center?: Vec2;
+	/**
+	 * The radius of the circle, in pixels.
+	 */
 	radius: number;
 }
 
 /**
+ * A filled rectangle that particles spawn from, with every point inside it equally likely.
+ * Set `width` or `height` to 0 to emit particles from a line.
+ *
+ * @summary A rectangular area that particles spawn from.
+ *
  * @group Custom effects
  */
 export interface RectEmissionShape {
 	type: "rect";
+	/**
+	 * The center of the rectangle, in pixels from the origin.
+	 *
+	 * @defaultValue { x: 0, y: 0 }
+	 */
 	center?: Vec2;
+	/**
+	 * The width of the rectangle, in pixels.
+	 */
 	width: number;
+	/**
+	 * The height of the rectangle, in pixels.
+	 */
 	height: number;
 }
 
 /**
+ * An area that particles spawn from, for use with {@link emitFrom | emitFrom()}.
+ *
+ * Positions are in particle space, i.e. in pixels from the effect's origin, with +y pointing upwards.
+ *
+ * @summary An area that particles spawn from.
+ *
  * @group Custom effects
  */
 export type EmissionShape = DiskEmissionShape | RectEmissionShape;
 
 /**
+ * Creates a sampler for particle positions spread across an area.
+ *
+ * The shape is {@link Live}: pass a function to make the follow something that changes, for example the
+ * window width. It's read again for every particle that spawns.
+ *
+ * @param shape - The area to spawn particles from.
+ * @returns A sampler for {@link ParticleInit.position}.
+ *
+ * @summary Spawns particles from an area.
+ *
+ * @example
+ * ```ts
+ * // Along a line across the full width of the window.
+ * const positionSampler = emitFrom(() => ({ type: "rect", width: window.innerWidth, height: 0 }));
+ * ```
+ *
  * @group Custom effects
  */
 export function emitFrom(shape: Live<EmissionShape>): SamplerFn<Vec3> {

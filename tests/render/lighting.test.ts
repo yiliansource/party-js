@@ -38,10 +38,10 @@ describe("computeLightingCoefficient", () => {
 describe("createLighting", () => {
 	const fixture = { l: 0.8, a: 0.1, b: -0.05, alpha: 0.9 };
 
-	test("default options: coefficient 0 scales lightness by the ambient floor only", () => {
+	test("default options: coefficient 0 scales lightness by the ambient coefficient only", () => {
 		const lighting = createLighting();
 		expect(lighting(fixture, 0)).toEqual({
-			l: expect.closeTo(0.4, 9), // 0.8 * (0.5 + 1 * 0)
+			l: expect.closeTo(0.4, 9),
 			a: 0.1,
 			b: -0.05,
 			alpha: 0.9,
@@ -53,7 +53,7 @@ describe("createLighting", () => {
 		const fromFront = lighting(fixture, 1);
 		const fromBehind = lighting(fixture, -1);
 		expect(fromFront).toEqual(fromBehind);
-		expect(fromFront.l).toBeCloseTo(1.2, 9); // 0.8 * (0.5 + 1 * 1)
+		expect(fromFront.l).toBeCloseTo(0.8, 9);
 	});
 
 	test("never brightens black; l stays 0 regardless of coefficient", () => {
@@ -64,7 +64,7 @@ describe("createLighting", () => {
 	});
 
 	test("only ever touches l; a, b and alpha always pass through unchanged", () => {
-		const lighting = createLighting({ ambient: 0.1, intensity: 3 });
+		const lighting = createLighting({ ambient: 0.1, peak: 3 });
 		for (const coefficient of [0, 0.3, -0.7, 1, -1]) {
 			const result = lighting(fixture, coefficient);
 			expect(result.a).toBe(fixture.a);
@@ -73,13 +73,13 @@ describe("createLighting", () => {
 		}
 	});
 
-	test("custom ambient/intensity are applied instead of the defaults", () => {
-		const lighting = createLighting({ ambient: 0, intensity: 2 });
-		expect(lighting(fixture, 0.3).l).toBeCloseTo(0.48, 9); // 0.8 * (0 + 2 * 0.3)
+	test("custom ambient/peak are applied instead of the defaults", () => {
+		const lighting = createLighting({ ambient: 1, peak: 2 });
+		expect(lighting(fixture, 0.3).l).toBeCloseTo(1.04, 9);
 	});
 
-	test("ambient: 1, intensity: 0 disables lighting entirely - color passes through unchanged", () => {
-		const lighting = createLighting({ ambient: 1, intensity: 0 });
+	test("ambient: 1, peak: 1 disables lighting entirely - color passes through unchanged", () => {
+		const lighting = createLighting({ ambient: 1, peak: 1 });
 		expect(lighting(fixture, 0.7)).toEqual(fixture);
 	});
 });
