@@ -8,7 +8,7 @@
  * @example
  * ```ts
  * try {
- *     confetti(button, { colors: ["not-a-color"] });
+ *     confetti(button, { colors: gradient([]) });
  * } catch (error) {
  *     if (error instanceof PartyJSError) showHint(error.message);
  *     else throw error;

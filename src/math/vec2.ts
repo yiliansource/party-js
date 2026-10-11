@@ -1,5 +1,5 @@
 /**
- * A vector in 2D space, usually used to represent something in page or canvas coordinates.
+ * A vector in 2D space.
  *
  * @summary A 2D vector.
  *

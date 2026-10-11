@@ -7,6 +7,8 @@ import type { StarShape } from "./star";
  * A shape determined by a {@link Path2D}.
  *
  * The path is expected to fit in a 1x1 box centered at (0, 0), oriented to have +y pointing down.
+ * A supplied {@link Path2D} should only be created once, outside of any samplers, to avoid it being
+ * created for every particle.
  *
  * @summary Draws a particle according to a given path.
  *
@@ -22,10 +24,10 @@ export interface PathShape {
  * images or gradients.
  *
  * The function is called once per particle on every frame. Before it is called, the context is transformed
- * into shape space (centered at (0, 0), with +y pointing down, skewed according to the particle's `orientation`,
+ * into shape space (centered at (0, 0), with +y pointing down, rotated according to the particle's `orientation`,
  * with 1 unit being equal to the particle's size) and `fillStyle` is set to the particle's (lit) color.
  *
- * You are free to modify any context state, since it is restored before each draw call. Nothing will be drawn
+ * You are free to modify any context state, since it is saved and restored around each call. Nothing will be drawn
  * unless your function does so, for example via `ctx.fill()`.
  *
  * If the shape can be built using a {@link Path2D}, it is recommended to use {@link PathShape} instead.
@@ -60,7 +62,7 @@ export interface CustomShape {
  *
  * Every shape is drawn in the same space: centered at (0, 0), fitting inside a 1x1 box from -0.5 to 0.5,
  * with +y pointing down, as it would on a regular canvas. That box is then scaled to the particle's `size`,
- * rotated by its `orientation`, and filled with its (lit) color.
+ * rotated by its `orientation`, and the `fillStyle` is set to its (lit) `color`.
  *
  * @summary The shape a particle is drawn as.
  *
