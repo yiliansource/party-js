@@ -28,6 +28,12 @@ describe("validateShape", () => {
 		expect(() =>
 			validateShape({ type: "square", aspectRatio: NaN }, "square"),
 		).toThrow();
+		expect(() =>
+			validateShape({ type: "square", aspectRatio: -Infinity }, "square"),
+		).toThrow();
+		expect(() =>
+			validateShape({ type: "square", aspectRatio: Infinity }, "square"),
+		).toThrow();
 
 		expect(() =>
 			validateShape({ type: "square", cornerRadius: -2 }, "square"),

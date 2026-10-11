@@ -24,7 +24,7 @@ import { validateShape } from "../shapes/validate";
  * ```ts
  * createEffect({
  *     origin: { x: 200, y: 300 },
- *     schedule: { bursts: [{ time: 0, count: 30 }] },
+ *     schedule: { bursts: [{ count: 30 }] },
  *     particleInit: {
  *         position: emitFrom({ type: "disk", radius: 20 }),
  *         velocity: cone(90, 30, range(200, 400)),

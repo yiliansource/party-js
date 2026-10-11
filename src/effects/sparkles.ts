@@ -1,12 +1,18 @@
 import { fade, scale } from "../behavior";
-import type { Color } from "../color";
-import { fromPolar } from "../color/oklch";
+import { type Color, color } from "../color";
 import { emitFrom } from "../emitter";
 import { fromAxisAngle, type Quat } from "../math/quat";
 import { lerp } from "../math/scalar";
 import { unitZ, type Vec3 } from "../math/vec3";
 import { createRng } from "../random/rng";
-import { cone, pick, range, type Sampler, type SamplerFn } from "../samplers";
+import {
+	cone,
+	gradient,
+	pick,
+	range,
+	type Sampler,
+	type SamplerFn,
+} from "../samplers";
 import {
 	createEffect,
 	type Effect,
@@ -15,13 +21,47 @@ import {
 } from "./effect";
 
 /**
+ * Options for {@link sparkles | sparkles()}.
+ *
+ * @summary How many sparkles to emit, and their color size, speed and lifetime.
+ *
  * @group Effects
  */
 export interface SparkleOptions {
+	/**
+	 * How many sparkles are emitted at the start of the effect. Sampled once, and rounded to the nearest integer.
+	 *
+	 * @defaultValue range(20, 40)
+	 */
 	count?: Sampler<number>;
+	/**
+	 * How fast sparkles fly outwards, in px/s. Sampled for each sparkle.
+	 *
+	 * @defaultValue range(150, 250)
+	 */
 	startVelocity?: Sampler<number>;
+	/**
+	 * The size of the sparkles, in pixels. Sampled for each sparkle.
+	 *
+	 * @defaultValue range(16, 22)
+	 */
 	size?: Sampler<number>;
+	/**
+	 * How long the sparkles live, in seconds. Sampled for each sparkle.
+	 *
+	 * @defaultValue range(0.5, 1)
+	 */
 	lifetime?: Sampler<number>;
+	/**
+	 * The colors the sparkles can take on. An array of color strings is converted with
+	 * {@link color | color()} right away, and a random one is picked for each sparkle. A sampler is
+	 * evaluated for each sparkle instead.
+	 *
+	 * Sparkles aren't affected by lighting, so their colors appear exactly as given.
+	 *
+	 * @defaultValue gradient(["oklch(0.5 0.15 70)", "oklch(0.7 0.15 70)"])
+	 */
+	colors?: string[] | Sampler<string | Color>;
 }
 
 const SPARKLE_DEFAULTS = {
@@ -29,9 +69,27 @@ const SPARKLE_DEFAULTS = {
 	startVelocity: range(150, 250),
 	size: range(16, 22),
 	lifetime: range(0.5, 1),
+	colors: gradient(["oklch(0.75 0.15 70)", "oklch(1 0.15 70)"]),
 } satisfies Required<SparkleOptions>;
 
 /**
+ * Bursts golden by default, spinning stars out of the specified target, in all directions.
+ *
+ * The sparkles are spread evenly around the target and fly outwards in straight lines, unaffected by gravity.
+ * They always face the viewer while spinning, grow to their full size over their first 0.3 seconds, and fade
+ * out over their last half second. Each sparkle only lives for 0.5 to 1 second.
+ *
+ * @summary Bursts spinning golden stars out in all directions.
+ *
+ * @param target - The target the sparkles burst out of. Its position and size are read once, when the effect starts.
+ * @param options - Overrides of the default options. See {@link SparkleOptions} for all fields.
+ * @returns A handle to the running effect.
+ *
+ * @example
+ * ```ts
+ * button.addEventListener("click", () => sparkles(button, { count: 12 }));
+ * ```
+ *
  * @group Effects
  */
 export function sparkles(
@@ -49,36 +107,33 @@ export function sparkles(
 	return createEffect({
 		origin,
 		schedule: {
-			duration: 1 / 60,
-			loops: 1,
-			rate: 0,
-			bursts: [{ time: 0, count: o.count }],
+			bursts: [{ count: o.count }],
 		},
 		rng,
 		particleInit: {
 			position: emitFrom(shape),
 			velocity: cone(0, 180, o.startVelocity),
 			orientation: randomZRotation(),
-			angularVelocity: randomZSpin(),
+			angularVelocity: randomZSpin(360, 720),
 			size: o.size,
 			lifetime: o.lifetime,
-			color: randomSparkleColor(),
-			shape: pick([{ type: "star" }]),
+			color: Array.isArray(o.colors)
+				? pick(o.colors.map(color))
+				: o.colors,
+			shape: { type: "star" },
 		},
 		behaviors: [scale(0.3, 0), fade(0, 0.5)],
 		lighting: (c) => c,
 	});
 }
 
-export function randomSparkleColor(): SamplerFn<Color> {
-	return (ctx) =>
-		fromPolar({ l: lerp(0.5, 0.7, ctx.rng()), c: 0.15, h: 70 }, 1);
+function randomZSpin(min: number, max: number): SamplerFn<Vec3> {
+	return (ctx) => {
+		const direction = ctx.rng() < 0.5 ? -1 : 1;
+		return { x: 0, y: 0, z: direction * lerp(min, max, ctx.rng()) };
+	};
 }
 
-export function randomZSpin(): SamplerFn<Vec3> {
-	return (ctx) => ({ x: 0, y: 0, z: lerp(360, 720, ctx.rng()) });
-}
-
-export function randomZRotation(): SamplerFn<Quat> {
+function randomZRotation(): SamplerFn<Quat> {
 	return (ctx) => fromAxisAngle(unitZ, ctx.rng() * Math.PI * 2);
 }

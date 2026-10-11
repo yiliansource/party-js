@@ -13,7 +13,7 @@ import { createAnimationLoop } from "../render/loop";
 import { createRenderer } from "../render/renderer";
 
 /**
- * A running effect, returned by {@link createEffect | createEffect()} and custom effects and the built-in
+ * A handle to a running effect, returned by {@link createEffect | createEffect()} and the built-in
  * effects, such as {@link confetti | confetti()}.
  *
  * An effect starts as soon as it's created, and ends by itself once its schedule is finished and the last particle
@@ -173,7 +173,7 @@ export function resolveTarget(target: EffectTarget): {
  * ```ts
  * createEffect({
  *     origin: { x: 200, y: 300 },
- *     schedule: { bursts: [{ time: 0, count: 30 }] },
+ *     schedule: { bursts: [{ count: 30 }] },
  *     particleInit: {
  *         position: emitFrom({ type: "disk", radius: 20 }),
  *         velocity: cone(90, 30, range(200, 400)),
@@ -214,7 +214,12 @@ export function createEffect(options: CreateEffectOptions): Effect {
 		if (emitter.isDone) stop(true);
 	});
 
+	let stopped = false;
+
 	function stop(natural = false): void {
+		if (stopped) return;
+		stopped = true;
+
 		loop.stop();
 		renderer.dispose();
 		if (natural) options.onComplete?.();
@@ -222,24 +227,13 @@ export function createEffect(options: CreateEffectOptions): Effect {
 
 	loop.start();
 
-	let stopped = false;
-
 	return {
-		stop: () => {
-			if (stopped) return;
-
-			stopped = true;
-			stop(false);
-		},
+		stop: () => stop(false),
 		pause: () => {
-			if (stopped) return;
-
-			loop.stop();
+			if (!stopped) loop.stop();
 		},
 		resume: () => {
-			if (stopped) return;
-
-			loop.start();
+			if (!stopped) loop.start();
 		},
 	};
 }

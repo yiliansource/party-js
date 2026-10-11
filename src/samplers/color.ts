@@ -78,6 +78,6 @@ export interface RandomHueOptions {
  */
 export function randomHue(options: RandomHueOptions): SamplerFn<Color> {
 	const { l, c, alpha = 1 } = options;
-	if (c < 0) throw invalidOption("randomHue()'s chroma", "at least 0", c);
+	if (!(c >= 0)) throw invalidOption("randomHue()'s chroma", "at least 0", c);
 	return (ctx) => fromPolar({ l, c, h: ctx.rng() * 360 }, alpha);
 }
