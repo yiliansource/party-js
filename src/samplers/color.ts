@@ -71,7 +71,7 @@ export interface RandomHueOptions {
  *
  * @example
  * ```ts
- * color: randomHue({ l: 0.7, c: 0.15 }),
+ * const color = randomHue({ l: 0.7, c: 0.15 });
  * ```
  *
  * @group Samplers

@@ -1,3 +1,27 @@
+.sl-heading-wrapper:has(> .ref-section, > .ref-member-name) {
+	--sl-text-h2: var(--sl-text-xl);
+	--sl-text-h3: var(--sl-text-xl);
+	--sl-text-h4: var(--sl-text-lg);
+	--sl-text-h5: var(--sl-text-lg);
+	--sl-text-h6: var(--sl-text-lg);
+}
+
+@media (min-width: 50rem) {
+	.sl-heading-wrapper:has(> h2.ref-section, > h3.ref-member-name) {
+		--sl-text-h2: var(--sl-text-2xl);
+		--sl-text-h3: var(--sl-text-2xl);
+	}
+}
+
+:is(.ref-param-type, .ref-param-default-value, .ref-relation) code {
+	padding: 0;
+	border-radius: 0;
+	background: none;
+	box-shadow: none;
+	color: inherit;
+	font-size: inherit;
+}
+
 .ref-params {
 	margin: var(--sl-content-gap-y) 0 0 0;
 	border-radius: 14px;
@@ -19,6 +43,7 @@
 }
 .ref-param-name {
 	color: var(--color-fg);
+	box-shadow: none;
 	font-weight: 600;
 	font-size: 13px;
 	background: none;
@@ -40,9 +65,7 @@
 	color: var(--color-subtle);
 
 	code {
-		padding: 0;
 		font-weight: 600;
-		background: transparent;
 	}
 }
 .ref-param-default {
@@ -63,9 +86,7 @@
 	border-radius: 6px;
 
 	code {
-		padding: 0;
 		font-weight: 500;
-		background: transparent;
 	}
 }
 
@@ -84,8 +105,8 @@
 	font-family: var(--font-mono);
 }
 
-.ref-heritage {
-	margin-top: -28px;
+.ref-header {
+	margin: -28px 0 28px;
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
@@ -99,8 +120,11 @@
 	font-family: var(--font-mono);
 	color: var(--color-subtle);
 }
-.ref-heritage .ref-relation {
+.ref-header .ref-relation {
 	margin: 0;
+}
+.ref-params + .ref-relation {
+	margin-top: 1.5rem;
 }
 .ref-relation-label {
 	margin-right: 8px;
@@ -111,11 +135,11 @@
 	padding: 2px 8px;
 	line-height: 1.3;
 	border-radius: 6px;
+	min-width: 0;
+	overflow-wrap: anywhere;
 
 	code {
-		padding: 0;
 		font-weight: 500;
-		background: transparent;
 	}
 }
 .ref-relation-comma {
@@ -123,16 +147,11 @@
 }
 
 .ref-relation a[href^="http"] {
-	position: relative;
-	padding-right: 12px;
 	&::after {
-		position: absolute;
-		right: -2px;
-		top: 50%;
-		transform: translateY(-45%);
+		content: "↗";
+		display: inline-block; /* keeps the link's underline off the arrow */
+		margin-left: 6px;
 		font-family: var(--font-sans);
 		font-size: 12px;
-		vertical-align: top;
-		content: "↗";
 	}
 }

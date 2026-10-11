@@ -2,12 +2,13 @@ import { defineHastPlugin } from "satteri";
 
 import { accessors } from "./sections/accessors";
 import { constructors } from "./sections/constructors";
-import { flushHeritage, heritage } from "./sections/heritage";
+import { flushHeader, header } from "./sections/header";
 import { members } from "./sections/members";
 import { note } from "./sections/notes";
 import { parameters } from "./sections/parameters";
 import { properties } from "./sections/properties";
 import { returns } from "./sections/returns";
+import { throws } from "./sections/throws";
 import { createWalker, type PageState, type SectionHandler } from "./walk";
 
 const handlers: Record<string, SectionHandler> = {
@@ -17,11 +18,14 @@ const handlers: Record<string, SectionHandler> = {
 	Properties: properties,
 	Accessors: accessors,
 	Returns: returns,
+	Throws: throws,
 	Methods: members,
-	Extends: heritage("extends"),
-	Implements: heritage("implements"),
-	"Extended by": heritage("extended by"),
+	Extends: header("extends"),
+	Implements: header("implements"),
+	"Extended by": header("extended by"),
 	Overrides: note("overrides"),
+	See: (section, hc) =>
+		(hc.level === 2 ? header("see") : note("see"))(section, hc),
 	"Inherited from": note("inherited from"),
 	"Implementation of": note("implements"),
 };
@@ -29,9 +33,9 @@ const handlers: Record<string, SectionHandler> = {
 const plugin = defineHastPlugin({
 	name: "party-reference",
 	before(root, ctx) {
-		const page: PageState = { heritage: new Map() };
+		const page: PageState = { header: new Map() };
 		createWalker(handlers, ctx, page)(root.children, 2);
-		flushHeritage(page, root, ctx);
+		flushHeader(page, root, ctx);
 	},
 	element: {
 		filter: ["hr"],

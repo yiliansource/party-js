@@ -10,22 +10,28 @@ const KINDS = {
 	Extends: "extends",
 	Implements: "implements",
 	"Extended by": "extended by",
+	See: "see",
 } as const;
-export type HeritageKind = (typeof KINDS)[keyof typeof KINDS];
+export type HeaderRelationKind = (typeof KINDS)[keyof typeof KINDS];
 
-const ORDER: HeritageKind[] = ["extends", "implements", "extended by"];
+const ORDER: HeaderRelationKind[] = [
+	"extends",
+	"implements",
+	"extended by",
+	"see",
+];
 
-export function flushHeritage(
+export function flushHeader(
 	page: PageState,
 	root: Root,
 	ctx: HastVisitorContext,
 ): void {
-	const lines = ORDER.flatMap((kind) => page.heritage.get(kind) ?? []);
+	const lines = ORDER.flatMap((kind) => page.header.get(kind) ?? []);
 	if (lines.length > 0)
-		ctx.prependChild(root, el("div", "ref-heritage", lines));
+		ctx.prependChild(root, el("div", "ref-header", lines));
 }
 
-export const heritage = (kind: HeritageKind): SectionHandler => {
+export const header = (kind: HeaderRelationKind): SectionHandler => {
 	return (section, { ctx, page }) => {
 		const result = extractSection(
 			section,
@@ -39,6 +45,6 @@ export const heritage = (kind: HeritageKind): SectionHandler => {
 			ctx,
 		);
 
-		if (result) page.heritage.set(kind, result);
+		if (result) page.header.set(kind, result);
 	};
 };

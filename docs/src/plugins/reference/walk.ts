@@ -2,12 +2,12 @@ import type { Element, RootContent } from "hast";
 import type { HastVisitorContext } from "satteri";
 
 import type { Section } from "./section";
-import type { HeritageKind } from "./sections/heritage";
+import type { HeaderRelationKind } from "./sections/header";
 import { mergeProperties } from "./sections/merge";
 import { splitByHeading, textOf } from "./tree";
 
 export interface PageState {
-	heritage: Map<HeritageKind, Element>;
+	header: Map<HeaderRelationKind, Element>;
 }
 export interface HandlerContext {
 	level: number;
@@ -31,6 +31,7 @@ export function createWalker(
 		for (const section of sections) {
 			if (handled.has(section)) continue;
 
+			ctx.setProperty(section.heading, "className", ["ref-section"]);
 			const handler = handlers[textOf(section.heading, ctx)];
 			if (handler) handler(section, { level, ctx, walk, page });
 			else walk(section.body, level + 1);

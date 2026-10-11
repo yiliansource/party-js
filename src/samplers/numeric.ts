@@ -11,7 +11,7 @@ import type { SamplerFn } from "./types";
  *
  * @example
  * ```ts
- * size: range(8, 16),
+ * const size = range(8, 16);
  * ```
  *
  * @group Samplers

@@ -22,9 +22,10 @@ import { type Easing, linear } from "./easing";
 export function scale(
 	inDuration: number,
 	outDuration: number,
-	ease: Easing = linear(),
+	ease?: Easing,
 ): Behavior {
 	const BASE_SIZE = Symbol("scale.baseSize");
+	const easeFn = ease ?? linear();
 
 	return {
 		init(particle) {
@@ -39,7 +40,7 @@ export function scale(
 			const outFactor =
 				outDuration > 0 ? Math.min(remaining / outDuration, 1) : 1;
 
-			particle.size = base * ease(Math.min(inFactor, outFactor));
+			particle.size = base * easeFn(Math.min(inFactor, outFactor));
 		},
 	};
 }
