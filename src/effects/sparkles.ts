@@ -66,6 +66,7 @@ export function sparkles(
 			shape: pick([{ type: "star" }]),
 		},
 		behaviors: [scale(0.3, 0), fade(0, 0.5)],
+		lighting: (c) => c,
 	});
 }
 

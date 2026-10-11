@@ -14,9 +14,16 @@ import {
 	type EmissionSchedule,
 	initialScheduleState,
 	isScheduleExpired,
+	type ResolvedEmissionSchedule,
+	resolveSchedule,
 	type ScheduleState,
 } from "./schedule";
-import { type ParticleInit, spawnParticle } from "./spawn";
+import {
+	type ParticleInit,
+	type ResolvedParticleInit,
+	resolveParticleInit,
+	spawnParticle,
+} from "./spawn";
 
 export interface EmitterOptions {
 	schedule: EmissionSchedule;
@@ -26,13 +33,10 @@ export interface EmitterOptions {
 }
 
 export class Emitter {
-	/**
-	 * The particles owned by the emitter.
-	 */
 	public readonly particles: Particle[] = [];
 
-	private readonly schedule: EmissionSchedule;
-	private readonly particleInit: ParticleInit;
+	private readonly schedule: ResolvedEmissionSchedule;
+	private readonly particleInit: ResolvedParticleInit;
 	private readonly behaviors: Behavior[];
 	private readonly rng: Rng;
 
@@ -40,31 +44,20 @@ export class Emitter {
 	private spawnedCount = 0;
 
 	constructor(options: EmitterOptions) {
-		this.schedule = options.schedule;
-		this.particleInit = options.particleInit;
+		this.schedule = resolveSchedule(options.schedule);
+		this.particleInit = resolveParticleInit(options.particleInit);
 		this.behaviors = options.behaviors ?? [];
 		this.rng = options.rng ?? createRng();
 	}
 
-	/**
-	 * Checks if the the emitter has completed all of its loops.
-	 */
 	public get isExpired(): boolean {
 		return isScheduleExpired(this.schedule, this.scheduleState);
 	}
 
-	/**
-	 * Checks if the emitter and all of its particles have expired.
-	 */
 	public get isDone(): boolean {
 		return this.isExpired && this.particles.length === 0;
 	}
 
-	/**
-	 * Advances the emitter by the specified timestep.
-	 *
-	 * @param dt - The time to advance the emitter by, in seconds.
-	 */
 	public tick(dt: number): void {
 		const { state, spawnCount } = advanceSchedule(
 			this.schedule,
