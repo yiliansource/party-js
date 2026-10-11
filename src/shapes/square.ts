@@ -10,14 +10,15 @@ import { createShapeCache } from "./cache";
 export interface SquareShape {
 	type: "square";
 	/**
-	 * The ratio of width to height for the square.
+	 * The ratio of width to height for the square. The longer side will be kept at length 1, so the shape always
+	 * fills the box in one direction. For example, a value of 0.3 produces a tall, narrow strip.
 	 *
 	 * @defaultValue 1
 	 */
 	aspectRatio?: number;
 	/**
-	 * The inner radius of the corners. This is expected to be non-negative, and will be clamped if
-	 * it exceeds half of the width or height of the shape.
+	 * The radius of the corners, in shape units where the square is 1 wide. This is expected to be non-negative,
+	 * and will be clamped if it exceeds half of the width or height of the shape.
 	 *
 	 * @defaultValue 0
 	 */

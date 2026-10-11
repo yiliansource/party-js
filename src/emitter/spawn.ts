@@ -20,7 +20,7 @@ export interface ParticleInit {
 	lifetime: Sampler<number>;
 }
 
-const own = <T>(value: T): T => ({ ...value });
+const own = <T extends object>(value: T): T => ({ ...value });
 
 export function spawnParticle(
 	init: ParticleInit,

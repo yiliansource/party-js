@@ -13,6 +13,8 @@ export interface StarShape {
 	type: "star";
 	/**
 	 * The number of points the star should have, which is expected to be an integer >= 3.
+	 *
+	 * @defaultValue 5
 	 */
 	points?: number;
 }
