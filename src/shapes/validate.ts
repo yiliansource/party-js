@@ -30,9 +30,7 @@ export function validateShape(shape: ParticleShape, where: string): void {
 		case "square":
 			if (
 				shape.aspectRatio !== undefined &&
-				((shape.aspectRatio <= 0 &&
-					Number.isFinite(shape.aspectRatio)) ||
-					Number.isNaN(shape.aspectRatio))
+				!(shape.aspectRatio > 0 && Number.isFinite(shape.aspectRatio))
 			)
 				throw invalidOption(
 					`${where}.aspectRatio`,

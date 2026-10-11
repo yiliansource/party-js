@@ -37,7 +37,7 @@ export interface EmissionBurst {
  * @example
  * ```ts
  * // A single burst of 40 particles.
- * const scheduleA = { bursts: [{ time: 0, count: 40 }] };
+ * const scheduleA = { bursts: [{ count: 40 }] };
  *
  * // A steady stream of 20 particles per second, running forever.
  * const scheduleB = { loops: Infinity, rate: 20 };
@@ -145,7 +145,7 @@ export function resolveSchedule(
 		if (burst.time < 0 || burst.time > resolved.duration)
 			throw invalidOption(
 				`schedule.bursts[${i}].time`,
-				`at least 0 and less than the schedule's duration of ${resolved.duration}${schedule.duration === undefined ? " (the default)" : ""}`,
+				`at least 0 and at most the schedule's duration of ${resolved.duration}${schedule.duration === undefined ? " (the default)" : ""}`,
 				burst.time,
 			);
 

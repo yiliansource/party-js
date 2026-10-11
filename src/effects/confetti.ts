@@ -31,6 +31,7 @@ import {
 export interface ConfettiOptions {
 	/**
 	 * How many pieces of confetti are emitted simultaneously at the start of the effect.
+	 * Sampled once and rounded to the nearest integer.
 	 *
 	 * @defaultValue range(20, 40)
 	 */
@@ -50,7 +51,7 @@ export interface ConfettiOptions {
 	 */
 	spread?: Sampler<number>;
 	/**
-	 * How fast confetti starts out, in px/s. It's direction comes from `angle` and `spread`.
+	 * How fast confetti starts out, in px/s. Its direction comes from `angle` and `spread`.
 	 * Sampled for each piece of confetti.
 	 *
 	 * @defaultValue range(300, 600)
@@ -119,10 +120,7 @@ const CONFETTI_DEFAULTS = {
  *
  * @example
  * ```ts
- * const effect = confetti(button, { spread: 70 });
- *
- * // e.g. when the component unmounts
- * effect.stop();
+ * button.addEventListener("click", () => confetti(button, { spread: 70 }));
  * ```
  *
  * @group Effects
@@ -148,7 +146,7 @@ export function confetti(
 	return createEffect({
 		origin,
 		schedule: {
-			bursts: [{ time: 0, count: o.count }],
+			bursts: [{ count: o.count }],
 		},
 		rng,
 		particleInit: {
