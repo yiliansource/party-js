@@ -23,7 +23,7 @@ import {
 /**
  * Options for {@link sparkles | sparkles()}.
  *
- * @summary How many sparkles to emit, and their color size, speed and lifetime.
+ * @summary How many sparkles to emit, and their color, size, speed and lifetime.
  *
  * @group Effects
  */
@@ -59,7 +59,7 @@ export interface SparkleOptions {
 	 *
 	 * Sparkles aren't affected by lighting, so their colors appear exactly as given.
 	 *
-	 * @defaultValue gradient(["oklch(0.5 0.15 70)", "oklch(0.7 0.15 70)"])
+	 * @defaultValue gradient(["oklch(0.7 0.15 70)", "oklch(0.95 0.15 70)"])
 	 */
 	colors?: string[] | Sampler<string | Color>;
 }
@@ -69,7 +69,7 @@ const SPARKLE_DEFAULTS = {
 	startVelocity: range(150, 250),
 	size: range(16, 22),
 	lifetime: range(0.5, 1),
-	colors: gradient(["oklch(0.75 0.15 70)", "oklch(1 0.15 70)"]),
+	colors: gradient(["oklch(0.7 0.15 70)", "oklch(0.95 0.15 70)"]),
 } satisfies Required<SparkleOptions>;
 
 /**
