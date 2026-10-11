@@ -17,7 +17,7 @@ export interface SquareShape {
 	 */
 	aspectRatio?: number;
 	/**
-	 * The radius of the corners, in shape units where the square is 1 wide. This is expected to be non-negative,
+	 * The radius of the corners, in shape units where the longer side is 1. This is expected to be non-negative,
 	 * and will be clamped if it exceeds half of the width or height of the shape.
 	 *
 	 * @defaultValue 0

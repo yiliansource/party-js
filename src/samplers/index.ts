@@ -1,9 +1,8 @@
 export { gradient, type RandomHueOptions, randomHue } from "./color";
 export { cone } from "./cone";
 export { evaluateSampler } from "./helpers";
-export { normal, range } from "./numeric";
+export { normal, range, spread } from "./numeric";
 export { pick } from "./pick";
 export { randomOrientation } from "./quat";
-export { spread } from "./spread";
 export type { Sampler, SamplerContext, SamplerFn } from "./types";
 export { randomSpin } from "./vec3";

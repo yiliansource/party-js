@@ -62,7 +62,8 @@ export interface CustomShape {
  *
  * Every shape is drawn in the same space: centered at (0, 0), fitting inside a 1x1 box from -0.5 to 0.5,
  * with +y pointing down, as it would on a regular canvas. That box is then scaled to the particle's `size`,
- * rotated by its `orientation`, and the `fillStyle` is set to its (lit) `color`.
+ * rotated by its `orientation`, and the `fillStyle` is set to its (lit) `color`. Built-in and path shapes
+ * are filled with this color, while custom shapes draw themselves.
  *
  * @summary The shape a particle is drawn as.
  *

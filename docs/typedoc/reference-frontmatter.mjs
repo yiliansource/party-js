@@ -52,8 +52,10 @@ function referenceFrontmatter(model, app) {
 	if (summary?.content.some((part) => part.kind !== "text")) {
 		app.logger.warn(`${model.name}: @summary should be plain text`);
 	}
-	if (!summary && isFunction) {
-		app.logger.warn(`${model.name}: missing @summary on function`);
+	if (!summary) {
+		app.logger.warn(
+			`${model.name}: missing @summary on ${ReflectionKind[model.kind]}`,
+		);
 	}
 
 	return {
