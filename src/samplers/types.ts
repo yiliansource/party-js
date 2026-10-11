@@ -43,7 +43,7 @@ export type SamplerFn<T> = (ctx: SamplerContext) => T;
 /**
  * Either a fixed value, or a {@link SamplerFn} that produces one.
  *
- * Whereves party.js accepts a sampler, you can pass a plain value that is shared between particles
+ * Wherever party.js accepts a sampler, you can pass a plain value that is shared between particles
  * (for example `size: 8`), or a function that is called again for each particle (for example `size: range(4, 12)`).
  * Typically, these functions will be evaluated when the particle spawns.
  *

@@ -16,7 +16,7 @@ import type { ParticleShape } from "../shapes/shape";
  *
  * Each particle has its own copies of its vectors, color and shape, so behaviors can change them in place
  * or replace them. The only exception is the `path` of a {@link PathShape}, which is shared with other particles
- * possessing the same shape.
+ * possessing the same shape, so it should be replaced rather than modified.
  *
  * @summary The state of a single particle.
  *
@@ -32,7 +32,7 @@ export interface Particle {
 	 */
 	velocity: Vec3;
 	/**
-	 * How the particle is rotated. With no rotation, the shape faces the viewer and is drawn exactly as it's shape defines.
+	 * How the particle is rotated. With no rotation, the shape faces the viewer and is drawn exactly as its shape defines.
 	 */
 	orientation: Quat;
 	/**
@@ -41,7 +41,7 @@ export interface Particle {
 	 */
 	angularVelocity: Vec3;
 	/**
-	 * The particle's size, in pixels. It's shape's 1x1 box is scaled to this size.
+	 * The particle's size, in pixels. Its shape's 1x1 box is scaled to this size.
 	 */
 	size: number;
 	/**
