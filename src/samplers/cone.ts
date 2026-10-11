@@ -19,10 +19,10 @@ import type { Sampler, SamplerFn } from "./types";
  * @example
  * ```ts
  * // Upwards, fanning out 30° to either side, with constant speed.
- * cone(90, 30, 400),
+ * cone(90, 30, 400)
  *
  * // Straight down, at varying speeds.
- * cone(-90, 0, range(60, 120)),
+ * cone(-90, 0, range(60, 120))
  * ```
  *
  * @group Samplers

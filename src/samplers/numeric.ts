@@ -23,9 +23,9 @@ export function range(min: number, max: number): SamplerFn<number> {
 /**
  * Creates a sampler that picks numbers from a normal (bell curve) distribution: most values land near `mean`,
  * and fewer the further away they are. About 68% fall within one `stdDev` of the mean, about 95% within two and
- * about 99% within three.
+ * about 99.7% within three.
  *
- * The values have no hard limits, so occasionally one can be produced thats far from the mean. Prefer
+ * The values have no hard limits, so occasionally one can be produced that's far from the mean. Prefer
  * {@link range | range()} for properties that must stay within bounds, like a size that cannot be negative.
  *
  * @param mean - The value the results cluster around.

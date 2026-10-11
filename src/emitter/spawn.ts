@@ -7,7 +7,7 @@ import type { Sampler, SamplerContext } from "../samplers/types";
 import type { ParticleShape } from "../shapes/shape";
 
 /**
- * Describes the values that will be assigned to a particle when its spawned.
+ * Describes the values that will be assigned to a particle when it's spawned.
  *
  * Every field is a {@link Sampler}: either a fixed value, or a function that's called once for each particle
  * when it spawns, so that particles can differ in appearance. The results become the particle's initial state

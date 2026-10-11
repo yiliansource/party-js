@@ -18,7 +18,7 @@ import type { SamplerFn } from "./types";
  * @example
  * ```ts
  * // Mostly circles with an occasional star.
- * pick([{ type: "circle" }, { type: "star" }], [4, 1]),
+ * pick([{ type: "circle" }, { type: "star" }], [4, 1])
  * ```
  *
  * @group Samplers
