@@ -21,9 +21,10 @@ import { type Easing, linear } from "./easing";
 export function fade(
 	inDuration: number,
 	outDuration: number,
-	ease: Easing = linear(),
+	ease?: Easing,
 ): Behavior {
 	const BASE_ALPHA = Symbol("color.baseAlpha");
+	const easeFn = ease ?? linear();
 
 	return {
 		init(particle) {
@@ -40,7 +41,7 @@ export function fade(
 
 			particle.color = {
 				...particle.color,
-				alpha: base * ease(Math.min(inFactor, outFactor)),
+				alpha: base * easeFn(Math.min(inFactor, outFactor)),
 			};
 		},
 	};

@@ -4,6 +4,7 @@ import type { SectionHandler } from "../walk";
 
 const LABELS = {
 	Overrides: "overrides",
+	See: "see",
 	"Inherited from": "inherited from",
 	"Implementation of": "implements",
 } as const;

@@ -51,6 +51,35 @@ const glyphNode = (key: SectionKey, size = 24) => {
 	});
 };
 
+const TITLE_WIDTH = 600;
+const MONO_ADVANCE = 0.6; // every Geist Mono glyph is 600/1000 em wide
+
+/**
+ * Fits a reference title (a camelCase identifier) into at most two lines, breaking only between words.
+ * Prefers one line while that still allows a large size.
+ */
+function fitMonoTitle(
+	title: string,
+	{ max = 84, min = 48, oneLineMin = 64 } = {},
+) {
+	const sizeFor = (chars: number) =>
+		Math.floor(TITLE_WIDTH / (chars * MONO_ADVANCE));
+	const words = title.split(/(?=[A-Z])/);
+
+	let longest = title.length;
+	for (let i = 1; i < words.length; i++) {
+		const first = words.slice(0, i).join("").length;
+		longest = Math.min(longest, Math.max(first, title.length - first));
+	}
+
+	const oneLine = sizeFor(title.length);
+	const size = oneLine >= oneLineMin ? oneLine : sizeFor(longest);
+	return {
+		text: words.join("\u200B"),
+		fontSize: Math.max(min, Math.min(max, size)),
+	};
+}
+
 const buildDefaultCard = () =>
 	h("div", {
 		style: {
@@ -97,8 +126,13 @@ const buildDocsCard = (
 	section: SectionKey,
 	title: string,
 	description?: string,
-) =>
-	h("div", {
+) => {
+	const fitted =
+		section === "reference"
+			? fitMonoTitle(title)
+			: { text: title, fontSize: 84 };
+
+	return h("div", {
 		style: {
 			display: "flex",
 			flexDirection: "row",
@@ -141,16 +175,16 @@ const buildDocsCard = (
 					h("div", {
 						style: {
 							marginTop: "28px",
-							maxWidth: "600px",
+							maxWidth: `${TITLE_WIDTH}px`,
 							fontFamily:
 								section === "reference"
 									? "Geist Mono"
 									: "inherit",
 							fontWeight: 700,
-							fontSize: "84px",
+							fontSize: `${fitted.fontSize}px`,
 							lineHeight: 1,
 						},
-						children: title,
+						children: fitted.text,
 					}),
 					h("div", {
 						style: {
@@ -183,6 +217,7 @@ const buildDocsCard = (
 			}),
 		],
 	});
+};
 
 export const getStaticPaths = (async () => {
 	const entries = await getCollection("docs", isPublished);

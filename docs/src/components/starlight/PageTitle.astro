@@ -5,6 +5,7 @@ import Glyph from "../Glyph.astro";
 
 const entry = Astro.locals.starlightRoute.entry;
 const { title, description, reference } = entry.data;
+const titleParts = reference ? title.split(/(?=[A-Z])/) : [title];
 const section = !Astro.locals.isNotFound ? sectionOf(entry.id) : null;
 const sectionData = section !== null ? sections[section] : null;
 const referenceGroup =
@@ -13,31 +14,29 @@ const referenceGroup =
 
 <div class="mt-4 flex flex-col">
 	{sectionData !== null && (
-	    <p class="mb-3 flex flex-row items-center gap-2">
+	    <p class="mb-3 flex flex-row flex-wrap items-center gap-x-2 gap-y-3 font-mono text-sm tracking-wider text-subtle uppercase">
 	    	<Glyph
 	    		key={sectionData.glyph}
-	    		class="size-4"
+	    		class="size-4 shrink-0"
 	    		style={{ color: sectionData.accent }}
 	    	/>
-	    	<span class="inline-flex flex-row items-center gap-2.5 font-mono text-sm tracking-wider text-subtle uppercase">
-	    		<span>{sectionData.label}</span>
-	    		{reference && (
-	    			<>
-	    				<span aria-hidden="true">/</span>
-	    				<span>{referenceGroup}</span>
-	    				<span class="ml-1 px-3 py-1 -my-1 rounded-lg bg-surface text-muted">
-	    					{kindLabel[reference.kind]}
-	    				</span>
-	    			</>
-	    		)}
-	    	</span>
+	    	<span class="whitespace-nowrap">{sectionData.label}</span>
+	    	{reference && (
+	    		<>
+	    			<span aria-hidden="true">/</span>
+	    			<span class="whitespace-nowrap">{referenceGroup}</span>
+	    			<span class="ml-1 px-3 py-1 -my-1 rounded-lg bg-surface text-muted whitespace-nowrap">
+	    				{kindLabel[reference.kind]}
+	    			</span>
+	    		</>
+	    	)}
 	    </p>
     )}
 	<h1
 		id="_top"
 		class:list={["text-fg text-5xl scroll-mt-[100vh]", reference && "font-mono"]}
 	>
-		{title}
+		{titleParts.map((part, i) => <>{i > 0 && <wbr />}{part}</>)}
 	</h1>
 	{description && <p class="mt-5 text-xl text-muted">{description}</p>}
 </div>
