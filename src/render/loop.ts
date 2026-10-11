@@ -33,8 +33,8 @@ export function createAnimationLoop(
 
 	function frame(time: number): void {
 		tick(loop, render, previousTime, time);
-
 		previousTime = time;
+		if (rafId === null) return;
 		rafId = requestAnimationFrame(frame);
 	}
 

@@ -1,4 +1,4 @@
-import { PartyJSError } from "../errors";
+import { invalidOption, PartyJSError } from "../errors";
 import * as scalar from "../math/scalar";
 import { type Color, color } from "./color";
 import * as oklch from "./oklch";
@@ -51,14 +51,16 @@ export function createGradient(
 	input: (string | Color)[] | GradientStop[],
 ): Gradient {
 	if (input.length === 0) {
-		throw new PartyJSError("gradient requires at least one color");
+		throw new PartyJSError("gradient() needs at least one color");
 	}
 
 	if (isGradientStopArray(input)) {
 		for (const { offset } of input) {
 			if (offset < 0 || offset > 1) {
-				throw new PartyJSError(
-					`gradient stop offset ${offset} is out of range [0, 1]`,
+				throw invalidOption(
+					"gradient stop offset",
+					"from 0 to 1",
+					offset,
 				);
 			}
 		}

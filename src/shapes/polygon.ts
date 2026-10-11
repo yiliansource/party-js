@@ -1,4 +1,4 @@
-import { PartyJSError } from "../errors";
+import { invalidOption } from "../errors";
 import { createShapeCache } from "./cache";
 import { buildRegularPolygonPath } from "./utils";
 
@@ -25,8 +25,10 @@ export function polygonPath(sides: number): Path2D {
 
 export function buildPolygonPath(sides: number): Path2D {
 	if (!Number.isInteger(sides) || sides < 3) {
-		throw new PartyJSError(
-			`polygon()'s sides has to be an integer >= 3, got ${sides}`,
+		throw invalidOption(
+			"polygon shape's sides",
+			"an integer of at least 3",
+			sides,
 		);
 	}
 

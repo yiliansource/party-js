@@ -26,11 +26,15 @@ export type LightingFn = (color: Color, coefficient: number) => Color;
  */
 export interface CreateLightingOptions {
 	/**
-	 * The lightness factor for a particle facing the light edge-on.
+	 * The lightness factor for a particle seen edge-on to the light.
+	 *
+	 * @defaultValue 0.5
 	 */
 	ambient?: number;
 	/**
 	 * The lightness factor for a particle facing the light directly.
+	 *
+	 * @defaultValue 1
 	 */
 	peak?: number;
 }
@@ -39,7 +43,7 @@ export interface CreateLightingOptions {
  * Creates a {@link LightingFn} that scales a color's lightness by how directly the particle faces
  * the light, from both sides alike.
  *
- * The lightness of particle is multiplied by a value from `options.ambient` to `options.peak`, which
+ * The lightness of a particle is multiplied by a value from `options.ambient` to `options.peak`, which
  * is calculated via interpolation by the lighting coefficient.
  *
  * @param options - The ambient and peak lightness factors.

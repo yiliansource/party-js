@@ -1,4 +1,4 @@
-import { PartyJSError } from "../errors";
+import { invalidOption, PartyJSError } from "../errors";
 import type { Rng } from "../random";
 import { evaluateSampler, type Sampler } from "../samplers";
 import { type Live, resolveLive } from "./live";
@@ -12,7 +12,7 @@ import { type Live, resolveLive } from "./live";
  */
 export interface EmissionBurst {
 	/**
-	 * When the burst fires, in seconds from the start of each loop. Must lie in between 0 and the schedule's
+	 * When the burst fires, in seconds from the start of each loop. Must be at least 0 and at most the schedule's
 	 * `duration`, or an error will be thrown as the burst would never fire.
 	 *
 	 * @defaultValue 0
@@ -35,12 +35,12 @@ export interface EmissionBurst {
  * @summary When and how many particles an effect emits.
  *
  * @example
- * ```
+ * ```ts
  * // A single burst of 40 particles.
- * const scheduleA = { duration: 1, loops: 1, rate: 0, bursts: [{ time: 0, count: 40 }] };
+ * const scheduleA = { bursts: [{ time: 0, count: 40 }] };
  *
- * // A steady stream of 20 particles per second, ran forever.
- * const scheduleB = { duration: 1, loops: Infinity, rate: 20 };
+ * // A steady stream of 20 particles per second, running forever.
+ * const scheduleB = { loops: Infinity, rate: 20 };
  * ```
  *
  * @group Custom effects
@@ -60,7 +60,7 @@ export interface EmissionSchedule {
 	loops?: number;
 	/**
 	 * How many particles to emit per second, continuously. This is read on every simulation step, so a function
-	 * can speed the stream up or slow it down, or (for example) make it dependant on the screen size.
+	 * can speed the stream up or slow it down, or (for example) make it dependent on the screen size.
 	 *
 	 * @defaultValue 0
 	 */
@@ -112,32 +112,49 @@ export function resolveSchedule(
 	};
 
 	if (resolved.duration <= 0 || !Number.isFinite(resolved.duration))
-		throw new PartyJSError(`schedule duration must be positive and finite`);
+		throw invalidOption(
+			"schedule.duration",
+			"a positive, finite number of seconds",
+			resolved.duration,
+		);
 
 	if (
 		resolved.loops <= 0 ||
+		Number.isNaN(resolved.loops) ||
 		(Number.isFinite(resolved.loops) && !Number.isInteger(resolved.loops))
 	)
-		throw new PartyJSError(
-			`schedule loops must be a finite integer >= 1, or positive infinity.`,
+		throw invalidOption(
+			"schedule.loops",
+			"an integer of at least 1, or Infinity",
+			resolved.loops,
 		);
 
 	if (
 		typeof resolved.rate === "number" &&
 		(resolved.rate < 0 || !Number.isFinite(resolved.rate))
 	)
-		throw new PartyJSError(
-			`schedule rate must be non-negative and finite.`,
+		throw invalidOption(
+			"schedule.rate",
+			"a finite number of at least 0",
+			resolved.rate,
 		);
 
-	for (const burst of resolved.bursts) {
-		if (burst.time < 0 || burst.time >= resolved.duration)
-			throw new PartyJSError(
-				`burst time must be non-negative and smaller than the schedule's duration`,
+	for (let i = 0; i < resolved.bursts.length; i++) {
+		const burst = resolved.bursts[i];
+
+		if (burst.time < 0 || burst.time > resolved.duration)
+			throw invalidOption(
+				`schedule.bursts[${i}].time`,
+				`at least 0 and less than the schedule's duration of ${resolved.duration}${schedule.duration === undefined ? " (the default)" : ""}`,
+				burst.time,
 			);
 
 		if (typeof burst.count === "number" && burst.count < 0)
-			throw new PartyJSError(`burst count must be non-negative`);
+			throw invalidOption(
+				`schedule.bursts[${i}].count`,
+				`at least 0`,
+				burst.count,
+			);
 	}
 
 	if (
@@ -145,7 +162,9 @@ export function resolveSchedule(
 		resolved.rate === 0 &&
 		resolved.bursts.length === 0
 	)
-		throw new PartyJSError(`schedule never emits any particles`);
+		throw new PartyJSError(
+			`schedule never emits any particles: set a rate above 0, or add a burst`,
+		);
 
 	return resolved;
 }

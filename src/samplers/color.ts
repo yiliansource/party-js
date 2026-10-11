@@ -5,7 +5,7 @@ import {
 	type GradientStop,
 } from "../color/gradient";
 import { fromPolar } from "../color/oklch";
-import { PartyJSError } from "../errors";
+import { invalidOption, PartyJSError } from "../errors";
 import type { SamplerFn } from "./types";
 
 /**
@@ -78,6 +78,6 @@ export interface RandomHueOptions {
  */
 export function randomHue(options: RandomHueOptions): SamplerFn<Color> {
 	const { l, c, alpha = 1 } = options;
-	if (c < 0) throw new PartyJSError(`chroma must be non-negative, got ${c}`);
+	if (c < 0) throw invalidOption("randomHue()'s chroma", "at least 0", c);
 	return (ctx) => fromPolar({ l, c, h: ctx.rng() * 360 }, alpha);
 }

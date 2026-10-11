@@ -6,7 +6,7 @@ import {
 	spawnParticle,
 } from "@/emitter/spawn";
 import type { Quat, Vec3 } from "@/math";
-import type { SamplerContext } from "@/samplers";
+import { pick, type SamplerContext } from "@/samplers";
 
 import { quatCloseTo, vec3CloseTo } from "../math/helper";
 
@@ -40,6 +40,17 @@ describe("resolveParticleInit", () => {
 				color: "#ff0000",
 				shape: { type: "circle" },
 				lifetime: -5,
+			}),
+		).toThrow();
+	});
+
+	test("validates shape", () => {
+		expect(() =>
+			resolveParticleInit({
+				size: 10,
+				color: "#ff0000",
+				shape: { type: "star", points: 0 },
+				lifetime: 5,
 			}),
 		).toThrow();
 	});
@@ -99,5 +110,17 @@ describe("spawnParticle", () => {
 			particle.orientation.w = 0;
 			particle.angularVelocity.z = 1;
 		}).not.toThrow();
+	});
+
+	test("validates shape", () => {
+		expect(() => {
+			spawnParticle(
+				{
+					...fakeParticleOptions,
+					shape: pick([{ type: "polygon", sides: 0 }]),
+				},
+				fakeCtx,
+			);
+		}).toThrow();
 	});
 });

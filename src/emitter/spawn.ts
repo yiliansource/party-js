@@ -1,11 +1,12 @@
 import { type Color, color } from "../color/color";
-import { PartyJSError } from "../errors";
+import { invalidOption } from "../errors";
 import { type Quat, identity as quatIdentity } from "../math/quat";
 import { type Vec3, zero as vec3Zero } from "../math/vec3";
 import type { Particle } from "../particle/particle";
 import { evaluateSampler } from "../samplers/helpers";
 import type { Sampler, SamplerContext } from "../samplers/types";
 import type { ParticleShape } from "../shapes/shape";
+import { validateShape } from "../shapes/validate";
 
 /**
  * Describes the values that will be assigned to a particle when it's spawned.
@@ -23,7 +24,7 @@ import type { ParticleShape } from "../shapes/shape";
  * ```ts
  * createEffect({
  *     origin: { x: 200, y: 300 },
- *     schedule: { duration: 1, loops: 1, rate: 0, bursts: [{ time: 0, count: 30 }] },
+ *     schedule: { bursts: [{ time: 0, count: 30 }] },
  *     particleInit: {
  *         position: emitFrom({ type: "disk", radius: 20 }),
  *         velocity: cone(90, 30, range(200, 400)),
@@ -48,7 +49,7 @@ export interface ParticleInit {
 	 */
 	position?: Sampler<Vec3>;
 	/**
-	 * The particle's starting velocity, in pixels per second. Use {@link cone | cone()} to emit particles in
+	 * The particle's starting velocity, in px/s. Use {@link cone | cone()} to emit particles in
 	 * a direction with some spread.
 	 *
 	 * @defaultValue { x: 0, y: 0, z: 0 }
@@ -104,14 +105,21 @@ export function resolveParticleInit(init: ParticleInit): ResolvedParticleInit {
 	};
 
 	if (typeof resolved.size === "number" && resolved.size < 0)
-		throw new PartyJSError(`particle size cannot be negative`);
+		throw invalidOption("particleInit.size", "at least 0", resolved.size);
 
 	if (typeof resolved.color !== "function") {
 		color(resolved.color); // throws if the color is invalid
 	}
 
+	if (typeof resolved.shape !== "function")
+		validateShape(resolved.shape, "particleInit.shape");
+
 	if (typeof resolved.lifetime === "number" && resolved.lifetime <= 0)
-		throw new PartyJSError(`particle lifetime must be positive`);
+		throw invalidOption(
+			"particleInit.lifetime",
+			"greater than 0 seconds",
+			resolved.lifetime,
+		);
 
 	return resolved;
 }
@@ -120,6 +128,10 @@ export function spawnParticle(
 	init: ResolvedParticleInit,
 	ctx: SamplerContext,
 ): Particle {
+	const shape = evaluateSampler(init.shape, ctx);
+	if (typeof init.shape === "function")
+		validateShape(shape, "particleInit.shape");
+
 	return {
 		position: own(evaluateSampler(init.position, ctx)),
 		velocity: own(evaluateSampler(init.velocity, ctx)),
@@ -127,7 +139,7 @@ export function spawnParticle(
 		angularVelocity: own(evaluateSampler(init.angularVelocity, ctx)),
 		size: evaluateSampler(init.size, ctx),
 		color: own(color(evaluateSampler(init.color, ctx))),
-		shape: own(evaluateSampler(init.shape, ctx)),
+		shape: own(shape),
 		age: 0,
 		lifetime: evaluateSampler(init.lifetime, ctx),
 		data: new Map(),

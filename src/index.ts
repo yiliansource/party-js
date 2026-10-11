@@ -2,7 +2,7 @@ export * from "./behavior";
 export * from "./color";
 export * from "./effects";
 export * from "./emitter";
-export * from "./errors";
+export { PartyJSError } from "./errors";
 export * from "./math";
 export * from "./particle";
 export * from "./random";
