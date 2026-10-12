@@ -9,6 +9,7 @@ import { getCollection } from "astro:content";
 
 import LogoMark from "../../assets/mark-l-dark.svg?raw";
 import { glyphSvg } from "../../brand/glyphs";
+import { referenceOverview } from "../../config/reference";
 import {
 	type SectionKey,
 	sectionLabel,
@@ -241,9 +242,8 @@ export const getStaticPaths = (async () => {
 			params: { slug: "api" },
 			props: {
 				section: "reference",
-				title: "API reference",
-				description:
-					"Everything party.js exports, grouped by what you use it for.",
+				title: referenceOverview.title,
+				description: referenceOverview.description,
 			} satisfies OGCardProps,
 		},
 	];
