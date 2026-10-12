@@ -28,7 +28,7 @@ let defaultReducedMotion: ReducedMotion = "skip";
  * this behavior with their `reducedMotion` option. Useful when your site has its own motion setting that should
  * take precedence.
  *
- * @param mode - Applies to effects started afterwards.
+ * @param mode - What effects started afterwards do when the user prefers reduced motion.
  *
  * @summary Sets the default way of handling reduced motion.
  *

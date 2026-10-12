@@ -10,7 +10,7 @@ This page assumes you've [installed](/installation/) party.js. It takes you from
 
 ## Your first effect
 
-Simply pass an element to `confetti()`, and confetti bursts out of it:
+Pass an element to `confetti()`, and confetti bursts out of it:
 
 ```js
 import { confetti } from "party-js";
@@ -31,7 +31,7 @@ Every effect takes an options object as its second argument. Options you leave o
 
 Most options accept either a fixed value, like `spread: 120`, or a [sampler](/concepts/samplers/), like `range(80, 120)`, which picks a new random value each time it's used. That's what makes every burst look unique. Each option's documentation says whether it's picked once per burst or once per piece of confetti.
 
-Colors work the same way. To make things easier, you can pass a list of color strings and each piece picks one of them:
+Colors work the same way. Pass a list of color strings and each piece picks one of them:
 
 ```js
 confetti(button, {
@@ -53,9 +53,9 @@ document.addEventListener("click", (event) => {
 
 <LiveDemo demo="confetti-point" size="compact" label="Fire where you click" icon={MousePointerClickIcon} />
 
-## Other effects
+## Sparkles
 
-The library offers up another built-in effect, namely `sparkles()`. It works just like `confetti()`: it takes an element or a point, and an options object. Instead of confetti, it bursts small, golden stars that are not affected by gravity, in all directions.
+The other built-in effect is `sparkles()`. It works just like `confetti()`: it takes an element or a point, and an options object. Instead of confetti, it bursts small golden stars out in all directions, unaffected by gravity.
 
 ```js
 import { sparkles } from "party-js";
