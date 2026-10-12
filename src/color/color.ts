@@ -10,7 +10,7 @@ import { parse } from "./parse";
  *
  * @summary A color in the Oklab color space.
  *
- * @see https://bottosson.github.io/posts/oklab/
+ * @see [Björn Ottosson: A perceptual color space](https://bottosson.github.io/posts/oklab/)
  *
  * @group Utilities
  */
