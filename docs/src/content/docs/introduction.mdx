@@ -1,0 +1,50 @@
+---
+title: Introduction
+description: What party.js is, what it can do, and where to start.
+---
+
+import LiveDemo from "../../components/demo/LiveDemo.astro";
+import { PartyPopperIcon } from "@lucide/astro";
+
+party.js adds particle effects to your website, to brighten up your user's browing experiences: confetti when someone completes a form, sparkles when they unlock something, or anything else you can build out of particles. A single function call is enough to get you started:
+
+```js
+import { confetti } from "party-js";
+
+button.addEventListener("click", () => confetti(button));
+```
+
+<LiveDemo demo="confetti-basic" size="compact" label="Fire confetti" icon={PartyPopperIcon} />
+
+## What you get
+
+- **Ready-to-go effects.** [Confetti](/effects/confetti/) and [sparkles](/effects/sparkles/) work with zero configuration needed. For smaller customizations, you can easily override their default options.
+- **The engine behind them.** The built-in effects use the same public API you have access to. If they aren't enough, [`createEffect()`](/api/custom_effects/createeffect/) lets you build your own effects!
+- **Small and dependency-free.** Under 10 KB minified and gzipped, with no dependencies. Tree-shakeable, so bundlers only include what you import.
+- **Typed.** Everything is written in TypeScript and thus ships with full type definitions.
+- **Safe to import anywhere.** Importing the library during server-side rendering works. Effects themselves only run in the browser.
+- **Respects reduced motion.** Effects are skipped by default when the user asks their system for less motion.
+
+## How it works
+
+Every effect is made of particles: small shapes like squares, circles or stars, each with its own position, velocity, rotation, size, color and lifetime. Three things decide what they do:
+
+- An **emitter** decides when particles are created and where they start.
+- **Samplers** pick the starting values for each particle, such as a random speed or a color from a list or gradient.
+- **Behaviors** change particles while they're alive, for example gravity pulling them down or a fade at the end of their lifetime.
+
+party.js simulates the particles at a fixed rate, draws them onto a canvas on top of your page, and removes the canvas again once the last particle is gone.
+
+You don't need any of this to fire confetti, but it's the vocabulary the rest of the docs use. [How an effect works](/concepts/how-effects-work/) goes into more detail.
+
+## Browser support
+
+party.js works in all current browsers. It draws with the Canvas 2D API and is published as ES2022. If you need to support older browsers, have your bundler transpile it.
+
+## Where to go next
+
+- [Installation](/installation/) shows how to add party.js to your project, with a package manager or a script tag.
+- [Quickstart](/quickstart/) walks you through calling your first effect and how to customize it.
+- Coming from party.js v2? [Migrating from v2](/migrating-from-v2/) lists what changed.
+
+Once you're set up, [Effects](/effects/confetti/) describes each built-in effect, [Guides](/guides/custom-effects/) show how to build your own, and the [API reference](/api/) lists everything the library exports.

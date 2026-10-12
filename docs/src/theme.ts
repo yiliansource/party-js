@@ -1,7 +1,7 @@
 export type Theme = "dark" | "light";
 
 export const DEFAULT_THEME: Theme = "light";
-export const THEME_KEY = "partyjs-theme";
+export const THEME_KEY = "party-js:theme";
 
 export const THEME_COLORS = {
 	light: "#FFFFFF",

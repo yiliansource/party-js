@@ -4,6 +4,7 @@ import { rectFromElement } from "../emitter/element";
 import { Emitter } from "../emitter/emitter";
 import { type Live, resolveLive } from "../emitter/live";
 import type { EmissionShape } from "../emitter/shape";
+import { assertBrowser } from "../errors";
 import type { Vec2 } from "../math/vec2";
 import type { Vec3 } from "../math/vec3";
 import { createFixedTimestepLoop } from "../physics/loop";
@@ -11,6 +12,7 @@ import { createRng, type Rng } from "../random/rng";
 import type { LightingFn } from "../render";
 import { createAnimationLoop } from "../render/loop";
 import { createRenderer } from "../render/renderer";
+import { type ReducedMotion, shouldSkip } from "./motion";
 
 /**
  * A handle to a running effect, returned by {@link createEffect | createEffect()} and the built-in
@@ -137,12 +139,23 @@ export interface CreateEffectOptions {
 	 * if the effect is stopped early via {@link Effect.stop | Effect.stop()}.
 	 */
 	onComplete?: () => void;
+	/**
+	 * What the effect does when the user has asked their system for reduced motion. A skipped effect draws nothing,
+	 * and `onComplete` is called right after `createEffect()` returns, unless you stop the effect first.
+	 * See {@link ReducedMotion} for more information.
+	 *
+	 * Without this option, the default set with {@link setDefaultReducedMotion | setDefaultReducedMotion()} is used,
+	 * which is `"skip"` unless you changed it.
+	 */
+	reducedMotion?: ReducedMotion;
 }
 
 export function resolveTarget(target: EffectTarget): {
 	origin: Vec2;
 	shape: EmissionShape;
 } {
+	assertBrowser();
+
 	if (target instanceof HTMLElement) {
 		const rect = target.getBoundingClientRect();
 		const origin: Vec2 = {
@@ -155,6 +168,23 @@ export function resolveTarget(target: EffectTarget): {
 	return {
 		origin: { x: target.x, y: target.y },
 		shape: { type: "disk", center: { x: 0, y: 0 }, radius: 0 },
+	};
+}
+
+function skippedEffect(onComplete?: () => void): Effect {
+	let done = false;
+	queueMicrotask(() => {
+		if (done) return;
+		done = true;
+		onComplete?.();
+	});
+
+	return {
+		stop: () => {
+			done = true;
+		},
+		pause() {},
+		resume() {},
 	};
 }
 
@@ -191,12 +221,18 @@ export function resolveTarget(target: EffectTarget): {
  * @group Custom effects
  */
 export function createEffect(options: CreateEffectOptions): Effect {
+	assertBrowser();
+
 	const emitter = new Emitter({
 		schedule: options.schedule,
 		particleInit: options.particleInit,
 		rng: options.rng ?? createRng(options.seed),
 		behaviors: options.behaviors,
 	});
+
+	if (shouldSkip(options.reducedMotion))
+		return skippedEffect(options.onComplete);
+
 	const renderer = createRenderer({ canvas: options.canvas });
 
 	const fixedLoop = createFixedTimestepLoop({

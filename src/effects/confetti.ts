@@ -20,6 +20,7 @@ import {
 	type EffectTarget,
 	resolveTarget,
 } from "./effect";
+import type { ReducedMotion } from "./motion";
 
 /**
  * Options for {@link confetti | confetti()}.
@@ -92,6 +93,14 @@ export interface ConfettiOptions {
 	 * @defaultValue 500
 	 */
 	drag?: Sampler<number>;
+	/**
+	 * What happens when the user has asked their system for reduced motion: `"skip"` doesn't play the confetti,
+	 * `"play"` plays it anyway. See {@link ReducedMotion} for more information.
+	 *
+	 * Without this option, the default set with {@link setDefaultReducedMotion | setDefaultReducedMotion()} is used,
+	 * which is `"skip"` unless you changed it.
+	 */
+	reducedMotion?: ReducedMotion;
 }
 
 const CONFETTI_DEFAULTS = {
@@ -104,7 +113,7 @@ const CONFETTI_DEFAULTS = {
 	colors: randomHue({ l: 0.65, c: 0.15 }),
 	gravity: 800,
 	drag: 500,
-} satisfies Required<ConfettiOptions>;
+} satisfies Required<Omit<ConfettiOptions, "reducedMotion">>;
 
 /**
  * Fires a burst of confetti in a cone, upwards by default, from the specified target.
@@ -171,5 +180,6 @@ export function confetti(
 			fade(0, 1),
 		],
 		lighting: createLighting({ ambient: 0.5, peak: 1.5 }),
+		reducedMotion: o.reducedMotion,
 	});
 }

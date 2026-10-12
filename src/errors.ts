@@ -40,3 +40,14 @@ export function invalidOption(
 ): PartyJSError {
 	return new PartyJSError(`${where} must be ${rule}, got ${show(value)}`);
 }
+
+/**
+ * Asserts that the code is running in a browser environment.
+ */
+export function assertBrowser(): void {
+	if (typeof document === "undefined") {
+		throw new PartyJSError(
+			"effects need a browser: start them from an event handler or after your component has mounted, not during server-side rendering",
+		);
+	}
+}

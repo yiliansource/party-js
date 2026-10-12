@@ -19,6 +19,7 @@ import {
 	type EffectTarget,
 	resolveTarget,
 } from "./effect";
+import type { ReducedMotion } from "./motion";
 
 /**
  * Options for {@link sparkles | sparkles()}.
@@ -62,6 +63,14 @@ export interface SparkleOptions {
 	 * @defaultValue gradient(["oklch(0.7 0.15 70)", "oklch(0.95 0.15 70)"])
 	 */
 	colors?: string[] | Sampler<string | Color>;
+	/**
+	 * What happens when the user has asked their system for reduced motion: `"skip"` doesn't play the sparkles,
+	 * `"play"` plays them anyway. See {@link ReducedMotion} for more information.
+	 *
+	 * Without this option, the default set with {@link setDefaultReducedMotion | setDefaultReducedMotion()} is used,
+	 * which is `"skip"` unless you changed it.
+	 */
+	reducedMotion?: ReducedMotion;
 }
 
 const SPARKLE_DEFAULTS = {
@@ -70,7 +79,7 @@ const SPARKLE_DEFAULTS = {
 	size: range(16, 22),
 	lifetime: range(0.5, 1),
 	colors: gradient(["oklch(0.7 0.15 70)", "oklch(0.95 0.15 70)"]),
-} satisfies Required<SparkleOptions>;
+} satisfies Required<Omit<SparkleOptions, "reducedMotion">>;
 
 /**
  * Bursts spinning stars, golden by default, out of the specified target, in all directions.
@@ -124,6 +133,7 @@ export function sparkles(
 		},
 		behaviors: [scale(0.3, 0), fade(0, 0.5)],
 		lighting: (c) => c,
+		reducedMotion: o.reducedMotion,
 	});
 }
 

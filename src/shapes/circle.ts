@@ -9,9 +9,10 @@ export interface CircleShape {
 	type: "circle";
 }
 
-const cachedPath = buildCirclePath();
+let cachedPath: Path2D | undefined;
 
 export function circlePath(): Path2D {
+	cachedPath ??= buildCirclePath();
 	return cachedPath;
 }
 
