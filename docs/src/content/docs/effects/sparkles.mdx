@@ -5,7 +5,7 @@ api: [sparkles, SparkleOptions]
 ---
 
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
-import { PartyPopperIcon, SparkleIcon } from "@lucide/astro";
+import { SparkleIcon } from "@lucide/astro";
 
 <LiveDemo demo="sparkles-basic" label="Burst sparkles" icon={SparkleIcon} />
 
@@ -14,12 +14,12 @@ import { PartyPopperIcon, SparkleIcon } from "@lucide/astro";
 Pass the element the sparkles should burst out of. Particles spawn across its whole area rather than from a single point.
 
 ```js
-import { confetti, range } from "party-js";
+import { range, sparkles } from "party-js";
 
 button.addEventListener("click", () => {
     sparkles(button, {
         count: range(40, 60),
-        size: range(5, 10)
+        size: range(5, 10),
     });
 });
 ```

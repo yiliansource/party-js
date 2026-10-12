@@ -23,11 +23,11 @@ export interface SamplerContext {
 	 */
 	batch?: {
 		/**
-		 * How many particles will be spawned at once.
+		 * The particle's position in the batch, starting at 0.
 		 */
 		index: number;
 		/**
-		 * The particle's position in the batch, starting at 0.
+		 * How many particles will be spawned at once.
 		 */
 		size: number;
 	};
