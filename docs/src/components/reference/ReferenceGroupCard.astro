@@ -1,0 +1,38 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+type Props = {
+	id: string;
+	group: string;
+	description: string;
+	count: number;
+	featured: CollectionEntry<"docs">[];
+};
+
+const { id, group, description, count, featured } = Astro.props;
+---
+
+<section
+	aria-labelledby={id}
+	class="flex flex-col gap-2.5 p-5.5 rounded-2xl shadow-[inset_0_0_0_1px_var(--color-line)]"
+>
+	<div class="flex items-baseline justify-between gap-3">
+		<h2 id={id} class="text-[19px] font-bold tracking-tight text-fg">
+			{group}
+		</h2>
+		<span class="font-mono text-xs text-subtle whitespace-nowrap">
+			{count}&nbsp;entries
+		</span>
+	</div>
+	<p class="text-[15px] leading-relaxed text-muted">{description}</p>
+	<div class="mt-auto pt-2 flex flex-wrap gap-1.5">
+		{featured.map((entry) => (
+			<a href={`/${entry.id}/`} class="px-2.5 py-0.5 rounded-md bg-surface hover:bg-hover font-mono text-[13.5px] font-medium text-fg no-underline">
+				{entry.data.title}
+			</a>
+		))}
+		{count - featured.length > 0 && <span class="px-2.5 py-0.5 text-[13.5px] text-subtle">
+			+{count - featured.length}&nbsp;more
+		</span>}
+	</div>
+</section>

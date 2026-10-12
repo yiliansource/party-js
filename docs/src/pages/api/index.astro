@@ -1,0 +1,53 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+import { getCollection } from "astro:content";
+
+import ReferenceGroupCard from "../../components/reference/ReferenceGroupCard.astro";
+import {
+	referenceGroupInfo,
+	referenceGroupOf,
+	referenceGroups,
+} from "../../config/reference";
+import { isPublished } from "../../utils/drafts";
+
+const entries = (await getCollection("docs", isPublished)).filter(
+	(e) => e.data.reference,
+);
+const groupId = (group: string) => group.toLowerCase().replace(/\s+/g, "-");
+
+const groups = referenceGroups.map((group) => {
+	const members = entries.filter((e) => referenceGroupOf(e.id) === group);
+	const featured = referenceGroupInfo[group].featured.map((name) => {
+		const entry = members.find((e) => e.data.reference?.name === name);
+		if (!entry)
+			throw new Error(
+				`API overview: "${name}" isn't in the ${group} group.`,
+			);
+
+		return entry;
+	});
+	return {
+		id: groupId(group),
+		group,
+		description: referenceGroupInfo[group].description,
+		count: members.length,
+		featured,
+	};
+});
+---
+
+<StarlightPage
+	frontmatter={{
+	title: "API reference",
+	description:
+		"Everything party.js exports, grouped by what you use it for.",
+}}
+	headings={groups.map((g) => ({ depth: 2, slug: g.id, text: g.group }))}
+>
+	<div
+		class="not-content grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-4"
+	>
+		{groups.map((g) => <ReferenceGroupCard {...g} />)}
+	</div>
+</StarlightPage>
