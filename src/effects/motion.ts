@@ -32,6 +32,13 @@ let defaultReducedMotion: ReducedMotion = "skip";
  *
  * @summary Sets the default way of handling reduced motion.
  *
+ * @example
+ * ```ts
+ * setDefaultReducedMotion("play");
+ * // This will produce confetti regardless of whether reduced motion is enabled
+ * confetti(button);
+ * ```
+ *
  * @group Effects
  */
 export function setDefaultReducedMotion(mode: ReducedMotion): void {

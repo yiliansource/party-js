@@ -1,5 +1,27 @@
 ---
 title: Sparkles
-description: TODO
-draft: true
+description: Golden, spinning stars that burst outwards.
+api: [sparkles, SparkleOptions]
 ---
+
+import LiveDemo from "../../../components/demo/LiveDemo.astro";
+import { PartyPopperIcon, SparkleIcon } from "@lucide/astro";
+
+<LiveDemo demo="sparkles-basic" label="Burst sparkles" icon={SparkleIcon} />
+
+## Usage
+
+Pass the element the sparkles should burst out of. Particles spawn across its whole area rather than from a single point.
+
+```js
+import { confetti, range } from "party-js";
+
+button.addEventListener("click", () => {
+    sparkles(button, {
+        count: range(40, 60),
+        size: range(5, 10)
+    });
+});
+```
+
+You can find a complete list of options and their defaults in the [reference](/api/effects/sparkleoptions/).

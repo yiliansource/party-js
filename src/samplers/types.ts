@@ -18,11 +18,19 @@ export interface SamplerContext {
 	 */
 	index: number;
 	/**
-	 * When sampling particle properties, multiple particles spawned in one simulation step are batched:
-	 * `size` is how many will be spawned at once, while `index` is the particle's position among them.
-	 * Otherwise this field will be absent.
+	 * When sampling particle properties, multiple particles spawned in one simulation step are batched, in which
+	 * case this field contains information on the batch. Otherwise this field will be absent.
 	 */
-	batch?: { index: number; size: number };
+	batch?: {
+		/**
+		 * How many particles will be spawned at once.
+		 */
+		index: number;
+		/**
+		 * The particle's position in the batch, starting at 0.
+		 */
+		size: number;
+	};
 }
 
 /**

@@ -24,7 +24,7 @@ function dedent(block: string): string {
 		.map((line) =>
 			line
 				.slice(indent)
-				.replace(/^\t+/, (tabs) => "  ".repeat(tabs.length)),
+				.replace(/^\t+/, (tabs) => " ".repeat(4).repeat(tabs.length)),
 		)
 		.join("\n");
 }

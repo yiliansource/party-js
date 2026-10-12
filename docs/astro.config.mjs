@@ -106,6 +106,7 @@ export default defineConfig({
 			expressiveCode: {
 				themes: [codeTheme],
 				useStarlightDarkModeSwitch: false,
+				tabWidth: 4,
 				styleOverrides: {
 					borderRadius: "14px",
 					borderColor: "var(--pj-code-line)",
