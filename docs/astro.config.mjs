@@ -5,6 +5,7 @@ import { satteri } from "@astrojs/markdown-satteri";
 import starlight from "@astrojs/starlight";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
+import starlightLinksValidator from "starlight-links-validator";
 import starlightTypeDoc from "starlight-typedoc";
 
 import { codeTheme } from "./src/brand/code-theme.mjs";
@@ -146,6 +147,10 @@ export default defineConfig({
 				},
 			},
 			plugins: [
+				starlightLinksValidator({
+					exclude: ["/api/"],
+					failOnError: false,
+				}),
 				starlightTypeDoc({
 					entryPoints: ["../src/index.ts"],
 					tsconfig: "../tsconfig.json",
