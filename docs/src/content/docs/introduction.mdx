@@ -6,7 +6,7 @@ description: What party.js is, what it can do, and where to start.
 import LiveDemo from "../../components/demo/LiveDemo.astro";
 import { PartyPopperIcon } from "@lucide/astro";
 
-party.js adds particle effects to your website, to brighten up your user's browing experiences: confetti when someone completes a form, sparkles when they unlock something, or anything else you can build out of particles. A single function call is enough to get you started:
+party.js adds particle effects to your website, to brighten up your user's browsing experiences: confetti when someone completes a form, sparkles when they unlock something, or anything else you can build out of particles. A single function call is enough to get you started:
 
 ```js
 import { confetti } from "party-js";
@@ -18,10 +18,10 @@ button.addEventListener("click", () => confetti(button));
 
 ## What you get
 
-- **Ready-to-go effects.** [Confetti](/effects/confetti/) and [sparkles](/effects/sparkles/) work with zero configuration needed. For smaller customizations, you can easily override their default options.
+- **Ready-to-go effects.** [Confetti](/effects/confetti/) and [sparkles](/effects/sparkles/) work without any configuration. For smaller customizations, you can easily override their default options.
 - **The engine behind them.** The built-in effects use the same public API you have access to. If they aren't enough, [`createEffect()`](/api/custom_effects/createeffect/) lets you build your own effects!
-- **Small and dependency-free.** Under 10 KB minified and gzipped, with no dependencies. Tree-shakeable, so bundlers only include what you import.
-- **Typed.** Everything is written in TypeScript and thus ships with full type definitions.
+- **Small and dependency-free.** Under 10 KB minified and gzipped. Tree-shakeable, so bundlers only include what you import.
+- **Typed.** Written in TypeScript, with full type definitions.
 - **Safe to import anywhere.** Importing the library during server-side rendering works. Effects themselves only run in the browser.
 - **Respects reduced motion.** Effects are skipped by default when the user asks their system for less motion.
 
@@ -44,7 +44,7 @@ party.js works in all current browsers. It draws with the Canvas 2D API and is p
 ## Where to go next
 
 - [Installation](/installation/) shows how to add party.js to your project, with a package manager or a script tag.
-- [Quickstart](/quickstart/) walks you through calling your first effect and how to customize it.
+- [Quickstart](/quickstart/) walks you through your first effect and how to customize it.
 - Coming from party.js v2? [Migrating from v2](/migrating-from-v2/) lists what changed.
 
 Once you're set up, [Effects](/effects/confetti/) describes each built-in effect, [Guides](/guides/custom-effects/) show how to build your own, and the [API reference](/api/) lists everything the library exports.

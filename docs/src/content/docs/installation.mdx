@@ -7,8 +7,8 @@ import { TabItem, Tabs } from "@astrojs/starlight/components";
 
 party.js is published on npm as `party-js`. It has no dependencies and ships with TypeScript types.
 
-:::danger
-As of writing, v3 is **not** published yet, we are only getting the docs ready.
+:::caution
+v3 isn't on npm yet. These docs are being prepared ahead of the release.
 :::
 
 ## With a package manager
@@ -75,11 +75,11 @@ If you prefer modules, import it directly instead:
 </script>
 ```
 
-`@3` always loads the latest 3.x release. In production, it is recommended to pin an exact version such as `@3.0.0`, so an update can't change your site without you noticing.
+`@3` always loads the latest 3.x release. In production, pin an exact version such as `@3.0.0`, so an update can't change your site without you noticing.
 
 ## With a framework
 
-party.js doesn't need a wrapper for React, Vue or Svelte: get the element and call the effect. Effects need a browser, so call them from event handlers or after the component has mounted, never while it renders or on the server side. Importing party.js during server-side rendering is fine though.
+party.js doesn't need a wrapper for React, Vue or Svelte: get the element and call the effect. Effects need a browser, so start them from event handlers or after the component has mounted, never during rendering. Importing party.js on the server is fine though.
 
 <Tabs syncKey="framework">
 <TabItem label="React">
