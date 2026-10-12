@@ -10,7 +10,7 @@ import type { SamplerFn } from "./types";
  *
  * @summary Picks a random spin axis and speed.
  *
- * @see https://mathworld.wolfram.com/SpherePointPicking.html
+ * @see [Wolfram MathWorld: Sphere Point Picking](https://mathworld.wolfram.com/SpherePointPicking.html)
  *
  * @group Samplers
  */

@@ -73,7 +73,7 @@ const SPARKLE_DEFAULTS = {
 } satisfies Required<SparkleOptions>;
 
 /**
- * Bursts golden by default, spinning stars out of the specified target, in all directions.
+ * Bursts spinning stars, golden by default, out of the specified target, in all directions.
  *
  * The sparkles are spread evenly around the target and fly outwards in straight lines, unaffected by gravity.
  * They always face the viewer while spinning, grow to their full size over their first 0.3 seconds, and fade
