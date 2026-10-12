@@ -27,6 +27,11 @@ export const referenceGroupOf = (entryId: string): string | undefined =>
 			groupDirectory(group).toLowerCase() === entryId.split("/")[1],
 	);
 
+export const referenceOverview = {
+	title: "API reference",
+	description: "Everything party.js exports, grouped by what you use it for.",
+};
+
 export const referenceGroupInfo: Record<
 	ReferenceGroup,
 	{ description: string; featured: string[] }
@@ -52,7 +57,7 @@ export const referenceGroupInfo: Record<
 	},
 	Behaviors: {
 		description:
-			"Modify particles while they are alive: gravity, drag, fading and scaling, with easings to smoothen transitions.",
+			"Modify particles while they are alive: gravity, drag, fading and scaling, with easings to smooth the transitions.",
 		featured: ["gravity", "drag", "fade", "scale"],
 	},
 	Utilities: {

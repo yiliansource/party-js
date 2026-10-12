@@ -8,6 +8,7 @@ import {
 	referenceGroupInfo,
 	referenceGroupOf,
 	referenceGroups,
+	referenceOverview,
 } from "../../config/reference";
 import { isPublished } from "../../utils/drafts";
 
@@ -39,9 +40,8 @@ const groups = referenceGroups.map((group) => {
 
 <StarlightPage
 	frontmatter={{
-	title: "API reference",
-	description:
-		"Everything party.js exports, grouped by what you use it for.",
+	title: referenceOverview.title,
+	description: referenceOverview.description
 }}
 	headings={groups.map((g) => ({ depth: 2, slug: g.id, text: g.group }))}
 >
