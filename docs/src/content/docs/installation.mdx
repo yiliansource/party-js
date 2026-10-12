@@ -1,0 +1,120 @@
+---
+title: Installation
+description: How to add party.js to your project.
+---
+
+import { TabItem, Tabs } from "@astrojs/starlight/components";
+
+party.js is published on npm as `party-js`. It has no dependencies and ships with TypeScript types.
+
+:::danger
+As of writing, v3 is **not** published yet, we are only getting the docs ready.
+:::
+
+## With a package manager
+
+<Tabs syncKey="pkg">
+<TabItem label="npm">
+
+```sh
+npm install party-js
+```
+
+</TabItem>
+<TabItem label="pnpm">
+
+```sh
+pnpm add party-js
+```
+
+</TabItem>
+<TabItem label="yarn">
+
+```sh
+yarn add party-js
+```
+
+</TabItem>
+<TabItem label="bun">
+
+```sh
+bun add party-js
+```
+
+</TabItem>
+</Tabs>
+
+Then import what you need:
+
+```js
+import { confetti } from "party-js";
+```
+
+party.js is an ES module without side effects, so bundlers only include the parts you import.
+
+## With a script tag
+
+Without a build step, you can load the bundle from a CDN. It puts everything on a global `party` object:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/party-js@3/bundle/party.min.js"></script>
+<script>
+	const button = document.querySelector("#submit");
+	button.addEventListener("click", () => party.confetti(button));
+</script>
+```
+
+If you prefer modules, import it directly instead:
+
+```html
+<script type="module">
+	import { confetti } from "https://cdn.jsdelivr.net/npm/party-js@3/+esm";
+
+	const button = document.querySelector("#submit");
+	button.addEventListener("click", () => confetti(button));
+</script>
+```
+
+`@3` always loads the latest 3.x release. In production, it is recommended to pin an exact version such as `@3.0.0`, so an update can't change your site without you noticing.
+
+## With a framework
+
+party.js doesn't need a wrapper for React, Vue or Svelte: get the element and call the effect. Effects need a browser, so call them from event handlers or after the component has mounted, never while it renders or on the server side. Importing party.js during server-side rendering is fine though.
+
+<Tabs syncKey="framework">
+<TabItem label="React">
+
+```jsx
+import { confetti } from "party-js";
+
+export function SubmitButton() {
+	return <button onClick={(event) => confetti(event.currentTarget)}>Submit</button>;
+}
+```
+
+</TabItem>
+<TabItem label="Vue">
+
+```vue
+<script setup>
+import { confetti } from "party-js";
+</script>
+
+<template>
+	<button @click="confetti($event.currentTarget)">Submit</button>
+</template>
+```
+
+</TabItem>
+<TabItem label="Svelte">
+
+```svelte
+<script>
+	import { confetti } from "party-js";
+</script>
+
+<button onclick={(event) => confetti(event.currentTarget)}>Submit</button>
+```
+
+</TabItem>
+</Tabs>

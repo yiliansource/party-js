@@ -3,6 +3,7 @@ import { Code } from "@astrojs/starlight/components";
 import type { AstroComponent as AstroIconComponent } from "@lucide/astro";
 
 import { demoCode } from "../../demos/regions";
+import Switch from "../Switch.astro";
 import DemoButton from "./DemoButton.astro";
 
 interface Props {
@@ -36,26 +37,41 @@ const multiline = code?.includes("\n") ?? false;
 					size === "compact" && "h-40",
 				]}
 			>
-				<p class="absolute top-5 left-5 text-sm font-mono font-light tracking-wide uppercase text-subtle">
-					Live Demo
-				</p>
+				<div class:list={["absolute top-0 left-0 right-0 flex flex-row justify-between", size === "full" ? "m-5" : "m-4"]}>
+					<p class="text-sm font-mono font-light tracking-wide uppercase text-subtle">
+						Live Demo
+					</p>
+					<div class="text-sm hidden motion-reduce:flex flex-row gap-3 items-center">
+						<span class="px-2.5 py-1 inline-flex flex-row gap-2 items-center bg-raised rounded-full">
+							<span class="inline-block size-1.5 rounded-full bg-yellow-500"></span>
+							<span class="font-mono text-xs tracking-wider">Reduced motion</span>
+						</span>
+					<Switch label="Play effects" data-play-effects />
+				</div>
+				</div>
+				
 				<DemoButton label={label} icon={icon} size={size} />
 			</div>
-			{code && !multiline && <div class="-mt-11 z-10 px-5 py-4 flex flex-row items-center">
-				<code class="text-muted text-sm">{code}</code>
-			</div>}
+			{code && !multiline && (
+				<div class:list={["-mt-11 z-10 flex flex-row items-center", size === "full" ? "px-4 py-3" : "px-3 py-2.5"]}>
+					<code class="text-muted text-sm">{code}</code>
+				</div>
+			)}
 		</>
 	)}
-	{size === "row" && <div class="px-5 py-4 flex flex-row items-center gap-4">
-		{code && !multiline && <code class="text-muted text-sm">{code}</code>}
-		<div class="ml-auto mr-0 shrink-0">
-			<DemoButton label={label} icon={icon} size="compact" />
+	{size === "row" && (
+		<div class="px-5 py-4 flex flex-row items-center gap-4">
+			{code && !multiline && <code class="text-muted text-sm">{code}</code>}
+			<div class="ml-auto mr-0 shrink-0">
+				<DemoButton label={label} icon={icon} size="compact" />
+			</div>
 		</div>
-	</div>}
+	)}
 	{code && multiline && <Code code={code} lang="ts" />}
 </live-demo>
 
 <script>
+import "../../scripts/motion";
 import type { Demo } from "../../demos/types";
 
 const modules = import.meta.glob<{ run: Demo }>("../../demos/*.demo.ts");

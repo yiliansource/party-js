@@ -53,6 +53,7 @@ interface ConfettiOptions {
 	colors?: string[] | Sampler<string | Color>;
 	gravity?: Sampler<number>;
 	drag?: Sampler<number>;
+	reducedMotion?: ReducedMotion;
 }
 
 declare function createEffect(options: CreateEffectOptions): Effect;
@@ -68,6 +69,7 @@ interface CreateEffectOptions {
 	seed?: number;
 	rng?: Rng;
 	onComplete?: () => void;
+	reducedMotion?: ReducedMotion;
 }
 
 declare function createLighting(options?: CreateLightingOptions): LightingFn;
@@ -207,6 +209,8 @@ interface RectEmissionShape {
 	height: number;
 }
 
+type ReducedMotion = "skip" | "play";
+
 type Rng = () => number;
 
 type Sampler<T> = T | SamplerFn<T>;
@@ -224,6 +228,8 @@ type SamplerFn<T> = (ctx: SamplerContext) => T;
 
 declare function scale(inDuration: number, outDuration: number, ease?: Easing): Behavior;
 
+declare function setDefaultReducedMotion(mode: ReducedMotion): void;
+
 declare function sineIn(): Easing;
 
 declare function sineInOut(): Easing;
@@ -236,6 +242,7 @@ interface SparkleOptions {
 	size?: Sampler<number>;
 	lifetime?: Sampler<number>;
 	colors?: string[] | Sampler<string | Color>;
+	reducedMotion?: ReducedMotion;
 }
 
 declare function sparkles(target: EffectTarget, options?: SparkleOptions): Effect;
@@ -314,11 +321,13 @@ export {
 	randomSpin,
 	range,
 	type RectEmissionShape,
+	type ReducedMotion,
 	type Rng,
 	type Sampler,
 	type SamplerContext,
 	type SamplerFn,
 	scale,
+	setDefaultReducedMotion,
 	sineIn,
 	sineInOut,
 	sineOut,

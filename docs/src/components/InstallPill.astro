@@ -30,6 +30,8 @@ const { command = "npm install party-js" } = Astro.props;
 <script>
 import { confetti } from "party-js";
 
+import "../scripts/motion";
+
 class CopyCommand extends HTMLElement {
 	connectedCallback() {
 		const button = this.querySelector("button")!;

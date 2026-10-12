@@ -1,0 +1,35 @@
+.pj-switch {
+	appearance: none;
+	flex-shrink: 0;
+	width: 2.25rem;
+	height: 1.25rem;
+	margin: 0;
+	border-radius: 999px;
+	background:
+		radial-gradient(circle, #fff 0 0.5rem, transparent calc(0.5rem + 0.5px))
+		no-repeat left 0.125rem center / 1rem 1rem,
+		var(--color-line-strong);
+	cursor: pointer;
+	transition:
+		background-position 150ms,
+		background-color 150ms;
+}
+.pj-switch:checked {
+	background-color: var(--color-accent-500);
+	background-position:
+		right 0.125rem center,
+		0 0;
+}
+.pj-switch:focus-visible {
+	outline: 2px solid var(--color-accent-600);
+	outline-offset: 2px;
+}
+.pj-switch:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+@media (prefers-reduced-motion: reduce) {
+	.pj-switch {
+		transition: none;
+	}
+}
