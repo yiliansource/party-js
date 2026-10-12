@@ -1,4 +1,4 @@
-:where(.sl-markdown-content :not(pre)) > code {
+:where(.sl-markdown-content :not(pre)) > code:not(:where(.not-content *)) {
 	padding: 3px 6px;
 	border-radius: 6px;
 	background: var(--color-surface);

@@ -38,16 +38,16 @@ const multiline = code?.includes("\n") ?? false;
 				]}
 			>
 				<div class:list={["absolute top-0 left-0 right-0 flex flex-row justify-between", size === "full" ? "m-5" : "m-4"]}>
-					<p class="text-sm font-mono font-light tracking-wide uppercase text-subtle">
+					<p class="text-sm font-mono font-light tracking-wide whitespace-nowrap uppercase text-subtle">
 						Live Demo
 					</p>
 					<div class="text-sm hidden motion-reduce:flex flex-row gap-3 items-center">
-						<span class="px-2.5 py-1 inline-flex flex-row gap-2 items-center bg-raised rounded-full">
+						<span class="max-sm:hidden px-2.5 py-1 inline-flex flex-row gap-2 items-center bg-raised rounded-full whitespace-nowrap">
 							<span class="inline-block size-1.5 rounded-full bg-yellow-500"></span>
 							<span class="font-mono text-xs tracking-wider">Reduced motion</span>
 						</span>
-					<Switch label="Play effects" data-play-effects />
-				</div>
+						<Switch label="Play effects" class="whitespace-nowrap" data-play-effects />
+					</div>
 				</div>
 				
 				<DemoButton label={label} icon={icon} size={size} />
