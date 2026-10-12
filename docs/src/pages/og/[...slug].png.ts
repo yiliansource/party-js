@@ -17,6 +17,7 @@ import {
 } from "../../config/sections";
 import { site } from "../../config/site";
 import { isPublished } from "../../utils/drafts";
+import { splitIdentifier } from "../../utils/identifiers";
 
 const require = createRequire(import.meta.url);
 const font = (family: string, file: string) =>
@@ -64,7 +65,7 @@ function fitMonoTitle(
 ) {
 	const sizeFor = (chars: number) =>
 		Math.floor(TITLE_WIDTH / (chars * MONO_ADVANCE));
-	const words = title.split(/(?=[A-Z])/);
+	const words = splitIdentifier(title);
 
 	let longest = title.length;
 	for (let i = 1; i < words.length; i++) {
@@ -75,7 +76,7 @@ function fitMonoTitle(
 	const oneLine = sizeFor(title.length);
 	const size = oneLine >= oneLineMin ? oneLine : sizeFor(longest);
 	return {
-		text: words.join("\u200B"),
+		text: words.join("\u200B"), // zero width space
 		fontSize: Math.max(min, Math.min(max, size)),
 	};
 }

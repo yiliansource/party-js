@@ -67,7 +67,7 @@ export interface RandomHueOptions {
  *
  * @summary Picks colors with a random hue.
  *
- * @see https://oklch.com
+ * @see [oklch.com](https://oklch.com)
  *
  * @example
  * ```ts

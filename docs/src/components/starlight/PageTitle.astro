@@ -1,11 +1,12 @@
 ---
 import { kindLabel, referenceGroupOf } from "../../config/reference";
 import { sectionOf, sections } from "../../config/sections";
+import { splitIdentifier } from "../../utils/identifiers";
 import Glyph from "../Glyph.astro";
 
 const entry = Astro.locals.starlightRoute.entry;
 const { title, description, reference } = entry.data;
-const titleParts = reference ? title.split(/(?=[A-Z])/) : [title];
+const titleParts = reference ? splitIdentifier(title) : [title];
 const section = !Astro.locals.isNotFound ? sectionOf(entry.id) : null;
 const sectionData = section !== null ? sections[section] : null;
 const referenceGroup =
@@ -34,7 +35,7 @@ const referenceGroup =
     )}
 	<h1
 		id="_top"
-		class:list={["text-fg text-5xl scroll-mt-[100vh]", reference && "font-mono"]}
+		class:list={["text-fg text-4xl sm:text-5xl wrap-break-word scroll-mt-[100vh]", reference && "font-mono"]}
 	>
 		{titleParts.map((part, i) => <>{i > 0 && <wbr />}{part}</>)}
 	</h1>

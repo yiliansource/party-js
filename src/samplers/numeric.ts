@@ -33,7 +33,7 @@ export function range(min: number, max: number): SamplerFn<number> {
  *
  * @summary Picks random numbers that cluster around a mean.
  *
- * @see https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform
+ * @see [Wikipedia: Box–Muller transform](https://en.wikipedia.org/wiki/Box%E2%80%93Muller_transform)
  *
  * @group Samplers
  */

@@ -13,3 +13,7 @@
 :where(.sl-markdown-content) a > code {
 	color: inherit;
 }
+
+:where(.sl-markdown-content) :is(h1, h2, h3, h4, h5, h6) > code {
+	font-size: inherit;
+}

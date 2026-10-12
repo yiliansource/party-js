@@ -11,7 +11,7 @@ import type { Behavior } from "./behavior";
  *
  * @summary Slows particles down, more strongly the faster they move.
  *
- * @see http://hyperphysics.phy-astr.gsu.edu/hbase/Mechanics/quadvfall.html
+ * @see [HyperPhysics: Quadratic Drag](http://hyperphysics.phy-astr.gsu.edu/hbase/Mechanics/quadvfall.html)
  *
  * @group Behaviors
  */
