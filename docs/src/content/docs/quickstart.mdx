@@ -1,0 +1,98 @@
+---
+title: Quickstart
+description: Fire your first effect and customize it.
+---
+
+import LiveDemo from "../../components/demo/LiveDemo.astro";
+import { MousePointerClickIcon, PartyPopperIcon, SparklesIcon } from "@lucide/astro";
+
+This page assumes you've [installed](/installation/) party.js. It takes you from a first burst of confetti to customizing and controlling effects.
+
+## Your first effect
+
+Simply pass an element to `confetti()`, and confetti bursts out of it:
+
+```js
+import { confetti } from "party-js";
+
+const button = document.querySelector("#submit");
+button.addEventListener("click", () => confetti(button));
+```
+
+<LiveDemo demo="confetti-basic" size="compact" label="Fire confetti" icon={PartyPopperIcon} />
+
+The confetti comes from the element's whole area, not just its center, so a wide button produces a wide burst. The library draws it on a canvas over the page and removes the canvas again once the last piece is gone.
+
+## Customizing
+
+Every effect takes an options object as its second argument. Options you leave out keep their default:
+
+<LiveDemo demo="confetti-options" size="compact" label="Fire more confetti" icon={PartyPopperIcon} />
+
+Most options accept either a fixed value, like `spread: 120`, or a [sampler](/concepts/samplers/), like `range(80, 120)`, which picks a new random value each time it's used. That's what makes every burst look unique. Each option's documentation says whether it's picked once per burst or once per piece of confetti.
+
+Colors work the same way. To make things easier, you can pass a list of color strings and each piece picks one of them:
+
+```js
+confetti(button, {
+	colors: ["#ff5a5f", "#ffb400", "#00a699", "#7b61ff"],
+});
+```
+
+Visit [Confetti](/effects/confetti/) for more information on the effect.
+
+## Fire from a point
+
+Instead of an element, you can pass a position in page coordinates, i.e. pixels from the top-left of the document. For example, to fire confetti wherever the user clicks:
+
+```js
+document.addEventListener("click", (event) => {
+	confetti({ x: event.pageX, y: event.pageY });
+});
+```
+
+<LiveDemo demo="confetti-point" size="compact" label="Fire where you click" icon={MousePointerClickIcon} />
+
+## Other effects
+
+The library offers up another built-in effect, namely `sparkles()`. It works just like `confetti()`: it takes an element or a point, and an options object. Instead of confetti, it bursts small, golden stars that are not affected by gravity, in all directions.
+
+```js
+import { sparkles } from "party-js";
+
+sparkles(button);
+```
+
+<LiveDemo demo="sparkles-basic" size="compact" label="Sparkle" icon={SparklesIcon} />
+
+Visit [Sparkles](/effects/sparkles/) for more information on the effect.
+
+## Control a running effect
+
+Effects start right away and clean up after themselves, so most of the time you can ignore what they return. When you need control, keep the returned effect:
+
+```js
+const effect = confetti(button);
+
+effect.pause(); // freezes the particles where they are
+effect.resume(); // continues where it left off
+effect.stop(); // removes the particles immediately
+```
+
+`stop()` is useful when the element the confetti belongs to goes away, for example when your component unmounts.
+
+## Reduced motion
+
+When a user has asked their system for reduced motion, party.js skips effects by default: nothing is drawn, and your code keeps running as if the effect had played. If your particles carry information the user shouldn't miss, or the user explicitly asked for them, you can play them anyway:
+
+```js
+confetti(button, { reducedMotion: "play" });
+```
+
+To change the default behavior for every effect, for example from a motion setting on your site, use [`setDefaultReducedMotion()`](/api/effects/setdefaultreducedmotion/).
+
+## Next steps
+
+- [Effects](/effects/confetti/) describes each built-in effect and all its options.
+- [Samplers & randomness](/concepts/samplers/) explains how values are picked, and which samplers there are.
+- [Custom effects](/guides/custom-effects/) shows how to build your own effect when the built-in ones aren't enough.
