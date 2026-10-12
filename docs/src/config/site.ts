@@ -48,7 +48,15 @@ export const headerLinks = [
 		label: "Docs",
 		href: "/introduction/",
 		isActive: (p) =>
-			p !== "/" && p !== "/404" && !p.startsWith("/playgrounds"),
+			p !== "/" &&
+			p !== "/404" &&
+			!p.startsWith("/api") &&
+			!p.startsWith("/playgrounds"),
+	},
+	{
+		label: "Reference",
+		href: "/api/",
+		isActive: (p) => p.startsWith("/api"),
 	},
 	{
 		label: "Playground",

@@ -71,6 +71,7 @@ export default defineConfig({
 				{
 					label: sections.reference.label,
 					items: [
+						{ label: "Overview", link: "/api/" },
 						...referenceGroups.map((group) => ({
 							label: group,
 							items: [

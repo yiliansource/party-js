@@ -5,7 +5,7 @@ import { Resvg } from "@resvg/resvg-js";
 import type { APIRoute, GetStaticPaths } from "astro";
 import satori from "satori";
 
-import { type CollectionEntry, getCollection } from "astro:content";
+import { getCollection } from "astro:content";
 
 import LogoMark from "../../assets/mark-l-dark.svg?raw";
 import { glyphSvg } from "../../brand/glyphs";
@@ -220,25 +220,42 @@ const buildDocsCard = (
 	});
 };
 
+interface OGCardProps {
+	section: SectionKey | null;
+	title: string;
+	description?: string;
+}
+
 export const getStaticPaths = (async () => {
 	const entries = await getCollection("docs", isPublished);
-	return entries.map((entry) => ({
-		params: { slug: entry.id },
-		props: {
-			entry,
-			section: sectionOf(entry.id),
+	return [
+		...entries.map((entry) => ({
+			params: { slug: entry.id },
+			props: {
+				section: sectionOf(entry.id),
+				title: entry.data.title,
+				description: entry.data.description,
+			} satisfies OGCardProps,
+		})),
+		{
+			params: { slug: "api" },
+			props: {
+				section: "reference",
+				title: "API reference",
+				description:
+					"Everything party.js exports, grouped by what you use it for.",
+			} satisfies OGCardProps,
 		},
-	}));
+	];
 }) satisfies GetStaticPaths;
 
-export const GET: APIRoute = async ({ props }) => {
-	const section = props.section as SectionKey | null;
-	const entry = props.entry as CollectionEntry<"docs">;
+export const GET: APIRoute<OGCardProps> = async ({ props }) => {
+	const { section, title, description } = props;
 
 	const card =
 		section === null
 			? buildDefaultCard()
-			: buildDocsCard(section, entry.data.title, entry.data.description);
+			: buildDocsCard(section, title, description);
 
 	const svg = await satori(card, {
 		width: 1200,
