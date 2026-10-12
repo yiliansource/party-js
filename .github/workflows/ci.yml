@@ -65,6 +65,7 @@ jobs:
             - run: bun run test
             - run: bun run build
             - run: bun run size
+            - run: bun run api
 
     docs:
         needs: changes

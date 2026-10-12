@@ -37,6 +37,7 @@
 		"lint": "biome check",
 		"lint:fix": "biome check --write",
 		"size": "bun run scripts/check-size.ts",
+		"api": "bun run scripts/check-api.ts",
 		"prepare": "lefthook install"
 	},
 	"devDependencies": {
