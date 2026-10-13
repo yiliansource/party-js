@@ -43,7 +43,12 @@ useParticleCanvas(canvas, (dt, { width, height }) => {
 
 function burst() {
 	if (!burstSource.value) return;
-	confetti(burstSource.value, { shapes: [shape], colors: [...colors], size });
+	confetti(burstSource.value, {
+		shapes: [shape],
+		colors: [...colors],
+		size,
+		reducedMotion: "play",
+	});
 }
 </script>
 
@@ -71,6 +76,7 @@ function burst() {
 			>
 				<button
 					type="button"
+					aria-label="Pause animation"
 					:aria-pressed="paused"
 					@click="paused = !paused"
 					class="size-10 grid place-items-center bg-raised rounded-xl cursor-pointer"

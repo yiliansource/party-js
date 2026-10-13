@@ -4,9 +4,11 @@ import { computed, ref } from "vue";
 
 // biome-ignore lint/correctness/noUnusedImports: used in the for loop
 import { codeColors } from "../../brand/code-theme.mjs";
-import { comment, plain, type Token, toText } from "../code";
+import { comment as commentToken, plain, type Token, toText } from "../code";
 
-const { tokens } = defineProps<{
+const { file, comment, tokens } = defineProps<{
+	file?: string;
+	comment?: string;
 	tokens: Token[];
 }>();
 
@@ -14,8 +16,7 @@ const copied = ref(false);
 let timer: number | undefined;
 
 const allTokens = computed(() => [
-	comment("// use in 'shapes' in confetti()"),
-	plain("\n"),
+	...(comment ? [commentToken(`// ${comment}`), plain("\n")] : []),
 	...tokens,
 ]);
 
@@ -38,19 +39,20 @@ async function copyToClipboard() {
 <template>
 	<div class="w-full bg-code-bg border border-code-line rounded-2xl">
 		<div
-			class="h-11 flex flex-row items-center justify-between border-b border-code-line"
+			class="h-11 flex flex-row items-center border-b border-code-line"
+			:style="{ color: codeColors.comment }"
 		>
-			<span class="ml-4 text-subtle text-sm font-mono font-medium"
-				>shape.js</span
-			>
+			<span v-if="file" class="ml-4 text-sm font-mono font-medium">{{
+				file
+			}}</span>
 			<button
 				type="button"
-				class="mr-1 px-3 py-1.5 flex flex-row text-muted items-center gap-2 bg-transparent hover:bg-code-line rounded-xl cursor-pointer"
+				class="ml-auto mr-1 px-3 py-1.5 flex flex-row items-center gap-2 bg-transparent hover:bg-code-line rounded-xl text-inherit cursor-pointer"
 				@click="copyToClipboard"
 			>
 				<CopyIcon :size="16" v-if="!copied" />
 				<CheckIcon :size="16" v-else />
-				<span class="text-sm font-semibold">{{
+				<span class="text-sm font-semibold" aria-live="polite">{{
 					copied ? "Copied" : "Copy"
 				}}</span>
 			</button>

@@ -73,7 +73,11 @@ const tokens = computed(() => shapeCode(draft));
 					:size="preview.size"
 					:lighting="preview.lighting"
 				/>
-				<CodeBlock :tokens="tokens" />
+				<CodeBlock
+					file="shape.js"
+					comment="e.g. confetti(el, { shapes: [shape] })"
+					:tokens="tokens"
+				/>
 			</div>
 		</div>
 	</div>

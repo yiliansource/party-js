@@ -1,4 +1,3 @@
-<!-- playground/ui/Stepper.vue -->
 <script setup lang="ts">
 import { MinusIcon, PlusIcon } from "@lucide/vue";
 import { useId } from "vue";

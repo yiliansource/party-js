@@ -6,6 +6,7 @@ import { starPath } from "party-js/internal/shapes/star";
 import { useId } from "vue";
 
 import ShapeIcon from "../ui/ShapeIcon.vue";
+import { HEART_PATH_D } from "./shapes.ts";
 import type { ShapeType } from "./state";
 
 interface ShapeOption {
@@ -42,15 +43,14 @@ const options: ShapeOption[] = [
 	{
 		type: "path",
 		label: "Path",
-		path: new Path2D(
-			"M0,0.38 C-0.42,0.1 -0.5,-0.22 -0.32,-0.36 C-0.18,-0.46 -0.04,-0.38 0,-0.26 C0.04,-0.38 0.18,-0.46 0.32,-0.36 C0.5,-0.22 0.42,0.1 0,0.38 Z",
-		),
+		path: new Path2D(HEART_PATH_D),
 	},
 ];
 </script>
 
 <template>
 	<fieldset class="p-0 flex flex-row gap-2">
+		<legend class="sr-only">Shape type</legend>
 		<label
 			v-for="option in options"
 			:key="option.type"
@@ -69,9 +69,7 @@ const options: ShapeOption[] = [
 				class="sr-only"
 			>
 			<ShapeIcon :path="option.path" />
-			<span class="text-xs font-semibold" aria-hidden="true">{{
-				option.label
-			}}</span>
+			<span class="text-xs font-semibold">{{ option.label }}</span>
 		</label>
 	</fieldset>
 </template>

@@ -21,6 +21,7 @@ const cornerRadius = defineModel<number>("cornerRadius", { required: true });
 			:min="0"
 			:max="0.5"
 			:step="0.01"
+			:format="v => v.toFixed(2)"
 		/>
 	</div>
 </template>
