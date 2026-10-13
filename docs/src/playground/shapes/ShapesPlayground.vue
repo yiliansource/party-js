@@ -8,7 +8,7 @@ import PanelText from "../ui/PanelText.vue";
 import SwatchPicker from "../ui/SwatchPicker.vue";
 import SwitchField from "../ui/SwitchField.vue";
 import ActualSizeStrip from "./ActualSizeStrip.vue";
-import { shapeCode } from "./code.ts";
+import { shapeCode } from "./code";
 import { PREVIEW_COLORS } from "./colors";
 import ShapePreviewStage from "./ShapePreviewStage.vue";
 import ShapeSettings from "./ShapeSettings.vue";

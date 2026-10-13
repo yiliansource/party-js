@@ -2,7 +2,6 @@
 import { CheckIcon, CopyIcon } from "@lucide/vue";
 import { computed, ref } from "vue";
 
-// biome-ignore lint/correctness/noUnusedImports: used in the for loop
 import { codeColors } from "../../brand/code-theme.mjs";
 import { comment as commentToken, plain, type Token, toText } from "../code";
 

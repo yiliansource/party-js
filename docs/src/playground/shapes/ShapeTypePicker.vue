@@ -6,7 +6,7 @@ import { starPath } from "party-js/internal/shapes/star";
 import { useId } from "vue";
 
 import ShapeIcon from "../ui/ShapeIcon.vue";
-import { HEART_PATH_D } from "./shapes.ts";
+import { HEART_PATH_D } from "./shapes";
 import type { ShapeType } from "./state";
 
 interface ShapeOption {
