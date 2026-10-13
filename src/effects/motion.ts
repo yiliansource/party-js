@@ -15,7 +15,7 @@
  *
  * @summary What an effect does when the user prefers reduced motion.
  *
- * @see [MDN: prefers-reduced-motion](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion)
+ * @see {@link https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-reduced-motion | MDN: prefers-reduced-motion}
  *
  * @group Effects
  */
