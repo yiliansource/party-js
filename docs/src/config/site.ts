@@ -48,14 +48,16 @@ export const headerLinks = [
 		label: "Docs",
 		href: "/introduction/",
 		isActive: (p) =>
-			p !== "/" &&
-			p !== "/404" &&
-			!p.startsWith("/api") &&
-			!p.startsWith("/playgrounds"),
+			p !== "/" && !p.startsWith("/api") && !p.startsWith("/playgrounds"),
 	},
 	{
 		label: "Reference",
 		href: "/api/",
-		isActive: (p) => p.startsWith("/api"),
+		isActive: (p) => p.startsWith("/api/"),
+	},
+	{
+		label: "Playgrounds",
+		href: "/playgrounds/shapes/",
+		isActive: (p) => p.startsWith("/playgrounds/"),
 	},
 ] as const satisfies readonly HeaderLink[];

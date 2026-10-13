@@ -21,14 +21,14 @@ const notFound = Astro.locals.isNotFound === true;
 ---
 
 <div class="h-full flex flex-row items-center justify-between">
-	<!-- biome-ignore lint/a11y/useAnchorContent: alt text applied via attrs -->
+	{/* biome-ignore lint/a11y/useAnchorContent: alt text applied via attrs */}
 	<a href="/" class="grid place-items-center">
 		<Image src={darkImage} {...imageAttrs} class="light:sl-hidden" />
 		<Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />
 	</a>
 	<div class="flex flex-row items-center">
 		<div class="flex flex-row items-center gap-8">
-			<div class="sl:w-64">
+			<div class="sl:w-56 nav:w-64">
 				<Search />
 			</div>
 			<div class="hidden sl:flex flex-row gap-8">
@@ -48,7 +48,7 @@ const notFound = Astro.locals.isNotFound === true;
 		</div>
 		<div class="hidden sl:block mx-6 h-6 border-r border-line"></div>
 		<div class="hidden sl:flex flex-row items-center gap-8">
-			<div class="flex flex-row gap-4">
+			<div class="hidden nav:flex flex-row gap-4">
 				<SocialIcons />
 			</div>
 			<ThemeToggle />

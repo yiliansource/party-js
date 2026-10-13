@@ -17,6 +17,15 @@
 	--sl-content-pad-x: 1.5rem;
 }
 
+.content-panel {
+	border-top: none;
+}
+
+:root[data-has-sidebar] .content-panel .sl-container {
+	margin: 0;
+	max-width: unset;
+}
+
 site-search button[data-open-modal] {
 	justify-content: center;
 	min-width: 2.75rem;
@@ -63,15 +72,6 @@ site-search button[data-open-modal] {
 }
 .mobile-preferences .social-icons {
 	gap: 1.5rem;
-}
-
-.content-panel {
-	border-top: none;
-
-	.sl-container {
-		margin: 0;
-		max-width: unset;
-	}
 }
 
 .sidebar-pane {

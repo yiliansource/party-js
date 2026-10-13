@@ -38,6 +38,12 @@ export const sections = {
 		accent: "#A3A3AD",
 		glyph: "tile",
 	},
+	playground: {
+		label: "Playground",
+		folder: "playgrounds",
+		accent: "#7B61FF",
+		glyph: "square",
+	},
 } as const satisfies Record<string, SectionConfig>;
 
 export type SectionKey = keyof typeof sections;

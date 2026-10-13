@@ -4,7 +4,9 @@
 	"exclude": ["dist"],
 	"compilerOptions": {
 		"paths": {
-			"party-js": ["../src/index.ts"]
-		}
+			"party-js": ["../src/index.ts"],
+			"party-js/internal/*": ["../src/*"]
+		},
+		"jsx": "preserve"
 	}
 }

@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { satteri } from "@astrojs/markdown-satteri";
 import starlight from "@astrojs/starlight";
+import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import starlightLinksValidator from "starlight-links-validator";
@@ -24,7 +25,30 @@ export default defineConfig({
 			hastPlugins: [reference],
 		}),
 	},
+	redirects: {
+		"/playgrounds": "/playgrounds/shapes/",
+	},
+	vite: {
+		plugins: [tailwindcss()],
+		resolve: {
+			alias: [
+				{
+					find: /^party-js$/,
+					replacement: fileURLToPath(
+						new URL("../src/index.ts", import.meta.url),
+					),
+				},
+				{
+					find: /^party-js\/internal\//,
+					replacement: fileURLToPath(
+						new URL("../src/", import.meta.url),
+					),
+				},
+			],
+		},
+	},
 	integrations: [
+		vue(),
 		starlight({
 			title: site.name,
 			description: site.tagline,
@@ -188,14 +212,4 @@ export default defineConfig({
 			],
 		}),
 	],
-	vite: {
-		plugins: [tailwindcss()],
-		resolve: {
-			alias: {
-				"party-js": fileURLToPath(
-					new URL("../src/index.ts", import.meta.url),
-				),
-			},
-		},
-	},
 });

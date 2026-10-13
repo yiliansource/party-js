@@ -9,6 +9,7 @@ import { getCollection } from "astro:content";
 
 import LogoMark from "../../assets/mark-l-dark.svg?raw";
 import { glyphSvg } from "../../brand/glyphs";
+import { playgroundInformation } from "../../config/playgrounds";
 import { referenceOverview } from "../../config/reference";
 import {
 	type SectionKey,
@@ -246,6 +247,14 @@ export const getStaticPaths = (async () => {
 				description: referenceOverview.description,
 			} satisfies OGCardProps,
 		},
+		...Object.values(playgroundInformation).map((p) => ({
+			params: { slug: p.slug },
+			props: {
+				section: "playground",
+				title: p.title,
+				description: p.description,
+			} satisfies OGCardProps,
+		})),
 	];
 }) satisfies GetStaticPaths;
 
