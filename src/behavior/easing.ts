@@ -37,7 +37,7 @@ export function linear(): Easing {
  *
  * @summary Starts slowly and speeds up.
  *
- * @see [easings.net: easeInSine](https://easings.net/#easeInSine)
+ * @see {@link https://easings.net/#easeInSine | easings.net: easeInSine}
  *
  * @group Behaviors
  */
@@ -50,7 +50,7 @@ export function sineIn(): Easing {
  *
  * @summary Starts quickly and slows down.
  *
- * @see [easings.net: easeOutSine](https://easings.net/#easeOutSine)
+ * @see {@link https://easings.net/#easeOutSine | easings.net: easeOutSine}
  *
  * @group Behaviors
  */
@@ -63,7 +63,7 @@ export function sineOut(): Easing {
  *
  * @summary Starts slowly, speeds up and slows down again.
  *
- * @see [easings.net: easeInOutSine](https://easings.net/#easeInOutSine)
+ * @see {@link https://easings.net/#easeInOutSine | easings.net: easeInOutSine}
  *
  * @group Behaviors
  */

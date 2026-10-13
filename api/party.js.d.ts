@@ -51,6 +51,7 @@ interface ConfettiOptions {
 	size?: Sampler<number>;
 	lifetime?: Sampler<number>;
 	colors?: string[] | Sampler<string | Color>;
+	shapes?: ParticleShape[] | Sampler<ParticleShape>;
 	gravity?: Sampler<number>;
 	drag?: Sampler<number>;
 	reducedMotion?: ReducedMotion;

@@ -14,6 +14,7 @@ import {
 	type Sampler,
 	type SamplerContext,
 } from "../samplers";
+import type { ParticleShape } from "../shapes";
 import {
 	createEffect,
 	type Effect,
@@ -71,13 +72,20 @@ export interface ConfettiOptions {
 	 */
 	lifetime?: Sampler<number>;
 	/**
-	 * The colors that the particles can take on. If an array of color strings is given, they are converted to
-	 * {@link Color} objects via {@link color | color()}, and a random one will be picked for each particle.
+	 * The colors that the confetti can take on. If an array of color strings is given, they are converted to
+	 * {@link Color} objects via {@link color | color()}, and a random one will be picked for each confetti.
 	 * Otherwise, the sampler is evaluated for each piece of confetti.
 	 *
 	 * @defaultValue randomHue({ l: 0.65, c: 0.15 })
 	 */
 	colors?: string[] | Sampler<string | Color>;
+	/**
+	 * The shapes that the confetti can take on. If any array of shapes is given, a random one will be picked
+	 * for each confetti. Otherwise, the sampler is evaluated for each piece of confetti.
+	 *
+	 * @defaultValue [{ type: "square", cornerRadius: 0.2 }, { type: "circle" }]
+	 */
+	shapes?: ParticleShape[] | Sampler<ParticleShape>;
 	/**
 	 * The strength of gravity affecting the confetti, in px/s².
 	 * Sampled once when the effect starts, so all confetti shares the value.
@@ -111,6 +119,7 @@ const CONFETTI_DEFAULTS = {
 	size: range(6, 16),
 	lifetime: range(2, 4),
 	colors: randomHue({ l: 0.65, c: 0.15 }),
+	shapes: [{ type: "square", cornerRadius: 0.2 }, { type: "circle" }],
 	gravity: 800,
 	drag: 500,
 } satisfies Required<Omit<ConfettiOptions, "reducedMotion">>;
@@ -168,10 +177,7 @@ export function confetti(
 			color: Array.isArray(o.colors)
 				? pick(o.colors.map(color))
 				: o.colors,
-			shape: pick([
-				{ type: "square", cornerRadius: 0.2 },
-				{ type: "circle" },
-			]),
+			shape: Array.isArray(o.shapes) ? pick(o.shapes) : o.shapes,
 		},
 		behaviors: [
 			gravity(gravityStrength),
