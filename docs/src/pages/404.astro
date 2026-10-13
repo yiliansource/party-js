@@ -12,7 +12,14 @@ Astro.locals.isNotFound = true;
 ---
 
 <StarlightPage
-	frontmatter={{ title: "Page not found", template: "splash", pagefind: false, editUrl: false }}
+	frontmatter={{
+		title: "Page not found",
+		template: "splash",
+		pagefind: false,
+		editUrl: false,
+		prev: false,
+		next: false,
+	}}
 >
 	<div class="not-content flex flex-col items-center text-center gap-5 py-16">
 		<NotFoundImage

@@ -1,14 +1,19 @@
 ---
 import type { HTMLAttributes } from "astro/types";
 
+import { switchClass } from "./switch";
+
 type Props = { label: string } & Omit<HTMLAttributes<"input">, "type" | "role">;
 const { label, class: className, ...rest } = Astro.props;
 ---
 
 <label
-	class:list={["inline-flex items-center gap-2 cursor-pointer text-sm font-semibold", className]}
+	class:list={[
+	"inline-flex items-center gap-2 cursor-pointer text-sm font-semibold",
+	className,
+]}
 >
-	<!-- biome-ignore lint/a11y/useAriaPropsForRole: a native checkbox exposes its checked state itself; aria-checked would duplicate it -->
-	<input type="checkbox" role="switch" class="pj-switch" {...rest}>
-	{label}
+	{/* biome-ignore lint/a11y/useAriaPropsForRole: a native checkbox exposes its checked state itself; aria-checked would duplicate it */}
+	<input type="checkbox" role="switch" class={switchClass} {...rest}>
+	<span>{label}</span>
 </label>
