@@ -1,5 +1,7 @@
 import type { ParticleShape } from "party-js";
 
+import type { PreviewColor } from "./colors";
+
 export type ShapeType = "square" | "circle" | "star" | "polygon" | "path";
 
 export interface ShapeDraft {
@@ -19,12 +21,14 @@ export const createDraft = (): ShapeDraft => ({
 	type: "star",
 	square: { ...SHAPE_DEFAULTS.square },
 	star: { ...SHAPE_DEFAULTS.star },
-	polygon: { sides: 6 },
-	path: { d: "M 0 -0.5 L 0.5 0.5 L -0.5 0.5 Z" },
+	polygon: { sides: 5 },
+	path: {
+		d: "M0,0.38 C-0.42,0.1 -0.5,-0.22 -0.32,-0.36 C-0.18,-0.46 -0.04,-0.38 0,-0.26 C0.04,-0.38 0.18,-0.46 0.32,-0.36 C0.5,-0.22 0.42,0.1 0,0.38 Z",
+	},
 });
 
 export interface PreviewSettings {
-	color: "mixed" | (string & {});
+	color: PreviewColor;
 	size: number;
 	lighting: boolean;
 	background: "page" | "light" | "dark";
@@ -36,7 +40,7 @@ export const createPreview = (): PreviewSettings => ({
 	size: 16,
 	lighting: true,
 	background: "page",
-	paused: false,
+	paused: window.matchMedia("(prefers-reduced-motion: reduce)").matches,
 });
 
 export function toShape(draft: ShapeDraft): ParticleShape {

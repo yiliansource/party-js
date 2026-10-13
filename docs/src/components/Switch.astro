@@ -13,7 +13,7 @@ const { label, class: className, ...rest } = Astro.props;
 	className,
 ]}
 >
-	<!-- biome-ignore lint/a11y/useAriaPropsForRole: a native checkbox exposes its checked state itself; aria-checked would duplicate it -->
-	<input type="checkbox" role="switch" :class={switchClass} {...rest}>
+	{/* biome-ignore lint/a11y/useAriaPropsForRole: a native checkbox exposes its checked state itself; aria-checked would duplicate it */}
+	<input type="checkbox" role="switch" class={switchClass} {...rest}>
 	<span>{label}</span>
 </label>

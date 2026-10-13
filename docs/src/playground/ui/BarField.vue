@@ -22,10 +22,9 @@ const fraction = computed(() => (value.value - min) / (max - min));
 
 <template>
 	<div
-		class="group mb-4 relative h-9.5 flex flex-row items-center bg-field rounded-xl overflow-hidden
+		class="group relative h-9.5 flex flex-row items-center bg-field rounded-xl overflow-hidden
 			shadow-[inset_0_0_0_1px_var(--color-field-line)]
 			has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent-600"
-		:style="{ '--fraction': fraction }"
 	>
 		<div
 			class="relative h-full bg-bar-fill"
@@ -53,7 +52,9 @@ const fraction = computed(() => (value.value - min) / (max - min));
 		>
 		<input
 			:id
-			class="absolute inset-0 opacity-0 cursor-col-resize"
+			class="absolute inset-0 opacity-0 cursor-col-resize appearance-none
+				[&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-px
+				[&::-moz-range-thumb]:w-px [&::-moz-range-thumb]:border-0"
 			v-model.number="value"
 			type="range"
 			:min

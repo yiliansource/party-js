@@ -16,6 +16,11 @@ import ShapesPlayground from "../../playground/shapes/ShapesPlayground.vue";
 	}}
 >
 	<div class="not-content" data-playground>
-		<ShapesPlayground client:only="vue" />
+		<ShapesPlayground client:only="vue">
+			<div
+				slot="fallback"
+				class="h-120 rounded-2xl bg-surface animate-pulse"
+			></div>
+		</ShapesPlayground>
 	</div>
 </StarlightPage>

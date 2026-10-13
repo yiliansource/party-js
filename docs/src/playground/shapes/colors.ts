@@ -10,7 +10,7 @@ export const PREVIEW_COLORS = [
 		value: "mixed",
 		label: "Mixed",
 		swatch: pie(MIXED),
-		colors: ["#ff5a5f", "#ffb400", "#00a699", "#7b61ff"],
+		colors: MIXED,
 	},
 	{ value: "coral", label: "Coral", swatch: "#ff5a5f", colors: ["#ff5a5f"] },
 	{

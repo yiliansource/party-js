@@ -1,4 +1,4 @@
-const c = {
+export const codeColors = {
 	fg: "#E8E8EC",
 	comment: "#8A8A94",
 	keyword: "#B6A6FF",
@@ -10,11 +10,14 @@ const c = {
 export const codeTheme = {
 	name: "party",
 	type: "dark",
-	colors: { "editor.background": "#111113", "editor.foreground": c.fg },
+	colors: {
+		"editor.background": "#111113",
+		"editor.foreground": codeColors.fg,
+	},
 	tokenColors: [
 		{
 			scope: ["comment", "punctuation.definition.comment"],
-			settings: { foreground: c.comment },
+			settings: { foreground: codeColors.comment },
 		},
 		{
 			scope: [
@@ -23,7 +26,7 @@ export const codeTheme = {
 				"keyword.operator.new",
 				"keyword.operator.expression",
 			],
-			settings: { foreground: c.keyword },
+			settings: { foreground: codeColors.keyword },
 		},
 		{
 			scope: [
@@ -31,15 +34,15 @@ export const codeTheme = {
 				"storage.type.function.arrow",
 				"keyword.operator.ternary",
 			],
-			settings: { foreground: c.fg },
+			settings: { foreground: codeColors.fg },
 		},
 		{
 			scope: ["entity.name.function", "support.function"],
-			settings: { foreground: c.fn },
+			settings: { foreground: codeColors.fn },
 		},
 		{
 			scope: ["string", "punctuation.definition.string"],
-			settings: { foreground: c.string },
+			settings: { foreground: codeColors.string },
 		},
 		{
 			scope: [
@@ -49,7 +52,7 @@ export const codeTheme = {
 				"support.type",
 				"entity.other.inherited-class",
 			],
-			settings: { foreground: c.value },
+			settings: { foreground: codeColors.value },
 		},
 	],
 };

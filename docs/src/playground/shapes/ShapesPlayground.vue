@@ -8,6 +8,7 @@ import PanelText from "../ui/PanelText.vue";
 import SwatchPicker from "../ui/SwatchPicker.vue";
 import SwitchField from "../ui/SwitchField.vue";
 import ActualSizeStrip from "./ActualSizeStrip.vue";
+import { shapeCode } from "./code.ts";
 import { PREVIEW_COLORS } from "./colors";
 import ShapePreviewStage from "./ShapePreviewStage.vue";
 import ShapeSettings from "./ShapeSettings.vue";
@@ -18,7 +19,10 @@ const draft = reactive(createDraft());
 const preview = reactive(createPreview());
 
 const shape = computed(() => toShape(draft));
-// const code = computed(() => shapeToCode(draft));
+const colors = computed(
+	() => PREVIEW_COLORS.find((c) => c.value === preview.color)?.colors ?? [],
+);
+const tokens = computed(() => shapeCode(draft));
 </script>
 
 <template>
@@ -29,7 +33,7 @@ const shape = computed(() => toShape(draft));
 				<ShapeSettings v-model="draft" />
 				<PanelText>
 					Need something these can't draw? A <code>custom</code> shape
-					allows you to draw shape using your own canvas code. See
+					allows you to draw shapes using your own canvas code. See
 					<a href="/guides/custom-shapes/">Custom shapes</a>.
 				</PanelText>
 			</Panel>
@@ -55,10 +59,21 @@ const shape = computed(() => toShape(draft));
 			</Panel>
 		</div>
 		<div class="flex flex-col gap-4">
-			<ShapePreviewStage />
+			<ShapePreviewStage
+				v-model:paused="preview.paused"
+				:shape
+				:colors
+				:size="preview.size"
+				:lighting="preview.lighting"
+			/>
 			<div class="flex flex-col gap-4 xl:flex-row">
-				<ActualSizeStrip />
-				<CodeBlock />
+				<ActualSizeStrip
+					:shape
+					:colors
+					:size="preview.size"
+					:lighting="preview.lighting"
+				/>
+				<CodeBlock :tokens="tokens" />
 			</div>
 		</div>
 	</div>

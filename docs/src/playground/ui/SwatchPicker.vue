@@ -17,7 +17,7 @@ const name = useId();
 </script>
 
 <template>
-	<fieldset class="p-0 mb-4">
+	<fieldset class="p-0">
 		<legend class="mb-2 text-sm font-semibold text-fg">{{ label }}</legend>
 		<span class="flex flex-row gap-2">
 			<label

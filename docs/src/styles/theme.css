@@ -14,6 +14,7 @@
 	--font-mono: "Geist Mono Variable", monospace;
 
 	--breakpoint-sl: 50rem;
+	--breakpoint-nav: 60rem;
 
 	--color-ink: #1a1a1a;
 	--color-mist: #f2f2f4;
@@ -65,7 +66,6 @@
 	--pj-field-line: var(--color-gray-700);
 	--pj-bar-fill: color-mix(in srgb, var(--color-accent-500) 24%, transparent);
 	--pj-bar-edge: var(--color-accent-500);
-
 	--pj-code-size: 13px;
 	--pj-code-pad: 14px;
 }
@@ -85,7 +85,7 @@
 	--pj-code-line: var(--color-gray-900);
 	--pj-field: var(--color-white);
 	--pj-field-line: #dcdce1;
-	--pj-bar-fill: color-mix(in srgb, var(--color-coral) 18%, transparent);
+	--pj-bar-fill: color-mix(in srgb, var(--color-accent-500) 18%, transparent);
 	--pj-bar-edge: var(--color-accent-600);
 }
 
@@ -101,6 +101,8 @@
 	--color-hover: var(--pj-hover);
 	--color-primary: var(--pj-primary);
 	--color-primary-fg: var(--pj-primary-fg);
+	--color-code-bg: var(--pj-code-bg);
+	--color-code-line: var(--pj-code-line);
 	--color-field: var(--pj-field);
 	--color-field-line: var(--pj-field-line);
 	--color-bar-fill: var(--pj-bar-fill);
