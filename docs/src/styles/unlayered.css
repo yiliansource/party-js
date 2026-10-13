@@ -38,3 +38,7 @@ live-demo {
 		display: none;
 	}
 }
+
+:root:has([data-playground]) {
+	--sl-content-width: 85rem;
+}

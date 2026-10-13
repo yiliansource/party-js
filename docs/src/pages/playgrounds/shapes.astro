@@ -1,0 +1,21 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+import { playgroundInformation } from "../../config/playgrounds";
+import ShapesPlayground from "../../playground/shapes/ShapesPlayground.vue";
+---
+
+<StarlightPage
+	frontmatter={{
+		title: playgroundInformation.shapes.title,
+		description: playgroundInformation.shapes.description,
+		template: "splash",
+		editUrl: false,
+		prev: false,
+		next: false,
+	}}
+>
+	<div class="not-content" data-playground>
+		<ShapesPlayground client:only="vue" />
+	</div>
+</StarlightPage>
