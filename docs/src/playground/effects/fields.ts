@@ -7,9 +7,10 @@ import {
 	type Sampler,
 } from "party-js";
 
-import { fn, plain, string, type Token, toText, value } from "../code";
-import { shapeLiteral } from "../shapes/code";
-import { toShape } from "../shapes/state";
+import { cleanToStep, snapToStep } from "../shared/number";
+import { shapeLiteral } from "../shared/shape/code";
+import { toParticleShape } from "../shared/shape/draft";
+import { fn, plain, string, type Token, toText, value } from "../shared/tokens";
 import type {
 	ColorsValue,
 	Field,
@@ -19,18 +20,13 @@ import type {
 	ShapesValue,
 } from "./schema";
 
-function round(n: number, step: number): number {
-	const decimals = (String(step).split(".")[1] ?? "").length;
-	return Number(n.toFixed(decimals));
-}
-
 export function numericOption(
 	field: NumericField,
 	v: NumericValue,
 ): Sampler<number> {
 	return v.form === "fixed"
-		? round(v.value, field.step)
-		: range(round(v.min, field.step), round(v.max, field.step));
+		? cleanToStep(v.value, field.step)
+		: range(cleanToStep(v.min, field.step), cleanToStep(v.max, field.step));
 }
 
 export function colorsOption(v: ColorsValue): string[] | Sampler<Color> {
@@ -45,7 +41,7 @@ export function colorsOption(v: ColorsValue): string[] | Sampler<Color> {
 }
 
 export function shapesOption(v: ShapesValue): ParticleShape[] {
-	return v.map(toShape);
+	return v.map(toParticleShape);
 }
 
 export function fieldOption(field: Field, v: FieldValue): unknown {
@@ -75,13 +71,16 @@ const list = <T>(items: T[], item: (x: T) => Token[]): Token[] =>
 
 function numericCode(field: NumericField, v: NumericValue): ValueCode {
 	if (v.form === "fixed")
-		return { tokens: [value(round(v.value, field.step))], imports: [] };
+		return {
+			tokens: [value(cleanToStep(v.value, field.step))],
+			imports: [],
+		};
 
 	return {
 		tokens: call("range", [
-			value(round(v.min, field.step)),
+			value(cleanToStep(v.min, field.step)),
 			plain(", "),
-			value(round(v.max, field.step)),
+			value(cleanToStep(v.max, field.step)),
 		]),
 		imports: ["range"],
 	};
@@ -142,15 +141,15 @@ export function isDefault(field: Field, v: FieldValue): boolean {
 
 export function toRange(field: NumericField, v: NumericValue): NumericValue {
 	if (v.form === "range") return v;
-	const gap = Math.max(
-		field.step,
-		round((field.max - field.min) / 10, field.step),
-	);
-	const min = Math.min(v.value, field.max - field.step);
+
+	const top = snapToStep(field.max, field);
+	const min = snapToStep(Math.min(v.value, top - field.step), field);
+	const max = snapToStep(min + (field.max - field.min) / 10, field);
+
 	return {
 		form: "range",
 		min,
-		max: Math.min(field.max, round(min + gap, field.step)),
+		max: max > min ? max : snapToStep(min + field.step, field),
 	};
 }
 

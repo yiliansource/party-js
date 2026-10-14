@@ -1,12 +1,43 @@
-import type { Effect, EffectTarget } from "party-js";
+import type {
+	Color,
+	Effect,
+	EffectTarget,
+	ParticleShape,
+	Sampler,
+} from "party-js";
 
-import type { ShapeDraft } from "../shapes/state";
+import type { ShapeDraft } from "../shared/shape/draft";
 
 /*
  * An effect's playground is described by data, not by components: each effect lists its options as fields, and one
  * generic editor renders any effect from that list. A field's value is plain JSON (a "draft"), so it can be compared,
  * stored in a URL and turned into both real options (to fire the effect) and code (to copy).
  */
+
+export const FIXED_OR_RANGE = ["fixed", "range"] as const;
+export const PALETTE_RANDOM_HUE_OR_GRADIENT = [
+	"palette",
+	"randomHue",
+	"gradient",
+] as const;
+
+export function fieldsFor<O>() {
+	type NumericKey = KeysAccepting<O, Sampler<number>>;
+	type ColorsKey = KeysAccepting<O, string[] | Sampler<Color>>;
+	type ShapesKey = KeysAccepting<O, ParticleShape[]>;
+
+	return {
+		numeric: (
+			field: Omit<NumericField<NumericKey>, "type">,
+		): NumericField<NumericKey> => ({ type: "numeric", ...field }),
+		colors: (
+			field: Omit<ColorsField<ColorsKey>, "type">,
+		): ColorsField<ColorsKey> => ({ type: "colors", ...field }),
+		shapes: (
+			field: Omit<ShapesField<ShapesKey>, "type">,
+		): ShapesField<ShapesKey> => ({ type: "shapes", ...field }),
+	};
+}
 
 export type NumericValue =
 	| { form: "fixed"; value: number }
@@ -52,7 +83,6 @@ export type Field<K extends string = string> =
 	| ColorsField<K>
 	| ShapesField<K>;
 export type FieldValue = Field["default"];
-export type ValueOf<F extends Field> = F["default"];
 
 export type KeysAccepting<O, T> = {
 	[K in keyof O]-?: T extends NonNullable<O[K]> ? K : never;

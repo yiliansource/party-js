@@ -2,6 +2,8 @@
 import { MinusIcon, PlusIcon } from "@lucide/vue";
 import { useId } from "vue";
 
+import { snapToStep } from "../number";
+
 const value = defineModel<number>({ required: true });
 const {
 	label,
@@ -17,14 +19,13 @@ const {
 
 const id = useId();
 
-const clamp = (n: number) =>
-	Math.min(max, Math.max(min, min + Math.round((n - min) / step) * step));
+const clampAndSnap = (v: number) => snapToStep(v, { min, max, step });
 
 function commit(event: Event) {
 	const input = event.target as HTMLInputElement;
 	const next = Number.isNaN(input.valueAsNumber)
 		? value.value
-		: clamp(input.valueAsNumber);
+		: clampAndSnap(input.valueAsNumber);
 	value.value = next;
 	input.value = String(next);
 }
@@ -57,7 +58,7 @@ const buttonClass =
 				tabindex="-1"
 				:aria-label="`Decrease ${label}`"
 				:disabled="value <= min"
-				@click="value = clamp(value - step)"
+				@click="value = clampAndSnap(value - step)"
 				:class="buttonClass"
 				@touchstart.passive="noop"
 			>
@@ -81,7 +82,7 @@ const buttonClass =
 				tabindex="-1"
 				:aria-label="`Increase ${label}`"
 				:disabled="value >= max"
-				@click="value = clamp(value + step)"
+				@click="value = clampAndSnap(value + step)"
 				:class="buttonClass"
 				@touchstart.passive="noop"
 			>

@@ -2,8 +2,8 @@
 import { CheckIcon, CopyIcon } from "@lucide/vue";
 import { computed, ref } from "vue";
 
-import { codeColors } from "../../brand/code-theme.mjs";
-import { comment as commentToken, plain, type Token, toText } from "../code";
+import { codeColors } from "../../../brand/code-theme.mjs";
+import { comment as commentToken, plain, type Token, toText } from "../tokens";
 
 const { file, comment, tokens } = defineProps<{
 	file?: string;

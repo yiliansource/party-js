@@ -1,35 +1,14 @@
-import {
-	type Color,
-	type ConfettiOptions,
-	confetti,
-	type ParticleShape,
-	type Sampler,
-} from "party-js";
+import { type ConfettiOptions, confetti } from "party-js";
 
-import { createDraft as createShapeDraft } from "../../shapes/state";
-import type {
-	ColorsField,
-	EffectDefinition,
-	KeysAccepting,
-	NumericField,
-	ShapesField,
+import { createShapeDraft } from "../../shared/shape/draft";
+import {
+	type EffectDefinition,
+	FIXED_OR_RANGE,
+	fieldsFor,
+	PALETTE_RANDOM_HUE_OR_GRADIENT,
 } from "../schema";
 
-type NumericKey = KeysAccepting<ConfettiOptions, Sampler<number>>;
-type ColorsKey = KeysAccepting<ConfettiOptions, string[] | Sampler<Color>>;
-type ShapesKey = KeysAccepting<ConfettiOptions, ParticleShape[]>;
-
-const numeric = (
-	field: Omit<NumericField<NumericKey>, "type">,
-): NumericField<NumericKey> => ({ type: "numeric", ...field });
-const colors = (
-	field: Omit<ColorsField<ColorsKey>, "type">,
-): ColorsField<ColorsKey> => ({ type: "colors", ...field });
-const shapes = (
-	field: Omit<ShapesField<ShapesKey>, "type">,
-): ShapesField<ShapesKey> => ({ type: "shapes", ...field });
-
-const BOTH = ["fixed", "range"] as const;
+const { numeric, colors, shapes } = fieldsFor<ConfettiOptions>();
 
 export const confettiDefinition = {
 	id: "confetti",
@@ -48,7 +27,7 @@ export const confettiDefinition = {
 			min: 1,
 			max: 200,
 			step: 1,
-			forms: BOTH,
+			forms: FIXED_OR_RANGE,
 			default: { form: "range", min: 20, max: 40 },
 		}),
 		numeric({
@@ -60,7 +39,7 @@ export const confettiDefinition = {
 			max: 360,
 			step: 1,
 			unit: "°",
-			forms: BOTH,
+			forms: FIXED_OR_RANGE,
 			default: { form: "fixed", value: 90 },
 		}),
 		numeric({
@@ -71,7 +50,7 @@ export const confettiDefinition = {
 			max: 180,
 			step: 1,
 			unit: "°",
-			forms: BOTH,
+			forms: FIXED_OR_RANGE,
 			default: { form: "fixed", value: 45 },
 		}),
 		numeric({
@@ -82,7 +61,7 @@ export const confettiDefinition = {
 			max: 2000,
 			step: 10,
 			unit: "px/s",
-			forms: BOTH,
+			forms: FIXED_OR_RANGE,
 			default: { form: "range", min: 300, max: 600 },
 		}),
 		numeric({
@@ -116,7 +95,7 @@ export const confettiDefinition = {
 			max: 10,
 			step: 0.1,
 			unit: "s",
-			forms: BOTH,
+			forms: FIXED_OR_RANGE,
 			default: { form: "range", min: 2, max: 4 },
 		}),
 		numeric({
@@ -127,14 +106,14 @@ export const confettiDefinition = {
 			max: 40,
 			step: 1,
 			unit: "px",
-			forms: BOTH,
+			forms: FIXED_OR_RANGE,
 			default: { form: "range", min: 6, max: 16 },
 		}),
 		colors({
 			key: "colors",
 			label: "Colors",
 			group: "look",
-			forms: ["randomHue", "palette", "gradient"],
+			forms: PALETTE_RANDOM_HUE_OR_GRADIENT,
 			default: { form: "randomHue", l: 0.65, c: 0.15 },
 		}),
 		shapes({

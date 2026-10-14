@@ -1,4 +1,4 @@
-import { fn, keyword, plain, string, type Token } from "../code";
+import { fn, keyword, plain, string, type Token } from "../shared/tokens";
 import { fieldCode, fieldOption, isDefault } from "./fields";
 import type { EffectDefinition, EffectDraft } from "./schema";
 

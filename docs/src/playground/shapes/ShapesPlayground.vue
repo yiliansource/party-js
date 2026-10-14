@@ -1,24 +1,24 @@
 <script setup lang="ts">
 import { computed, reactive } from "vue";
 
-import BarField from "../ui/BarField.vue";
-import CodeBlock from "../ui/CodeBlock.vue";
-import Panel from "../ui/Panel.vue";
-import PanelText from "../ui/PanelText.vue";
-import SwatchPicker from "../ui/SwatchPicker.vue";
-import SwitchField from "../ui/SwitchField.vue";
+import { createShapeDraft, toParticleShape } from "../shared/shape/draft.ts";
+import ShapeEditor from "../shared/shape/ShapeEditor.vue";
+import BarField from "../shared/ui/BarField.vue";
+import CodeBlock from "../shared/ui/CodeBlock.vue";
+import Panel from "../shared/ui/Panel.vue";
+import PanelText from "../shared/ui/PanelText.vue";
+import SwatchPicker from "../shared/ui/SwatchPicker.vue";
+import SwitchField from "../shared/ui/SwitchField.vue";
 import ActualSizeStrip from "./ActualSizeStrip.vue";
-import { shapeCode } from "./code";
+import { shapeCode } from "./code.ts";
 import { PREVIEW_COLORS } from "./colors";
 import ShapePreviewStage from "./ShapePreviewStage.vue";
-import ShapeSettings from "./ShapeSettings.vue";
-import ShapeTypePicker from "./ShapeTypePicker.vue";
-import { createDraft, createPreview, toShape } from "./state";
+import { createPreview } from "./state";
 
-const draft = reactive(createDraft());
+const draft = reactive(createShapeDraft());
 const preview = reactive(createPreview());
 
-const shape = computed(() => toShape(draft));
+const shape = computed(() => toParticleShape(draft));
 const colors = computed(
 	() => PREVIEW_COLORS.find((c) => c.value === preview.color)?.colors ?? [],
 );
@@ -31,8 +31,7 @@ const tokens = computed(() => shapeCode(draft));
 	>
 		<div class="flex flex-col gap-4">
 			<Panel title="Shape">
-				<ShapeTypePicker v-model="draft.type" />
-				<ShapeSettings v-model="draft" />
+				<ShapeEditor :draft="draft" />
 				<PanelText>
 					Need something these can't draw? A <code>custom</code> shape
 					allows you to draw shapes using your own canvas code. See

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import PanelText from "../ui/PanelText.vue";
+import type { ShapeDraft } from "./draft.ts";
 import PathSettings from "./PathSettings.vue";
 import PolygonSettings from "./PolygonSettings.vue";
 import SquareSettings from "./SquareSettings.vue";
 import StarSettings from "./StarSettings.vue";
-import type { ShapeDraft } from "./state";
 
-const draft = defineModel<ShapeDraft>({ required: true });
+const { draft } = defineProps<{ draft: ShapeDraft }>();
 </script>
 
 <template>

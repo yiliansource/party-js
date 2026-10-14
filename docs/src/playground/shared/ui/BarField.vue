@@ -1,5 +1,8 @@
 <script setup lang="ts">
+import { clamp01 } from "party-js/internal/math/scalar";
 import { computed, useId } from "vue";
+
+import { snapToStep } from "../number";
 
 const value = defineModel<number>({ required: true });
 const {
@@ -22,9 +25,8 @@ const fraction = computed(() => (value.value - min) / (max - min));
 // the value under a pointer: anywhere on the bar, rounded to the step and kept within bounds */
 function valueAt(bar: HTMLElement, clientX: number) {
 	const rect = bar.getBoundingClientRect();
-	const f = Math.min(1, Math.max(0, (clientX - rect.left) / rect.width));
-	const stepped = min + Math.round((f * (max - min)) / step) * step;
-	return Math.min(max, Math.max(min, stepped));
+	const f = clamp01((clientX - rect.left) / rect.width);
+	return snapToStep(min + f * (max - min), { min, max, step });
 }
 
 // the value before the current drag, so a drag that turns into a scroll can be undone
@@ -76,7 +78,7 @@ function onPointerCancel() {
 			></span>
 		</div>
 		<label
-			class="absolute left-3 text-sm font-semibold text-fg"
+			class="absolute left-3 text-sm font-semibold text-fg pointer-events-none"
 			:for="id"
 			>{{
 				label

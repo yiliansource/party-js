@@ -1,6 +1,6 @@
 <!-- biome-ignore-all lint/a11y/useAriaPropsForRole: a native checkbox exposes its checked state itself; aria-checked would duplicate it -->
 <script setup lang="ts">
-import { switchClass } from "../../components/switch";
+import { switchClass } from "../../../components/switch";
 
 const checked = defineModel<boolean>({ required: true });
 const { label, disabled = false } = defineProps<{

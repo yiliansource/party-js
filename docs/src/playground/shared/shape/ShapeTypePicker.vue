@@ -5,9 +5,9 @@ import { squarePath } from "party-js/internal/shapes/square";
 import { starPath } from "party-js/internal/shapes/star";
 import { useId } from "vue";
 
+import { HEART_PATH_D } from "../defaults.ts";
 import ShapeIcon from "../ui/ShapeIcon.vue";
-import { HEART_PATH_D } from "./shapes";
-import type { ShapeType } from "./state";
+import type { ShapeType } from "./draft.ts";
 
 interface ShapeOption {
 	type: ShapeType;

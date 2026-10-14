@@ -1,4 +1,4 @@
-import type { codeColors } from "../brand/code-theme.mjs";
+import type { codeColors } from "../../brand/code-theme.mjs";
 
 export type TokenKind = keyof typeof codeColors;
 export interface Token {
@@ -9,6 +9,7 @@ export interface Token {
 const token =
 	(kind: TokenKind) =>
 	(text: string | number): Token => ({ kind, text: String(text) });
+
 export const plain = token("fg");
 export const keyword = token("keyword");
 export const value = token("value");

@@ -3,7 +3,7 @@ import {
 	type ButtonSize,
 	type ButtonVariant,
 	buttonClass,
-} from "../../components/button";
+} from "../../../components/button";
 
 const {
 	label,

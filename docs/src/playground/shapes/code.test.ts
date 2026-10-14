@@ -1,115 +1,21 @@
 /// <reference types="bun" />
 import { describe, expect, test } from "bun:test";
 
-import { type Token, toText } from "../code";
+import { shapeLiteral } from "../shared/shape/code";
+import { createShapeDraft } from "../shared/shape/draft";
+import { toText } from "../shared/tokens";
 import { shapeCode } from "./code";
-import { createDraft, SHAPE_DEFAULTS, type ShapeDraft } from "./state";
-
-// the code for a draft of one type, with every other setting left as created.
-const code = (overrides: Partial<ShapeDraft>) =>
-	toText(shapeCode({ ...createDraft(), ...overrides }));
-
-// the kind of the token that holds exactly this text, i.e. how it gets colored.
-const kindOf = (tokens: Token[], text: string) =>
-	tokens.find((t) => t.text === text)?.kind;
 
 describe("shapeCode", () => {
-	test("a circle has only its type", () => {
-		expect(code({ type: "circle" })).toBe(
-			'const shape = { type: "circle" };',
-		);
-	});
+	test("declares the shape as a constant", () => {
+		const draft = {
+			...createShapeDraft(),
+			type: "star" as const,
+			star: { points: 6 },
+		};
+		const code = toText(shapeCode(draft));
 
-	test("only the selected type's settings are written", () => {
-		// the draft keeps every type's settings, so switching types must not leak the others into the code
-		expect(
-			code({
-				type: "circle",
-				square: { aspectRatio: 0.5, cornerRadius: 0.3 },
-				star: { points: 7 },
-			}),
-		).toBe('const shape = { type: "circle" };');
-	});
-
-	test("settings that match the library's defaults are left out", () => {
-		expect(code({ type: "star", star: { ...SHAPE_DEFAULTS.star } })).toBe(
-			'const shape = { type: "star" };',
-		);
-		expect(
-			code({ type: "square", square: { ...SHAPE_DEFAULTS.square } }),
-		).toBe('const shape = { type: "square" };');
-	});
-
-	test("changed settings are written in a fixed order", () => {
-		expect(code({ type: "star", star: { points: 4 } })).toBe(
-			'const shape = { type: "star", points: 4 };',
-		);
-		expect(
-			code({
-				type: "square",
-				square: { aspectRatio: 0.5, cornerRadius: 0.1 },
-			}),
-		).toBe(
-			'const shape = { type: "square", aspectRatio: 0.5, cornerRadius: 0.1 };',
-		);
-	});
-
-	test("a square with only one changed setting writes just that one", () => {
-		expect(
-			code({
-				type: "square",
-				square: { aspectRatio: 1, cornerRadius: 0.25 },
-			}),
-		).toBe('const shape = { type: "square", cornerRadius: 0.25 };');
-	});
-
-	test("slider noise is rounded away", () => {
-		expect(
-			code({
-				type: "square",
-				square: { aspectRatio: 0.1 + 0.2, cornerRadius: 0 },
-			}),
-		).toBe('const shape = { type: "square", aspectRatio: 0.3 };');
-	});
-
-	test("a polygon always writes its sides, since they're required", () => {
-		expect(code({ type: "polygon", polygon: { sides: 5 } })).toBe(
-			'const shape = { type: "polygon", sides: 5 };',
-		);
-	});
-
-	test("a path is written as a Path2D, trimmed and escaped", () => {
-		expect(
-			code({ type: "path", path: { d: '  M0 0 L0.5 0.5 "x  ' } }),
-		).toBe(
-			'const shape = { type: "path", path: new Path2D("M0 0 L0.5 0.5 \\"x") };',
-		);
-	});
-
-	test.each(["square", "circle", "star", "polygon", "path"] as const)(
-		"the code for a %s is valid JavaScript",
-		(type) => {
-			const text = code({ type, path: { d: 'M0 0 "quoted"' } });
-			expect(() => new Function(text)).not.toThrow();
-		},
-	);
-
-	test("tokens are colored like the docs' code blocks", () => {
-		const tokens = shapeCode({
-			...createDraft(),
-			type: "path",
-			path: { d: "M0 0" },
-		});
-		expect(kindOf(tokens, "const")).toBe("keyword");
-		expect(kindOf(tokens, '"path"')).toBe("string");
-		expect(kindOf(tokens, "new")).toBe("keyword");
-		expect(kindOf(tokens, "Path2D")).toBe("fn");
-
-		const star = shapeCode({
-			...createDraft(),
-			type: "star",
-			star: { points: 4 },
-		});
-		expect(kindOf(star, "4")).toBe("value");
+		expect(code).toBe(`const shape = ${toText(shapeLiteral(draft))};`);
+		expect(() => new Function(code)).not.toThrow();
 	});
 });

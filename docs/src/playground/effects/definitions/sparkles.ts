@@ -1,28 +1,13 @@
-import {
-	type Color,
-	type Sampler,
-	type SparkleOptions,
-	sparkles,
-} from "party-js";
+import { type SparkleOptions, sparkles } from "party-js";
 
-import type {
-	ColorsField,
-	EffectDefinition,
-	KeysAccepting,
-	NumericField,
+import {
+	type EffectDefinition,
+	FIXED_OR_RANGE,
+	fieldsFor,
+	PALETTE_RANDOM_HUE_OR_GRADIENT,
 } from "../schema";
 
-type NumericKey = KeysAccepting<SparkleOptions, Sampler<number>>;
-type ColorsKey = KeysAccepting<SparkleOptions, string[] | Sampler<Color>>;
-
-const numeric = (
-	field: Omit<NumericField<NumericKey>, "type">,
-): NumericField<NumericKey> => ({ type: "numeric", ...field });
-const colors = (
-	field: Omit<ColorsField<ColorsKey>, "type">,
-): ColorsField<ColorsKey> => ({ type: "colors", ...field });
-
-const BOTH = ["fixed", "range"] as const;
+const { numeric, colors } = fieldsFor<SparkleOptions>();
 
 export const sparklesDefinition = {
 	id: "sparkles",
@@ -41,7 +26,7 @@ export const sparklesDefinition = {
 			min: 1,
 			max: 200,
 			step: 1,
-			forms: BOTH,
+			forms: FIXED_OR_RANGE,
 			default: { form: "range", min: 20, max: 40 },
 		}),
 		numeric({
@@ -52,7 +37,7 @@ export const sparklesDefinition = {
 			max: 2000,
 			step: 10,
 			unit: "px/s",
-			forms: BOTH,
+			forms: FIXED_OR_RANGE,
 			default: { form: "range", min: 150, max: 250 },
 		}),
 		numeric({
@@ -63,7 +48,7 @@ export const sparklesDefinition = {
 			max: 40,
 			step: 1,
 			unit: "px",
-			forms: BOTH,
+			forms: FIXED_OR_RANGE,
 			default: { form: "range", min: 16, max: 22 },
 		}),
 		numeric({
@@ -74,14 +59,14 @@ export const sparklesDefinition = {
 			max: 10,
 			step: 0.1,
 			unit: "s",
-			forms: BOTH,
+			forms: FIXED_OR_RANGE,
 			default: { form: "range", min: 0.5, max: 1 },
 		}),
 		colors({
 			key: "colors",
 			label: "Colors",
 			group: "look",
-			forms: ["randomHue", "palette", "gradient"],
+			forms: PALETTE_RANDOM_HUE_OR_GRADIENT,
 			default: {
 				form: "gradient",
 				colors: ["oklch(0.7 0.15 70)", "oklch(0.95 0.15 70)"],

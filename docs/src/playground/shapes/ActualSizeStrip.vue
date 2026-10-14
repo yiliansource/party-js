@@ -3,9 +3,9 @@ import { color, type ParticleShape } from "party-js";
 import * as quat from "party-js/internal/math/quat";
 import { computed, useTemplateRef } from "vue";
 
-import { confettiLighting, noLighting } from "../render/lighting";
-import { previewParticle } from "../render/previewParticle";
-import { useParticleCanvas } from "../render/useParticleCanvas";
+import { confettiLighting, noLighting } from "../shared/render/lighting";
+import { previewParticle } from "../shared/render/previewParticle";
+import { useParticleCanvas } from "../shared/render/useParticleCanvas";
 
 const { shape, colors, size, lighting } = defineProps<{
 	shape: ParticleShape;
