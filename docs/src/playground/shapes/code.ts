@@ -55,14 +55,23 @@ function shapeEntries(draft: ShapeDraft): Entry[] {
 	}
 }
 
-export function shapeCode(draft: ShapeDraft): Token[] {
+/** A shape as an object literal, e.g. `{ type: "star", points: 6 }`, with default values left out. */
+export function shapeLiteral(draft: ShapeDraft): Token[] {
 	return [
-		keyword("const"),
-		plain(" shape = { "),
+		plain("{ "),
 		...shapeEntries(draft).flatMap(([key, tokens], i) => [
 			plain(`${i ? ", " : ""}${key}: `),
 			...tokens,
 		]),
-		plain(" };"),
+		plain(" }"),
+	];
+}
+
+export function shapeCode(draft: ShapeDraft): Token[] {
+	return [
+		keyword("const"),
+		plain(" shape = "),
+		...shapeLiteral(draft),
+		plain(";"),
 	];
 }
