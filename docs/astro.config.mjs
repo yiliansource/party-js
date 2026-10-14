@@ -94,6 +94,10 @@ export default defineConfig({
 					items: [{ autogenerate: { directory: "guides" } }],
 				},
 				{
+					label: sections.playground.label,
+					items: [{ label: "Shapes", link: "/playgrounds/shapes/" }],
+				},
+				{
 					label: sections.reference.label,
 					items: [
 						{

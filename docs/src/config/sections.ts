@@ -39,7 +39,7 @@ export const sections = {
 		glyph: "tile",
 	},
 	playground: {
-		label: "Playground",
+		label: "Playgrounds",
 		folder: "playgrounds",
 		accent: "#7B61FF",
 		glyph: "square",

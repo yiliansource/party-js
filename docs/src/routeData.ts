@@ -30,9 +30,12 @@ export const onRequest = defineRouteMiddleware(({ locals, site: siteUrl }) => {
 		);
 	}
 
-	if (route.id === "") {
+	// pages without a sidebar get no mobile menu, so these get one too, with the sidebar being hidden on wider screens
+	if (route.id === "" || route.id.startsWith("playgrounds/")) {
 		route.hasSidebar = true;
+	}
 
+	if (route.id === "") {
 		const title = route.head.find((tag) => tag.tag === "title");
 		if (title) title.content = `${site.name} — ${site.tagline}`;
 	}

@@ -26,7 +26,9 @@ const tokens = computed(() => shapeCode(draft));
 </script>
 
 <template>
-	<div class="grid grid-cols-1 md:grid-cols-[340px_1fr] gap-y-4 gap-x-6">
+	<div
+		class="grid grid-cols-1 md:grid-cols-[340px_minmax(0,1fr)] gap-y-4 gap-x-6 touch-manipulation"
+	>
 		<div class="flex flex-col gap-4">
 			<Panel title="Shape">
 				<ShapeTypePicker v-model="draft.type" />

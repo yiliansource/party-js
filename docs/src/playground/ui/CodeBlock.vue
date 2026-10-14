@@ -36,7 +36,7 @@ async function copyToClipboard() {
 </script>
 
 <template>
-	<div class="w-full bg-code-bg border border-code-line rounded-2xl">
+	<div class="w-full min-w-0 bg-code-bg border border-code-line rounded-2xl">
 		<div
 			class="h-11 flex flex-row items-center border-b border-code-line"
 			:style="{ color: codeColors.comment }"
@@ -57,7 +57,7 @@ async function copyToClipboard() {
 			</button>
 		</div>
 		<pre
-			class="py-3 px-4 text-sm font-mono leading-6 whitespace-pre-wrap"
+			class="py-3 px-4 text-sm font-mono leading-6 whitespace-pre overflow-x-auto"
 		><span v-for="(token, index) in allTokens" :key="index" :style="{ color: codeColors[token.kind] }">{{
 			token.text
 		}}</span></pre>
