@@ -41,4 +41,15 @@ live-demo {
 
 :root:has([data-playground]) {
 	--sl-content-width: 85rem;
+	--sl-content-pad-x: 1rem;
+}
+@variant sl {
+	:root:has([data-playground]) {
+		--sl-content-inline-start: 0rem;
+	}
+}
+@media (min-width: 72rem) {
+	:root:has([data-playground]) {
+		--sl-content-pad-x: 1.5rem;
+	}
 }

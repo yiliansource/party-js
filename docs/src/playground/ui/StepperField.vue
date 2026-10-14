@@ -36,8 +36,11 @@ function jumpToBound(event: KeyboardEvent) {
 	event.preventDefault();
 }
 
+// iOS Safari only applies :active to an element (or its ancestor) that has a touchstart listener.
+const noop = () => {};
+
 const buttonClass =
-	"grid place-content-center w-9 h-full not-disabled:cursor-pointer not-disabled:hover:bg-raised rounded-xl";
+	"grid place-content-center w-9 h-full touch-manipulation not-disabled:cursor-pointer not-disabled:hover:bg-hover not-disabled:active:bg-line-strong rounded-xl";
 </script>
 
 <template>
@@ -56,6 +59,7 @@ const buttonClass =
 				:disabled="value <= min"
 				@click="value = clamp(value - step)"
 				:class="buttonClass"
+				@touchstart.passive="noop"
 			>
 				<MinusIcon :size="16" />
 			</button>
@@ -79,6 +83,7 @@ const buttonClass =
 				:disabled="value >= max"
 				@click="value = clamp(value + step)"
 				:class="buttonClass"
+				@touchstart.passive="noop"
 			>
 				<PlusIcon :size="16" />
 			</button>

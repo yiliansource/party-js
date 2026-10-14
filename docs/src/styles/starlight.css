@@ -21,7 +21,9 @@
 	border-top: none;
 }
 
-:root[data-has-sidebar] .content-panel .sl-container {
+:root[data-has-sidebar]:not(:has([data-playground]))
+	.content-panel
+	.sl-container {
 	margin: 0;
 	max-width: unset;
 }
@@ -88,7 +90,8 @@ site-search button[data-open-modal] {
 	}
 }
 @variant sl {
-	html[data-has-hero] .sidebar-pane {
+	html[data-has-hero] .sidebar-pane,
+	html:has([data-playground]) .sidebar-pane {
 		display: none;
 	}
 }
