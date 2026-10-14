@@ -6,3 +6,12 @@ a:not(.not-content *) {
 	font-weight: 500;
 	text-underline-offset: 3px;
 }
+
+button,
+input,
+select,
+textarea {
+	font: inherit;
+	letter-spacing: inherit;
+	color: inherit;
+}
