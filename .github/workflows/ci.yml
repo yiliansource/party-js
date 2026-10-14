@@ -76,6 +76,7 @@ jobs:
             - uses: oven-sh/setup-bun@v2
             - run: bun install --frozen-lockfile
             - run: bun install --frozen-lockfile --cwd docs
+            - run: bun run --cwd docs test
             - run: bun run --cwd docs check
             - run: bun run --cwd docs build
             - uses: actions/upload-artifact@v7
