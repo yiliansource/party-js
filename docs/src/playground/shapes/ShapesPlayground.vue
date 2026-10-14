@@ -15,7 +15,7 @@ import { PREVIEW_COLORS } from "./colors";
 import ShapePreviewStage from "./ShapePreviewStage.vue";
 import { createPreview } from "./state";
 
-const draft = reactive(createShapeDraft());
+const draft = reactive(createShapeDraft("star"));
 const preview = reactive(createPreview());
 
 const shape = computed(() => toParticleShape(draft));
@@ -59,13 +59,14 @@ const tokens = computed(() => shapeCode(draft));
 				<SwitchField v-model="preview.lighting" label="Lighting" />
 			</Panel>
 		</div>
-		<div class="flex flex-col gap-4">
+		<div class="contents md:flex md:flex-col md:gap-4">
 			<ShapePreviewStage
 				v-model:paused="preview.paused"
 				:shape
 				:colors
 				:size="preview.size"
 				:lighting="preview.lighting"
+				class="order-first md:order-0"
 			/>
 			<div class="flex flex-col gap-4 xl:flex-row">
 				<ActualSizeStrip

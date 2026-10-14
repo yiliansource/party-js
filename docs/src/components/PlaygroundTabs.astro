@@ -1,0 +1,15 @@
+---
+import { playgroundInformation } from "../config/playgrounds";
+
+interface Props {
+	active: NonNullable<App.Locals["playground"]>;
+}
+
+const { active } = Astro.props;
+---
+
+<div class="flex flex-row gap-3">
+	{Object.entries(playgroundInformation).map(([key, p]) => <span>
+        <a class:list={[key === active && "font-bold"]} href={`/${p.slug}/`}>{p.title}</a>
+    </span>)}
+</div>

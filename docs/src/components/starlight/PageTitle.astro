@@ -3,6 +3,7 @@ import { kindLabel, referenceGroupOf } from "../../config/reference";
 import { sectionOf, sections } from "../../config/sections";
 import { splitIdentifier } from "../../utils/identifiers";
 import Glyph from "../Glyph.astro";
+import PlaygroundTabs from "../PlaygroundTabs.astro";
 
 const entry = Astro.locals.starlightRoute.entry;
 const { title, description, reference } = entry.data;
@@ -11,10 +12,12 @@ const section = !Astro.locals.isNotFound ? sectionOf(entry.id) : null;
 const sectionData = section !== null ? sections[section] : null;
 const referenceGroup =
 	reference !== undefined ? referenceGroupOf(entry.id) : null;
+const playground = Astro.locals.playground;
 ---
 
-<div class="mt-4 flex flex-col">
-	{sectionData !== null && (
+<div class="flex flex-col gap-4 lg:flex-row">
+	<div class="mt-4 flex flex-col">
+		{sectionData !== null && (
 	    <p class="mb-3 flex flex-row flex-wrap items-center gap-x-2 gap-y-3 font-mono text-sm tracking-wider text-subtle uppercase">
 	    	<Glyph
 	    		key={sectionData.glyph}
@@ -33,11 +36,15 @@ const referenceGroup =
 	    	)}
 	    </p>
     )}
-	<h1
-		id="_top"
-		class:list={["text-fg text-4xl sm:text-5xl wrap-break-word scroll-mt-[100vh]", reference && "font-mono"]}
-	>
-		{titleParts.map((part, i) => <>{i > 0 && <wbr />}{part}</>)}
-	</h1>
-	{description && <p class="mt-5 text-xl text-muted">{description}</p>}
+		<h1
+			id="_top"
+			class:list={["text-fg text-4xl sm:text-5xl wrap-break-word scroll-mt-[100vh]", reference && "font-mono"]}
+		>
+			{titleParts.map((part, i) => <>{i > 0 && <wbr />}{part}</>)}
+		</h1>
+		{description && <p class="mt-5 text-xl text-muted">{description}</p>}
+	</div>
+	{playground && <div class="ml-auto mt-auto">
+		<PlaygroundTabs active={playground} />
+	</div>}
 </div>
