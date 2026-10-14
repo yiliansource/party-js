@@ -1,4 +1,4 @@
-import { prefersReductionMotion } from "../shared/preference";
+import { prefersReducedMotion } from "../shared/preference";
 import type { PreviewColor } from "./colors";
 
 export interface PreviewSettings {
@@ -14,5 +14,5 @@ export const createPreview = (): PreviewSettings => ({
 	size: 16,
 	lighting: true,
 	background: "page",
-	paused: prefersReductionMotion(),
+	paused: prefersReducedMotion(),
 });

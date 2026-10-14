@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { readFileSync } from "node:fs";
 
+import { snapToStep } from "../../shared/number";
 import { toText } from "../../shared/tokens";
 import { createEffectDraft, effectCode } from "../effect";
 import { fieldCode } from "../fields";
@@ -23,7 +24,7 @@ describe.each(cases)("$definition.call", ({ definition, source }) => {
 		);
 		if (!match)
 			throw new Error(
-				`no @defaultValue found for ConfettiOptions.${key}`,
+				`no @defaultValue found for ${definition.call}()'s option "${key}"`,
 			);
 
 		return match[1].trim();
@@ -64,8 +65,7 @@ describe.each(cases)("$definition.call", ({ definition, source }) => {
 					? [f.default.value]
 					: [f.default.min, f.default.max];
 
-			for (const v of values)
-				expect(v).toBeWithin(f.min, f.max + Number.EPSILON);
+			for (const v of values) expect(snapToStep(v, f)).toBe(v);
 		}
 	});
 });

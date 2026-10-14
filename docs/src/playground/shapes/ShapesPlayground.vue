@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive } from "vue";
 
-import { createShapeDraft, toParticleShape } from "../shared/shape/draft.ts";
+import { createShapeDraft, toParticleShape } from "../shared/shape/draft";
 import ShapeEditor from "../shared/shape/ShapeEditor.vue";
 import BarField from "../shared/ui/BarField.vue";
 import CodeBlock from "../shared/ui/CodeBlock.vue";
@@ -10,7 +10,7 @@ import PanelText from "../shared/ui/PanelText.vue";
 import SwatchPicker from "../shared/ui/SwatchPicker.vue";
 import SwitchField from "../shared/ui/SwitchField.vue";
 import ActualSizeStrip from "./ActualSizeStrip.vue";
-import { shapeCode } from "./code.ts";
+import { shapeCode } from "./code";
 import { PREVIEW_COLORS } from "./colors";
 import ShapePreviewStage from "./ShapePreviewStage.vue";
 import { createPreview } from "./state";

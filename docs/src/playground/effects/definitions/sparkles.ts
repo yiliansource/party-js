@@ -1,10 +1,10 @@
 import { type SparkleOptions, sparkles } from "party-js";
 
 import {
+	COLOR_FORMS,
 	type EffectDefinition,
-	FIXED_OR_RANGE,
 	fieldsFor,
-	PALETTE_RANDOM_HUE_OR_GRADIENT,
+	NUMERIC_FORMS,
 } from "../schema";
 
 const { numeric, colors } = fieldsFor<SparkleOptions>();
@@ -26,7 +26,7 @@ export const sparklesDefinition = {
 			min: 1,
 			max: 200,
 			step: 1,
-			forms: FIXED_OR_RANGE,
+			forms: NUMERIC_FORMS,
 			default: { form: "range", min: 20, max: 40 },
 		}),
 		numeric({
@@ -37,7 +37,7 @@ export const sparklesDefinition = {
 			max: 2000,
 			step: 10,
 			unit: "px/s",
-			forms: FIXED_OR_RANGE,
+			forms: NUMERIC_FORMS,
 			default: { form: "range", min: 150, max: 250 },
 		}),
 		numeric({
@@ -48,7 +48,7 @@ export const sparklesDefinition = {
 			max: 40,
 			step: 1,
 			unit: "px",
-			forms: FIXED_OR_RANGE,
+			forms: NUMERIC_FORMS,
 			default: { form: "range", min: 16, max: 22 },
 		}),
 		numeric({
@@ -59,14 +59,14 @@ export const sparklesDefinition = {
 			max: 10,
 			step: 0.1,
 			unit: "s",
-			forms: FIXED_OR_RANGE,
+			forms: NUMERIC_FORMS,
 			default: { form: "range", min: 0.5, max: 1 },
 		}),
 		colors({
 			key: "colors",
 			label: "Colors",
 			group: "look",
-			forms: PALETTE_RANDOM_HUE_OR_GRADIENT,
+			forms: COLOR_FORMS,
 			default: {
 				form: "gradient",
 				colors: ["oklch(0.7 0.15 70)", "oklch(0.95 0.15 70)"],

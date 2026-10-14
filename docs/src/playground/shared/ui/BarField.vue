@@ -22,7 +22,7 @@ const {
 const id = useId();
 const fraction = computed(() => (value.value - min) / (max - min));
 
-// the value under a pointer: anywhere on the bar, rounded to the step and kept within bounds */
+// the value under a pointer: anywhere on the bar, rounded to the step and kept within bounds
 function valueAt(bar: HTMLElement, clientX: number) {
 	const rect = bar.getBoundingClientRect();
 	const f = clamp01((clientX - rect.left) / rect.width);

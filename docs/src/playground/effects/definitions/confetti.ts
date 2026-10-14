@@ -2,10 +2,10 @@ import { type ConfettiOptions, confetti } from "party-js";
 
 import { createShapeDraft } from "../../shared/shape/draft";
 import {
+	COLOR_FORMS,
 	type EffectDefinition,
-	FIXED_OR_RANGE,
 	fieldsFor,
-	PALETTE_RANDOM_HUE_OR_GRADIENT,
+	NUMERIC_FORMS,
 } from "../schema";
 
 const { numeric, colors, shapes } = fieldsFor<ConfettiOptions>();
@@ -27,7 +27,7 @@ export const confettiDefinition = {
 			min: 1,
 			max: 200,
 			step: 1,
-			forms: FIXED_OR_RANGE,
+			forms: NUMERIC_FORMS,
 			default: { form: "range", min: 20, max: 40 },
 		}),
 		numeric({
@@ -39,7 +39,7 @@ export const confettiDefinition = {
 			max: 360,
 			step: 1,
 			unit: "°",
-			forms: FIXED_OR_RANGE,
+			forms: NUMERIC_FORMS,
 			default: { form: "fixed", value: 90 },
 		}),
 		numeric({
@@ -50,7 +50,7 @@ export const confettiDefinition = {
 			max: 180,
 			step: 1,
 			unit: "°",
-			forms: FIXED_OR_RANGE,
+			forms: NUMERIC_FORMS,
 			default: { form: "fixed", value: 45 },
 		}),
 		numeric({
@@ -61,7 +61,7 @@ export const confettiDefinition = {
 			max: 2000,
 			step: 10,
 			unit: "px/s",
-			forms: FIXED_OR_RANGE,
+			forms: NUMERIC_FORMS,
 			default: { form: "range", min: 300, max: 600 },
 		}),
 		numeric({
@@ -95,7 +95,7 @@ export const confettiDefinition = {
 			max: 10,
 			step: 0.1,
 			unit: "s",
-			forms: FIXED_OR_RANGE,
+			forms: NUMERIC_FORMS,
 			default: { form: "range", min: 2, max: 4 },
 		}),
 		numeric({
@@ -106,14 +106,14 @@ export const confettiDefinition = {
 			max: 40,
 			step: 1,
 			unit: "px",
-			forms: FIXED_OR_RANGE,
+			forms: NUMERIC_FORMS,
 			default: { form: "range", min: 6, max: 16 },
 		}),
 		colors({
 			key: "colors",
 			label: "Colors",
 			group: "look",
-			forms: PALETTE_RANDOM_HUE_OR_GRADIENT,
+			forms: COLOR_FORMS,
 			default: { form: "randomHue", l: 0.65, c: 0.15 },
 		}),
 		shapes({
@@ -122,11 +122,10 @@ export const confettiDefinition = {
 			group: "look",
 			default: [
 				{
-					...createShapeDraft(),
-					type: "square",
+					...createShapeDraft("square"),
 					square: { aspectRatio: 1, cornerRadius: 0.2 },
 				},
-				{ ...createShapeDraft(), type: "circle" },
+				createShapeDraft("circle"),
 			],
 		}),
 	],

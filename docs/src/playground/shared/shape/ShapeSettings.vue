@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import PanelText from "../ui/PanelText.vue";
-import type { ShapeDraft } from "./draft.ts";
+import type { ShapeDraft } from "./draft";
 import PathSettings from "./PathSettings.vue";
 import PolygonSettings from "./PolygonSettings.vue";
 import SquareSettings from "./SquareSettings.vue";

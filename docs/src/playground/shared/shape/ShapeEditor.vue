@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { ShapeDraft } from "./draft.ts";
+import type { ShapeDraft } from "./draft";
 import ShapeSettings from "./ShapeSettings.vue";
 import ShapeTypePicker from "./ShapeTypePicker.vue";
 

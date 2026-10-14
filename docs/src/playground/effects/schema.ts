@@ -14,12 +14,8 @@ import type { ShapeDraft } from "../shared/shape/draft";
  * stored in a URL and turned into both real options (to fire the effect) and code (to copy).
  */
 
-export const FIXED_OR_RANGE = ["fixed", "range"] as const;
-export const PALETTE_RANDOM_HUE_OR_GRADIENT = [
-	"palette",
-	"randomHue",
-	"gradient",
-] as const;
+export const NUMERIC_FORMS = ["fixed", "range"] as const;
+export const COLOR_FORMS = ["randomHue", "palette", "gradient"] as const;
 
 export function fieldsFor<O>() {
 	type NumericKey = KeysAccepting<O, Sampler<number>>;

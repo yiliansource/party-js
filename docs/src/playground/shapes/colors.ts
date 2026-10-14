@@ -1,4 +1,4 @@
-import { MIXED_COLORS } from "../shared/defaults.ts";
+import { MIXED_COLORS } from "../shared/defaults";
 import type { SwatchOption } from "../shared/ui/SwatchPicker.vue";
 
 const pie = (colors: readonly string[]) =>
