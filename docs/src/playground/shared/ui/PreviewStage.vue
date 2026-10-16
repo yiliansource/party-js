@@ -20,7 +20,7 @@ const backgroundOptions: ControlOption<PreviewBackground>[] = [
 
 		<div class="absolute inset-4 pointer-events-none *:pointer-events-auto">
 			<span
-				class="absolute left-0 top-1 text-xs font-mono font-medium text-subtle uppercase tracking-wider"
+				class="max-sm:sr-only absolute left-0 top-1 text-xs font-mono font-medium text-subtle uppercase tracking-wider"
 				>Preview</span
 			>
 			<div

@@ -75,10 +75,11 @@ function burst() {
 				aria-label="Pause animation"
 				:aria-pressed="paused"
 				@click="paused = !paused"
-				class="size-10 grid place-items-center bg-raised rounded-xl cursor-pointer"
+				class="size-8 grid place-items-center bg-raised rounded-xl cursor-pointer
+					focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600"
 			>
-				<PlayIcon v-if="paused" :size="18" />
-				<PauseIcon v-else :size="18" />
+				<PlayIcon v-if="paused" :size="16" />
+				<PauseIcon v-else :size="16" />
 			</button>
 		</template>
 		<template #footer>

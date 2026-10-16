@@ -356,10 +356,10 @@ describe("switching numeric forms", () => {
 			}
 		});
 
-		test("the range isn't modified", () => {
-			const value = { form: "range" as const, min: 20, max: 40 };
-			toFixed(value);
-			expect(value).toEqual({ form: "range", min: 20, max: 40 });
+		test("the fixed value isn't modified", () => {
+			const value = { form: "fixed" as const, value: 50 };
+			toRange(count, value);
+			expect(value).toEqual({ form: "fixed", value: 50 });
 		});
 	});
 
@@ -376,10 +376,10 @@ describe("switching numeric forms", () => {
 			expect(toFixed(value)).toBe(value);
 		});
 
-		test("the fixed value isn't modified", () => {
-			const value = { form: "fixed" as const, value: 50 };
-			toRange(count, value);
-			expect(value).toEqual({ form: "fixed", value: 50 });
+		test("the range isn't modified", () => {
+			const value = { form: "range" as const, min: 20, max: 40 };
+			toFixed(value);
+			expect(value).toEqual({ form: "range", min: 20, max: 40 });
 		});
 	});
 });

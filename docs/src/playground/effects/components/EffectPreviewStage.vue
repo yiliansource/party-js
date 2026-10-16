@@ -71,9 +71,6 @@ onMounted(() => {
 		([entry]) => (onScreen.value = entry.isIntersecting),
 	);
 	if (effectSource.value) observer.observe(effectSource.value);
-
-	playEffect();
-	scheduleEffect();
 });
 
 onBeforeUnmount(() => {

@@ -113,7 +113,6 @@ The docs live in `docs/` and are built using Astro and Starlight.
 cd docs && bun install && bun run dev
 ```
 
-
 ## Contributing
 
 Bug reports, ideas and pull requests are welcome! For anything larger than a small fix, please [open an issue](https://github.com/yiliansource/party-js/issues) first, so we can discuss.

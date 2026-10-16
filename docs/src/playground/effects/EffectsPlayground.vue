@@ -66,7 +66,8 @@ const effectChoices = EFFECT_IDS.map((id) => ({
 						type="button"
 						:disabled="!changed"
 						class="px-3 py-1.5 flex flex-row items-center gap-2 bg-transparent rounded-xl text-inherit cursor-pointer
-							disabled:cursor-not-allowed disabled:opacity-50 not-disabled:hover:bg-code-line"
+							disabled:cursor-not-allowed disabled:opacity-50 not-disabled:hover:bg-code-line
+							focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600"
 						@click="resetAll"
 					>
 						<RotateCcwIcon :size="16" />

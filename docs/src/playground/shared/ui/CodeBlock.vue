@@ -48,7 +48,8 @@ async function copyToClipboard() {
 				<slot name="actions"></slot>
 				<button
 					type="button"
-					class="px-3 py-1.5 flex flex-row items-center gap-2 bg-transparent hover:bg-code-line rounded-xl text-inherit cursor-pointer"
+					class="px-3 py-1.5 flex flex-row items-center gap-2 bg-transparent hover:bg-code-line rounded-xl text-inherit cursor-pointer
+						focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600"
 					@click="copyToClipboard"
 				>
 					<CopyIcon :size="16" v-if="!copied" />
