@@ -113,13 +113,6 @@ The docs live in `docs/` and are built using Astro and Starlight.
 cd docs && bun install && bun run dev
 ```
 
-### Playgrounds
-
-The playgrounds are small single-page applications that allow users to visually play around with the library. They live in `playground/` and are built using Vite and Vue. They import the root `src/` directory directly, so you do not need to rebuild if you want to preview changes you made.
-
-```sh
-cd playground/effects && bun install && bun run dev
-```
 
 ## Contributing
 
