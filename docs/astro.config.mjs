@@ -26,7 +26,7 @@ export default defineConfig({
 		}),
 	},
 	redirects: {
-		"/playgrounds": "/playgrounds/shapes/",
+		"/playgrounds": "/playgrounds/effects/",
 	},
 	vite: {
 		plugins: [tailwindcss()],
@@ -95,7 +95,10 @@ export default defineConfig({
 				},
 				{
 					label: sections.playground.label,
-					items: [{ label: "Shapes", link: "/playgrounds/shapes/" }],
+					items: [
+						{ label: "Shapes", link: "/playgrounds/shapes/" },
+						{ label: "Effects", link: "/playgrounds/effects/" },
+					],
 				},
 				{
 					label: sections.reference.label,

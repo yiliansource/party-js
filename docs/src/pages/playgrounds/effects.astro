@@ -1,0 +1,31 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+import { playgroundInformation } from "../../config/playgrounds";
+import EffectsPlayground from "../../playground/effects/EffectsPlayground.vue";
+
+Astro.locals.playground = "effects";
+---
+
+<StarlightPage
+	frontmatter={{
+	title: playgroundInformation.effects.title,
+	description: playgroundInformation.effects.description,
+	template: "splash",
+	editUrl: false,
+	prev: false,
+	next: false,
+}}
+>
+	<div class="not-content" data-playground>
+		<EffectsPlayground client:only="vue">
+			<div
+				slot="fallback"
+				class="grid grid-cols-1 md:grid-cols-[400px_minmax(0,1fr)] gap-y-4 gap-x-6"
+			>
+				<div class="h-240 rounded-2xl bg-surface animate-pulse"></div>
+				<div class="h-130 rounded-2xl bg-surface animate-pulse"></div>
+			</div>
+		</EffectsPlayground>
+	</div>
+</StarlightPage>

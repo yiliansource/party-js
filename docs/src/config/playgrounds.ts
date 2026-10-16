@@ -5,4 +5,12 @@ export const playgroundInformation = {
 		description:
 			"See how a particle shape looks before you copy it into your application.",
 	},
+	effects: {
+		slug: "playgrounds/effects",
+		title: "Effects",
+		description:
+			"Tune an effect to your liking before you copy it into your application.",
+	},
 } as const;
+
+export type PlaygroundKey = keyof typeof playgroundInformation;

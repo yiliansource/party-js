@@ -57,7 +57,7 @@ export const headerLinks = [
 	},
 	{
 		label: "Playgrounds",
-		href: "/playgrounds/shapes/",
+		href: "/playgrounds/",
 		isActive: (p) => p.startsWith("/playgrounds/"),
 	},
 ] as const satisfies readonly HeaderLink[];

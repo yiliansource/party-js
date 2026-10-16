@@ -108,26 +108,6 @@
 			}
 		},
 		{
-			"includes": ["playground/**"],
-			"linter": {
-				"rules": {
-					"style": {
-						"noRestrictedImports": {
-							"level": "error",
-							"options": {
-								"patterns": [
-									{
-										"group": ["**/src/**"],
-										"message": "Playground files should use the import alias @/ when importing src/ files."
-									}
-								]
-							}
-						}
-					}
-				}
-			}
-		},
-		{
 			"includes": ["**/*.vue", "**/*.astro"],
 			"linter": {
 				"rules": {
@@ -147,6 +127,77 @@
 				"actions": {
 					"source": {
 						"organizeImports": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["docs/src/playground/shapes/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"patterns": [
+									{
+										"group": [
+											"./**/effects/**",
+											"../**/effects/**"
+										],
+										"message": "A playground must not import from another playground. Move code both need to playground/shared/."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"includes": ["docs/src/playground/effects/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"patterns": [
+									{
+										"group": [
+											"./**/shapes/**",
+											"../**/shapes/**"
+										],
+										"message": "A playground must not import from another playground. Move code both need to playground/shared/."
+									}
+								]
+							}
+						}
+					}
+				}
+			}
+		},
+		{
+			"includes": ["docs/src/playground/shared/**"],
+			"linter": {
+				"rules": {
+					"style": {
+						"noRestrictedImports": {
+							"level": "error",
+							"options": {
+								"patterns": [
+									{
+										"group": [
+											"./**/shapes/**",
+											"../**/shapes/**",
+											"./**/effects/**",
+											"../**/effects/**"
+										],
+										"message": "Shared playground code must not depend on a playground."
+									}
+								]
+							}
+						}
 					}
 				}
 			}
