@@ -8,7 +8,7 @@ import PanelText from "../shared/ui/PanelText.vue";
 import SegmentedControl from "../shared/ui/SegmentedControl.vue";
 import EffectPreviewStage from "./components/EffectPreviewStage.vue";
 import OptionsEditor from "./components/OptionsEditor.vue";
-import { EFFECTS, type EffectId } from "./definitions";
+import { EFFECT_IDS, EFFECTS, type EffectId } from "./definitions";
 import { createEffectDraft, effectCode, hasChanges } from "./effect";
 import { createEffectsState } from "./state";
 
@@ -22,6 +22,11 @@ function resetAll() {
 }
 
 const changed = computed(() => hasChanges(definition.value, draft.value));
+
+const effectChoices = EFFECT_IDS.map((id) => ({
+	value: id,
+	label: EFFECTS[id].label,
+}));
 </script>
 
 <template>
@@ -33,8 +38,9 @@ const changed = computed(() => hasChanges(definition.value, draft.value));
 				<div class="flex flex-col gap-2">
 					<SegmentedControl
 						size="sm"
+						label="Effect"
 						:model-value="state.effect"
-						:options="Object.values(EFFECTS).map(e => ({ value: e.id as EffectId, label: e.label }))"
+						:options="effectChoices"
 						@update:model-value="(v) => state.effect = v"
 					/>
 					<PanelText v-if="definition.description">
@@ -50,6 +56,7 @@ const changed = computed(() => hasChanges(definition.value, draft.value));
 			<EffectPreviewStage
 				:definition
 				:draft
+				v-model:background="state.background"
 				v-model:repeat="state.repeat"
 				class="order-first md:order-0"
 			/>

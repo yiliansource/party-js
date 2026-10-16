@@ -48,6 +48,7 @@ const hint = computed(() => hintFor(field.hint, value.value.form));
 			<SegmentedControl
 				v-if="field.forms.length > 1"
 				size="sm"
+				:label="`${field.label} form`"
 				:model-value="value.form"
 				:options="formOptions"
 				@update:model-value="setForm"
@@ -56,6 +57,8 @@ const hint = computed(() => hintFor(field.hint, value.value.form));
 		<BarField
 			v-if="value.form === 'fixed'"
 			v-model="value.value"
+			:label="field.label"
+			hide-label
 			:min="field.min"
 			:max="field.max"
 			:step="field.step"
@@ -65,6 +68,8 @@ const hint = computed(() => hintFor(field.hint, value.value.form));
 			v-else-if="value.form === 'range'"
 			v-model:lo="value.min"
 			v-model:hi="value.max"
+			:label="field.label"
+			hide-label
 			:min="field.min"
 			:max="field.max"
 			:step="field.step"

@@ -64,6 +64,7 @@ const tokens = computed(() => shapeCode(draft));
 		</div>
 		<div class="contents md:flex md:flex-col md:gap-4">
 			<ShapePreviewStage
+				v-model:background="preview.background"
 				v-model:paused="preview.paused"
 				:shape
 				:colors
@@ -73,6 +74,7 @@ const tokens = computed(() => shapeCode(draft));
 			/>
 			<div class="flex flex-col gap-4 xl:flex-row">
 				<ActualSizeStrip
+					:background="preview.background"
 					:shape
 					:colors
 					:size="preview.size"

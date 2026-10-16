@@ -1,4 +1,5 @@
 import { prefersReducedMotion } from "../shared/preference";
+import type { PreviewBackground } from "../shared/preview";
 import { EFFECTS, type EffectId } from "./definitions";
 import { createEffectDraft } from "./effect";
 import type { EffectDraft } from "./schema";
@@ -6,7 +7,7 @@ import type { EffectDraft } from "./schema";
 export interface EffectsState {
 	effect: EffectId;
 	drafts: Record<EffectId, EffectDraft>;
-	// background: Background;
+	background: PreviewBackground;
 	repeat: boolean;
 }
 
@@ -18,6 +19,6 @@ export const createEffectsState = (): EffectsState => ({
 			createEffectDraft(EFFECTS[id]),
 		]),
 	) as Record<EffectId, EffectDraft>,
-	// background: "page",
+	background: "page",
 	repeat: !prefersReducedMotion(),
 });

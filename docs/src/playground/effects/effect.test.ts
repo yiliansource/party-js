@@ -13,7 +13,12 @@ import {
 
 import { createShapeDraft } from "../shared/shape/draft";
 import { type Token, toText } from "../shared/tokens";
-import { createEffectDraft, effectCode, effectOptions } from "./effect";
+import {
+	createEffectDraft,
+	effectCode,
+	effectOptions,
+	hasChanges,
+} from "./effect";
 import {
 	COLOR_FORMS,
 	type EffectDefinition,
@@ -154,6 +159,21 @@ describe("effectOptions", () => {
 		const options = effectOptions(fixture, draft);
 		expect(options.lifetime).toBe(0.3);
 		expect(options.colors).toEqual(["#ff0000"]);
+	});
+});
+
+describe("hasChanges", () => {
+	test("an untouched draft has no changes", () => {
+		expect(hasChanges(fixture, createEffectDraft(fixture))).toBe(false);
+	});
+
+	test("one changed field is enough, and noise that cleans to the default isn't a change", () => {
+		const draft = createEffectDraft(fixture);
+		draft.lifetime = { form: "fixed", value: 2.0000001 };
+		expect(hasChanges(fixture, draft)).toBe(false);
+
+		draft.count = { form: "fixed", value: 50 };
+		expect(hasChanges(fixture, draft)).toBe(true);
 	});
 });
 

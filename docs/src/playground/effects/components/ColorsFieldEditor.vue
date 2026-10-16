@@ -46,10 +46,11 @@ const hint = computed(() => hintFor(field.hint, value.value.form));
 
 <template>
 	<div class="flex flex-col gap-2">
-		<FieldHeader :label="field.label" :changed wrap @reset="reset">
+		<FieldHeader :label="field.label" :changed @reset="reset">
 			<SegmentedControl
 				v-if="field.forms.length > 1"
 				size="sm"
+				:label="`${field.label} form`"
 				:model-value="value.form"
 				:options="formOptions"
 				@update:model-value="setForm"

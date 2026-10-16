@@ -3,6 +3,7 @@ import { describe, expect, test } from "bun:test";
 
 import { type Color, color, type Sampler, type SamplerContext } from "party-js";
 
+import { MIXED_COLORS } from "../shared/color";
 import { snapToStep } from "../shared/number";
 import { createShapeDraft } from "../shared/shape/draft";
 import { toText } from "../shared/tokens";
@@ -13,11 +14,15 @@ import {
 	numericOption,
 	shapesOption,
 	toFixed,
+	toGradient,
+	toPalette,
+	toRandomHue,
 	toRange,
 } from "./fields";
 import {
 	COLOR_FORMS,
 	type ColorsField,
+	type ColorsValue,
 	type Field,
 	type FieldValue,
 	NUMERIC_FORMS,
@@ -266,101 +271,200 @@ describe("isDefault", () => {
 	});
 });
 
-describe("toRange", () => {
-	test("a range is returned unchanged", () => {
-		const value = { form: "range" as const, min: 20, max: 40 };
-		expect(toRange(count, value)).toBe(value);
+describe("switching numeric forms", () => {
+	describe("toRange", () => {
+		test("a range is returned unchanged", () => {
+			const value = { form: "range" as const, min: 20, max: 40 };
+			expect(toRange(count, value)).toBe(value);
+		});
+
+		test("a fixed value becomes a range starting there, a tenth of the field wide", () => {
+			expect(toRange(count, { form: "fixed", value: 50 })).toEqual({
+				form: "range",
+				min: 50,
+				max: 70,
+			});
+			expect(toRange(lifetime, { form: "fixed", value: 2 })).toEqual({
+				form: "range",
+				min: 2,
+				max: 3,
+			});
+		});
+
+		test("the width is measured from the field's minimum, not from 0", () => {
+			// 6 to 40 is 34 wide, so a tenth is 3.4 and snaps to 3.
+			expect(toRange(size, { form: "fixed", value: 10 })).toEqual({
+				form: "range",
+				min: 10,
+				max: 13,
+			});
+		});
+
+		test("the range stops at the field's maximum", () => {
+			expect(toRange(count, { form: "fixed", value: 190 })).toEqual({
+				form: "range",
+				min: 190,
+				max: 200,
+			});
+		});
+
+		test("a value at the maximum moves down a step, so the range has room", () => {
+			expect(toRange(count, { form: "fixed", value: 200 })).toEqual({
+				form: "range",
+				min: 199,
+				max: 200,
+			});
+		});
+
+		test("the range is at least one step wide", () => {
+			// a tenth of 3 is 0.3, which would snap back onto the minimum.
+			const small = numeric({
+				min: 0,
+				max: 3,
+				step: 1,
+				default: { form: "fixed", value: 1 },
+			});
+			expect(toRange(small, { form: "fixed", value: 1 })).toEqual({
+				form: "range",
+				min: 1,
+				max: 2,
+			});
+		});
+
+		test("a maximum that isn't on the step grid counts as the highest reachable value", () => {
+			// the range has to end at 8, so it starts one step below that.
+			expect(toRange(offGrid, { form: "fixed", value: 10 })).toEqual({
+				form: "range",
+				min: 4,
+				max: 8,
+			});
+		});
+
+		test.each([
+			["count", count],
+			["lifetime", lifetime],
+			["size", size],
+			["off-grid", offGrid],
+		] as const)("every %s value gives a valid range", (_, field) => {
+			for (let v = field.min; v <= field.max; v += field.step) {
+				const range = toRange(field, { form: "fixed", value: v });
+				if (range.form !== "range") throw new Error("expected a range");
+
+				expect(range.min).toBeLessThan(range.max);
+				for (const bound of [range.min, range.max])
+					expect(snapToStep(bound, field)).toBe(bound);
+			}
+		});
+
+		test("the range isn't modified", () => {
+			const value = { form: "range" as const, min: 20, max: 40 };
+			toFixed(value);
+			expect(value).toEqual({ form: "range", min: 20, max: 40 });
+		});
 	});
 
-	test("a fixed value becomes a range starting there, a tenth of the field wide", () => {
-		expect(toRange(count, { form: "fixed", value: 50 })).toEqual({
-			form: "range",
-			min: 50,
-			max: 70,
+	describe("toFixed", () => {
+		test("a range keeps its minimum", () => {
+			expect(toFixed({ form: "range", min: 20, max: 40 })).toEqual({
+				form: "fixed",
+				value: 20,
+			});
 		});
-		expect(toRange(lifetime, { form: "fixed", value: 2 })).toEqual({
-			form: "range",
-			min: 2,
-			max: 3,
+
+		test("a fixed value is returned unchanged", () => {
+			const value = { form: "fixed" as const, value: 50 };
+			expect(toFixed(value)).toBe(value);
+		});
+
+		test("the fixed value isn't modified", () => {
+			const value = { form: "fixed" as const, value: 50 };
+			toRange(count, value);
+			expect(value).toEqual({ form: "fixed", value: 50 });
+		});
+	});
+});
+
+describe("switching color forms", () => {
+	// one value per form, with colors that differ from MIXED_COLORS so a result can't pass by accident
+	const values: Record<ColorsValue["form"], ColorsValue> = {
+		randomHue: { form: "randomHue", l: 0.7, c: 0.1 },
+		palette: { form: "palette", colors: ["#111111", "#222222", "#333333"] },
+		gradient: { form: "gradient", colors: ["#aaaaaa", "#bbbbbb"] },
+	};
+
+	const conversions = [
+		["toRandomHue", toRandomHue, "randomHue"],
+		["toPalette", toPalette, "palette"],
+		["toGradient", toGradient, "gradient"],
+	] as const;
+
+	describe.each(conversions)("%s", (_, convert, target) => {
+		test("a value already in this form is returned unchanged", () => {
+			const value = values[target];
+			expect(convert(value)).toBe(value);
+		});
+
+		const others = COLOR_FORMS.filter((form) => form !== target);
+		test.each(others)(
+			"a %s value is switched, and left untouched",
+			(form) => {
+				const value = values[form];
+				const before = structuredClone(value);
+
+				expect(convert(value).form).toBe(target);
+				expect(value).toEqual(before);
+			},
+		);
+	});
+
+	test("random hue starts at the default lightness and chroma", () => {
+		expect(toRandomHue(values.palette)).toEqual({
+			form: "randomHue",
+			l: 0.65,
+			c: 0.15,
 		});
 	});
 
-	test("the width is measured from the field's minimum, not from 0", () => {
-		// 6 to 40 is 34 wide, so a tenth is 3.4 and snaps to 3.
-		expect(toRange(size, { form: "fixed", value: 10 })).toEqual({
-			form: "range",
-			min: 10,
-			max: 13,
+	test("a palette starts with the mixed colors", () => {
+		expect(toPalette(values.randomHue)).toEqual({
+			form: "palette",
+			colors: MIXED_COLORS,
 		});
 	});
 
-	test("the range stops at the field's maximum", () => {
-		expect(toRange(count, { form: "fixed", value: 190 })).toEqual({
-			form: "range",
-			min: 190,
-			max: 200,
-		});
-	});
-
-	test("a value at the maximum moves down a step, so the range has room", () => {
-		expect(toRange(count, { form: "fixed", value: 200 })).toEqual({
-			form: "range",
-			min: 199,
-			max: 200,
-		});
-	});
-
-	test("the range is at least one step wide", () => {
-		// a tenth of 3 is 0.3, which would snap back onto the minimum.
-		const small = numeric({
-			min: 0,
-			max: 3,
-			step: 1,
-			default: { form: "fixed", value: 1 },
-		});
-		expect(toRange(small, { form: "fixed", value: 1 })).toEqual({
-			form: "range",
-			min: 1,
-			max: 2,
-		});
-	});
-
-	test("a maximum that isn't on the step grid counts as the highest reachable value", () => {
-		// the range has to end at 8, so it starts one step below that.
-		expect(toRange(offGrid, { form: "fixed", value: 10 })).toEqual({
-			form: "range",
-			min: 4,
-			max: 8,
+	test("a gradient starts with exactly two colors, since the editor shows a start and an end", () => {
+		expect(toGradient(values.randomHue)).toEqual({
+			form: "gradient",
+			colors: MIXED_COLORS.slice(0, 2),
 		});
 	});
 
 	test.each([
-		["count", count],
-		["lifetime", lifetime],
-		["size", size],
-		["off-grid", offGrid],
-	] as const)("every %s value gives a valid range", (_, field) => {
-		for (let v = field.min; v <= field.max; v += field.step) {
-			const range = toRange(field, { form: "fixed", value: v });
-			if (range.form !== "range") throw new Error("expected a range");
+		["toPalette", toPalette],
+		["toGradient", toGradient],
+	] as const)(
+		"%s never hands out the shared MIXED_COLORS array",
+		(_, convert) => {
+			// the palette editor pushes and splices the draft's array in place, which must not change the constant
+			const before = [...MIXED_COLORS];
+			const result = convert(values.randomHue);
+			if (result.form === "randomHue") throw new Error("expected colors");
 
-			expect(range.min).toBeLessThan(range.max);
-			for (const bound of [range.min, range.max])
-				expect(snapToStep(bound, field)).toBe(bound);
-		}
-	});
-});
+			expect(result.colors).not.toBe(MIXED_COLORS);
+			result.colors.push("#000000");
+			result.colors[0] = "#ffffff";
+			expect(MIXED_COLORS).toEqual(before);
+			expect(convert(values.randomHue)).not.toBe(result);
+		},
+	);
 
-describe("toFixed", () => {
-	test("a range keeps its minimum", () => {
-		expect(toFixed({ form: "range", min: 20, max: 40 })).toEqual({
-			form: "fixed",
-			value: 20,
-		});
-	});
-
-	test("a fixed value is returned unchanged", () => {
-		const value = { form: "fixed" as const, value: 50 };
-		expect(toFixed(value)).toBe(value);
+	test("every switched value generates valid code", () => {
+		for (const [, convert] of conversions)
+			for (const form of COLOR_FORMS) {
+				const { tokens } = fieldCode(colors, convert(values[form]));
+				expect(
+					() => new Function(`return (${toText(tokens)});`),
+				).not.toThrow();
+			}
 	});
 });

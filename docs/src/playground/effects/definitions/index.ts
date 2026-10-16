@@ -13,3 +13,5 @@ export const EFFECTS = defineEffects({
 	sparkles: sparklesDefinition,
 });
 export type EffectId = keyof typeof EFFECTS;
+
+export const EFFECT_IDS = Object.keys(EFFECTS) as EffectId[];

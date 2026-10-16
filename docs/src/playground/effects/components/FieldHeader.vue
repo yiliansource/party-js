@@ -32,7 +32,7 @@ const { label, changed, onReset } = defineProps<{
 		>
 			<RotateCcwIcon :size="16" aria-hidden="true" />
 		</button>
-		<div class="">
+		<div>
 			<slot />
 		</div>
 	</div>

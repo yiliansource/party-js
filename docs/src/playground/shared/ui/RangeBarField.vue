@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { clamp01 } from "party-js/internal/math/scalar";
-import { computed, ref, useId } from "vue";
+import { computed, ref } from "vue";
 
 import { withUnit } from "../format";
 import { snapToStep } from "../number";
@@ -9,6 +9,7 @@ const lo = defineModel<number>("lo", { required: true });
 const hi = defineModel<number>("hi", { required: true });
 const {
 	label,
+	hideLabel = false,
 	min,
 	max,
 	step = 0.01,
@@ -16,6 +17,7 @@ const {
 	unit,
 } = defineProps<{
 	label?: string;
+	hideLabel?: boolean;
 	min: number;
 	max: number;
 	step?: number;
@@ -25,12 +27,11 @@ const {
 
 type Edge = "min" | "max";
 
-const id = useId();
 const fractionLo = computed(() => (lo.value - min) / (max - min));
 const fractionHi = computed(() => (hi.value - min) / (max - min));
 
 const readout = computed(() =>
-	withUnit(`${format(lo.value)} - ${format(hi.value)}`, unit),
+	withUnit(`${format(lo.value)} – ${format(hi.value)}`, unit),
 );
 const minText = computed(() => withUnit(format(lo.value), unit));
 const maxText = computed(() => withUnit(format(hi.value), unit));
@@ -97,8 +98,6 @@ function onPointerCancel() {
 	dragStart = null;
 	dragEdge.value = null;
 }
-
-console.log();
 </script>
 
 <template>
@@ -130,13 +129,12 @@ console.log();
 					w-1 h-5 group-data-[near-edge=max]:h-7 not-motion-reduce:transition-[height]"
 			></span>
 		</div>
-		<label
-			v-if="label"
+		<span
+			v-if="label && !hideLabel"
 			class="absolute left-3 text-sm font-semibold text-fg pointer-events-none"
-			:for="id"
 			>{{
 				label
-			}}</label
+			}}</span
 		>
 		<span
 			class="absolute right-3 text-xs font-mono font-semibold tracking-wider text-muted"

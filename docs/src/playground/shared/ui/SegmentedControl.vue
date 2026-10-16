@@ -6,35 +6,41 @@ export interface ControlOption<V extends string = string> {
 }
 
 const model = defineModel<T>({ required: true });
-const { options, size = "md" } = defineProps<{
+const {
+	label,
+	options,
+	size = "md",
+} = defineProps<{
+	label?: string;
 	options: readonly ControlOption<T>[];
 	size?: ControlSize;
 }>();
-const emit = defineEmits(["update:modelValue"]);
 </script>
 
 <template>
-	<div
+	<fieldset
 		:class="[
-			'flex flex-row border-raised bg-field mr-auto',
+			'flex flex-row border-field-line bg-field mr-auto',
 			size === 'md' && 'p-1 gap-1 border-2 rounded-xl',
 			size === 'sm' && 'p-0.5 gap-px border rounded-xl'
 		]"
 	>
+		<legend class="sr-only">{{ label }}</legend>
 		<button
 			v-for="option in options"
 			:key="option.value"
 			type="button"
-			@click="emit('update:modelValue', option.value)"
+			:aria-pressed="model === option.value"
+			@click="model = option.value"
 			:class="[
 				'rounded-lg font-semibold cursor-pointer',
 				'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600',
-				model === option.value ? 'text-fg bg-raised' : 'text-muted bg-transparent hover:text-fg hover:bg-surface',
+				'text-muted bg-transparent hover:text-fg aria-pressed:text-fg aria-pressed:bg-raised aria-pressed:shadow-sm',
 				size === 'md' && 'px-4 py-2 text-sm',
 				size === 'sm' && 'px-3 py-1.5 text-xs'
 			]"
 		>
 			{{ option.label }}
 		</button>
-	</div>
+	</fieldset>
 </template>

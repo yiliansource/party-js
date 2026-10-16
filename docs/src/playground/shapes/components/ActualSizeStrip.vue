@@ -3,11 +3,13 @@ import { color, type ParticleShape } from "party-js";
 import * as quat from "party-js/internal/math/quat";
 import { computed, useTemplateRef } from "vue";
 
+import type { PreviewBackground } from "../../shared/preview";
 import { confettiLighting, noLighting } from "../../shared/render/lighting";
 import { previewParticle } from "../../shared/render/previewParticle";
 import { useParticleCanvas } from "../../shared/render/useParticleCanvas";
 
-const { shape, colors, size, lighting } = defineProps<{
+const { background, shape, colors, size, lighting } = defineProps<{
+	background: PreviewBackground;
 	shape: ParticleShape;
 	colors: readonly string[];
 	size: number;
@@ -50,7 +52,10 @@ useParticleCanvas(canvas, (_dt, { width, height }) => {
 </script>
 
 <template>
-	<div class="pt-4 relative bg-surface rounded-2xl flex min-w-80 min-h-32">
+	<div
+		:data-preview-theme="background === 'page' ? undefined : background"
+		class="pt-4 relative bg-surface text-fg rounded-2xl flex min-w-80 min-h-32"
+	>
 		<canvas
 			ref="canvas"
 			class="block w-full h-20 mx-2 my-auto"

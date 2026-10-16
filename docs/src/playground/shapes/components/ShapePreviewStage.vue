@@ -4,6 +4,7 @@ import { color, confetti, type ParticleShape } from "party-js";
 import * as quat from "party-js/internal/math/quat";
 import { computed, useTemplateRef } from "vue";
 
+import type { PreviewBackground } from "../../shared/preview";
 import { confettiLighting, noLighting } from "../../shared/render/lighting";
 import { previewParticle } from "../../shared/render/previewParticle";
 import { useParticleCanvas } from "../../shared/render/useParticleCanvas";
@@ -16,6 +17,9 @@ const { shape, colors, size, lighting } = defineProps<{
 	size: number;
 	lighting: boolean;
 }>();
+const background = defineModel<PreviewBackground>("background", {
+	required: true,
+});
 const paused = defineModel<boolean>("paused", { required: true });
 
 const TUMBLE = { x: 35, y: 70, z: 20 };
@@ -54,7 +58,7 @@ function burst() {
 </script>
 
 <template>
-	<PreviewStage>
+	<PreviewStage v-model="background">
 		<canvas
 			ref="canvas"
 			class="block w-full h-full"

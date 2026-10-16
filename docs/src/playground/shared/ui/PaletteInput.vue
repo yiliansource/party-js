@@ -29,7 +29,8 @@ function removeColor(index: number) {
 				:disabled="value.colors.length === 1"
 				@click="removeColor(i)"
 				class="absolute right-0 -top-1 p-0.5 grid place-items-center text-subtle bg-raised rounded-full
-					hover:text-muted cursor-pointer"
+					not-disabled:hover:text-muted cursor-pointer disabled:cursor-not-allowed disabled:opacity-50
+					"
 			>
 				<XIcon :size="12" />
 			</button>
@@ -37,6 +38,7 @@ function removeColor(index: number) {
 		<li>
 			<button
 				type="button"
+				aria-label="Add color"
 				@click="addColor"
 				class="p-1.5 grid place-items-center text-muted bg-surface border border-raised rounded-full
 					hover:bg-raised cursor-pointer"

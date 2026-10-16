@@ -8,6 +8,7 @@ import { snapToStep } from "../number";
 const value = defineModel<number>({ required: true });
 const {
 	label,
+	hideLabel = false,
 	min,
 	max,
 	step = 0.01,
@@ -15,6 +16,7 @@ const {
 	unit,
 } = defineProps<{
 	label?: string;
+	hideLabel?: boolean;
 	min: number;
 	max: number;
 	step?: number;
@@ -83,7 +85,7 @@ function onPointerCancel() {
 			></span>
 		</div>
 		<label
-			v-if="label"
+			v-if="label && !hideLabel"
 			class="absolute left-3 text-sm font-semibold text-fg pointer-events-none"
 			:for="id"
 			>{{
@@ -106,6 +108,7 @@ function onPointerCancel() {
 			:min
 			:max
 			:step
+			:aria-label="label && hideLabel ? label : undefined"
 			:aria-valuetext="valueText"
 		>
 	</div>

@@ -1,11 +1,12 @@
 import { prefersReducedMotion } from "../shared/preference";
+import type { PreviewBackground } from "../shared/preview";
 import type { PreviewColor } from "./colors";
 
 export interface PreviewSettings {
 	color: PreviewColor;
 	size: number;
 	lighting: boolean;
-	background: "page" | "light" | "dark";
+	background: PreviewBackground;
 	paused: boolean;
 }
 

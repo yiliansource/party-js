@@ -9,6 +9,7 @@ import {
 	watch,
 } from "vue";
 
+import type { PreviewBackground } from "../../shared/preview";
 import Button from "../../shared/ui/Button.vue";
 import PreviewStage from "../../shared/ui/PreviewStage.vue";
 import SwitchField from "../../shared/ui/SwitchField.vue";
@@ -22,14 +23,20 @@ const { definition, draft } = defineProps<{
 }>();
 
 const repeat = defineModel<boolean>("repeat", { required: true });
+const background = defineModel<PreviewBackground>("background", {
+	required: true,
+});
 
 const effectSource = useTemplateRef<HTMLDivElement>("effectSource");
 
 const PERIOD = 2000;
 let timer: number | undefined;
 
+const onScreen = ref(false);
 const pageVisible = ref(!document.hidden);
-const looping = computed(() => repeat.value && pageVisible.value);
+const looping = computed(
+	() => repeat.value && onScreen.value && pageVisible.value,
+);
 
 function playEffect() {
 	if (!effectSource.value) return;
@@ -47,32 +54,37 @@ function handlePlayEffect() {
 	if (looping.value) scheduleEffect();
 }
 
-watch(
-	looping,
-	(on) => {
-		clearTimeout(timer);
-		if (on) {
-			playEffect();
-			scheduleEffect();
-		}
-	},
-	{ immediate: true },
-);
+watch(looping, (on) => {
+	clearTimeout(timer);
+	if (on) {
+		playEffect();
+		scheduleEffect();
+	}
+});
 
 const onVisibility = () => (pageVisible.value = !document.hidden);
+let observer: IntersectionObserver | undefined;
 
 onMounted(() => {
 	document.addEventListener("visibilitychange", onVisibility);
+	observer = new IntersectionObserver(
+		([entry]) => (onScreen.value = entry.isIntersecting),
+	);
+	if (effectSource.value) observer.observe(effectSource.value);
+
+	playEffect();
+	scheduleEffect();
 });
 
 onBeforeUnmount(() => {
 	clearTimeout(timer);
+	observer?.disconnect();
 	document.removeEventListener("visibilitychange", onVisibility);
 });
 </script>
 
 <template>
-	<PreviewStage>
+	<PreviewStage v-model="background">
 		<div
 			ref="effectSource"
 			class="absolute w-30 h-15 border-2 border-dashed border-raised rounded-xl left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
