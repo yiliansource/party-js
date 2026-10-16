@@ -3,6 +3,8 @@ import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
 
 import { playgroundInformation } from "../../config/playgrounds";
 import ShapesPlayground from "../../playground/shapes/ShapesPlayground.vue";
+
+Astro.locals.playground = "shapes";
 ---
 
 <StarlightPage
@@ -19,8 +21,11 @@ import ShapesPlayground from "../../playground/shapes/ShapesPlayground.vue";
 		<ShapesPlayground client:only="vue">
 			<div
 				slot="fallback"
-				class="h-120 rounded-2xl bg-surface animate-pulse"
-			></div>
+				class="grid grid-cols-1 md:grid-cols-[340px_minmax(0,1fr)] gap-y-4 gap-x-6"
+			>
+				<div class="h-130 rounded-2xl bg-surface animate-pulse"></div>
+				<div class="h-120 rounded-2xl bg-surface animate-pulse"></div>
+			</div>
 		</ShapesPlayground>
 	</div>
 </StarlightPage>
