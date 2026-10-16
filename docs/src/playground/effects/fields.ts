@@ -7,6 +7,7 @@ import {
 	type Sampler,
 } from "party-js";
 
+import { MIXED_COLORS } from "../shared/color";
 import { cleanToStep, snapToStep } from "../shared/number";
 import { shapeLiteral } from "../shared/shape/code";
 import { toParticleShape } from "../shared/shape/draft";
@@ -155,4 +156,32 @@ export function toRange(field: NumericField, v: NumericValue): NumericValue {
 
 export function toFixed(v: NumericValue): NumericValue {
 	return v.form === "fixed" ? v : { form: "fixed", value: v.min };
+}
+
+export function toRandomHue(v: ColorsValue): ColorsValue {
+	if (v.form === "randomHue") return v;
+
+	return {
+		form: "randomHue",
+		l: 0.65,
+		c: 0.15,
+	};
+}
+
+export function toPalette(v: ColorsValue): ColorsValue {
+	if (v.form === "palette") return v;
+
+	return {
+		form: "palette",
+		colors: MIXED_COLORS.slice(),
+	};
+}
+
+export function toGradient(v: ColorsValue): ColorsValue {
+	if (v.form === "gradient") return v;
+
+	return {
+		form: "gradient",
+		colors: MIXED_COLORS.slice(0, 2),
+	};
 }

@@ -26,7 +26,7 @@ export default defineConfig({
 		}),
 	},
 	redirects: {
-		"/playgrounds": "/playgrounds/shapes/",
+		"/playgrounds": "/playgrounds/effects/",
 	},
 	vite: {
 		plugins: [tailwindcss()],

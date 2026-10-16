@@ -13,6 +13,7 @@ const { numeric, colors, shapes } = fieldsFor<ConfettiOptions>();
 export const confettiDefinition = {
 	id: "confetti",
 	label: "Confetti",
+	description: "Paper-like confetti that bursts in an upwards cone.",
 	call: "confetti",
 	groups: [
 		{ id: "launch", label: "Launch" },
@@ -60,7 +61,7 @@ export const confettiDefinition = {
 			min: 0,
 			max: 2000,
 			step: 10,
-			unit: "px/s",
+			unit: " px/s",
 			forms: NUMERIC_FORMS,
 			default: { form: "range", min: 300, max: 600 },
 		}),
@@ -71,7 +72,7 @@ export const confettiDefinition = {
 			min: 0,
 			max: 3000,
 			step: 10,
-			unit: "px/s²",
+			unit: " px/s²",
 			forms: ["fixed"],
 			default: { form: "fixed", value: 800 },
 		}),
@@ -83,7 +84,7 @@ export const confettiDefinition = {
 			min: 50,
 			max: 2000,
 			step: 10,
-			unit: "px/s",
+			unit: " px/s",
 			forms: ["fixed"],
 			default: { form: "fixed", value: 500 },
 		}),
@@ -114,6 +115,13 @@ export const confettiDefinition = {
 			label: "Colors",
 			group: "look",
 			forms: COLOR_FORMS,
+			hint: {
+				randomHue:
+					"Every piece gets a random hue at this lightness and intensity.",
+				palette: "Each piece picks one of these colors.",
+				gradient:
+					"Each piece gets a color from somewhere along the gradient.",
+			},
 			default: { form: "randomHue", l: 0.65, c: 0.15 },
 		}),
 		shapes({

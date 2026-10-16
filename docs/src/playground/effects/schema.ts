@@ -17,6 +17,17 @@ import type { ShapeDraft } from "../shared/shape/draft";
 export const NUMERIC_FORMS = ["fixed", "range"] as const;
 export const COLOR_FORMS = ["randomHue", "palette", "gradient"] as const;
 
+export const FORM_LABELS: Record<
+	NumericValue["form"] | ColorsValue["form"],
+	string
+> = {
+	fixed: "Fixed",
+	range: "Range",
+	randomHue: "Random hue",
+	palette: "Palette",
+	gradient: "Gradient",
+};
+
 export function fieldsFor<O>() {
 	type NumericKey = KeysAccepting<O, Sampler<number>>;
 	type ColorsKey = KeysAccepting<O, string[] | Sampler<Color>>;
@@ -46,10 +57,11 @@ export type ColorsValue =
 
 export type ShapesValue = ShapeDraft[];
 
+type Hint<F extends string> = string | Partial<Record<F, string>>;
+
 interface FieldBase<K extends string> {
 	key: K;
 	label: string;
-	hint?: string;
 	group: string;
 }
 
@@ -59,19 +71,29 @@ export interface NumericField<K extends string = string> extends FieldBase<K> {
 	max: number;
 	step: number;
 	unit?: string;
+	hint?: Hint<NumericValue["form"]>;
 	forms: readonly NumericValue["form"][];
 	default: NumericValue;
 }
 
 export interface ColorsField<K extends string = string> extends FieldBase<K> {
 	type: "colors";
+	hint?: Hint<ColorsValue["form"]>;
 	forms: readonly ColorsValue["form"][];
 	default: ColorsValue;
 }
 
 export interface ShapesField<K extends string = string> extends FieldBase<K> {
 	type: "shapes";
+	hint?: string;
 	default: ShapesValue;
+}
+
+export function hintFor<F extends string>(
+	hint: Hint<F> | undefined,
+	form: F,
+): string | undefined {
+	return typeof hint === "string" ? hint : hint?.[form];
 }
 
 export type Field<K extends string = string> =
@@ -88,6 +110,7 @@ export type KeysAccepting<O, T> = {
 export interface EffectDefinition<O> {
 	id: string;
 	label: string;
+	description?: string;
 	call: string;
 	groups: readonly { id: string; label: string }[];
 	fields: readonly Field<keyof O & string>[];

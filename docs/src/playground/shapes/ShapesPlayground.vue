@@ -9,10 +9,10 @@ import Panel from "../shared/ui/Panel.vue";
 import PanelText from "../shared/ui/PanelText.vue";
 import SwatchPicker from "../shared/ui/SwatchPicker.vue";
 import SwitchField from "../shared/ui/SwitchField.vue";
-import ActualSizeStrip from "./ActualSizeStrip.vue";
 import { shapeCode } from "./code";
 import { PREVIEW_COLORS } from "./colors";
-import ShapePreviewStage from "./ShapePreviewStage.vue";
+import ActualSizeStrip from "./components/ActualSizeStrip.vue";
+import ShapePreviewStage from "./components/ShapePreviewStage.vue";
 import { createPreview } from "./state";
 
 const draft = reactive(createShapeDraft("star"));
@@ -31,12 +31,15 @@ const tokens = computed(() => shapeCode(draft));
 	>
 		<div class="flex flex-col gap-4">
 			<Panel title="Shape">
-				<ShapeEditor :draft="draft" />
-				<PanelText>
-					Need something these can't draw? A <code>custom</code> shape
-					allows you to draw shapes using your own canvas code. See
-					<a href="/guides/custom-shapes/">Custom shapes</a>.
-				</PanelText>
+				<ShapeEditor :draft="draft">
+					<PanelText>
+						Need something these can't draw? A
+						<code>custom</code>
+						shape allows you to draw shapes using your own canvas
+						code. See
+						<a href="/guides/custom-shapes/">Custom shapes</a>.
+					</PanelText>
+				</ShapeEditor>
 			</Panel>
 			<Panel title="Preview">
 				<PanelText>
@@ -54,7 +57,7 @@ const tokens = computed(() => shapeCode(draft));
 					:min="6"
 					:max="40"
 					:step="1"
-					:format="(v) => `${v}px`"
+					unit="px"
 				/>
 				<SwitchField v-model="preview.lighting" label="Lighting" />
 			</Panel>

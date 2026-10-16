@@ -2,6 +2,7 @@
 import { clamp01 } from "party-js/internal/math/scalar";
 import { computed, useId } from "vue";
 
+import { withUnit } from "../format";
 import { snapToStep } from "../number";
 
 const value = defineModel<number>({ required: true });
@@ -11,16 +12,20 @@ const {
 	max,
 	step = 0.01,
 	format = String,
+	unit,
 } = defineProps<{
-	label: string;
+	label?: string;
 	min: number;
 	max: number;
 	step?: number;
 	format?: (value: number) => string;
+	unit?: string;
 }>();
 
 const id = useId();
 const fraction = computed(() => (value.value - min) / (max - min));
+
+const valueText = computed(() => withUnit(format(value.value), unit));
 
 // the value under a pointer: anywhere on the bar, rounded to the step and kept within bounds
 function valueAt(bar: HTMLElement, clientX: number) {
@@ -78,6 +83,7 @@ function onPointerCancel() {
 			></span>
 		</div>
 		<label
+			v-if="label"
 			class="absolute left-3 text-sm font-semibold text-fg pointer-events-none"
 			:for="id"
 			>{{
@@ -88,7 +94,7 @@ function onPointerCancel() {
 			class="absolute right-3 text-xs font-mono font-semibold tracking-wider text-muted"
 			aria-hidden="true"
 			>{{
-				format(value)
+				valueText
 			}}</span
 		>
 		<!-- only for keyboard and screen readers, pointer input is handled by the bar itself -->
@@ -100,7 +106,7 @@ function onPointerCancel() {
 			:min
 			:max
 			:step
-			:aria-valuetext="format(value)"
+			:aria-valuetext="valueText"
 		>
 	</div>
 </template>

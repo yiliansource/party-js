@@ -12,3 +12,5 @@ export const playgroundInformation = {
 			"Tune an effect to your liking before you copy it into your application.",
 	},
 } as const;
+
+export type PlaygroundKey = keyof typeof playgroundInformation;

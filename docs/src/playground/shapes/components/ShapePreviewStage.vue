@@ -4,10 +4,11 @@ import { color, confetti, type ParticleShape } from "party-js";
 import * as quat from "party-js/internal/math/quat";
 import { computed, useTemplateRef } from "vue";
 
-import { confettiLighting, noLighting } from "../shared/render/lighting";
-import { previewParticle } from "../shared/render/previewParticle";
-import { useParticleCanvas } from "../shared/render/useParticleCanvas";
-import Button from "../shared/ui/Button.vue";
+import { confettiLighting, noLighting } from "../../shared/render/lighting";
+import { previewParticle } from "../../shared/render/previewParticle";
+import { useParticleCanvas } from "../../shared/render/useParticleCanvas";
+import Button from "../../shared/ui/Button.vue";
+import PreviewStage from "../../shared/ui/PreviewStage.vue";
 
 const { shape, colors, size, lighting } = defineProps<{
 	shape: ParticleShape;
@@ -53,7 +54,7 @@ function burst() {
 </script>
 
 <template>
-	<div class="relative bg-surface rounded-2xl h-90">
+	<PreviewStage>
 		<canvas
 			ref="canvas"
 			class="block w-full h-full"
@@ -64,29 +65,20 @@ function burst() {
 			class="absolute size-20 left-1/2 -translate-x-1/2 top-1/2 -translate-y-1/2"
 		></div>
 
-		<div
-			class="absolute inset-4 flex flex-col justify-between pointer-events-none *:pointer-events-auto"
-		>
-			<span
-				class="absolute left-0 top-1 text-xs font-mono font-medium text-subtle uppercase tracking-wider"
-				>Preview</span
+		<template #actions>
+			<button
+				type="button"
+				aria-label="Pause animation"
+				:aria-pressed="paused"
+				@click="paused = !paused"
+				class="size-10 grid place-items-center bg-raised rounded-xl cursor-pointer"
 			>
-			<div
-				class="absolute top-0 right-0 flex flex-row items-center justify-between"
-			>
-				<button
-					type="button"
-					aria-label="Pause animation"
-					:aria-pressed="paused"
-					@click="paused = !paused"
-					class="size-10 grid place-items-center bg-raised rounded-xl cursor-pointer"
-				>
-					<PlayIcon v-if="paused" :size="18" />
-					<PauseIcon v-else :size="18" />
-				</button>
-			</div>
+				<PlayIcon v-if="paused" :size="18" />
+				<PauseIcon v-else :size="18" />
+			</button>
+		</template>
+		<template #footer>
 			<Button
-				class="absolute bottom-0 right-0"
 				variant="accent"
 				label="Try it in a burst"
 				icon-placement="start"
@@ -96,6 +88,6 @@ function burst() {
 					<PartyPopperIcon />
 				</template>
 			</Button>
-		</div>
-	</div>
+		</template>
+	</PreviewStage>
 </template>

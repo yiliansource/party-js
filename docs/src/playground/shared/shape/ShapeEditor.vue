@@ -7,6 +7,9 @@ const { draft } = defineProps<{ draft: ShapeDraft }>();
 </script>
 
 <template>
-	<ShapeTypePicker v-model="draft.type" />
-	<ShapeSettings :draft="draft" />
+	<div class="flex flex-col gap-4">
+		<ShapeTypePicker v-model="draft.type" />
+		<ShapeSettings :draft="draft" />
+		<slot></slot>
+	</div>
 </template>

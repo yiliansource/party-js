@@ -12,6 +12,7 @@ const { numeric, colors } = fieldsFor<SparkleOptions>();
 export const sparklesDefinition = {
 	id: "sparkles",
 	label: "Sparkles",
+	description: "Golden, spinning stars that burst outwards.",
 	call: "sparkles",
 	groups: [
 		{ id: "burst", label: "Burst" },

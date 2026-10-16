@@ -31,6 +31,22 @@ export function effectOptions<O>(
 	) as O;
 }
 
+export function changedFields<O>(
+	definition: EffectDefinition<O>,
+	draft: EffectDraft,
+) {
+	return definition.fields.filter(
+		(field) => !isDefault(field, draft[field.key]),
+	);
+}
+
+export function hasChanges<O>(
+	definition: EffectDefinition<O>,
+	draft: EffectDraft,
+): boolean {
+	return changedFields(definition, draft).length > 0;
+}
+
 /**
  * The code to copy: an import of everything used, and a call with only the options that differ from the defaults.
  */
@@ -38,9 +54,10 @@ export function effectCode<O>(
 	definition: EffectDefinition<O>,
 	draft: EffectDraft,
 ): Token[] {
-	const changed = definition.fields
-		.filter((field) => !isDefault(field, draft[field.key]))
-		.map((field) => ({ field, code: fieldCode(field, draft[field.key]) }));
+	const changed = changedFields(definition, draft).map((field) => ({
+		field,
+		code: fieldCode(field, draft[field.key]),
+	}));
 
 	const imports = [
 		definition.call,

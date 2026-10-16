@@ -1,15 +1,37 @@
 ---
-import { playgroundInformation } from "../config/playgrounds";
+import { type AstroComponent, PartyPopperIcon, StarIcon } from "@lucide/astro";
+
+import {
+	type PlaygroundKey,
+	playgroundInformation,
+} from "../config/playgrounds";
 
 interface Props {
-	active: NonNullable<App.Locals["playground"]>;
+	active: PlaygroundKey;
 }
+
+const playgroundIconLookup: Record<PlaygroundKey, AstroComponent> = {
+	shapes: StarIcon,
+	effects: PartyPopperIcon,
+};
+const playgroundKeys = Object.keys(playgroundInformation) as PlaygroundKey[];
 
 const { active } = Astro.props;
 ---
 
-<div class="flex flex-row gap-3">
-	{Object.entries(playgroundInformation).map(([key, p]) => <span>
-        <a class:list={[key === active && "font-bold"]} href={`/${p.slug}/`}>{p.title}</a>
-    </span>)}
+<div class="p-1 flex flex-row gap-1 border-2 bg-page border-raised rounded-xl">
+	{playgroundKeys.map((key) => {
+        const info = playgroundInformation[key];
+        const Icon = playgroundIconLookup[key];
+
+        return <a
+             href={`/${info.slug}/`}
+             aria-current={key === active ? "page" : undefined}
+             class="px-4 py-2 inline-flex flex-row items-center gap-2 text-muted no-underline rounded-lg text-sm
+                aria-[current=page]:text-fg aria-[current=page]:bg-raised hover:text-fg hover:bg-surface"
+        >
+            <Icon size={18} />
+            <span class="font-semibold">{info.title}</span>
+        </a>;
+    })}
 </div>

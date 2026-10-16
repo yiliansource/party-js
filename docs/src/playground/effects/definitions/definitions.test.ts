@@ -68,4 +68,12 @@ describe.each(cases)("$definition.call", ({ definition, source }) => {
 			for (const v of values) expect(snapToStep(v, f)).toBe(v);
 		}
 	});
+
+	test("per-form hints only name forms the field allows", () => {
+		for (const f of definition.fields) {
+			if (f.type === "shapes" || typeof f.hint !== "object") continue;
+			for (const form of Object.keys(f.hint))
+				expect(f.forms as string[]).toContain(form);
+		}
+	});
 });

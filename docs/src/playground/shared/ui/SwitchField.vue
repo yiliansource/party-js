@@ -10,7 +10,7 @@ const { label, disabled = false } = defineProps<{
 </script>
 
 <template>
-	<label class="flex flex-row justify-between items-center">
+	<label class="flex flex-row gap-2 justify-between items-center">
 		<span class="text-sm font-semibold text-fg">{{ label }}</span>
 		<input
 			v-model="checked"

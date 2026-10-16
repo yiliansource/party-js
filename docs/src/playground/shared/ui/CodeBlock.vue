@@ -44,20 +44,23 @@ async function copyToClipboard() {
 			<span v-if="file" class="ml-4 text-sm font-mono font-medium">{{
 				file
 			}}</span>
-			<button
-				type="button"
-				class="ml-auto mr-1 px-3 py-1.5 flex flex-row items-center gap-2 bg-transparent hover:bg-code-line rounded-xl text-inherit cursor-pointer"
-				@click="copyToClipboard"
-			>
-				<CopyIcon :size="16" v-if="!copied" />
-				<CheckIcon :size="16" v-else />
-				<span class="text-sm font-semibold" aria-live="polite">{{
-					copied ? "Copied" : "Copy"
-				}}</span>
-			</button>
+			<div class="ml-auto mr-2 flex flex-row gap-2 items-center">
+				<slot name="actions"></slot>
+				<button
+					type="button"
+					class="px-3 py-1.5 flex flex-row items-center gap-2 bg-transparent hover:bg-code-line rounded-xl text-inherit cursor-pointer"
+					@click="copyToClipboard"
+				>
+					<CopyIcon :size="16" v-if="!copied" />
+					<CheckIcon :size="16" v-else />
+					<span class="text-sm font-semibold" aria-live="polite">{{
+						copied ? "Copied" : "Copy"
+					}}</span>
+				</button>
+			</div>
 		</div>
 		<pre
-			class="py-3 px-4 text-sm font-mono leading-6 whitespace-pre overflow-x-auto"
+			class="py-3 px-4 text-sm font-mono leading-6 whitespace-pre overflow-x-auto tab-4"
 		><span v-for="(token, index) in allTokens" :key="index" :style="{ color: codeColors[token.kind] }">{{
 			token.text
 		}}</span></pre>
