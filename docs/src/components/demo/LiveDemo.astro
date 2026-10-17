@@ -4,10 +4,12 @@ import type { AstroComponent as AstroIconComponent } from "@lucide/astro";
 
 import { demoCode } from "../../demos/regions";
 import Switch from "../Switch.astro";
+import DemoArea from "./DemoArea.astro";
 import DemoButton from "./DemoButton.astro";
 
 interface Props {
 	demo: string;
+	type?: "button" | "area";
 	size?: "full" | "compact" | "row";
 	label?: string;
 	icon?: AstroIconComponent;
@@ -19,7 +21,13 @@ const sources = import.meta.glob<string>("../../demos/*.demo.ts", {
 	eager: true,
 });
 
-const { demo, size = "full", label = "Click me", icon } = Astro.props;
+const {
+	demo,
+	type = "button",
+	size = "full",
+	label = "Click me",
+	icon,
+} = Astro.props;
 const source = sources[`../../demos/${demo}.demo.ts`];
 if (source === undefined) throw new Error(`[LiveDemo] unknown demo "${demo}"`);
 
@@ -38,7 +46,7 @@ const multiline = code?.includes("\n") ?? false;
 				]}
 			>
 				<div class:list={["absolute top-0 left-0 right-0 flex flex-row justify-between", size === "full" ? "m-5" : "m-4"]}>
-					<p class="text-sm font-mono font-light tracking-wide whitespace-nowrap uppercase text-subtle">
+					<p class="text-sm font-mono font-normal tracking-wide whitespace-nowrap uppercase text-subtle">
 						Live Demo
 					</p>
 					<div class="text-sm hidden motion-reduce:flex flex-row gap-3 items-center">
@@ -50,7 +58,9 @@ const multiline = code?.includes("\n") ?? false;
 					</div>
 				</div>
 				
-				<DemoButton label={label} icon={icon} size={size} />
+				{type === "button"
+					? <DemoButton label={label} icon={icon} size={size} />
+					: <DemoArea label={label} icon={icon} size={size} />}
 			</div>
 			{code && !multiline && (
 				<div class:list={["-mt-11 z-10 flex flex-row items-center", size === "full" ? "px-4 py-3" : "px-3 py-2.5"]}>
@@ -63,7 +73,9 @@ const multiline = code?.includes("\n") ?? false;
 		<div class="px-5 py-4 flex flex-row items-center gap-4">
 			{code && !multiline && <code class="text-muted text-sm">{code}</code>}
 			<div class="ml-auto mr-0 shrink-0">
-				<DemoButton label={label} icon={icon} size="compact" />
+				{type === "button"
+					? <DemoButton label={label} icon={icon} size="compact" />
+					: <DemoArea label={label} icon={icon} size="compact" />}
 			</div>
 		</div>
 	)}
@@ -79,10 +91,10 @@ const modules = import.meta.glob<{ run: Demo }>("../../demos/*.demo.ts");
 class LiveDemo extends HTMLElement {
 	connectedCallback() {
 		const ready = modules[`../../demos/${this.dataset.demo}.demo.ts`]();
-		const button = this.querySelector("button")!;
-		button.addEventListener("click", async (event) => {
+		const target = this.querySelector("[data-demo-target]")! as HTMLElement;
+		target.addEventListener("click", async (event) => {
 			const { run } = await ready;
-			run({ button, event });
+			run({ target, event });
 		});
 	}
 }
