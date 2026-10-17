@@ -1,3 +1,152 @@
 ---
+import { Image } from "astro:assets";
+
+import lightLogo from "../../assets/mark-m.svg";
+import darkLogo from "../../assets/mark-m-dark.svg";
+import type { GlyphKey } from "../../brand/glyphs";
+import { sections } from "../../config/sections";
+import { site } from "../../config/site";
+import GlyphLabel from "../GlyphLabel.astro";
+import SocialIcons from "../starlight/SocialIcons.astro";
+
+const imageAttrs = {
+	decoding: "async" as const,
+	height: 32,
+	alt: "",
+};
+
+interface FooterLink {
+	href: string;
+	label: string;
+}
+interface FooterLinkColumn {
+	glyph: GlyphKey;
+	glyphColor: string;
+	label: string;
+	items: FooterLink[];
+}
+
+const columns: FooterLinkColumn[] = [
+	{
+		glyph: "star",
+		glyphColor: sections.start.accent,
+		label: "Docs",
+		items: [
+			{ href: "/introduction/", label: "Introduction" },
+			{ href: "/installation/", label: "Installation" },
+			{ href: "/quickstart/", label: "Quickstart" },
+			{ href: "/migrating-from-v2/", label: "Migrating from v2" },
+			{ href: "/api/", label: "API reference" },
+		],
+	},
+	{
+		glyph: "square",
+		glyphColor: sections.effects.accent,
+		label: "Effects",
+		items: [
+			{ href: "/effects/confetti/", label: "Confetti" },
+			{ href: "/effects/sparkles/", label: "Sparkles" },
+		],
+	},
+	{
+		glyph: "square",
+		glyphColor: sections.playground.accent,
+		label: "Playgrounds",
+		items: [
+			{ href: "/playgrounds/effects/", label: "Effects" },
+			{ href: "/playgrounds/shapes/", label: "Shapes" },
+		],
+	},
+	{
+		glyph: "square",
+		glyphColor: sections.reference.accent,
+		label: "Project",
+		items: [
+			{ href: site.repo, label: "GitHub" },
+			{ href: site.npm, label: "npm" },
+			{ href: site.issues, label: "Issues" },
+		],
+	},
+];
 ---
 
+<footer class="large-footer mt-auto border-t border-line">
+	<div class="mx-auto max-w-300 px-6">
+		<div
+			class="py-12 flex flex-row flex-wrap gap-x-24 gap-y-10 text-[15px]"
+		>
+			<div class="shrink-0 basis-xs flex flex-col">
+				<div class="mb-3 flex flex-row items-center gap-2">
+					<span>
+						<Image
+							src={darkLogo}
+							{...imageAttrs}
+							class="light:sl-hidden"
+						/>
+						<Image
+							src={lightLogo}
+							{...imageAttrs}
+							class="dark:sl-hidden"
+						/>
+					</span>
+					<span
+						class="text-2xl text-fg font-title font-medium leading-none"
+					>
+						{site.name}
+					</span>
+				</div>
+				<p class="mb-6 leading-relaxed">{site.tagline}</p>
+				<div class="flex flex-row gap-6">
+					<SocialIcons />
+				</div>
+			</div>
+			<div
+				class="grow grid grid-cols-2 sm:grid-cols-4 gap-x-4 sm:gap-x-8 gap-y-6"
+			>
+				{columns.map((col) => (
+					<div class="">
+						<p class="mb-1 text-fg font-semibold">
+							<GlyphLabel glyph={col.glyph} color={col.glyphColor} class="size-2">
+								{col.label}
+							</GlyphLabel>
+						</p>
+						<ul class="pl-0 list-none flex flex-col gap-1">
+							{col.items.map((item) => (
+								<li>
+									<a href={item.href} class="text-inherit no-underline font-normal
+										hover:underline hover:text-fg">
+										{item.label}
+									</a>
+								</li>
+							))}
+						</ul>
+					</div>
+				))}
+			</div>
+		</div>
+		<div
+			class="py-6 border-t border-line text-subtle text-sm flex flex-row flex-wrap gap-x-3 gap-y-2 items-center justify-between"
+		>
+			<span class="grow">
+				<span>&copy; {new Date().getFullYear()} {site.author}</span>
+				<span class="mx-1.5">&bull;</span>
+				<span>{site.license} License</span>
+			</span>
+			<span
+				class="ml-auto flex flex-row gap-5 items-center max-sm:justify-between max-sm:grow"
+			>
+				<span
+					class="px-2.5 py-1 bg-surface rounded-lg font-mono text-xs text-muted"
+				>
+					v{site.version}
+				</span>
+				<a
+					href={site.v2Docs}
+					class="text-inherit no-underline hover:text-muted"
+				>
+					Looking for the v2 docs?
+				</a>
+			</span>
+		</div>
+	</div>
+</footer>

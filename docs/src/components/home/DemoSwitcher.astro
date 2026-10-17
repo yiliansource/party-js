@@ -1,0 +1,116 @@
+---
+import { Code } from "@astrojs/starlight/components";
+
+import { demoCode } from "../../demos/regions";
+
+const sources = import.meta.glob<string>("../../demos/*.demo.ts", {
+	query: "?raw",
+	import: "default",
+	eager: true,
+});
+const tabs = [
+	{ demo: "confetti-basic", label: "One line" },
+	{ demo: "confetti-options", label: "With options" },
+].map((t) => ({
+	...t,
+	code: demoCode(sources[`../../demos/${t.demo}.demo.ts`]) ?? "",
+}));
+---
+
+<demo-switcher data-demo={tabs[0].demo}>
+	<div
+		role="tablist"
+		aria-label="Code example"
+		class="mb-4 p-1 inline-block bg-surface rounded-xl"
+	>
+		{tabs.map((t, i) => (
+        	<button
+        		type="button"
+        		role="tab"
+        		id={`tab-${t.demo}`}
+        		aria-controls={`panel-${t.demo}`}
+        		aria-selected={i === 0 ? "true" : "false"}
+        		data-demo={t.demo}
+				class="px-4 py-2 text-sm font-semibold bg-transparent rounded-lg cursor-pointer
+					aria-selected:bg-raised aria-selected:text-fg
+					focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600"
+        	>
+        		{t.label}
+        	</button>
+        ))}
+	</div>
+	{tabs.map((t, i) => (
+    	<div
+    		role="tabpanel"
+    		id={`panel-${t.demo}`}
+    		aria-labelledby={`tab-${t.demo}`}
+			class:list={[i !== 0 && "hidden"]}
+    	>
+    		<Code code={t.code} lang="ts" />
+    	</div>
+    ))}
+	<slot />
+</demo-switcher>
+
+<script>
+const buttons = Array.from(
+	document.querySelectorAll<HTMLButtonElement>(
+		"demo-switcher button[role=tab]",
+	),
+);
+const panels = Array.from(
+	document.querySelectorAll<HTMLElement>("demo-switcher [role=tabpanel]"),
+);
+const views = Array.from(
+	document.querySelectorAll<HTMLElement>("[data-demo-view]"),
+);
+
+if (buttons.length !== panels.length || panels.length !== views.length)
+	throw new Error("panel count, button count and view count do not match");
+
+function selectTab(index: number) {
+	for (let i = 0; i < buttons.length; i++) {
+		const button = buttons[i];
+		button.setAttribute("aria-selected", String(i === index));
+
+		const panel = panels[i];
+		panel.classList.toggle("hidden", i !== index);
+	}
+
+	const demo = buttons[index].dataset.demo;
+	for (const view of views) {
+		const viewDemo = view.dataset.demoView;
+		view.classList.toggle("hidden", demo !== viewDemo);
+	}
+}
+
+buttons.forEach((b, i) => {
+	b.addEventListener("click", (e) => {
+		selectTab(i);
+		e.preventDefault();
+	});
+	b.addEventListener("keydown", (e) => {
+		if (document.activeElement !== b) return;
+
+		const selectedIndex = buttons.findIndex(
+			(b) => b.getAttribute("aria-selected") === "true",
+		);
+		if (e.key === "ArrowLeft") {
+			let newIndex = selectedIndex - 1;
+			if (newIndex < 0) newIndex += buttons.length;
+			selectTab(newIndex);
+			buttons[newIndex].focus();
+			e.preventDefault();
+		} else if (e.key === "ArrowRight") {
+			let newIndex = selectedIndex + 1;
+			if (newIndex >= buttons.length) newIndex -= buttons.length;
+			selectTab(newIndex);
+			buttons[newIndex].focus();
+			e.preventDefault();
+		} else if (e.key === "Space") {
+			selectTab(i);
+			e.preventDefault();
+		}
+	});
+});
+</script>

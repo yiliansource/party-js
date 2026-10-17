@@ -1,0 +1,22 @@
+---
+import type { GlyphKey } from "../brand/glyphs";
+import { type SectionKey, sections } from "../config/sections";
+import Glyph from "./Glyph.astro";
+
+type Props =
+	| { section: SectionKey; class?: string }
+	| { glyph: GlyphKey; color: string; class?: string };
+
+const props = Astro.props;
+const { glyph, accent, label } =
+	"section" in props
+		? { ...sections[props.section], accent: sections[props.section].accent }
+		: { glyph: props.glyph, accent: props.color, label: undefined };
+---
+
+<span class:list={["inline-flex items-center gap-2", props.class]}>
+	<Glyph key={glyph} class="size-4 shrink-0" style={{ color: accent }} />
+	<slot>
+		<span class="whitespace-nowrap">{label}</span>
+	</slot>
+</span>

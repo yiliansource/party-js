@@ -98,8 +98,8 @@ export default defineConfig({
 				{
 					label: sections.playground.label,
 					items: [
-						{ label: "Shapes", link: "/playgrounds/shapes/" },
 						{ label: "Effects", link: "/playgrounds/effects/" },
+						{ label: "Shapes", link: "/playgrounds/shapes/" },
 					],
 				},
 				{

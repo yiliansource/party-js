@@ -1,0 +1,38 @@
+---
+import { PartyPopperIcon } from "@lucide/astro";
+
+import { sections } from "../../config/sections";
+import LiveDemo from "../demo/LiveDemo.astro";
+import DemoSwitcher from "./DemoSwitcher.astro";
+import HomeSection from "./HomeSection.astro";
+---
+
+<HomeSection
+	glyph="star"
+	glyphColor={sections.start.accent}
+	label="Quick to start"
+	title="One call is all it takes"
+	description="Give party.js an element and let the confetti burst out of it! Every option has a sensible default, so your first call fits on a single line."
+>
+	<DemoSwitcher />
+	<div slot="side" class="h-full">
+		<div class="h-full" data-demo-view="confetti-basic">
+			<LiveDemo
+				demo="confetti-basic"
+				size="full"
+				showCode={false}
+				label="Fire confetti"
+				icon={PartyPopperIcon}
+			/>
+		</div>
+		<div class="hidden h-full" data-demo-view="confetti-options">
+			<LiveDemo
+				demo="confetti-options"
+				size="full"
+				showCode={false}
+				label="Fire confetti"
+				icon={PartyPopperIcon}
+			/>
+		</div>
+	</div>
+</HomeSection>

@@ -10,7 +10,8 @@ import DemoButton from "./DemoButton.astro";
 interface Props {
 	demo: string;
 	type?: "button" | "area";
-	size?: "full" | "compact" | "row";
+	showCode?: boolean;
+	size?: "full" | "large" | "compact" | "row";
 	label?: string;
 	icon?: AstroIconComponent;
 }
@@ -24,7 +25,8 @@ const sources = import.meta.glob<string>("../../demos/*.demo.ts", {
 const {
 	demo,
 	type = "button",
-	size = "full",
+	showCode = true,
+	size = "large",
 	label = "Click me",
 	icon,
 } = Astro.props;
@@ -35,13 +37,20 @@ const code = demoCode(source);
 const multiline = code?.includes("\n") ?? false;
 ---
 
-<live-demo data-demo={demo} class="block bg-surface rounded-2xl not-content">
-	{(size === "full" || size === "compact") && (
+<live-demo
+	data-demo={demo}
+	class:list={[
+		"block bg-surface rounded-2xl not-content",
+		size === "full" && "h-full min-h-60"
+	]}
+>
+	{(size === "full" || size === "large" || size === "compact") && (
 		<>
 			<div
 				class:list={[
 					"relative grid place-items-center pointer-events-none *:pointer-events-auto",
-					size === "full" && "h-60",
+					size === "full" && "h-full min-h-60",
+					size === "large" && "h-60",
 					size === "compact" && "h-40",
 				]}
 			>
@@ -59,10 +68,10 @@ const multiline = code?.includes("\n") ?? false;
 				</div>
 				
 				{type === "button"
-					? <DemoButton label={label} icon={icon} size={size} />
-					: <DemoArea label={label} icon={icon} size={size} />}
+					? <DemoButton label={label} icon={icon} size={size === "compact" ? "compact" : "large"} />
+					: <DemoArea label={label} icon={icon} size={size === "compact" ? "compact" : "large"} />}
 			</div>
-			{code && !multiline && (
+			{showCode && code && !multiline && (
 				<div class:list={["-mt-11 z-10 flex flex-row items-center", size === "full" ? "px-4 py-3" : "px-3 py-2.5"]}>
 					<code class="text-muted text-sm">{code}</code>
 				</div>
@@ -79,7 +88,7 @@ const multiline = code?.includes("\n") ?? false;
 			</div>
 		</div>
 	)}
-	{code && multiline && <Code code={code} lang="ts" />}
+	{showCode && code && multiline && <Code code={code} lang="ts" />}
 </live-demo>
 
 <script>

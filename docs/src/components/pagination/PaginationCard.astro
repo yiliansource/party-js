@@ -1,8 +1,8 @@
 ---
 import { ArrowLeftIcon, ArrowRightIcon } from "@lucide/astro";
 
-import { sectionOfHref, sections } from "../../config/sections";
-import Glyph from "../Glyph.astro";
+import { sectionOfHref } from "../../config/sections";
+import GlyphLabel from "../GlyphLabel.astro";
 
 type Props = {
 	link: {
@@ -16,7 +16,6 @@ const { link, type } = Astro.props;
 
 const ArrowIcon = type === "prev" ? ArrowLeftIcon : ArrowRightIcon;
 const sectionKey = sectionOfHref(link.href);
-const sectionData = sectionKey && sections[sectionKey];
 const isPrev = type === "prev";
 ---
 
@@ -42,10 +41,9 @@ const isPrev = type === "prev";
 	>
 		{link.label}
 	</span>
-	{sectionData && (
+	{sectionKey && (
 		<span class="mt-2 text-sm text-subtle flex flex-row items-center gap-1.5">
-			<Glyph key={sectionData.glyph} class="size-3.5" style={{ color: sectionData.accent }} />
-			<span>{sectionData.label}</span>
+			<GlyphLabel section={sectionKey} />
 		</span>
 	)}
 </a>

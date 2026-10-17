@@ -4,12 +4,12 @@ import type { AstroComponent as AstroIconComponent } from "@lucide/astro";
 interface Props {
 	label: string;
 	icon?: AstroIconComponent;
-	size: "full" | "compact";
+	size: "large" | "compact";
 }
 
-const { label, icon: Icon, size = "full" } = Astro.props;
+const { label, icon: Icon, size = "large" } = Astro.props;
 const sizes = {
-	full: ["px-6 py-3"],
+	large: ["px-6 py-3"],
 	compact: ["px-6 py-2"],
 };
 ---
