@@ -8,6 +8,7 @@ export const site = {
 		"Out-of-the-box confetti and sparkles — and the particle engine behind them.",
 	url: "https://party-js-v3.pages.dev/",
 	repo: "https://github.com/yiliansource/party-js",
+	issues: "https://github.com/yiliansource/party-js/issues",
 	npm: "https://www.npmjs.com/package/party-js",
 	v2Docs: "https://party.js.org/",
 	version: pkg.version,

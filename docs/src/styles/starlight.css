@@ -38,6 +38,14 @@ main > .content-panel:last-child > .sl-container {
 	flex-direction: column;
 }
 
+html[data-has-hero] main {
+	container-type: inline-size;
+}
+
+.large-footer {
+	margin-inline: calc(50% - 50cqw);
+}
+
 .content-panel {
 	border-top: none;
 }
@@ -45,8 +53,8 @@ main > .content-panel:last-child > .sl-container {
 :root[data-has-sidebar]:not(:has([data-playground]))
 	.content-panel
 	.sl-container {
-	margin: 0;
-	max-width: unset;
+	margin: 0 auto;
+	@apply max-w-6xl;
 }
 
 site-search button[data-open-modal] {

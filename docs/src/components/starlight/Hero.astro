@@ -20,7 +20,10 @@ const imageAttrs = {
 const github = socials.find((s) => s.icon === "github")!;
 ---
 
-<section class="not-content py-8 lg:py-18 flex flex-col items-center">
+<section
+	id="hero-section"
+	class="not-content py-8 lg:py-18 flex flex-col items-center"
+>
 	<div>
 		<Image src={darkImage} {...imageAttrs} class="light:sl-hidden" />
 		<Image src={lightImage} {...imageAttrs} class="dark:sl-hidden" />
@@ -66,7 +69,7 @@ const github = socials.find((s) => s.icon === "github")!;
 		variant="ghost"
 		iconPlacement="start"
 		data-paused="false"
-		class="group"
+		class="group aria-hidden:opacity-0 shadow border border-raised"
 	>
 		<Fragment slot="icon">
 			<PauseIcon class="hidden group-data-[paused=false]:block" />
@@ -80,6 +83,7 @@ import {
 	cone,
 	createEffect,
 	emitFrom,
+	fade,
 	pick,
 	randomOrientation,
 	randomSpin,
@@ -112,7 +116,7 @@ const effect = createEffect({
 		orientation: randomOrientation(),
 		angularVelocity: randomSpin(80, 160),
 		size: range(12, 20),
-		lifetime: 20,
+		lifetime: 8,
 		color: pick(["#ff5a5f", "#ffb400", "#00a699", "#7b61ff"]),
 		shape: pick([
 			{ type: "circle" },
@@ -128,6 +132,7 @@ const effect = createEffect({
 			{ type: "star" },
 		]),
 	},
+	behaviors: [fade(0, 1)],
 	lighting: (c) => c,
 });
 
@@ -142,4 +147,9 @@ toggle.addEventListener("click", () => {
 	if (paused) effect.pause();
 	else effect.resume();
 });
+
+const observer = new IntersectionObserver(([entry]) =>
+	toggle.setAttribute("aria-hidden", String(!entry.isIntersecting)),
+);
+observer.observe(document.querySelector("#hero-section")!);
 </script>

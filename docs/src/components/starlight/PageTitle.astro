@@ -2,7 +2,7 @@
 import { kindLabel, referenceGroupOf } from "../../config/reference";
 import { sectionOf, sections } from "../../config/sections";
 import { splitIdentifier } from "../../utils/identifiers";
-import Glyph from "../Glyph.astro";
+import GlyphLabel from "../GlyphLabel.astro";
 import PlaygroundTabs from "../PlaygroundTabs.astro";
 
 const entry = Astro.locals.starlightRoute.entry;
@@ -10,8 +10,8 @@ const { title, description, reference } = entry.data;
 
 const titleParts = reference ? splitIdentifier(title) : [title];
 
-const section = !Astro.locals.isNotFound ? sectionOf(entry.id) : null;
-const sectionData = section !== null ? sections[section] : null;
+const sectionKey = !Astro.locals.isNotFound ? sectionOf(entry.id) : null;
+const sectionData = sectionKey !== null ? sections[sectionKey] : null;
 
 const referenceGroup =
 	reference !== undefined ? referenceGroupOf(entry.id) : null;
@@ -21,14 +21,9 @@ const playground = Astro.locals.playground;
 
 <div class="flex flex-col gap-4 lg:flex-row">
 	<div class="mt-4 flex flex-col min-w-0">
-		{sectionData !== null && (
+		{sectionKey && sectionData !== null && (
 		    <p class="mb-3 flex flex-row flex-wrap items-center gap-x-2 gap-y-3 font-mono text-sm tracking-wider text-subtle uppercase">
-		    	<Glyph
-		    		key={sectionData.glyph}
-		    		class="size-4 shrink-0"
-		    		style={{ color: sectionData.accent }}
-		    	/>
-		    	<span class="whitespace-nowrap">{sectionData.label}</span>
+				<GlyphLabel section={sectionKey} />
 		    	{reference && (
 		    		<>
 		    			<span aria-hidden="true">/</span>
