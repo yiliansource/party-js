@@ -46,12 +46,12 @@ Visit [Confetti](/effects/confetti/) for more information on the effect.
 Instead of an element, you can pass a position in page coordinates, i.e. pixels from the top-left of the document. For example, to fire confetti wherever the user clicks:
 
 ```js
-document.addEventListener("click", (event) => {
+area.addEventListener("click", (event) => {
 	confetti({ x: event.pageX, y: event.pageY });
 });
 ```
 
-<LiveDemo demo="confetti-point" size="compact" label="Fire where you click" icon={MousePointerClickIcon} />
+<LiveDemo demo="confetti-point" type="area" size="compact" label="Fire where you click" icon={MousePointerClickIcon} />
 
 ## Sparkles
 

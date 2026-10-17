@@ -4,7 +4,7 @@ import { confetti, range } from "party-js";
 
 import type { Demo } from "./types";
 
-export const run: Demo = ({ button }) => {
+export const run: Demo = ({ target: button }) => {
 	// #region demo
 	confetti(button, {
 		count: range(80, 120),

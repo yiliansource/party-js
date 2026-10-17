@@ -1,4 +1,1 @@
-export type Demo = (ctx: {
-	button: HTMLButtonElement;
-	event: MouseEvent;
-}) => void;
+export type Demo = (ctx: { target: HTMLElement; event: MouseEvent }) => void;
