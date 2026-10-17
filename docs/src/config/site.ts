@@ -1,5 +1,7 @@
 import { type SimpleIcon, siGithub, siNpm } from "simple-icons";
 
+import pkg from "../../../package.json";
+
 export const site = {
 	name: "party.js",
 	tagline:
@@ -7,6 +9,10 @@ export const site = {
 	url: "https://party-js-v3.pages.dev/",
 	repo: "https://github.com/yiliansource/party-js",
 	npm: "https://www.npmjs.com/package/party-js",
+	v2Docs: "https://party.js.org/",
+	version: pkg.version,
+	author: pkg.author,
+	license: pkg.license,
 } as const;
 
 interface SocialLink {

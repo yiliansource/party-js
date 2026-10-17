@@ -1,10 +1,11 @@
 ---
-import { CodeIcon } from "@lucide/astro";
-
 import { type CollectionEntry, getCollection } from "astro:content";
 
 import { isPublished } from "../../utils/drafts";
 import EntryCard from "../EntryCard.astro";
+import CompactFooter from "../footer/CompactFooter.astro";
+import LargeFooter from "../footer/LargeFooter.astro";
+import PageMeta from "../footer/PageMeta.astro";
 import Pagination from "./Pagination.astro";
 
 const { entry } = Astro.locals.starlightRoute;
@@ -16,42 +17,23 @@ const guides = reference
 				isPublished(entry) && entry.data.api?.includes(reference.name),
 		)
 	: [];
+
+const isHomepage = entry.id === "";
 ---
 
-<footer class="flex flex-col">
-	{reference && (
-		<>
-			{guides.length > 0 && (
-				<div class="mt-8 mb-4 flex flex-col">
-					{guides.map((guide) => (
-						<EntryCard entry={guide} />
-					))}
-				</div>
-			)}
-			<div class="mt-8 mb-6 flex flex-col sm:flex-row gap-2 text-subtle">
-				{reference.source && (
-					<p class="ml-0 mr-auto inline-flex items-center text-xs font-mono">
-						<CodeIcon size={14} class="mr-2" />
-						<span class="mr-2">Defined in</span>
-						{reference.source.url ? (
-							<a
-								href={reference.source.url}
-								class={"text-inherit no-underline hover:underline"}
-							>
-								<span>{reference.source.file}</span>:
-								<span>{reference.source.line}</span>
-							</a>
-						) : (
-							<span>
-								<span>{reference.source.file}</span>:
-								<span>{reference.source.line}</span>
-							</span>
-						)}
-					</p>
-				)}
-				<p class="sm:ml-auto sm:mr-0 text-sm">Generated from the source</p>
+{isHomepage ? (
+	<LargeFooter />
+) : (
+	<footer class="flex flex-col grow mt-12">
+		{guides.length > 0 && (
+			<div class="mb-8 flex flex-col">
+				{guides.map((guide) => (
+					<EntryCard entry={guide} />
+				))}
 			</div>
-		</>
-	)}
-	<Pagination />
-</footer>
+		)}
+		<PageMeta />
+		<Pagination />
+		<CompactFooter />
+	</footer>
+)}

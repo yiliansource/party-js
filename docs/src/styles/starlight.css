@@ -17,6 +17,27 @@
 	--sl-content-pad-x: 1.5rem;
 }
 
+main {
+	display: flex;
+	flex-direction: column;
+	min-height: calc(
+		100dvh -
+		var(--sl-nav-height) -
+		var(--sl-mobile-toc-height)
+	);
+}
+main > .content-panel:last-child {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+}
+main > .content-panel:last-child > .sl-container {
+	flex-grow: 1;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
 .content-panel {
 	border-top: none;
 }
