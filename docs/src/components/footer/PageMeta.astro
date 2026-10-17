@@ -36,12 +36,13 @@ const { reference } = entry.data;
     </a>}
     {lastUpdated && <p class="sm:ml-auto sm:mr-0">
         <span>Last updated</span>&nbsp;
-        <span>
-        {lastUpdated.toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric"
-        })}
-        </span>
+        <time datetime={lastUpdated.toISOString()}>
+        	{lastUpdated.toLocaleDateString("en-US", {
+        	    year: "numeric",
+        	    month: "short",
+        	    day: "numeric",
+				timeZone: "UTC"
+        	})}
+        </time>
     </p>}
 </div>}

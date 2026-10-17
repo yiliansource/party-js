@@ -9,15 +9,15 @@ interface Props {
 
 const { label, icon: Icon, size = "full" } = Astro.props;
 const sizes = {
-	full: ["px-6 py-2.5"],
-	compact: ["px-6 py-2.5"],
+	full: ["px-6 py-3"],
+	compact: ["px-6 py-2"],
 };
 ---
 
 <div
 	class:list={[
         ...sizes[size],
-        "flex flex-row items-center gap-2 cursor-pointer text-subtle",
+        "flex flex-row items-center gap-2 cursor-pointer text-subtle text-sm",
         "border-2 border-field-line border-dashed rounded-2xl select-none"
     ]}
 	data-demo-target

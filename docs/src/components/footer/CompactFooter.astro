@@ -1,5 +1,5 @@
 ---
-import Image from "astro/components/Image.astro";
+import { Image } from "astro:assets";
 
 import lightLogo from "../../assets/mark-s.svg";
 import darkLogo from "../../assets/mark-s-dark.svg";
@@ -8,7 +8,7 @@ import { site } from "../../config/site";
 const imageAttrs = {
 	decoding: "async" as const,
 	height: 16,
-	alt: "party.js logo",
+	alt: "",
 };
 
 const footerLinks = [
