@@ -41,13 +41,14 @@ Astro.locals.isNotFound = true;
 				This page does not exist, or it was moved when the docs were
 				rebuilt for v3. Try a search, or head back to the docs.
 			</p>
-			{Astro.url.pathname.startsWith("/docs") &&
-				<a
-					href={site.v2Docs + Astro.url.pathname.slice(1)}
-					class="mt-4 font-medium text-subtle underline underline-offset-4 decoration-2 hover:text-muted"
-				>
-					Were you looking for the v2 docs?
-				</a>}
+			<a
+				id="v2-hint"
+				hidden
+				href={site.v2Docs}
+				class="mt-4 font-medium text-subtle underline underline-offset-4 decoration-2 hover:text-muted"
+			>
+				Were you looking for the v2 docs?
+			</a>
 		</div>
 		<div class="flex flex-col items-center">
 			<div class="mb-8 flex flex-col w-full md:flex-row gap-2">
@@ -112,4 +113,10 @@ searchDocsBtn.addEventListener("click", (e) => {
 	siteSearchOpenBtn.click();
 	e.stopPropagation();
 });
+
+const hint = document.getElementById("v2-hint") as HTMLAnchorElement;
+if (location.pathname.startsWith("/docs")) {
+	hint.href = new URL(location.pathname.slice(1), hint.href).href;
+	hint.hidden = false;
+}
 </script>
