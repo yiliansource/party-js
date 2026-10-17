@@ -1,0 +1,45 @@
+---
+import Image from "astro/components/Image.astro";
+
+import lightLogo from "../../assets/mark-s.svg";
+import darkLogo from "../../assets/mark-s-dark.svg";
+import { site } from "../../config/site";
+
+const imageAttrs = {
+	decoding: "async" as const,
+	height: 16,
+	alt: "party.js logo",
+};
+
+const footerLinks = [
+	{ href: site.repo, label: "GitHub" },
+	{ href: site.npm, label: "npm" },
+	{ href: site.v2Docs, label: "v2 docs" },
+];
+---
+
+<div
+	class="mt-auto py-6 flex flex-row flex-wrap gap-x-3 gap-y-1 items-center border-t border-line text-sm text-subtle"
+>
+	<span class="grid place-content-center">
+		<Image src={darkLogo} {...imageAttrs} class="light:sl-hidden" />
+		<Image src={lightLogo} {...imageAttrs} class="dark:sl-hidden" />
+	</span>
+	<span>
+		<span>&copy; {new Date().getFullYear()} {site.author}</span>
+		<span class="mx-1.5">&bull;</span>
+		<span>{site.license} License</span>
+	</span>
+	<span class="ml-auto flex flex-row gap-5 items-center">
+		{footerLinks.map((l) => (
+			<a href={l.href} class="text-inherit no-underline hover:text-muted">
+				{l.label}
+			</a>
+		))}
+		<span
+			class="px-2.5 py-1 bg-surface rounded-lg font-mono text-xs text-muted"
+		>
+			v{site.version}
+		</span>
+	</span>
+</div>

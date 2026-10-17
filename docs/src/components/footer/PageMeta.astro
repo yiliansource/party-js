@@ -1,0 +1,47 @@
+---
+import { CodeIcon, PencilLineIcon } from "@lucide/astro";
+
+const { entry, editUrl, lastUpdated } = Astro.locals.starlightRoute;
+const { reference } = entry.data;
+---
+
+{reference && <div class="mb-6 flex flex-col sm:flex-row gap-2 text-subtle">
+	{reference.source && (
+		<p class="ml-0 mr-auto inline-flex items-center text-xs font-mono">
+			<CodeIcon size={14} class="mr-2" />
+			<span class="mr-2">Defined in</span>
+			{reference.source.url ? (
+				<a
+					href={reference.source.url}
+					class={"text-inherit no-underline hover:text-muted"}
+				>
+					<span>{reference.source.file}</span>:
+					<span>{reference.source.line}</span>
+				</a>
+			) : (
+				<span>
+					<span>{reference.source.file}</span>:
+					<span>{reference.source.line}</span>
+				</span>
+			)}
+		</p>
+	)}
+	<p class="sm:ml-auto sm:mr-0 text-sm">Generated from the source</p>
+</div>}
+
+{(editUrl || lastUpdated) && <div class="mb-6 flex flex-col sm:flex-row gap-2 text-subtle text-sm">
+    {editUrl && <a href={editUrl} class="ml-0 mr-auto inline-flex items-center gap-2 text-inherit no-underline hover:text-muted">
+        <PencilLineIcon size={16} />
+        <span>Edit this page</span>
+    </a>}
+    {lastUpdated && <p class="sm:ml-auto sm:mr-0">
+        <span>Last updated</span>&nbsp;
+        <span>
+        {lastUpdated.toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "short",
+            day: "numeric"
+        })}
+        </span>
+    </p>}
+</div>}
