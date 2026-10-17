@@ -4,7 +4,7 @@ import { ArrowLeftIcon, SearchIcon } from "@lucide/astro";
 
 import NotFoundImage from "../assets/not-found.svg";
 import Button from "../components/Button.astro";
-import { socials } from "../config/site";
+import { site, socials } from "../config/site";
 
 const github = socials.find((s) => s.icon === "github")!;
 
@@ -21,9 +21,11 @@ Astro.locals.isNotFound = true;
 		next: false,
 	}}
 >
-	<div class="not-content flex flex-col items-center text-center gap-5 py-16">
+	<div
+		class="not-content flex flex-col items-center text-center gap-5 md:py-12"
+	>
 		<NotFoundImage
-			class="w-full max-w-md h-auto mt-26"
+			class="w-full max-w-md h-auto md:mt-12"
 			style="color: var(--sl-color-white)"
 		/>
 		<div class="mt-2 mb-4 flex flex-col items-center text-center">
@@ -39,6 +41,13 @@ Astro.locals.isNotFound = true;
 				This page does not exist, or it was moved when the docs were
 				rebuilt for v3. Try a search, or head back to the docs.
 			</p>
+			{Astro.url.pathname.startsWith("/docs") &&
+				<a
+					href={site.v2Docs + Astro.url.pathname.slice(1)}
+					class="mt-4 font-medium text-subtle underline underline-offset-4 decoration-2 hover:text-muted"
+				>
+					Were you looking for the v2 docs?
+				</a>}
 		</div>
 		<div class="flex flex-col items-center">
 			<div class="mb-8 flex flex-col w-full md:flex-row gap-2">
