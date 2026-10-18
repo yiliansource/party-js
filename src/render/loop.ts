@@ -1,53 +1,51 @@
-import type { FixedTimestepLoop } from "../physics/loop";
-
-/**
- * Advances the provided loop by the elapsed time between two given timestamps (in milliseconds),
- * timestamps (in milliseconds, as RAF provides them), then renders exactly once.
- *
- * The previous timestamp will be null on the first tick, which will result in a plain render without advancing the loop.
- */
-export function tick(
-	loop: FixedTimestepLoop,
-	render: () => void,
-	previousTime: number | null,
-	currentTime: number,
-): void {
-	if (previousTime !== null) {
-		const elapsedSeconds = (currentTime - previousTime) / 1000;
-		loop.advance(elapsedSeconds);
-	}
-	render();
-}
-
 export interface AnimationLoop {
+	readonly running: boolean;
 	start(): void;
 	stop(): void;
 }
 
+/**
+ * Creates a loop that calls `onFrame` once per animation frame while running.
+ *
+ * `onFrame` receives the elapsed time since the previous frame, in seconds. On the first frame after each
+ * {@link AnimationLoop.start | start()} it receives `null` instead, since there is no previous frame to measure
+ * from. This keeps the time spent stopped from being treated as elapsed.
+ */
 export function createAnimationLoop(
-	loop: FixedTimestepLoop,
-	render: () => void,
+	onFrame: (elapsedSeconds: number | null) => void,
 ): AnimationLoop {
+	let active = false;
 	let rafId: number | null = null;
 	let previousTime: number | null = null;
 
 	function frame(time: number): void {
-		tick(loop, render, previousTime, time);
+		rafId = null; // this frame has fired, nothing to cancel anymore
+
+		const elapsedSeconds =
+			previousTime === null ? null : (time - previousTime) / 1000;
 		previousTime = time;
-		if (rafId === null) return;
-		rafId = requestAnimationFrame(frame);
+
+		onFrame(elapsedSeconds);
+
+		// onFrame may have stopped the loop, or stopped and started it again (which already queued a frame)
+		if (active && rafId === null) rafId = requestAnimationFrame(frame);
 	}
 
 	return {
+		get running() {
+			return active;
+		},
 		start() {
-			if (rafId !== null) return;
+			if (active) return;
 
+			active = true;
 			previousTime = null;
 			rafId = requestAnimationFrame(frame);
 		},
 		stop() {
-			if (rafId !== null) cancelAnimationFrame(rafId);
+			active = false;
 
+			if (rafId !== null) cancelAnimationFrame(rafId);
 			rafId = null;
 		},
 	};

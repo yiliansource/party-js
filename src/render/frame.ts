@@ -8,20 +8,19 @@ import { computeLightingCoefficient, defaultLighting } from "./lighting";
 import { project } from "./projection";
 
 /**
- * Clears the context and draws every particle, projecting each one from its
- * physics state and executing the resulting draw command in order.
+ * Draws every particle, projecting each one from its physics state and executing the resulting draw command
+ * in order.
+ *
+ * Does not clear the context first: a surface draws several effects onto the same canvas each frame, so it
+ * clears once before drawing all of them.
  */
-export function drawFrame(
+export function drawParticles(
 	ctx: CanvasRenderingContext2D,
 	particles: readonly Particle[],
 	origin: Vec2,
-	width: number,
-	height: number,
 	light: Vec3 = vec3.unitZ,
 	lighting = defaultLighting,
 ): void {
-	ctx.clearRect(0, 0, width, height);
-
 	const normalizedLight = vec3.normalize(light);
 	for (const particle of particles) {
 		const transform = project(particle, origin);

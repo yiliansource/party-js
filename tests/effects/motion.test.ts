@@ -33,6 +33,8 @@ beforeEach(() => {
 		innerHeight: 600,
 		scrollX: 0,
 		scrollY: 0,
+		addEventListener() {},
+		removeEventListener() {},
 	};
 	globals.document = {
 		createElement: () => {
