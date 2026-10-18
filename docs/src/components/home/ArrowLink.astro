@@ -1,0 +1,21 @@
+---
+import { ArrowRightIcon } from "@lucide/astro";
+
+interface Props {
+	href: string;
+	label: string;
+}
+
+const { href, label } = Astro.props;
+---
+
+<a
+	href={href}
+	class="group inline-flex flex-row items-center gap-1.5 no-underline text-fg text-sm font-semibold"
+>
+	<span>{label}</span>
+	<ArrowRightIcon
+		size={16}
+		class="transition-transform group-hover:translate-x-0.75"
+	/>
+</a>

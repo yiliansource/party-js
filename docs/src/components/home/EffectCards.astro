@@ -9,9 +9,9 @@ import HomeSection from "./HomeSection.astro";
 
 const effectCode = `createEffect({
   origin: { x, y },
-  schedule: { bursts: [{ count: 30 }] },
+  schedule: { /* ... */ },
   particleInit: { /* ... */ },
-  behaviors: [gravity(600)],
+  behaviors: [/* ... */],
 });`;
 ---
 
@@ -87,9 +87,13 @@ import { confetti, sparkles } from "party-js";
 
 document
 	.querySelector("#effect-section-confetti-button")
-	?.addEventListener("click", (e) => confetti(e.target as HTMLElement));
+	?.addEventListener("click", (e) =>
+		confetti(e.currentTarget as HTMLElement),
+	);
 
 document
 	.querySelector("#effect-section-sparkles-button")
-	?.addEventListener("click", (e) => sparkles(e.target as HTMLElement));
+	?.addEventListener("click", (e) =>
+		sparkles(e.currentTarget as HTMLElement),
+	);
 </script>
