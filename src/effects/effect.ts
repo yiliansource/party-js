@@ -34,17 +34,16 @@ import { type ReducedMotion, shouldSkip } from "./motion";
  */
 export interface Effect {
 	/**
-	 * Ends the effect immediately and removes its particles. A canvas that party.js created is removed.
-	 * A canvas you provided is cleared and left in place. `onComplete` will not be called, and the effect
+	 * Ends the effect immediately and removes its particles. `onComplete` will not be called, and the effect
 	 * can't be resumed afterwards. Calling it again has no effect.
+	 *
+	 * The canvas the effect was drawn on is removed (or, if you provided it, cleared) once no other effect is
+	 * drawing on it.
 	 */
 	stop(): void;
 	/**
 	 * Freezes the effect: particles stop moving and stay visible where they are. Calling it while already paused
 	 * has no effect.
-	 *
-	 * If you did not supply a canvas, pausing the default fullscreen one that is created results in particles
-	 * being frozen in the _viewport_, not the page, since nothing is redrawn while paused.
 	 */
 	pause(): void;
 	/**
@@ -106,8 +105,9 @@ export interface CreateEffectOptions {
 	 */
 	behaviors?: Behavior[];
 	/**
-	 * A canvas to draw onto. If none is provided, party.js creates its own fullscreen canvas and removes it
-	 * once the effect ends. See `origin` for how the coordinates behave when a canvas is supplied, versus when not.
+	 * A canvas to draw onto. If none is provided, party.js draws onto a fullscreen canvas it shares between all
+	 * effects, and removes it once no effect is using it anymore. See `origin` for how the coordinates behave
+	 * when a canvas is supplied, versus when not.
 	 */
 	canvas?: HTMLCanvasElement;
 	/**

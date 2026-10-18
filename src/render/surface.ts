@@ -175,7 +175,7 @@ function createSurface(
 	}
 
 	function scroll(): void {
-		if (!loop.running && layers.length > 0) render(null);
+		if (!loop.running) render(null);
 	}
 
 	const resizeObserver = new ResizeObserver(resize);
