@@ -20,7 +20,6 @@ const imageAttrs = {
 const github = socials.find((s) => s.icon === "github")!;
 ---
 
-<div id="_top"></div>
 <section
 	id="hero-section"
 	class="not-content py-8 lg:py-18 flex flex-col items-center"
@@ -31,7 +30,8 @@ const github = socials.find((s) => s.icon === "github")!;
 	</div>
 	<div class="mb-8 flex flex-col items-center text-center">
 		<h1
-			class="mb-6 leading-none font-title font-medium text-ink dark:text-mist text-7xl lg:text-[88px]"
+			id="_top"
+			class="mb-6 leading-none font-title font-medium text-ink dark:text-mist text-7xl lg:text-[88px] scroll-mt-[100vh]"
 		>
 			{site.name}
 		</h1>

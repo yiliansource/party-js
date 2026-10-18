@@ -1,5 +1,5 @@
 ---
-import { ArrowRightIcon } from "@lucide/astro";
+import ArrowLink from "./ArrowLink.astro";
 
 interface Props {
 	linkLabel?: string;
@@ -19,8 +19,5 @@ const { linkLabel, linkHref } = Astro.props;
 	<p class="mb-2 leading-relaxed">
 		<slot name="description"></slot>
 	</p>
-	{linkLabel && linkHref && <a href={linkHref} class="group inline-flex flex-row items-center gap-1.5 no-underline text-fg text-sm font-semibold">
-        <span>{linkLabel}</span>
-        <ArrowRightIcon size={16} class="transition-transform group-hover:translate-x-0.75" />
-    </a>}
+	{linkLabel && linkHref && <ArrowLink href={linkHref} label={linkLabel} />}
 </div>
