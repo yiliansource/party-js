@@ -10,8 +10,7 @@ import type { Vec3 } from "../math/vec3";
 import { createFixedTimestepLoop } from "../physics/loop";
 import { createRng, type Rng } from "../random/rng";
 import type { LightingFn } from "../render";
-import { createAnimationLoop } from "../render/loop";
-import { createRenderer } from "../render/renderer";
+import { attachLayer, type Layer } from "../render/surface";
 import { type ReducedMotion, shouldSkip } from "./motion";
 
 /**
@@ -35,17 +34,16 @@ import { type ReducedMotion, shouldSkip } from "./motion";
  */
 export interface Effect {
 	/**
-	 * Ends the effect immediately and removes its particles. A canvas that party.js created is removed.
-	 * A canvas you provided is cleared and left in place. `onComplete` will not be called, and the effect
+	 * Ends the effect immediately and removes its particles. `onComplete` will not be called, and the effect
 	 * can't be resumed afterwards. Calling it again has no effect.
+	 *
+	 * The canvas the effect was drawn on is removed (or, if you provided it, cleared) once no other effect is
+	 * drawing on it.
 	 */
 	stop(): void;
 	/**
 	 * Freezes the effect: particles stop moving and stay visible where they are. Calling it while already paused
 	 * has no effect.
-	 *
-	 * If you did not supply a canvas, pausing the default fullscreen one that is created results in particles
-	 * being frozen in the _viewport_, not the page, since nothing is redrawn while paused.
 	 */
 	pause(): void;
 	/**
@@ -107,8 +105,9 @@ export interface CreateEffectOptions {
 	 */
 	behaviors?: Behavior[];
 	/**
-	 * A canvas to draw onto. If none is provided, party.js creates its own fullscreen canvas and removes it
-	 * once the effect ends. See `origin` for how the coordinates behave when a canvas is supplied, versus when not.
+	 * A canvas to draw onto. If none is provided, party.js draws onto a fullscreen canvas it shares between all
+	 * effects, and removes it once no effect is using it anymore. See `origin` for how the coordinates behave
+	 * when a canvas is supplied, versus when not.
 	 */
 	canvas?: HTMLCanvasElement;
 	/**
@@ -233,43 +232,46 @@ export function createEffect(options: CreateEffectOptions): Effect {
 	if (shouldSkip(options.reducedMotion))
 		return skippedEffect(options.onComplete);
 
-	const renderer = createRenderer({ canvas: options.canvas });
-
 	const fixedLoop = createFixedTimestepLoop({
 		fixedDt: 1 / 120,
 		onStep: (dt) => emitter.tick(dt),
 	});
 
-	const loop = createAnimationLoop(fixedLoop, () => {
-		renderer.drawFrame(
-			emitter.particles,
-			resolveLive(options.origin),
-			resolveLive(options.light),
-			options.lighting,
-		);
-		if (emitter.isDone) stop(true);
-	});
+	let paused = false;
 
-	let stopped = false;
+	const layer: Layer = {
+		get particles() {
+			return emitter.particles;
+		},
+		get origin() {
+			return resolveLive(options.origin);
+		},
+		get light() {
+			return resolveLive(options.light);
+		},
+		lighting: options.lighting,
+		get done() {
+			return emitter.isDone;
+		},
+		get paused() {
+			return paused;
+		},
+		advance: (elapsedSeconds) => fixedLoop.advance(elapsedSeconds),
+		onComplete: () => options.onComplete?.(),
+	};
 
-	function stop(natural = false): void {
-		if (stopped) return;
-		stopped = true;
-
-		loop.stop();
-		renderer.dispose();
-		if (natural) options.onComplete?.();
-	}
-
-	loop.start();
+	const handle = attachLayer(layer, options.canvas);
 
 	return {
-		stop: () => stop(false),
+		stop: () => {
+			handle.detach();
+		},
 		pause: () => {
-			if (!stopped) loop.stop();
+			paused = true;
 		},
 		resume: () => {
-			if (!stopped) loop.start();
+			paused = false;
+			handle.wake();
 		},
 	};
 }
