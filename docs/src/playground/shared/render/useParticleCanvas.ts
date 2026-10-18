@@ -1,8 +1,8 @@
 import type { LightingFn, Particle, Vec2, Vec3 } from "party-js";
 import {
-	createRenderer,
-	type Renderer,
-} from "party-js/internal/render/renderer";
+	attachLayer,
+	type LayerHandle,
+} from "party-js/internal/render/surface";
 import { onBeforeUnmount, onMounted, type ShallowRef } from "vue";
 
 export interface CanvasSize {
@@ -21,38 +21,39 @@ export function useParticleCanvas(
 	canvas: Readonly<ShallowRef<HTMLCanvasElement | null>>,
 	frame: (dt: number, size: CanvasSize) => FrameScene,
 ): void {
-	let renderer: Renderer | undefined;
-	let handle = 0;
-	let last: number | undefined;
-
-	function loop(time: number) {
-		const el = canvas.value;
-		if (el && renderer) {
-			const dt =
-				last === undefined ? 0 : Math.min((time - last) / 1000, 0.1);
-			const scene = frame(dt, {
-				width: el.clientWidth,
-				height: el.clientHeight,
-			});
-			renderer.drawFrame(
-				scene.particles,
-				scene.origin,
-				scene.light,
-				scene.lighting,
-			);
-		}
-		last = time;
-		handle = requestAnimationFrame(loop);
-	}
+	let handle: LayerHandle | undefined;
 
 	onMounted(() => {
-		if (!canvas.value) return;
-		renderer = createRenderer({ canvas: canvas.value });
-		handle = requestAnimationFrame(loop);
+		const el = canvas.value;
+		if (!el) return;
+
+		const update = (dt: number) =>
+			frame(dt, { width: el.clientWidth, height: el.clientHeight });
+		let scene = update(0);
+
+		handle = attachLayer(
+			{
+				get particles() {
+					return scene.particles;
+				},
+				get origin() {
+					return scene.origin;
+				},
+				get light() {
+					return scene.light;
+				},
+				get lighting() {
+					return scene.lighting;
+				},
+				done: false,
+				paused: false,
+				advance(dt) {
+					scene = update(Math.min(dt, 0.1));
+				},
+			},
+			el,
+		);
 	});
 
-	onBeforeUnmount(() => {
-		cancelAnimationFrame(handle);
-		renderer?.dispose();
-	});
+	onBeforeUnmount(() => handle?.detach());
 }

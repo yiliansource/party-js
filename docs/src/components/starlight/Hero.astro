@@ -55,7 +55,7 @@ const github = socials.find((s) => s.icon === "github")!;
 	</div>
 </section>
 
-<div class="not-content m-0 fixed inset-0 -z-10">
+<div class="not-content m-0 absolute inset-x-0 top-0 h-[150vh] -z-10">
 	<canvas
 		id="confetti-rain-canvas"
 		class="w-full h-full"
@@ -100,7 +100,7 @@ const canvas = document.getElementById(
 const headerHeight = document.querySelector("header")?.offsetHeight ?? 0;
 
 const effect = createEffect({
-	origin: () => ({ x: 0, y: headerHeight - window.scrollY }),
+	origin: { x: 0, y: headerHeight },
 	canvas,
 	schedule: {
 		loops: Number.POSITIVE_INFINITY,

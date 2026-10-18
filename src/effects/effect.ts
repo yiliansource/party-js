@@ -10,8 +10,7 @@ import type { Vec3 } from "../math/vec3";
 import { createFixedTimestepLoop } from "../physics/loop";
 import { createRng, type Rng } from "../random/rng";
 import type { LightingFn } from "../render";
-import { createAnimationLoop } from "../render/loop";
-import { createRenderer } from "../render/renderer";
+import { attachLayer, type Layer } from "../render/surface";
 import { type ReducedMotion, shouldSkip } from "./motion";
 
 /**
@@ -233,43 +232,46 @@ export function createEffect(options: CreateEffectOptions): Effect {
 	if (shouldSkip(options.reducedMotion))
 		return skippedEffect(options.onComplete);
 
-	const renderer = createRenderer({ canvas: options.canvas });
-
 	const fixedLoop = createFixedTimestepLoop({
 		fixedDt: 1 / 120,
 		onStep: (dt) => emitter.tick(dt),
 	});
 
-	const loop = createAnimationLoop(fixedLoop, () => {
-		renderer.drawFrame(
-			emitter.particles,
-			resolveLive(options.origin),
-			resolveLive(options.light),
-			options.lighting,
-		);
-		if (emitter.isDone) stop(true);
-	});
+	let paused = false;
 
-	let stopped = false;
+	const layer: Layer = {
+		get particles() {
+			return emitter.particles;
+		},
+		get origin() {
+			return resolveLive(options.origin);
+		},
+		get light() {
+			return resolveLive(options.light);
+		},
+		lighting: options.lighting,
+		get done() {
+			return emitter.isDone;
+		},
+		get paused() {
+			return paused;
+		},
+		advance: (elapsedSeconds) => fixedLoop.advance(elapsedSeconds),
+		onComplete: () => options.onComplete?.(),
+	};
 
-	function stop(natural = false): void {
-		if (stopped) return;
-		stopped = true;
-
-		loop.stop();
-		renderer.dispose();
-		if (natural) options.onComplete?.();
-	}
-
-	loop.start();
+	const handle = attachLayer(layer, options.canvas);
 
 	return {
-		stop: () => stop(false),
+		stop: () => {
+			handle.detach();
+		},
 		pause: () => {
-			if (!stopped) loop.stop();
+			paused = true;
 		},
 		resume: () => {
-			if (!stopped) loop.start();
+			paused = false;
+			handle.wake();
 		},
 	};
 }
