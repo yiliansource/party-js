@@ -2,7 +2,7 @@
 
 @variant sl {
 	html[data-has-hero][data-has-sidebar] {
-		--sl-content-width: 67.5rem;
+		--sl-content-width: 72rem;
 		--sl-content-inline-start: 0rem;
 	}
 }

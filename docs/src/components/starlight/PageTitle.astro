@@ -1,6 +1,6 @@
 ---
 import { kindLabel, referenceGroupOf } from "../../config/reference";
-import { sectionOf, sections } from "../../config/sections";
+import { sectionOf } from "../../config/sections";
 import { splitIdentifier } from "../../utils/identifiers";
 import GlyphLabel from "../GlyphLabel.astro";
 import PlaygroundTabs from "../PlaygroundTabs.astro";
@@ -11,7 +11,6 @@ const { title, description, reference } = entry.data;
 const titleParts = reference ? splitIdentifier(title) : [title];
 
 const sectionKey = !Astro.locals.isNotFound ? sectionOf(entry.id) : null;
-const sectionData = sectionKey !== null ? sections[sectionKey] : null;
 
 const referenceGroup =
 	reference !== undefined ? referenceGroupOf(entry.id) : null;
@@ -21,7 +20,7 @@ const playground = Astro.locals.playground;
 
 <div class="flex flex-col gap-4 lg:flex-row">
 	<div class="mt-4 flex flex-col min-w-0">
-		{sectionKey && sectionData !== null && (
+		{sectionKey && (
 		    <p class="mb-3 flex flex-row flex-wrap items-center gap-x-2 gap-y-3 font-mono text-sm tracking-wider text-subtle uppercase">
 				<GlyphLabel section={sectionKey} />
 		    	{reference && (

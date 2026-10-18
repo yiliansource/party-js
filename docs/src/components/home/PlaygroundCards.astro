@@ -1,6 +1,9 @@
 ---
 import { sections } from "../../config/sections";
+import EffectsMiniature from "./EffectsMiniature.astro";
 import HomeSection from "./HomeSection.astro";
+import PlaygroundCard from "./PlaygroundCard.astro";
+import ShapesMiniature from "./ShapesMiniature.astro";
 ---
 
 <HomeSection
@@ -10,5 +13,22 @@ import HomeSection from "./HomeSection.astro";
 	title="Try it before you install"
 	description="Tune every option with a live preview, then copy the code it generates."
 >
-	<p>section content</p>
+	<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+		<PlaygroundCard href="/playgrounds/effects/">
+			<EffectsMiniature slot="miniature" />
+			<Fragment slot="title">Effects playground</Fragment>
+			<Fragment slot="description">
+				Count, angle, speed, colors and shapes, with a live burst on
+				every change.
+			</Fragment>
+		</PlaygroundCard>
+		<PlaygroundCard href="/playgrounds/shapes/">
+			<ShapesMiniature slot="miniature" />
+			<Fragment slot="title">Shapes playground</Fragment>
+			<Fragment slot="description">
+				See a particle shape up close and at real size before you use it
+				in an effect.
+			</Fragment>
+		</PlaygroundCard>
+	</div>
 </HomeSection>

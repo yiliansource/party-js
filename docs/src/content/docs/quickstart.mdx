@@ -19,7 +19,7 @@ const button = document.querySelector("#submit");
 button.addEventListener("click", () => confetti(button));
 ```
 
-<LiveDemo demo="confetti-basic" size="compact" label="Fire confetti" icon={PartyPopperIcon} />
+<LiveDemo demo="confetti-basic" hideCode size="compact" label="Fire confetti" icon={PartyPopperIcon} />
 
 The confetti comes from the element's whole area, not just its center, so a wide button produces a wide burst. The library draws it on a canvas over the page and removes the canvas again once the last piece is gone.
 
@@ -51,17 +51,11 @@ area.addEventListener("click", (event) => {
 });
 ```
 
-<LiveDemo demo="confetti-point" type="area" size="compact" label="Fire where you click" icon={MousePointerClickIcon} />
+<LiveDemo demo="confetti-point" hideCode type="area" size="compact" label="Fire where you click" icon={MousePointerClickIcon} />
 
 ## Sparkles
 
 The other built-in effect is `sparkles()`. It works just like `confetti()`: it takes an element or a point, and an options object. Instead of confetti, it bursts small golden stars out in all directions, unaffected by gravity.
-
-```js
-import { sparkles } from "party-js";
-
-sparkles(button);
-```
 
 <LiveDemo demo="sparkles-basic" size="compact" label="Sparkle" icon={SparklesIcon} />
 

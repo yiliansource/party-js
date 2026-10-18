@@ -1,0 +1,56 @@
+---
+import { type Glyph as GlyphData, glyphs } from "../../brand/glyphs";
+import Glyph from "../Glyph.astro";
+
+interface Props {
+	class?: string;
+}
+
+const shapes: (GlyphData & { selected?: boolean })[] = [
+	glyphs.tile,
+	glyphs.circle,
+	{ ...glyphs.star, selected: true },
+	{
+		viewBox: "0 0 24 24",
+		body: '<polygon points="12,2.5 21.5,9.4 17.9,20.5 6.1,20.5 2.5,9.4" />',
+	},
+	{
+		viewBox: "0 0 24 24",
+		body: '<path d="M12 21s-8.5-5.3-8.5-11.2A4.8 4.8 0 0 1 12 6.9a4.8 4.8 0 0 1 8.5 2.9C20.5 15.7 12 21 12 21z" />',
+	},
+];
+---
+
+<div
+	aria-hidden="true"
+	class:list={["h-58 p-4 flex gap-4 rounded-2xl bg-page", Astro.props.class]}
+>
+	<div class="basis-[38%] shrink-0 grid grid-cols-3 content-start gap-2.5">
+		{shapes.map((shape) => (
+			<span
+				class:list={[
+					"aspect-square grid place-items-center rounded-lg bg-field",
+					shape.selected
+						? "text-muted shadow-[0_0_0_2px_var(--color-page),0_0_0_4px_var(--color-fg)]"
+						: "text-subtle shadow-[inset_0_0_0_1px_var(--color-field-line)]",
+				]}
+			>
+				<svg
+					viewBox={shape.viewBox}
+					fill="currentColor"
+					aria-hidden="true"
+					class="size-5"
+					set:html={shape.body}
+				/>
+			</span>
+		))}
+	</div>
+	<div
+		class="flex-1 grid place-items-center rounded-xl bg-surface overflow-hidden"
+	>
+		<Glyph
+			key="star"
+			class="size-28 text-coral rotate-14 not-motion-reduce:transition-transform not-motion-reduce:duration-500 group-hover:rotate-50"
+		/>
+	</div>
+</div>

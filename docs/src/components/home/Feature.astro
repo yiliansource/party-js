@@ -1,0 +1,30 @@
+---
+import { ArrowRightIcon } from "@lucide/astro";
+
+interface Props {
+	iconColor?: string;
+	linkLabel?: string;
+	linkHref?: string;
+}
+
+const { iconColor = "var(--color-fg)", linkLabel, linkHref } = Astro.props;
+---
+
+<div class="flex flex-col">
+	<div
+		class="mb-4 p-3 self-start bg-surface rounded-xl flex *:size-6"
+		style={{ color: iconColor }}
+	>
+		<slot name="icon"></slot>
+	</div>
+	<h3 class="mb-1 text-fg text-lg">
+		<slot name="title">Placeholder</slot>
+	</h3>
+	<p class="mb-2 leading-relaxed">
+		<slot name="description"></slot>
+	</p>
+	{linkLabel && linkHref && <a href={linkHref} class="group inline-flex flex-row items-center gap-1.5 no-underline text-fg text-sm font-semibold">
+        <span>{linkLabel}</span>
+        <ArrowRightIcon size={16} class="transition-transform group-hover:translate-x-0.75" />
+    </a>}
+</div>

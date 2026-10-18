@@ -13,9 +13,7 @@ interface Props {
 const { glyph, glyphColor, label, title, description } = Astro.props;
 ---
 
-<section
-	class="flex flex-col lg:flex-row gap-x-10 gap-y-6 justify-stretch not-content"
->
+<section class="flex flex-col lg:flex-row gap-x-10 gap-y-6 not-content">
 	<div class="flex-1 flex flex-col">
 		<div class="mb-8 flex flex-col">
 			<p
@@ -25,14 +23,16 @@ const { glyph, glyphColor, label, title, description } = Astro.props;
 					{label}
 				</GlyphLabel>
 			</p>
-			<h2 class="my-0 text-[40px] leading-[1.2] font-bold text-fg">
+			<h2
+				class="my-0 text-3xl lg:text-[40px] leading-[1.2] font-bold text-fg"
+			>
 				{title}
 			</h2>
 			{description && <p class="mt-2 max-w-2xl text-muted leading-relaxed text-lg">{description}</p>}
 		</div>
 		<slot></slot>
 	</div>
-	{Astro.slots.has("side") && <div class="grow flex-1 flex flex-col">
+	{Astro.slots.has("side") && <div class="flex-1 flex flex-col">
 		<slot name="side"></slot>
 	</div>}
 </section>

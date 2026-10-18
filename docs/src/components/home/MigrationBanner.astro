@@ -1,0 +1,32 @@
+---
+import { ArrowRightIcon } from "@lucide/astro";
+
+import Button from "../Button.astro";
+---
+
+<section
+	class="not-content py-6 px-8 flex flex-col md:flex-row gap-x-5 gap-y-3 md:items-center bg-surface rounded-2xl"
+>
+	<span
+		class="inline-flex self-start md:self-auto py-1.5 px-2.5 flex-row items-center gap-2 font-mono bg-raised rounded-lg text-fg text-sm font-medium"
+	>
+		v2
+		<ArrowRightIcon size={12} />
+		v3
+	</span>
+	<div>
+		<h2 class="mb-1 text-fg text-xl">Coming from v2?</h2>
+		<p class="leading-relaxed">
+			v3 is a rewrite with a new API. The migration guide will help you to
+			upgrade your code to the new version.
+		</p>
+	</div>
+	<Button
+		label="Migration guide"
+		variant="secondary"
+		iconPlacement="end"
+		class="ml-auto shrink-0"
+	>
+		<ArrowRightIcon slot="icon" />
+	</Button>
+</section>

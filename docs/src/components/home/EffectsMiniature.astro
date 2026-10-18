@@ -1,0 +1,114 @@
+---
+import type { GlyphKey } from "../../brand/glyphs";
+import Glyph from "../Glyph.astro";
+
+interface Props {
+	class?: string;
+}
+
+const bars = [
+	{ label: "w-[46%]", from: 0, to: 38 },
+	{ label: "w-[30%]", from: 0, to: 62 },
+	{ label: "w-[40%]", from: 18, to: 52 },
+	{ label: "w-[52%]", from: 30, to: 58 },
+	{ label: "w-[34%]", from: 0, to: 46 },
+];
+
+// [glyph, color, x%, y%, rotation, size, additional classes]
+type Piece = [GlyphKey, string, number, number, string, string, string?];
+const pieces: Piece[] = [
+	[
+		"square",
+		"text-coral",
+		28,
+		30,
+		"-rotate-18",
+		"size-3",
+		"group-hover:rotate-60 group-hover:scale-130",
+	],
+	[
+		"strip",
+		"text-saffron",
+		38,
+		16,
+		"rotate-20",
+		"size-3.5",
+		"group-hover:rotate-70 group-hover:scale-130",
+	],
+	[
+		"circle",
+		"text-jade",
+		47,
+		34,
+		"rotate-0",
+		"size-2",
+		"group-hover:scale-150",
+	],
+	[
+		"star",
+		"text-violet",
+		55,
+		12,
+		"rotate-12",
+		"size-3",
+		"group-hover:-rotate-40 group-hover:scale-130",
+	],
+	["square", "text-saffron", 64, 28, "rotate-32", "size-2.5"],
+	[
+		"strip",
+		"text-coral",
+		72,
+		42,
+		"-rotate-40",
+		"size-3.5",
+		"group-hover:-rotate-80 group-hover:scale-130",
+	],
+	["circle", "text-violet", 34, 48, "rotate-0", "size-2"],
+	["star", "text-coral", 44, 6, "-rotate-8", "size-2.5"],
+	["square", "text-jade", 58, 46, "-rotate-26", "size-2.5"],
+	["circle", "text-saffron", 68, 10, "rotate-0", "size-2"],
+	["strip", "text-violet", 24, 14, "rotate-60", "size-3"],
+	["square", "text-violet", 76, 22, "rotate-10", "size-2"],
+	["circle", "text-coral", 52, 24, "rotate-0", "size-1.5"],
+	["strip", "text-jade", 62, 4, "-rotate-15", "size-3"],
+];
+---
+
+<div
+	aria-hidden="true"
+	class:list={["h-58 p-4 flex gap-4 rounded-2xl bg-page", Astro.props.class]}
+>
+	<div class="basis-[38%] shrink-0 flex flex-col gap-2.5">
+		{bars.map((bar) => (
+			<div class="flex flex-col gap-1.5">
+				<span class:list={["h-1.5 rounded-full bg-line-strong", bar.label]} />
+				<span class="relative h-4.5 rounded-md bg-field shadow-[inset_0_0_0_1px_var(--color-field-line)] overflow-hidden">
+					<span
+						class="absolute inset-y-0 bg-bar-fill"
+						style={{ left: `${bar.from}%`, right: `${100 - bar.to}%` }}
+					>
+						{bar.from > 0 && (
+							<span class="absolute -left-px inset-y-1 w-0.5 rounded-full bg-bar-edge" />
+						)}
+						<span class="absolute -right-px inset-y-1 w-0.5 rounded-full bg-bar-edge" />
+					</span>
+				</span>
+			</div>
+		))}
+	</div>
+	<div class="relative flex-1 rounded-xl bg-surface overflow-hidden">
+		{pieces.map(([glyph, color, x, y, rotate, size, additionalClasses]) => (
+			<Glyph
+				key={glyph}
+				class:list={[
+					"absolute not-motion-reduce:transition-transform not-motion-reduce:duration-500",
+					size, color, rotate, additionalClasses
+				]}
+				style={{ left: `${x}%`, top: `${y}%` }}
+			/>
+		))}
+		<span
+			class="absolute left-1/2 top-[66%] -translate-1/2 w-16 h-7.5 rounded-lg shadow-[inset_0_0_0_1.5px_var(--color-line-strong)]"
+		/>
+	</div>
+</div>

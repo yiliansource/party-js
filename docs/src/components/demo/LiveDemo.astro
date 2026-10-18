@@ -10,7 +10,7 @@ import DemoButton from "./DemoButton.astro";
 interface Props {
 	demo: string;
 	type?: "button" | "area";
-	showCode?: boolean;
+	hideCode?: boolean;
 	size?: "full" | "large" | "compact" | "row";
 	label?: string;
 	icon?: AstroIconComponent;
@@ -25,7 +25,7 @@ const sources = import.meta.glob<string>("../../demos/*.demo.ts", {
 const {
 	demo,
 	type = "button",
-	showCode = true,
+	hideCode = false,
 	size = "large",
 	label = "Click me",
 	icon,
@@ -54,7 +54,7 @@ const multiline = code?.includes("\n") ?? false;
 					size === "compact" && "h-40",
 				]}
 			>
-				<div class:list={["absolute top-0 left-0 right-0 flex flex-row justify-between", size === "full" ? "m-5" : "m-4"]}>
+				<div class:list={["absolute top-0 left-0 right-0 flex flex-row justify-between", size !== "compact" ? "m-5" : "m-4"]}>
 					<p class="text-sm font-mono font-normal tracking-wide whitespace-nowrap uppercase text-subtle">
 						Live Demo
 					</p>
@@ -71,8 +71,8 @@ const multiline = code?.includes("\n") ?? false;
 					? <DemoButton label={label} icon={icon} size={size === "compact" ? "compact" : "large"} />
 					: <DemoArea label={label} icon={icon} size={size === "compact" ? "compact" : "large"} />}
 			</div>
-			{showCode && code && !multiline && (
-				<div class:list={["-mt-11 z-10 flex flex-row items-center", size === "full" ? "px-4 py-3" : "px-3 py-2.5"]}>
+			{!hideCode && code && !multiline && (
+				<div class:list={["-mt-11 z-10 flex flex-row items-center", size !== "compact" ? "px-4 py-3" : "px-3 py-2.5"]}>
 					<code class="text-muted text-sm">{code}</code>
 				</div>
 			)}
@@ -88,7 +88,7 @@ const multiline = code?.includes("\n") ?? false;
 			</div>
 		</div>
 	)}
-	{showCode && code && multiline && <Code code={code} lang="ts" />}
+	{!hideCode && code && multiline && <Code code={code} lang="ts" />}
 </live-demo>
 
 <script>

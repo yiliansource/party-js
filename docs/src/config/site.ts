@@ -2,18 +2,21 @@ import { type SimpleIcon, siGithub, siNpm } from "simple-icons";
 
 import pkg from "../../../package.json";
 
+const repoUrl = "https://github.com/yiliansource/party-js";
+
 export const site = {
 	name: "party.js",
 	tagline:
 		"Out-of-the-box confetti and sparkles — and the particle engine behind them.",
 	url: "https://party-js-v3.pages.dev/",
-	repo: "https://github.com/yiliansource/party-js",
-	issues: "https://github.com/yiliansource/party-js/issues",
+	repoUrl: repoUrl,
+	issuesUrl: `${repoUrl}/issues`,
 	npm: "https://www.npmjs.com/package/party-js",
 	v2Docs: "https://party.js.org/",
 	version: pkg.version,
 	author: pkg.author,
 	license: pkg.license,
+	licenseUrl: `${repoUrl}/blob/v3/LICENSE`,
 } as const;
 
 interface SocialLink {
@@ -27,7 +30,7 @@ export const socials = [
 	{
 		icon: "github",
 		label: "GitHub",
-		href: site.repo,
+		href: site.repoUrl,
 		brand: siGithub,
 	},
 	{
