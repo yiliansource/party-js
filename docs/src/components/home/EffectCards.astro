@@ -1,6 +1,18 @@
 ---
+import { Code } from "@astrojs/starlight/components";
+import { PartyPopperIcon, SparklesIcon } from "@lucide/astro";
+
 import { sections } from "../../config/sections";
+import Button from "../Button.astro";
+import EffectCard from "./EffectCard.astro";
 import HomeSection from "./HomeSection.astro";
+
+const effectCode = `createEffect({
+  origin: { x, y },
+  schedule: { bursts: [{ count: 30 }] },
+  particleInit: { /* ... */ },
+  behaviors: [gravity(600)],
+});`;
 ---
 
 <HomeSection
@@ -10,5 +22,74 @@ import HomeSection from "./HomeSection.astro";
 	title="Ready-made, and designed to be customized"
 	description="Each built-in effect is one function with typed options. When none of them fits, build your own from the same parts."
 >
-	<p>section content</p>
+	<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+		<EffectCard linkLabel="Confetti docs" linkHref="/effects/confetti/">
+			<Fragment slot="title">
+				<span class="font-mono">confetti()</span>
+			</Fragment>
+			<Fragment slot="description">
+				Paper-like confetti that bursts in an upwards cone.
+			</Fragment>
+			<Fragment>
+				<div class="h-full grid place-content-center">
+					<Button
+						id="effect-section-confetti-button"
+						label="Fire confetti"
+						variant="raised"
+						iconPlacement="start"
+					>
+						<PartyPopperIcon slot="icon" />
+					</Button>
+				</div>
+			</Fragment>
+		</EffectCard>
+		<EffectCard linkLabel="Sparkles docs" linkHref="/effects/sparkles/">
+			<Fragment slot="title">
+				<span class="font-mono">sparkles()</span>
+			</Fragment>
+			<Fragment slot="description">
+				Golden, spinning stars that burst outwards.
+			</Fragment>
+			<Fragment>
+				<div class="h-full grid place-content-center">
+					<Button
+						id="effect-section-sparkles-button"
+						label="Sparkle"
+						variant="raised"
+						iconPlacement="start"
+					>
+						<SparklesIcon slot="icon" />
+					</Button>
+				</div>
+			</Fragment>
+		</EffectCard>
+		<EffectCard
+			linkLabel="Create a custom effect"
+			linkHref="/guides/custom-effects/"
+		>
+			<Fragment slot="title">Your own effect</Fragment>
+			<Fragment slot="description">
+				The built-in effects are made with
+				<code class="text-sm">createEffect()</code>. So is yours: pick
+				an emitter, samplers and behaviors.
+			</Fragment>
+			<Fragment>
+				<div class="[--ec-codeFontSize:12px] [&_.copy]:hidden">
+					<Code code={effectCode} lang="ts" />
+				</div>
+			</Fragment>
+		</EffectCard>
+	</div>
 </HomeSection>
+
+<script>
+import { confetti, sparkles } from "party-js";
+
+document
+	.querySelector("#effect-section-confetti-button")
+	?.addEventListener("click", (e) => confetti(e.target as HTMLElement));
+
+document
+	.querySelector("#effect-section-sparkles-button")
+	?.addEventListener("click", (e) => sparkles(e.target as HTMLElement));
+</script>

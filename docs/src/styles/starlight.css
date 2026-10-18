@@ -50,11 +50,11 @@ html[data-has-hero] main {
 	border-top: none;
 }
 
-:root[data-has-sidebar]:not(:has([data-playground]))
+:root[data-has-sidebar]:not([data-has-hero]):not(:has([data-playground]))
 	.content-panel
 	.sl-container {
 	margin: 0 auto;
-	@apply max-w-6xl;
+	max-width: unset;
 }
 
 site-search button[data-open-modal] {

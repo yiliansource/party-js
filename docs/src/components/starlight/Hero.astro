@@ -20,6 +20,7 @@ const imageAttrs = {
 const github = socials.find((s) => s.icon === "github")!;
 ---
 
+<div id="_top"></div>
 <section
 	id="hero-section"
 	class="not-content py-8 lg:py-18 flex flex-col items-center"
@@ -69,7 +70,7 @@ const github = socials.find((s) => s.icon === "github")!;
 		variant="ghost"
 		iconPlacement="start"
 		data-paused="false"
-		class="group aria-hidden:opacity-0 shadow border border-raised"
+		class="group inert:opacity-0 shadow border border-raised"
 	>
 		<Fragment slot="icon">
 			<PauseIcon class="hidden group-data-[paused=false]:block" />
@@ -149,7 +150,7 @@ toggle.addEventListener("click", () => {
 });
 
 const observer = new IntersectionObserver(([entry]) =>
-	toggle.setAttribute("aria-hidden", String(!entry.isIntersecting)),
+	toggle.toggleAttribute("inert", !entry.isIntersecting),
 );
 observer.observe(document.querySelector("#hero-section")!);
 </script>

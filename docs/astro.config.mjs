@@ -55,7 +55,7 @@ export default defineConfig({
 			customCss: ["./src/styles/global.css"],
 			disable404Route: true,
 			titleDelimiter: "—",
-			editLink: { baseUrl: `${site.repo}/edit/v3/docs/` },
+			editLink: { baseUrl: `${site.repoUrl}/edit/v3/docs/` },
 			lastUpdated: true,
 			head: [
 				{

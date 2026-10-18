@@ -1,5 +1,13 @@
 ---
+import {
+	AccessibilityIcon,
+	BracesIcon,
+	PackageIcon,
+	SlidersHorizontalIcon,
+} from "@lucide/astro";
+
 import { sections } from "../../config/sections";
+import Feature from "./Feature.astro";
 import HomeSection from "./HomeSection.astro";
 ---
 
@@ -9,5 +17,58 @@ import HomeSection from "./HomeSection.astro";
 	label="Why party.js"
 	title="What you get"
 >
-	<p>section content</p>
+	<div class="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+		<Feature
+			iconColor={sections.concepts.accent}
+			linkLabel="How an effect works"
+			linkHref="/concepts/effects/"
+		>
+			<Fragment slot="icon">
+				<SlidersHorizontalIcon />
+			</Fragment>
+			<Fragment slot="title">Customizable all the way down</Fragment>
+			<Fragment slot="description">
+				Samplers vary any value, behaviors change how particles move,
+				and custom shapes draw whatever a canvas can.
+			</Fragment>
+		</Feature>
+		<Feature
+			iconColor={sections.effects.accent}
+			linkLabel="Installation"
+			linkHref="/installation/"
+		>
+			<Fragment slot="icon">
+				<PackageIcon />
+			</Fragment>
+			<Fragment slot="title">No dependencies</Fragment>
+			<Fragment slot="description">
+				Nothing else to install and nothing to keep up to date. It runs
+				on the canvas your browser already has.
+			</Fragment>
+		</Feature>
+		<Feature
+			iconColor={sections.reference.accent}
+			linkLabel="API reference"
+			linkHref="/api/"
+		>
+			<Fragment slot="icon">
+				<BracesIcon />
+			</Fragment>
+			<Fragment slot="title">Typed from the start</Fragment>
+			<Fragment slot="description">
+				Written in TypeScript. Every option is typed and documented,
+				right where you write your code.
+			</Fragment>
+		</Feature>
+		<Feature iconColor={sections.start.accent}>
+			<Fragment slot="icon">
+				<AccessibilityIcon />
+			</Fragment>
+			<Fragment slot="title">Respects reduced motion</Fragment>
+			<Fragment slot="description">
+				Effects skip when a visitor's system asks for less motion. You
+				decide per effect whether it should play anyway.
+			</Fragment>
+		</Feature>
+	</div>
 </HomeSection>

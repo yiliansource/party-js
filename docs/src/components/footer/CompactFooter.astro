@@ -12,7 +12,7 @@ const imageAttrs = {
 };
 
 const footerLinks = [
-	{ href: site.repo, label: "GitHub" },
+	{ href: site.repoUrl, label: "GitHub" },
 	{ href: site.npm, label: "npm" },
 	{ href: site.v2Docs, label: "v2 docs" },
 ];
@@ -28,11 +28,16 @@ const footerLinks = [
 	<span>
 		<span>&copy; {new Date().getFullYear()} {site.author}</span>
 		<span class="mx-1.5">&bull;</span>
-		<span>{site.license} License</span>
+		<a
+			href={site.licenseUrl}
+			class="text-inherit no-underline hover:underline hover:text-muted"
+		>
+			{site.license}&nbsp;License
+		</a>
 	</span>
 	<span class="ml-auto flex flex-row gap-5 items-center">
 		{footerLinks.map((l) => (
-			<a href={l.href} class="text-inherit no-underline hover:text-muted">
+			<a href={l.href} class="text-inherit no-underline hover:underline hover:text-muted">
 				{l.label}
 			</a>
 		))}

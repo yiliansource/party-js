@@ -1,0 +1,25 @@
+---
+import { ArrowRightIcon } from "@lucide/astro";
+
+import { Image } from "astro:assets";
+
+import confettiDecor from "../../assets/confetti-decor.svg";
+import Button from "../Button.astro";
+import InstallPill from "../InstallPill.astro";
+---
+
+<section class="not-content flex flex-col items-center text-center">
+	<div class="mb-2">
+		<Image src={confettiDecor} decoding="async" height={44} alt="" />
+	</div>
+	<h2 class="mb-4 text-fg text-4xl md:text-5xl">Ready to start?</h2>
+	<p class="mb-8 text-lg">
+		Install it, then follow the quickstart to fire your first effect!
+	</p>
+	<div class="flex flex-col md:flex-row gap-4">
+		<InstallPill />
+		<Button label="Quickstart" variant="primary" iconPlacement="end">
+			<ArrowRightIcon slot="icon" />
+		</Button>
+	</div>
+</section>

@@ -5,7 +5,7 @@ import { site } from "../../config/site";
 import TocList from "../toc/TocList.astro";
 
 const { toc, entry } = Astro.locals.starlightRoute;
-const issueUrl = `${site.repo}/issues/new?title=${encodeURIComponent(`docs: ${entry.data.title}`)}`;
+const issueUrl = `${site.repoUrl}/issues/new?title=${encodeURIComponent(`docs: ${entry.data.title}`)}`;
 const codeSections = new Set(["Methods"]);
 ---
 
