@@ -4,7 +4,11 @@ import * as vec3 from "../math/vec3";
 import type { Particle } from "../particle/particle";
 import { executeDrawCommand } from "./canvas";
 import { buildDrawCommand } from "./drawCommand";
-import { computeLightingCoefficient, defaultLighting } from "./lighting";
+import {
+	computeLightingCoefficient,
+	defaultLighting,
+	type LightingFn,
+} from "./lighting";
 import { project } from "./projection";
 
 /**
@@ -19,7 +23,7 @@ export function drawParticles(
 	particles: readonly Particle[],
 	origin: Vec2,
 	light: Vec3 = vec3.unitZ,
-	lighting = defaultLighting,
+	lighting: LightingFn | null = defaultLighting,
 ): void {
 	const normalizedLight = vec3.normalize(light);
 	for (const particle of particles) {

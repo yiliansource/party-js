@@ -14,6 +14,16 @@ import { attachLayer, type Layer } from "../render/surface";
 import { type ReducedMotion, shouldSkip } from "./motion";
 
 /**
+ * The result of a completed effect, either "completed" if it ended naturally or "stopped" if it was stopped manually.
+ * An effect that is skipped due to reduced motion will still have "completed" as its result.
+ *
+ * @summary The result of a completed effect.
+ *
+ * @group Effects
+ */
+export type EffectResult = "completed" | "stopped";
+
+/**
  * A handle to a running effect, returned by {@link createEffect | createEffect()} and the built-in
  * effects, such as {@link confetti | confetti()}.
  *
@@ -34,8 +44,12 @@ import { type ReducedMotion, shouldSkip } from "./motion";
  */
 export interface Effect {
 	/**
-	 * Ends the effect immediately and removes its particles. `onComplete` will not be called, and the effect
-	 * can't be resumed afterwards. Calling it again has no effect.
+	 * A promise that resolves with the effect's result once the effect completes.
+	 */
+	finished: Promise<EffectResult>;
+	/**
+	 * Ends the effect immediately and removes its particles. The `finished` promise resolves as "stopped", and
+	 * the effect can't be resumed afterwards. Calling it again has no effect.
 	 *
 	 * The canvas the effect was drawn on is removed (or, if you provided it, cleared) once no other effect is
 	 * drawing on it.
@@ -119,11 +133,11 @@ export interface CreateEffectOptions {
 	light?: Live<Vec3>;
 	/**
 	 * How a particle's color changes with the angle between its face and the light. See
-	 * {@link createLighting | createLighting()}. Pass `(c) => c` to disable lighting.
+	 * {@link createLighting | createLighting()}. Pass `null` to disable lighting.
 	 *
 	 * @defaultValue createLighting()
 	 */
-	lighting?: LightingFn;
+	lighting?: LightingFn | null;
 	/**
 	 * A seed for the effect's random number generator. The same seed with the same options produces the same
 	 * visuals each time. Without one, a random seed is generated and every run of the effect looks different.
@@ -134,14 +148,9 @@ export interface CreateEffectOptions {
 	 */
 	rng?: Rng;
 	/**
-	 * Called once the schedule is finished and the last particle has expired (i.e. died). Will not be called
-	 * if the effect is stopped early via {@link Effect.stop | Effect.stop()}.
-	 */
-	onComplete?: () => void;
-	/**
 	 * What the effect does when the user has asked their system for reduced motion. A skipped effect draws nothing,
-	 * and `onComplete` is called right after `createEffect()` returns, unless you stop the effect first.
-	 * See {@link ReducedMotion} for more information.
+	 * and the `finished` promise on the effect handle resolves as "completed" after `createEffect()` returns,
+	 * unless you stop the effect immediately. See {@link ReducedMotion} for more information.
 	 *
 	 * Without this option, the default set with {@link setDefaultReducedMotion | setDefaultReducedMotion()} is used,
 	 * which is `"skip"` unless you changed it.
@@ -170,18 +179,24 @@ export function resolveTarget(target: EffectTarget): {
 	};
 }
 
-function skippedEffect(onComplete?: () => void): Effect {
-	let done = false;
-	queueMicrotask(() => {
-		if (done) return;
-		done = true;
-		onComplete?.();
+function createFinished(): [
+	Promise<EffectResult>,
+	(result: EffectResult) => void,
+] {
+	let settle!: (result: EffectResult) => void;
+	const finished = new Promise<EffectResult>((resolve) => {
+		settle = resolve;
 	});
+	return [finished, settle];
+}
+
+function skippedEffect(): Effect {
+	const [finished, settle] = createFinished();
+	queueMicrotask(() => settle("completed"));
 
 	return {
-		stop: () => {
-			done = true;
-		},
+		finished,
+		stop: () => settle("stopped"),
 		pause() {},
 		resume() {},
 	};
@@ -229,8 +244,7 @@ export function createEffect(options: CreateEffectOptions): Effect {
 		behaviors: options.behaviors,
 	});
 
-	if (shouldSkip(options.reducedMotion))
-		return skippedEffect(options.onComplete);
+	if (shouldSkip(options.reducedMotion)) return skippedEffect();
 
 	const fixedLoop = createFixedTimestepLoop({
 		fixedDt: 1 / 120,
@@ -238,6 +252,7 @@ export function createEffect(options: CreateEffectOptions): Effect {
 	});
 
 	let paused = false;
+	const [finished, settle] = createFinished();
 
 	const layer: Layer = {
 		get particles() {
@@ -257,14 +272,17 @@ export function createEffect(options: CreateEffectOptions): Effect {
 			return paused;
 		},
 		advance: (elapsedSeconds) => fixedLoop.advance(elapsedSeconds),
-		onComplete: () => options.onComplete?.(),
+		onComplete: () => settle("completed"),
+		onError: () => settle("stopped"),
 	};
 
 	const handle = attachLayer(layer, options.canvas);
 
 	return {
+		finished,
 		stop: () => {
 			handle.detach();
+			settle("stopped");
 		},
 		pause: () => {
 			paused = true;

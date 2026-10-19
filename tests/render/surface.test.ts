@@ -128,6 +128,7 @@ let win: {
 	removeEventListener(type: string, cb: () => void): void;
 };
 let scrollListeners: { cb: () => void; options: unknown }[];
+let fullscreenListeners: (() => void)[];
 let created: FakeCanvas[]; // every canvas created via document.createElement
 let frames: Map<number, (time: number) => void>;
 let nextFrameId: number;
@@ -145,6 +146,7 @@ beforeEach(() => {
 		reportError: globals.reportError,
 	};
 	scrollListeners = [];
+	fullscreenListeners = [];
 	win = {
 		devicePixelRatio: 2,
 		innerWidth: 400,
@@ -175,6 +177,15 @@ beforeEach(() => {
 			return canvas;
 		},
 		body: { appendChild() {} },
+		addEventListener(type: string, cb: () => void) {
+			if (type === "fullscreenchange") fullscreenListeners.push(cb);
+		},
+		removeEventListener(type: string, cb: () => void) {
+			if (type === "fullscreenchange")
+				fullscreenListeners = fullscreenListeners.filter(
+					(l) => l !== cb,
+				);
+		},
 	};
 	globals.ResizeObserver = class {
 		constructor(cb: () => void) {
@@ -300,6 +311,8 @@ describe("overlay surface", () => {
 				return canvas;
 			},
 			body: { appendChild() {} },
+			addEventListener() {},
+			removeEventListener() {},
 		};
 
 		attach(makeLayer());
@@ -607,6 +620,25 @@ describe("frames", () => {
 	});
 });
 
+describe("callbacks", () => {
+	test("calls onError after detaching a layer that throws", () => {
+		const error = new Error("broken behavior");
+		const errors: unknown[] = [];
+		const broken = makeLayer();
+		broken.advance = () => {
+			throw error;
+		};
+		broken.onError = (e) => errors.push(e);
+		attach(broken);
+		attach(makeLayer());
+		runFrame(0);
+
+		runFrame(16);
+
+		expect(errors).toEqual([error]);
+	});
+});
+
 describe("scrolling", () => {
 	test("listens for scrolling passively while the overlay exists", () => {
 		const handle = attach(makeLayer());
@@ -651,5 +683,49 @@ describe("scrolling", () => {
 
 		expect(created[0].calls).toEqual([]);
 		expect(created[0].drawnAt).toEqual([]);
+	});
+});
+
+describe("fullscreen", () => {
+	test("moves the overlay back to the top of the top layer when fullscreen changes", () => {
+		attach(makeLayer());
+
+		for (const cb of fullscreenListeners) cb();
+
+		expect(created[0].popoverCalls).toEqual(["show", "hide", "show"]);
+	});
+
+	test("stops listening for fullscreen changes once the overlay is removed", () => {
+		attach(makeLayer()).detach();
+
+		expect(fullscreenListeners).toHaveLength(0);
+	});
+
+	test("does not listen for fullscreen changes on a provided canvas", () => {
+		attach(makeLayer(), makeFakeCanvas(300, 150));
+
+		expect(fullscreenListeners).toHaveLength(0);
+	});
+
+	test("does not touch the popover on fullscreen changes when popovers are not supported", () => {
+		globals.document = {
+			createElement: () => {
+				const canvas = makeFakeCanvas(win.innerWidth, win.innerHeight);
+				delete canvas.showPopover;
+				delete canvas.hidePopover;
+				created.push(canvas);
+				return canvas;
+			},
+			body: { appendChild() {} },
+			addEventListener(type: string, cb: () => void) {
+				if (type === "fullscreenchange") fullscreenListeners.push(cb);
+			},
+			removeEventListener() {},
+		};
+		attach(makeLayer());
+
+		expect(() => {
+			for (const cb of fullscreenListeners) cb();
+		}).not.toThrow();
 	});
 });
