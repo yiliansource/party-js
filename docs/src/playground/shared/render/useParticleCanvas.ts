@@ -14,7 +14,7 @@ export interface FrameScene {
 	particles: readonly Particle[];
 	origin: Vec2;
 	light?: Vec3;
-	lighting?: LightingFn;
+	lighting?: LightingFn | null;
 }
 
 export function useParticleCanvas(

@@ -180,7 +180,7 @@ function createSurface(
 		if (!loop.running) render(null);
 	}
 
-	function fullscreen(): void {
+	function raise(): void {
 		if (canvas.hidePopover) {
 			canvas.hidePopover();
 			canvas.showPopover();
@@ -193,9 +193,7 @@ function createSurface(
 
 	if (isOverlay) {
 		window.addEventListener("scroll", scroll, { passive: true });
-		document.addEventListener("fullscreenchange", fullscreen, {
-			passive: true,
-		});
+		document.addEventListener("fullscreenchange", raise);
 	}
 
 	function remove(layer: Layer): void {
@@ -214,7 +212,7 @@ function createSurface(
 		if (isOverlay) {
 			canvas.remove();
 			window.removeEventListener("scroll", scroll);
-			document.removeEventListener("fullscreenchange", fullscreen);
+			document.removeEventListener("fullscreenchange", raise);
 		} else {
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
 			ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -224,10 +222,7 @@ function createSurface(
 	return {
 		attach(layer) {
 			// a dialog opened since the overlay was shown would cover it, so move it back to the top
-			if (isOverlay && layers.length > 0 && canvas.hidePopover) {
-				canvas.hidePopover();
-				canvas.showPopover();
-			}
+			if (isOverlay && layers.length > 0) raise();
 
 			layers.push(layer);
 			loop.start();

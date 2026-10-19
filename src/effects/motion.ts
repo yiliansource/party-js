@@ -3,7 +3,7 @@
  * `prefers-reduced-motion` media query:
  *
  * - `"skip"`: the effect doesn't play and draws nothing. The `finished` promise on the effect handle will still
- *             resolve as "completed".
+ *   resolve as "completed".
  * - `"play"`: the effect plays as usual.
  *
  * The user's preference is read once, when the effect starts. Changing it while an effect is running doesn't

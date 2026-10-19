@@ -148,7 +148,7 @@ export function confetti(
 	target: EffectTarget,
 	options?: ConfettiOptions,
 ): Effect {
-	const o = withDefaults(CONFETTI_DEFAULTS, options ?? {});
+	const o = withDefaults(CONFETTI_DEFAULTS, options);
 
 	const rng = createRng();
 	const resolveCtx: SamplerContext = { rng, index: 0 };

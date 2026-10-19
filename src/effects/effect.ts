@@ -14,8 +14,8 @@ import { attachLayer, type Layer } from "../render/surface";
 import { type ReducedMotion, shouldSkip } from "./motion";
 
 /**
- * The result of a completed effect, either "completed" if it ended naturally or "stopped" if it was stopped manually.
- * An effect that is skipped due to reduced motion will still have "completed" as its result.
+ * The result of a completed effect, either `"completed"` if it ended by itself or `"stopped"` if it ended early.
+ * An effect that is skipped due to reduced motion will still have `"completed"` as its result.
  *
  * @summary The result of a completed effect.
  *
@@ -44,9 +44,10 @@ export type EffectResult = "completed" | "stopped";
  */
 export interface Effect {
 	/**
-	 * A promise that resolves with the effect's result once the effect completes.
+	 * Settles once the effect is over: with `"completed"` when it ended by itself, or with `"stopped"` when it
+	 * ended early, because {@link Effect.stop | stop()} was called or it threw while running. Never rejects.
 	 */
-	finished: Promise<EffectResult>;
+	readonly finished: Promise<EffectResult>;
 	/**
 	 * Ends the effect immediately and removes its particles. The `finished` promise resolves as "stopped", and
 	 * the effect can't be resumed afterwards. Calling it again has no effect.
