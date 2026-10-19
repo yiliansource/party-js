@@ -26,10 +26,10 @@ export function buildDrawCommand(
 	particle: Pick<Particle, "shape" | "color">,
 	transform: ProjectedTransform,
 	lightingCoefficient?: number,
-	lighting?: LightingFn,
+	lighting?: LightingFn | null,
 ): DrawCommand {
 	const color =
-		lightingCoefficient !== undefined && lighting !== undefined
+		lightingCoefficient !== undefined && lighting != null
 			? lighting(particle.color, lightingCoefficient)
 			: particle.color;
 	const fillStyle = formatColor(color);

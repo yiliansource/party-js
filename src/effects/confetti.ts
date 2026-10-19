@@ -15,6 +15,7 @@ import {
 	type SamplerContext,
 } from "../samplers";
 import type { ParticleShape } from "../shapes";
+import { withDefaults } from "./defaults";
 import {
 	createEffect,
 	type Effect,
@@ -147,10 +148,7 @@ export function confetti(
 	target: EffectTarget,
 	options?: ConfettiOptions,
 ): Effect {
-	const o = {
-		...CONFETTI_DEFAULTS,
-		...(options ?? {}),
-	};
+	const o = withDefaults(CONFETTI_DEFAULTS, options ?? {});
 
 	const rng = createRng();
 	const resolveCtx: SamplerContext = { rng, index: 0 };

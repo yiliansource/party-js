@@ -16,7 +16,7 @@ export interface Layer {
 	 */
 	readonly origin: Vec2;
 	readonly light?: Vec3;
-	readonly lighting?: LightingFn;
+	readonly lighting?: LightingFn | null;
 	/**
 	 * Once true, the layer is drawn one last time, detached, and its `onComplete` is called.
 	 */
@@ -27,6 +27,7 @@ export interface Layer {
 	readonly paused: boolean;
 	advance(elapsedSeconds: number): void;
 	onComplete?(): void;
+	onError?(error: unknown): void;
 }
 
 export interface LayerHandle {
@@ -138,6 +139,7 @@ function createSurface(
 				// one broken effect shouldn't take down every other effect on the surface
 				remove(layer);
 				reportError(error);
+				layer.onError?.(error);
 			}
 		}
 
@@ -178,11 +180,23 @@ function createSurface(
 		if (!loop.running) render(null);
 	}
 
+	function fullscreen(): void {
+		if (canvas.hidePopover) {
+			canvas.hidePopover();
+			canvas.showPopover();
+		}
+	}
+
 	const resizeObserver = new ResizeObserver(resize);
 	resizeObserver.observe(canvas);
 	resize();
 
-	if (isOverlay) window.addEventListener("scroll", scroll, { passive: true });
+	if (isOverlay) {
+		window.addEventListener("scroll", scroll, { passive: true });
+		document.addEventListener("fullscreenchange", fullscreen, {
+			passive: true,
+		});
+	}
 
 	function remove(layer: Layer): void {
 		const index = layers.indexOf(layer);
@@ -200,6 +214,7 @@ function createSurface(
 		if (isOverlay) {
 			canvas.remove();
 			window.removeEventListener("scroll", scroll);
+			document.removeEventListener("fullscreenchange", fullscreen);
 		} else {
 			ctx.setTransform(1, 0, 0, 1, 0, 0);
 			ctx.clearRect(0, 0, canvas.width, canvas.height);

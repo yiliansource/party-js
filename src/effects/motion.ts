@@ -2,8 +2,8 @@
  * What an effect does when the user has asked their system for reduced motion, through the
  * `prefers-reduced-motion` media query:
  *
- * - `"skip"`: the effect doesn't play and draws nothing. Its `onComplete` callback, if it has one, is still
- *   called right after the effect is created, so code that waits for the effect to complete keeps working.
+ * - `"skip"`: the effect doesn't play and draws nothing. The `finished` promise on the effect handle will still
+ *             resolve as "completed".
  * - `"play"`: the effect plays as usual.
  *
  * The user's preference is read once, when the effect starts. Changing it while an effect is running doesn't

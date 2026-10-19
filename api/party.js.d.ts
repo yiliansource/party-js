@@ -66,10 +66,9 @@ interface CreateEffectOptions {
 	behaviors?: Behavior[];
 	canvas?: HTMLCanvasElement;
 	light?: Live<Vec3>;
-	lighting?: LightingFn;
+	lighting?: LightingFn | null;
 	seed?: number;
 	rng?: Rng;
-	onComplete?: () => void;
 	reducedMotion?: ReducedMotion;
 }
 
@@ -96,10 +95,13 @@ declare function drag(coefficient: number): Behavior;
 type Easing = (t: number) => number;
 
 interface Effect {
+	finished: Promise<EffectResult>;
 	stop(): void;
 	pause(): void;
 	resume(): void;
 }
+
+type EffectResult = "completed" | "stopped";
 
 type EffectTarget = HTMLElement | Vec2;
 

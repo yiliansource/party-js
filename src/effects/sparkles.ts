@@ -13,6 +13,7 @@ import {
 	type Sampler,
 	type SamplerFn,
 } from "../samplers";
+import { withDefaults } from "./defaults";
 import {
 	createEffect,
 	type Effect,
@@ -105,10 +106,7 @@ export function sparkles(
 	target: EffectTarget,
 	options: SparkleOptions = {},
 ): Effect {
-	const o = {
-		...SPARKLE_DEFAULTS,
-		...options,
-	};
+	const o = withDefaults(SPARKLE_DEFAULTS, options ?? {});
 
 	const rng = createRng();
 	const { origin, shape } = resolveTarget(target);
