@@ -69,6 +69,11 @@
 	--pj-bar-edge: var(--color-accent-500);
 	--pj-code-size: 13px;
 	--pj-code-pad: 14px;
+	--pj-aside-tint: 14%;
+	--pj-aside-note: #a898ff;
+	--pj-aside-tip: #3cc9ba;
+	--pj-aside-caution: var(--color-saffron);
+	--pj-aside-danger: #ff7a7e;
 }
 :root[data-theme="light"],
 [data-preview-theme="light"] {
@@ -89,6 +94,11 @@
 	--pj-field-line: #dcdce1;
 	--pj-bar-fill: color-mix(in srgb, var(--color-accent-500) 18%, transparent);
 	--pj-bar-edge: var(--color-accent-600);
+	--pj-aside-tint: 10%;
+	--pj-aside-note: #5b43e0;
+	--pj-aside-tip: #00786e;
+	--pj-aside-caution: #8f5e00;
+	--pj-aside-danger: #c42d35;
 }
 
 [data-preview-theme="dark"] {

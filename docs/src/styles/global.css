@@ -9,5 +9,6 @@
 @import "./base.css" layer(base);
 @import "./starlight.css" layer(components);
 @import "./content.css" layer(components);
+@import "./asides.css" layer(components);
 @import "./reference.css" layer(components);
 @import "./unlayered.css";

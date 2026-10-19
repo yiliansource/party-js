@@ -4,7 +4,7 @@ import * as quat from "party-js/internal/math/quat";
 import { computed, useTemplateRef } from "vue";
 
 import type { PreviewBackground } from "../../shared/preview";
-import { confettiLighting, noLighting } from "../../shared/render/lighting";
+import { confettiLighting } from "../../shared/render/lighting";
 import { previewParticle } from "../../shared/render/previewParticle";
 import { useParticleCanvas } from "../../shared/render/useParticleCanvas";
 
@@ -46,7 +46,7 @@ useParticleCanvas(canvas, (_dt, { width, height }) => {
 	return {
 		particles,
 		origin: { x: width / 2, y: height / 2 },
-		lighting: lighting ? confettiLighting : noLighting,
+		lighting: lighting ? confettiLighting : null,
 	};
 });
 </script>

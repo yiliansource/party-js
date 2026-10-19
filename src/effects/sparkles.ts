@@ -104,9 +104,9 @@ const SPARKLE_DEFAULTS = {
  */
 export function sparkles(
 	target: EffectTarget,
-	options: SparkleOptions = {},
+	options?: SparkleOptions,
 ): Effect {
-	const o = withDefaults(SPARKLE_DEFAULTS, options ?? {});
+	const o = withDefaults(SPARKLE_DEFAULTS, options);
 
 	const rng = createRng();
 	const { origin, shape } = resolveTarget(target);
@@ -130,7 +130,7 @@ export function sparkles(
 			shape: { type: "star" },
 		},
 		behaviors: [scale(0.3, 0), fade(0, 0.5)],
-		lighting: (c) => c,
+		lighting: null,
 		reducedMotion: o.reducedMotion,
 	});
 }

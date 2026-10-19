@@ -1,31 +1,148 @@
 ---
 title: How an effect works
 description: What happens in between calling an effect and the last particle disappearing.
-draft: true
 ---
+
+Even though calling `confetti(button)` takes only a single line, a lot happens until the last piece disappears. Particles are spawned, moved, drawn and removed again, many times per second. This page explains the internal lifecycle of an effect. You don't need any of it to use the built-in effects, but it helps when you customize them, or [build your own](/guides/custom-effects/).
 
 ## Anatomy of an effect
 
+Every effect, including the built-in ones, is created with [`createEffect()`](/api/custom_effects/createeffect/). Four options describe it:
 
+- **`origin`** is the point that defines the center of the coordinate system of the effect. Particle positions are measured from it.
+- **`schedule`** decides when particles are emitted, and how many.
+- **`particleInit`** describes how each new particle starts out: where, how fast, in which color and shape, and for how long it lives.
+- **`behaviors`** change particles while they're alive, for example gravity pulling them down, or fading them out at the end.
+
+Here is an example of an effect that uses all four:
+
+```js
+import { cone, createEffect, emitFrom, fade, gravity, pick, randomOrientation, randomSpin, range } from "party-js";
+
+createEffect({
+	origin: { x: 400, y: 300 },
+	schedule: { bursts: [{ count: 30 }] },
+	particleInit: {
+		position: emitFrom({ type: "disk", radius: 20 }),
+		velocity: cone(90, 30, range(200, 400)),
+		orientation: randomOrientation(),
+		angularVelocity: randomSpin(90, 270),
+		size: range(8, 14),
+		color: pick(["#ff5a5f", "#ffb400", "#00a699"]),
+		shape: { type: "circle" },
+		lifetime: range(2, 3),
+	},
+	behaviors: [gravity(800), fade(0, 0.5)],
+});
+```
+
+A few more options control onto where the effect is drawn and how it's lit, which this page covers further down.
 
 ## The schedule
 
+The [schedule](/api/custom_effects/emissionschedule/) decides when particles are emitted. It runs for `duration` seconds (1 by default), and repeats that `loops` times (once by default). During each loop, particles can be emitted in two ways:
 
+- A **rate** emits particles continuously, a number of them per second.
+- **Bursts** emit a group of particles all at once, at a set `time` within the loop.
+
+```js
+// a single burst of 40 particles, like confetti
+const single = { bursts: [{ count: 40 }] };
+
+// two bursts, half a second apart
+const double = { bursts: [{ count: 30 }, { time: 0.5, count: 30 }] };
+
+// a steady stream of 20 particles per second, for three seconds
+const stream = { duration: 3, rate: 20 };
+
+// a stream that runs until the effect is stopped
+const endless = { loops: Infinity, rate: 20 };
+```
+
+A burst's `count` can be a [sampler](/concepts/samplers/), which is sampled each time the burst fires. The `rate` can be a [live value](/api/custom_effects/live/) instead, which is read again on every simulation step, so a stream can speed up, slow down, or depend on the size of the window.
+
+```js
+// emit between 20 and 40 particles each burst
+const rangeBurst = { bursts: [{ count: range(20, 40) }] };
+
+// emit more particles the wider the window is
+const windowDependent = { rate: () => window.innerWidth / 100 };
+```
+
+A schedule that never emits anything, because it has no bursts and a rate of 0, throws an error when the effect is created. The same goes for a burst whose `time` lies outside the loop's `duration`, since it would never fire.
 
 ## Spawning: when a particle is born
 
+Each time the schedule emits particles, they're created ("spawned") one after another. For every new particle, each field of `particleInit` is read once, and the results become the particle's initial state.
 
+Positions and velocities are in **particle space**: pixels relative to the origin, with +x pointing right and +y pointing **up**. That's the opposite of the page, where +y points down. Particles also have a z coordinate, which lets them rotate in 3D, but it doesn't change where they're drawn.
+
+Particles that spawn in the same simulation step, such as all particles of a burst, form a [batch](/concepts/samplers/#batches). Samplers can use this to spread the particles of a burst evenly, as for example the confetti does.
+
+Right after a particle's values are sampled, each [behavior](/concepts/behaviors/) that has an `init` function is called, for example to remember the particle's starting size.
+
+:::note
+Values that are fixed rather than sampled are checked once, when the effect is created, so a typo in a shape or color throws right away. A value that comes from a sampler can only be checked when it's produced, so its mistakes throw when a particle spawns.
+:::
 
 ## The life of a particle
 
+Every [particle](/api/particles/particle/) has a position, velocity, orientation, angular velocity, size, color, shape, an `age` and a `lifetime`. On each simulation step, party.js does three things to every particle, in this order:
 
+1. It ages the particle by the length of the step. Once `age` reaches `lifetime`, the particle is considered dead and skips the rest.
+2. It runs the effect's behaviors on it, in the order they're listed in. They can change anything about the particle, most commonly its velocity, size or color.
+3. It moves the particle by its velocity, and rotates it by its angular velocity.
+
+Dead particles are removed at the end of the step. A particle can't be revived, and it doesn't get a final update after its last step.
+
+Because behaviors run before the movement, a behavior that changes the velocity takes effect in the very same step. And because they run in order, the order can matter when one behavior reads a value that another one changes. [Behaviors & physics](/concepts/behaviors/) explains the built-in behaviors, and [Custom behaviors](/guides/custom-behaviors/) how to write your own.
 
 ## Time and the simulation loop
 
+The logic for simulating particles and drawing them is kept separate. The simulation always advances in fixed steps of 1/120 of a second, no matter how fast the screen refreshes. On every animation frame, it runs as many steps as fit into the time that has passed since the last frame, and then draws the particles once. This keeps effects framerate-independent and allows [seeded effect](/concepts/samplers/#reproducible-randomness) to look identical, even on monitors with different refresh rates.
 
+Animation frames don't always arrive on time: a busy page can hang for a moment, and browsers stop animating tabs that are in the background. If a frame arrives so late that it would need more than 8 steps, only those 8 steps are run and the rest of the time is skipped. This prevents the effect from jumping ahead or freezing the page while it catches up.
+
+[Pausing](/api/effects/effect/#pause) works the same way: a paused effect is still drawn, but no simulation steps are run, and the time spent paused is skipped once it resumes.
 
 ## The canvas
 
+Particles are drawn onto a canvas. Unless you pass your own, party.js uses one fullscreen canvas that all running effects share. It's created when the first effect starts, and removed once the last one ends, so it only exists while there's something to draw.
 
+The canvas sits on top of the page without getting in the way: it doesn't react to the mouse, isn't announced to screen readers, and is shown above other content, including dialogs and fullscreen elements. It follows the size of the window, and is drawn at the screen's pixel density, so particles stay sharp on high-resolution displays. On the shared canvas, an effect's `origin` is in page coordinates, so its particles stay in place on the page while it scrolls.
+
+You can also pass a canvas of your own, to place an effect behind your content, inside a container, or anywhere else on the page:
+
+```js
+createEffect({
+	canvas: document.querySelector("#background"),
+	origin: { x: 0, y: 0 },
+	// ...
+});
+```
+
+With your own canvas, the `origin` is measured from the canvas' top-left corner instead, and the page's scroll position doesn't matter. The canvas' bitmap is sized to match its size on the page, but leaves its styling and placement to you. Effects that share a canvas, the fullscreen one or your own, are drawn together, in the order they were started. Once no effect is drawing on your canvas anymore, it's cleared and left in place.
+
+How particles are shaded as they turn towards or away from the light source is covered in [Rendering & lighting](/concepts/rendering/).
 
 ## When an effect ends
+
+An effect ends by itself once its schedule has run all of its loops and its last particle has died. Every effect returns a handle, and its [`finished`](/api/effects/effect/#finished) promise tells you how the effect ended:
+
+```js
+const effect = confetti(button);
+
+const result = await effect.finished;
+if (result === "completed") {
+	// the confetti is gone, for example to navigate to another page
+}
+```
+
+The promise resolves with:
+
+- `"completed"`, when the effect ended by itself.
+- `"stopped"`, when you called [`stop()`](/api/effects/effect/#stop), which removes all particles right away. The same happens when the effect throws an error while running, for example from a custom behavior. The error is still reported in the console, and other effects keep running.
+
+The promise never rejects. An effect whose schedule loops forever only ends when it's stopped, and a paused effect doesn't end until it's resumed.
+
+When the user has asked their system for [reduced motion](/quickstart/#reduced-motion), effects are skipped by default. A skipped effect draws nothing, and its `finished` promise resolves with `"completed"` right away, so code that waits for an effect keeps working.
