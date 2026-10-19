@@ -1,9 +1,7 @@
 import type { Behavior } from "../behavior";
 import type { EmissionSchedule, ParticleInit } from "../emitter";
-import { rectFromElement } from "../emitter/element";
 import { Emitter } from "../emitter/emitter";
 import { type Live, resolveLive } from "../emitter/live";
-import type { EmissionShape } from "../emitter/shape";
 import { assertBrowser } from "../errors";
 import type { Vec2 } from "../math/vec2";
 import type { Vec3 } from "../math/vec3";
@@ -67,26 +65,6 @@ export interface Effect {
 	 */
 	resume(): void;
 }
-
-/**
- * What a built-in effect bursts out of: an element on the page, or a point.
- *
- * For an element, particles are emitted from the whole area. For a point, they spawn exactly there, in page
- * coordinates, i.e. in pixels from the top-left corner of the document, with +y pointing down. Either way,
- * the position is read only once, when the effect starts; moving or scrolling afterwards does not move
- * the effect.
- *
- * @summary An element or point that an effect bursts out of.
- *
- * @example
- * ```ts
- * confetti(document.querySelector("#submit")!);
- * confetti({ x: event.pageX, y: event.pageY });
- * ```
- *
- * @group Effects
- */
-export type EffectTarget = HTMLElement | Vec2;
 
 /**
  * Options for {@link createEffect | createEffect()}, with everything that defines a custom effect: where it
@@ -157,27 +135,6 @@ export interface CreateEffectOptions {
 	 * which is `"skip"` unless you changed it.
 	 */
 	reducedMotion?: ReducedMotion;
-}
-
-export function resolveTarget(target: EffectTarget): {
-	origin: Vec2;
-	shape: EmissionShape;
-} {
-	assertBrowser();
-
-	if (target instanceof HTMLElement) {
-		const rect = target.getBoundingClientRect();
-		const origin: Vec2 = {
-			x: rect.x + rect.width / 2 + window.scrollX,
-			y: rect.y + rect.height / 2 + window.scrollY,
-		};
-		return { origin, shape: rectFromElement(target, origin) };
-	}
-
-	return {
-		origin: { x: target.x, y: target.y },
-		shape: { type: "disk", center: { x: 0, y: 0 }, radius: 0 },
-	};
 }
 
 function createFinished(): [

@@ -119,6 +119,13 @@ interface EmissionSchedule {
 
 type EmissionShape = DiskEmissionShape | RectEmissionShape;
 
+declare function emissionTarget(target: EffectTarget, canvas?: HTMLCanvasElement): EmissionTarget;
+
+interface EmissionTarget {
+	origin: Vec2;
+	shape: EmissionShape;
+}
+
 declare function emitFrom(shape: Live<EmissionShape>): SamplerFn<Vec3>;
 
 declare function evaluateSampler<T>(sampler: Sampler<T>, ctx: SamplerContext): T;
@@ -300,6 +307,8 @@ export {
 	type EmissionBurst,
 	type EmissionSchedule,
 	type EmissionShape,
+	emissionTarget,
+	type EmissionTarget,
 	emitFrom,
 	evaluateSampler,
 	fade,
