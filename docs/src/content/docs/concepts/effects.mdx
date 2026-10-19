@@ -121,7 +121,7 @@ createEffect({
 });
 ```
 
-With your own canvas, the `origin` is measured from the canvas' top-left corner instead, and the page's scroll position doesn't matter. party.js sizes the canvas' bitmap to match its size on the page, but leaves its styling and placement to you. Effects that share a canvas, the fullscreen one or your own, are drawn together, in the order they were started. Once no effect is drawing on your canvas anymore, it's cleared and left in place.
+With your own canvas, the `origin` is measured from the canvas' top-left corner instead, and the page's scroll position doesn't matter. If you want to emit from an element, [`emissionTarget(element, canvas)`](/api/custom_effects/emissiontarget-1/) does this conversion for you. party.js sizes the canvas' bitmap to match its size on the page, but leaves its styling and placement to you. Effects that share a canvas, the fullscreen one or your own, are drawn together, in the order they were started. Once no effect is drawing on your canvas anymore, it's cleared and left in place.
 
 How particles are shaded as they turn towards or away from the light source is covered in [Rendering & lighting](/concepts/rendering/).
 

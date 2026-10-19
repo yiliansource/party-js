@@ -1,6 +1,6 @@
 import { drag, fade, gravity, scale } from "../behavior";
 import { type Color, color } from "../color";
-import { emitFrom } from "../emitter";
+import { type EffectTarget, emissionTarget, emitFrom } from "../emitter";
 import { createRng } from "../random/rng";
 import { createLighting } from "../render";
 import {
@@ -16,12 +16,7 @@ import {
 } from "../samplers";
 import type { ParticleShape } from "../shapes";
 import { withDefaults } from "./defaults";
-import {
-	createEffect,
-	type Effect,
-	type EffectTarget,
-	resolveTarget,
-} from "./effect";
+import { createEffect, type Effect } from "./effect";
 import type { ReducedMotion } from "./motion";
 
 /**
@@ -152,7 +147,7 @@ export function confetti(
 
 	const rng = createRng();
 	const resolveCtx: SamplerContext = { rng, index: 0 };
-	const { origin, shape } = resolveTarget(target);
+	const { origin, shape } = emissionTarget(target);
 
 	const angle = evaluateSampler(o.angle, resolveCtx);
 	const spread = evaluateSampler(o.spread, resolveCtx);

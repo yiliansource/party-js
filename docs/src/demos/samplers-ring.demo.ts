@@ -1,5 +1,6 @@
 import {
 	createEffect,
+	emissionTarget,
 	pick,
 	randomOrientation,
 	randomSpin,
@@ -23,13 +24,10 @@ const ring =
 	};
 
 export const run: Demo = ({ target }) => {
-	const rect = target.getBoundingClientRect();
+	const { origin } = emissionTarget(target);
 
 	createEffect({
-		origin: {
-			x: rect.x + rect.width / 2 + window.scrollX,
-			y: rect.y + rect.height / 2 + window.scrollY,
-		},
+		origin,
 		schedule: { bursts: [{ count: range(10, 20) }] },
 		particleInit: {
 			position: ring(120),
