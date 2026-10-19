@@ -82,6 +82,9 @@ export interface CreateEffectOptions {
 	 * Without a `canvas`, party.js draws onto its own fullscreen canvas, and the origin is in page coordinates, i.e.
 	 * pixels from the top-left of the document, with +y pointing down. With a `canvas`, it's in that canvas'
 	 * coordinate system instead, i.e. pixels from its top-left corner.
+	 *
+	 * To start the effect at an element, use {@link emissionTarget | emissionTarget()}, which also handles
+	 * the conversion to a canvas’ coordinates.
 	 */
 	origin: Live<Vec2>;
 	/**
