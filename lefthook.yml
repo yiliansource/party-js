@@ -7,7 +7,7 @@ pre-commit:
     commands:
         biome:
             glob: "*.{ts,json}"
-            run: bunx biome check --staged
+            run: bunx biome check --staged --no-errors-on-unmatched
 
 pre-push:
     parallel: true

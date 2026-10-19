@@ -49,7 +49,7 @@ export interface Effect {
 	 */
 	readonly finished: Promise<EffectResult>;
 	/**
-	 * Ends the effect immediately and removes its particles. The `finished` promise resolves as "stopped", and
+	 * Ends the effect immediately and removes its particles. The `finished` promise resolves as `"stopped"`, and
 	 * the effect can't be resumed afterwards. Calling it again has no effect.
 	 *
 	 * The canvas the effect was drawn on is removed (or, if you provided it, cleared) once no other effect is

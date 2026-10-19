@@ -36,14 +36,14 @@ createEffect({
 });
 ```
 
-A few more options control onto where the effect is drawn and how it's lit, which this page covers further down.
+A few more options control where the effect is drawn and how it's lit, which this page covers further down.
 
 ## The schedule
 
 The [schedule](/api/custom_effects/emissionschedule/) decides when particles are emitted. It runs for `duration` seconds (1 by default), and repeats that `loops` times (once by default). During each loop, particles can be emitted in two ways:
 
-- A **rate** emits particles continuously, a number of them per second.
 - **Bursts** emit a group of particles all at once, at a set `time` within the loop.
+- A **rate** emits particles continuously, a number of them per second.
 
 ```js
 // a single burst of 40 particles, like confetti
@@ -99,7 +99,7 @@ Because behaviors run before the movement, a behavior that changes the velocity 
 
 ## Time and the simulation loop
 
-The logic for simulating particles and drawing them is kept separate. The simulation always advances in fixed steps of 1/120 of a second, no matter how fast the screen refreshes. On every animation frame, it runs as many steps as fit into the time that has passed since the last frame, and then draws the particles once. This keeps effects framerate-independent and allows [seeded effect](/concepts/samplers/#reproducible-randomness) to look identical, even on monitors with different refresh rates.
+The logic for simulating particles and drawing them is kept separate. The simulation always advances in fixed steps of 1/120 of a second, no matter how fast the screen refreshes. On every animation frame, it runs as many steps as fit into the time that has passed since the last frame, and then draws the particles once. This keeps effects framerate-independent and allows [seeded effects](/concepts/samplers/#reproducible-randomness) to look identical, even on monitors with different refresh rates.
 
 Animation frames don't always arrive on time: a busy page can hang for a moment, and browsers stop animating tabs that are in the background. If a frame arrives so late that it would need more than 8 steps, only those 8 steps are run and the rest of the time is skipped. This prevents the effect from jumping ahead or freezing the page while it catches up.
 
@@ -121,7 +121,7 @@ createEffect({
 });
 ```
 
-With your own canvas, the `origin` is measured from the canvas' top-left corner instead, and the page's scroll position doesn't matter. The canvas' bitmap is sized to match its size on the page, but leaves its styling and placement to you. Effects that share a canvas, the fullscreen one or your own, are drawn together, in the order they were started. Once no effect is drawing on your canvas anymore, it's cleared and left in place.
+With your own canvas, the `origin` is measured from the canvas' top-left corner instead, and the page's scroll position doesn't matter. party.js sizes the canvas' bitmap to match its size on the page, but leaves its styling and placement to you. Effects that share a canvas, the fullscreen one or your own, are drawn together, in the order they were started. Once no effect is drawing on your canvas anymore, it's cleared and left in place.
 
 How particles are shaded as they turn towards or away from the light source is covered in [Rendering & lighting](/concepts/rendering/).
 

@@ -95,7 +95,7 @@ declare function drag(coefficient: number): Behavior;
 type Easing = (t: number) => number;
 
 interface Effect {
-	finished: Promise<EffectResult>;
+	readonly finished: Promise<EffectResult>;
 	stop(): void;
 	pause(): void;
 	resume(): void;
