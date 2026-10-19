@@ -1,0 +1,187 @@
+---
+title: Behaviors & physics
+description: How particles change while they're alive and how to write your own behaviors.
+---
+
+import LiveDemo from "../../../components/demo/LiveDemo.astro";
+import { BubblesIcon } from "@lucide/astro";
+
+Even though a particle's properties can start out randomized, effects would look quite plain if they do not vary over time. For example, confetti shoots up, slows down, falls and fades away, and none of that is decided when it spawns. It's the work of **behaviors**, small functions that change a particle a little on every simulation step. This page explains when behaviors run, what the built-in ones do, why their order matters, and how to write your own.
+
+## What a behavior is
+
+A [`Behavior`](/api/behaviors/behavior/) receives a particle and modifies it. A custom effect lists its behaviors in `behaviors`, and they apply to all of its particles:
+
+```js
+import { createEffect, drag, fade, gravity, scale } from "party-js";
+
+createEffect({
+	// ...
+	behaviors: [gravity(800), drag(0.003), scale(0.2, 0), fade(0, 1)],
+});
+```
+
+Like samplers, functions like `gravity()` don't change anything themselves. They return the behavior, which are then called during the simulation loop.
+
+The built-in effects use the same behaviors. [`confetti()`](/api/effects/confetti/) applies downwards force with `gravity()`, slows them with `drag()`, grows them in with `scale()` and fades them out with `fade()`. Their strength can be tuned with options like `gravity` and `drag`, but the built-in effects don't accept behaviors of their own. To add one, build the effect with [`createEffect()`](/api/custom_effects/createeffect/) instead.
+
+## When behaviors run
+
+A behavior can do work at two moments in a particle's lifecycle:
+
+- **When the particle spawns**, right after its values have been sampled. A behavior can prepare the particle here, for example by remembering its starting size. This is optional.
+- **On every simulation step** while the particle is alive, which is where the actual modification happens.
+
+Each step, party.js first ages the particle, then runs the behaviors on it, in the order they're listed in, and lastly applies the physics simulation. [How an effect works](/concepts/effects/#the-life-of-a-particle) covers this in more detail.
+
+Behaviors don't run on dead particles. Once a particle's `age` reaches its `lifetime`, it's removed at the end of the step, without another update.
+
+## Built-in behaviors
+
+| Behavior | Description |
+| --- | --- |
+| [`gravity(strength)`](/api/behaviors/gravity/) | Pulls particles down with constant acceleration. |
+| [`drag(coefficient)`](/api/behaviors/drag/) | Slows particles down, the more the faster they move. |
+| [`fade(in, out, ease?)`](/api/behaviors/fade/) | Fades particles in after they spawn, and out before they die. |
+| [`scale(in, out, ease?)`](/api/behaviors/scale/) | Grows particles from nothing after they spawn, and shrinks them away before they die. |
+
+## Gravity and drag
+
+`gravity()` and `drag()` affect a particle's velocity. Like positions and velocities, they work in pixels and seconds, in particle space, where +y points up.
+
+`gravity(strength)` adds `strength` pixels per second to the particle's downward speed, every second. Confetti uses 800 by default. A negative strength pulls particles up instead, for example to make bubbles rise.
+
+`drag(coefficient)` works against the particle's movement, in every direction. It's implemented as [quadratic drag](http://hyperphysics.phy-astr.gsu.edu/hbase/Mechanics/quadvfall.html), the same kind of air resistance a real piece of paper feels: it grows with the square of the speed. A fast particle slows down quickly, while a slow one is hardly affected. That's why a burst of confetti shoots out, loses most of its speed in a moment, and then drifts down slowly.
+
+The two can work together to make a falling particle speed up until it reaches a steady speed, its **terminal velocity**. If you know how fast particles should fall at most, you can calculate the drag coefficient from it, just like `confetti()` does behind the scenes:
+
+```js
+const g = 800; // px/s²
+const terminalVelocity = 500; // px/s
+
+const behaviors = [gravity(g), drag(g / terminalVelocity ** 2)];
+```
+
+:::caution
+The drag coefficient is measured in 1/px, so sensible values are tiny, usually between 0.0005 and 0.02. A value like `drag(1)` stops particles almost instantly.
+:::
+
+## Fading and scaling
+
+`fade()` and `scale()` affect the start and the end of a particle's life. Both take two durations, in seconds:
+
+- During the first `in` seconds after spawning, the particle fades in from transparent, or grows from a size of 0.
+- During the last `out` seconds before dying, it fades out again, or shrinks back to 0.
+
+Pass 0 to skip either half. `fade(0, 1)` fades particles out over the last second of their life, and `scale(0.2, 0)` grows them in over the first 0.2 seconds.
+
+If both durations together are longer than a particle's lifetime, the transitions overlap, and it never reaches its full opacity or size.
+
+Both behaviors work relative to the particle's starting value. `scale()` grows it to the size it was sampled with, and `fade()` multiplies the opacity of its color, so a color that starts half transparent fades in to half transparent, not to fully opaque.
+
+### Easing
+
+By default, fading and scaling progress at a constant rate. Pass an [`Easing`](/api/behaviors/easing/) as the third argument to make them start or end softly instead:
+
+| Easing | Description |
+| --- | --- |
+| [`linear()`](/api/behaviors/linear/) | At a constant rate. The default. |
+| [`sineIn()`](/api/behaviors/sinein/) | Starts slowly, and speeds up. |
+| [`sineOut()`](/api/behaviors/sineout/) | Starts quickly, and slows down. |
+| [`sineInOut()`](/api/behaviors/sineinout/) | Starts slowly, speeds up, and slows down again. |
+
+The out-transition runs the same curve backwards. An easing that starts the fade-in softly, like `sineIn()`, also makes the fade-out end softly.
+
+An easing is just a function that turns a progress from 0 to 1 into the eased value, which should also go from 0 to 1, meaning you can easily write your own:
+
+```js
+const cubicIn = (t) => t ** 3;
+
+fade(0.2, 0.5, cubicIn);
+```
+
+## The order of behaviors
+
+Behaviors run in the order they're listed in, and each one sees the changes of the ones before it. Whether that matters depends on how a behavior changes a value:
+
+- Some behaviors **change** a value step by step. `gravity()` and `drag()` add to the velocity the particle already has, so their changes build up over time.
+- Others **set** a value from scratch on every step. `scale()` calculates the size from the starting size and the particle's age, and `fade()` does the same for the opacity. Whatever happened to the value before is overwritten.
+
+For behaviors of the first kind, the order barely matters. Behaviors of the second kind replace the changes of everything listed before them. For example, here is a behavior that makes particles pulse:
+
+```js
+const pulse = (particle) => {
+	particle.size *= 1 + 0.3 * Math.sin(particle.age * 10);
+};
+
+createEffect({
+	// ...
+	behaviors: [scale(0.2, 0.5), pulse],
+});
+```
+
+Listed after `scale()`, `pulse` changes the freshly calculated size on every step, and the particles pulse while they grow and shrink. Listed before it, its change would be overwritten right away, and nothing would pulse. And on its own, without `scale()` resetting the size on every step, it would multiply the size it changed the step before, and the particles would quickly grow or shrink out of control.
+
+## Writing your own behavior
+
+The simplest behavior is a function that receives the particle and a [context](/api/behaviors/behaviorupdatecontext/), and modifies the particle:
+
+```js
+// pushes particles to the right, like a steady wind
+const wind = (strength) => (particle, ctx) => {
+	particle.velocity = {
+		...particle.velocity,
+		x: particle.velocity.x + strength * ctx.dt,
+	};
+};
+
+createEffect({
+	// ...
+	behaviors: [gravity(800), wind(300)],
+});
+```
+
+The context has two fields:
+
+- `dt` is the length of the simulation step, in seconds. Multiply anything that's meant to happen *per second* by it, like the 300 pixels per second that `wind(300)` adds to the speed every second.
+- `rng` is the effect's random number generator. Use it instead of `Math.random()`, so that [seeded effects](/concepts/samplers/#reproducible-randomness) stay reproducible.
+
+Like for samplers, the outer function takes the options, and returns the behavior itself. All built-in behaviors are written this way.
+
+A behavior can change any of the particle's values, not just its velocity. It can even end a particle early, by setting its `age` to its `lifetime`. The particle is then removed at the end of the step.
+
+### Remembering values per particle
+
+If a behavior needs to know its starting state in addition to its current state, or needs to do some other kind of initialization, it can be written as an object with two functions: `init`, which runs once when a particle spawns, and `update`, which runs on every step. Each particle has a [`data`](/api/particles/particle/#data) map to store such values in:
+
+```js
+// pushes each particle from side to side, starting at a random point of the swing
+const sway = (strength) => {
+	const phase = Symbol("sway.phase");
+	return {
+		init(particle, ctx) {
+			particle.data.set(phase, ctx.rng() * 2 * Math.PI);
+		},
+		update(particle, ctx) {
+			const offset = particle.data.get(phase);
+			const push = Math.cos(particle.age * 3 + offset) * strength * ctx.dt;
+			particle.velocity = {
+				...particle.velocity,
+				x: particle.velocity.x + push,
+			};
+		},
+	};
+};
+```
+
+In this example, each bubble gets its own random phase when it spawns, so they don't all sway in step:
+
+<LiveDemo demo="behaviors-bubbles" size="compact" label="Blow bubbles" icon={BubblesIcon} />
+
+The key is a `Symbol`, created inside the outer function. Every call of `sway()` creates a new symbol, so two sways in the same effect, or other behaviors that store data, never overwrite each other's values.
+
+:::tip
+Don't keep per-particle values in variables of the outer function. A behavior is created once, and the same behavior then runs for every particle of the effect, so a variable would be shared by all of them.
+:::
+
+[Custom behaviors](/guides/custom-behaviors/) goes into more detail.
