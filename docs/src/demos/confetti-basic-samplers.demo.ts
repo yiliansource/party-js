@@ -1,4 +1,4 @@
-// #region demo
+// #region import
 import { confetti, pick, randomHue } from "party-js";
 // #endregion
 import type { Demo } from "./types";

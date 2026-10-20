@@ -1,4 +1,4 @@
-// #region demo
+// #region import
 import { sparkles } from "party-js";
 // #endregion
 import type { Demo } from "./types";

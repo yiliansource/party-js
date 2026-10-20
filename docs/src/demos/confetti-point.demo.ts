@@ -1,4 +1,4 @@
-// #region demo
+// #region import
 import { confetti } from "party-js";
 // #endregion
 import type { Demo } from "./types";
