@@ -3,14 +3,16 @@ title: Behaviors & physics
 description: How particles change while they're alive and how to write your own behaviors.
 ---
 
+import { AudioWaveformIcon, BubblesIcon } from "@lucide/astro";
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
-import { BubblesIcon } from "@lucide/astro";
 
 Even though a particle's properties can start out randomized, effects would look quite plain if they do not vary over time. For example, confetti shoots up, slows down, falls and fades away, and none of that is decided when it spawns. It's the work of **behaviors**, small functions that change a particle a little on every simulation step. This page explains when behaviors run, what the built-in ones do, why their order matters, and how to write your own.
 
 ## What a behavior is
 
-A [`Behavior`](/api/behaviors/behavior/) receives a particle and modifies it. A custom effect lists its behaviors in `behaviors`, and they apply to all of its particles:
+A [`Behavior`](/api/behaviors/behavior/) is a function that receives a particle and changes it, on every simulation step. It can also be an object with an extra `init` function, which runs once when a particle spawns, for example to remember its starting size. [Custom behaviors](/guides/custom-behaviors/) shows how to write your own.
+
+A custom effect lists its behaviors in `behaviors`, and they apply to all of its particles:
 
 ```js
 import { createEffect, drag, fade, gravity, scale } from "party-js";
@@ -109,79 +111,6 @@ Behaviors run in the order they're listed in, and each one sees the changes of t
 
 For behaviors of the first kind, the order barely matters. Behaviors of the second kind replace the changes of everything listed before them. For example, here is a behavior that makes particles pulse:
 
-```js
-const pulse = (particle) => {
-	particle.size *= 1 + 0.3 * Math.sin(particle.age * 10);
-};
-
-createEffect({
-	// ...
-	behaviors: [scale(0.2, 0.5), pulse],
-});
-```
+<LiveDemo demo="behavior-pulse" size="compact" label="Pulsing particles" icon={AudioWaveformIcon} />
 
 Listed after `scale()`, `pulse` changes the freshly calculated size on every step, and the particles pulse while they grow and shrink. Listed before it, its change would be overwritten right away, and nothing would pulse. And on its own, without `scale()` resetting the size on every step, it would multiply the size it changed the step before, and the particles would quickly grow or shrink out of control.
-
-## Writing your own behavior
-
-The simplest behavior is a function that receives the particle and a [context](/api/behaviors/behaviorupdatecontext/), and modifies the particle:
-
-```js
-// pushes particles to the right, like a steady wind
-const wind = (strength) => (particle, ctx) => {
-	particle.velocity = {
-		...particle.velocity,
-		x: particle.velocity.x + strength * ctx.dt,
-	};
-};
-
-createEffect({
-	// ...
-	behaviors: [gravity(800), wind(300)],
-});
-```
-
-The context has two fields:
-
-- `dt` is the length of the simulation step, in seconds. Multiply anything that's meant to happen *per second* by it, like the 300 pixels per second that `wind(300)` adds to the speed every second.
-- `rng` is the effect's random number generator. Use it instead of `Math.random()`, so that [seeded effects](/concepts/samplers/#reproducible-randomness) stay reproducible.
-
-Like for samplers, the outer function takes the options, and returns the behavior itself. All built-in behaviors are written this way.
-
-A behavior can change any of the particle's values, not just its velocity. It can even end a particle early, by setting its `age` to its `lifetime`. The particle is then removed at the end of the step.
-
-### Remembering values per particle
-
-If a behavior needs to know its starting state in addition to its current state, or needs to do some other kind of initialization, it can be written as an object with two functions: `init`, which runs once when a particle spawns, and `update`, which runs on every step. Each particle has a [`data`](/api/particles/particle/#data) map to store such values in:
-
-```js
-// pushes each particle from side to side, starting at a random point of the swing
-const sway = (strength) => {
-	const phase = Symbol("sway.phase");
-	return {
-		init(particle, ctx) {
-			particle.data.set(phase, ctx.rng() * 2 * Math.PI);
-		},
-		update(particle, ctx) {
-			const offset = particle.data.get(phase);
-			const push = Math.cos(particle.age * 3 + offset) * strength * ctx.dt;
-			particle.velocity = {
-				...particle.velocity,
-				x: particle.velocity.x + push,
-			};
-		},
-	};
-};
-```
-
-In this example, each bubble gets its own random phase when it spawns, so they don't all sway in step:
-
-<LiveDemo demo="behaviors-bubbles" size="compact" label="Blow bubbles" icon={BubblesIcon} />
-
-The key is a `Symbol`, created inside the outer function. Every call of `sway()` creates a new symbol, so two sways in the same effect, or other behaviors that store data, never overwrite each other's values.
-
-:::tip
-Don't keep per-particle values in variables of the outer function. A behavior is created once, and the same behavior then runs for every particle of the effect, so a variable would be shared by all of them.
-:::
-
-[Custom behaviors](/guides/custom-behaviors/) goes into more detail.

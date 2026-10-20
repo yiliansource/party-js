@@ -1,29 +1,27 @@
-import {
-	type Behavior,
-	createEffect,
-	drag,
-	emissionTarget,
-	emitFrom,
-	fade,
-	gravity,
-	pick,
-	range,
-	scale,
-} from "party-js";
+// @ts-check
+// #region import
+import { createEffect, drag, fade, gravity, scale } from "party-js";
+// #endregion
+import { emissionTarget, emitFrom, pick, range } from "party-js";
 
-import type { Demo } from "./types";
+/** @import { Demo } from "./types" */
+/** @import { Behavior } from "party-js" */
 
+/**
+ * @param {number} strength
+ * @returns {Behavior}
+ */
+// #region demo
 // pushes each particle from side to side, starting at a random point of the swing
-const sway = (strength: number): Behavior => {
+const sway = (strength) => {
 	const phase = Symbol("sway.phase");
 	return {
 		init(particle, ctx) {
 			particle.data.set(phase, ctx.rng() * 2 * Math.PI);
 		},
 		update(particle, ctx) {
-			const offset = particle.data.get(phase) as number;
-			const push =
-				Math.cos(particle.age * 3 + offset) * strength * ctx.dt;
+			const offset = Number(particle.data.get(phase));
+			const push = Math.cos(particle.age * 3 + offset) * strength * ctx.dt;
 			particle.velocity = {
 				...particle.velocity,
 				x: particle.velocity.x + push,
@@ -31,11 +29,15 @@ const sway = (strength: number): Behavior => {
 		},
 	};
 };
+// #endregion
 
-export const run: Demo = ({ target: button }) => {
+/** @type {Demo} */
+export const run = ({ target: button }) => {
 	const { origin, shape } = emissionTarget(button);
 
+	// #region demo
 	createEffect({
+		// #region collapse
 		origin,
 		schedule: { bursts: [{ count: range(15, 25) }] },
 		particleInit: {
@@ -48,12 +50,8 @@ export const run: Demo = ({ target: button }) => {
 			shape: { type: "circle" },
 			lifetime: range(2, 3),
 		},
-		behaviors: [
-			gravity(-300),
-			drag(0.01),
-			sway(200),
-			scale(0.3, 0),
-			fade(0, 1),
-		],
+		// #endregion
+		behaviors: [gravity(-300), drag(0.01), sway(200), scale(0.3, 0), fade(0, 1)],
 	});
+	// #endregion
 };

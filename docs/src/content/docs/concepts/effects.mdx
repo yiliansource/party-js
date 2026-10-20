@@ -3,6 +3,9 @@ title: How an effect works
 description: What happens in between calling an effect and the last particle disappearing.
 ---
 
+import { PaintbrushVertical } from "@lucide/astro";
+import LiveDemo from "../../../components/demo/LiveDemo.astro";
+
 Even though calling `confetti(button)` takes only a single line, a lot happens until the last piece disappears. Particles are spawned, moved, drawn and removed again, many times per second. This page explains the internal lifecycle of an effect. You don't need any of it to use the built-in effects, but it helps when you customize them, or [build your own](/guides/custom-effects/).
 
 ## Anatomy of an effect
@@ -16,25 +19,7 @@ Every effect, including the built-in ones, is created with [`createEffect()`](/a
 
 Here is an example of an effect that uses all four:
 
-```js
-import { cone, createEffect, emitFrom, fade, gravity, pick, randomOrientation, randomSpin, range } from "party-js";
-
-createEffect({
-	origin: { x: 400, y: 300 },
-	schedule: { bursts: [{ count: 30 }] },
-	particleInit: {
-		position: emitFrom({ type: "disk", radius: 20 }),
-		velocity: cone(90, 30, range(200, 400)),
-		orientation: randomOrientation(),
-		angularVelocity: randomSpin(90, 270),
-		size: range(8, 14),
-		color: pick(["#ff5a5f", "#ffb400", "#00a699"]),
-		shape: { type: "circle" },
-		lifetime: range(2, 3),
-	},
-	behaviors: [gravity(800), fade(0, 0.5)],
-});
-```
+<LiveDemo demo="custom-effect-example" size="compact" label="A custom effect" icon={PaintbrushVertical} />
 
 A few more options control where the effect is drawn and how it's lit, which this page covers further down.
 

@@ -4,7 +4,7 @@ description: How different values for particles are picked, and how to write you
 ---
 
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
-import { CircleIcon, PartyPopperIcon, RepeatIcon } from "@lucide/astro";
+import { CircleIcon, PartyPopperIcon, RepeatIcon, ShapesIcon } from "@lucide/astro";
 
 No two pieces of confetti look exactly alike: each one gets its own size, color, speed and spin. The values come from **samplers**, small functions that produce a new value every time party.js asks for one. This page explains when that happens, which samplers are built in, and how to write and combine your own.
 
@@ -65,20 +65,22 @@ const alternating = (ctx) => (ctx.index % 2 === 0 ? 6 : 14);
 confetti(button, { size: alternating });
 ```
 
+:::tip
+When using TypeScript, give the returned function the [`Sampler<T>`](/api/samplers/sampler/) type, and the context is typed for you.
+:::
+
 The context has three fields:
 
 - `rng` is the effect's random number generator. Use it instead of `Math.random()`, so your sampler stays [reproducible](#reproducible-randomness).
 - `index` counts upwards. For a particle's initial values, it's the number of particles the effect has spawned before this one. For a burst's `count`, it's the current loop.
 - `batch` describes the group of particles spawned together with this one. See [Batches](#batches).
 
-For example, a sampler that picks a whole number of pixels in a given range:
+To build a sampler that is based on options, wrap it in an outer function that takes in the options, and returns the sampler itself. All built-in samplers are written this way. For example, a sampler that picks a whole number in a given range:
 
-```js
-const wholePixels = (min, max) => (ctx) =>
+```ts
+const rounded = (min, max) => (ctx) =>
 	Math.round(min + ctx.rng() * (max - min));
 ```
-
-The outer function takes the options, and returns the sampler itself. All built-in samplers are written this way.
 
 You don't need to clone objects your sampler returns. party.js copies vectors, colors and shapes before they're used, so returning the same object for every particle is safe.
 
@@ -90,22 +92,6 @@ Batches let a sampler coordinate the particles of a burst instead of treating ea
 
 You can use batches in your own samplers too. Here, the particles of each burst are placed on a perfect ring:
 
-```js
-const ring = (radius) => (ctx) => {
-	const { index, size } = ctx.batch ?? { index: 0, size: 1 };
-	const angle = (2 * Math.PI * index) / size;
-	return { x: Math.cos(angle) * radius, y: Math.sin(angle) * radius, z: 0 };
-};
-
-createEffect({
-	// ...
-	particleInit: {
-		position: ring(120),
-		// ...
-	},
-});
-```
-
 <LiveDemo demo="samplers-ring" size="compact" label="Fire in a ring" icon={CircleIcon} />
 
 `batch` is always set while particle values are sampled, but not while sampling a burst's `count`, so the type marks it as optional. Falling back to a batch of one keeps the sampler usable everywhere.
@@ -114,14 +100,7 @@ createEffect({
 
 Every effect has its own random number generator, which samplers and behaviors receive as `ctx.rng`. By default, it starts from a random seed, so every run of an effect looks different. Pass a `seed` to [`createEffect()`](/api/custom_effects/createeffect/), and the same seed with the same options produces the same effect every time:
 
-```js
-createEffect({
-	seed: 42,
-	// ...
-});
-```
-
-<LiveDemo demo="seeded-effect" size="compact" label="The same every time" icon={RepeatIcon} />
+<LiveDemo demo="samplers-seeded-effect" size="compact" label="The same every time" icon={RepeatIcon} />
 
 This is useful for tests, for screenshots, or when an effect should look identical for every visitor. A few things keep it reproducible:
 
@@ -156,12 +135,6 @@ confetti(button, { size: rounded(range(4, 12)) });
 
 The same approach lets you choose between samplers. `pick()` returns the value it picks as it is, so picking from a list of samplers would hand the sampler itself to the particle, not a value from it. Evaluate the picked sampler as well:
 
-```js
-// mostly small confetti, with a few large pieces
-const sizes = pick([range(4, 8), range(14, 20)], [5, 1]);
-const size = (ctx) => evaluateSampler(sizes(ctx), ctx);
-
-confetti(button, { size });
-```
+<LiveDemo demo="samplers-sizes" size="compact" label="Different shape sizes" icon={ShapesIcon} />
 
 Pass the same `ctx` along to the samplers you call, so they use the effect's random number generator and see the same `index` and `batch`.

@@ -16,7 +16,7 @@ interface Props {
 	icon?: AstroIconComponent;
 }
 
-const sources = import.meta.glob<string>("../../demos/*.demo.ts", {
+const sources = import.meta.glob<string>("../../demos/*.demo.{js,ts}", {
 	query: "?raw",
 	import: "default",
 	eager: true,
@@ -30,10 +30,12 @@ const {
 	label = "Click me",
 	icon,
 } = Astro.props;
-const source = sources[`../../demos/${demo}.demo.ts`];
+const source =
+	sources[`../../demos/${demo}.demo.ts`] ??
+	sources[`../../demos/${demo}.demo.js`];
 if (source === undefined) throw new Error(`[LiveDemo] unknown demo "${demo}"`);
 
-const code = demoCode(source);
+const code = !hideCode ? demoCode(source) : null;
 const multiline = code?.includes("\n") ?? false;
 ---
 
@@ -95,11 +97,15 @@ const multiline = code?.includes("\n") ?? false;
 import "../../scripts/motion";
 import type { Demo } from "../../demos/types";
 
-const modules = import.meta.glob<{ run: Demo }>("../../demos/*.demo.ts");
+const modules = import.meta.glob<{ run: Demo }>("../../demos/*.demo.{js,ts}");
 
 class LiveDemo extends HTMLElement {
 	connectedCallback() {
-		const ready = modules[`../../demos/${this.dataset.demo}.demo.ts`]();
+		const module =
+			modules[`../../demos/${this.dataset.demo}.demo.ts`] ??
+			modules[`../../demos/${this.dataset.demo}.demo.js`];
+
+		const ready = module();
 		const target = this.querySelector("[data-demo-target]")! as HTMLElement;
 		target.addEventListener("click", async (event) => {
 			const { run } = await ready;

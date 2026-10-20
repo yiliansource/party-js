@@ -122,13 +122,16 @@
 			}
 		},
 		{
-			"includes": ["docs/**/*.demo.ts"],
+			"includes": ["docs/**/*.demo.{js,ts}"],
 			"assist": {
 				"actions": {
 					"source": {
 						"organizeImports": "off"
 					}
 				}
+			},
+			"formatter": {
+				"lineWidth": 150
 			}
 		},
 		{
