@@ -3,7 +3,7 @@ title: How an effect works
 description: What happens in between calling an effect and the last particle disappearing.
 ---
 
-import { PaintbrushVertical } from "@lucide/astro";
+import { PaintbrushVerticalIcon } from "@lucide/astro";
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
 
 Even though calling `confetti(button)` takes only a single line, a lot happens until the last piece disappears. Particles are spawned, moved, drawn and removed again, many times per second. This page explains the internal lifecycle of an effect. You don't need any of it to use the built-in effects, but it helps when you customize them, or [build your own](/guides/custom-effects/).
@@ -19,7 +19,7 @@ Every effect, including the built-in ones, is created with [`createEffect()`](/a
 
 Here is an example of an effect that uses all four:
 
-<LiveDemo demo="custom-effect-example" size="compact" label="A custom effect" icon={PaintbrushVertical} />
+<LiveDemo demo="custom-effect-example" size="compact" label="A custom effect" icon={PaintbrushVerticalIcon} />
 
 A few more options control where the effect is drawn and how it's lit, which this page covers further down.
 

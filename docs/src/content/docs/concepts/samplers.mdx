@@ -66,7 +66,7 @@ confetti(button, { size: alternating });
 ```
 
 :::tip
-When using TypeScript, give the returned function the [`Sampler<T>`](/api/samplers/sampler/) type, and the context is typed for you.
+When using TypeScript, give the function the [`SamplerFn<T>`](/api/samplers/samplerfn/) type, and the context is typed for you.
 :::
 
 The context has three fields:
@@ -75,10 +75,10 @@ The context has three fields:
 - `index` counts upwards. For a particle's initial values, it's the number of particles the effect has spawned before this one. For a burst's `count`, it's the current loop.
 - `batch` describes the group of particles spawned together with this one. See [Batches](#batches).
 
-To build a sampler that is based on options, wrap it in an outer function that takes in the options, and returns the sampler itself. All built-in samplers are written this way. For example, a sampler that picks a whole number in a given range:
+To build a sampler that is based on options, wrap it in an outer function that takes in the options, and returns the sampler itself. All built-in samplers are written this way. For example, a sampler that picks an integer in a given range:
 
-```ts
-const rounded = (min, max) => (ctx) =>
+```js
+const roundedInt = (min, max) => (ctx) =>
 	Math.round(min + ctx.rng() * (max - min));
 ```
 

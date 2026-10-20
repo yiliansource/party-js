@@ -2,7 +2,7 @@
 import { Code } from "@astrojs/starlight/components";
 import type { AstroComponent as AstroIconComponent } from "@lucide/astro";
 
-import { demoCode } from "../../demos/regions";
+import { demoSnippet } from "../../demos/sources";
 import Switch from "../Switch.astro";
 import DemoArea from "./DemoArea.astro";
 import DemoButton from "./DemoButton.astro";
@@ -35,7 +35,7 @@ const source =
 	sources[`../../demos/${demo}.demo.js`];
 if (source === undefined) throw new Error(`[LiveDemo] unknown demo "${demo}"`);
 
-const code = !hideCode ? demoCode(source) : null;
+const code = demoSnippet(demo);
 const multiline = code?.includes("\n") ?? false;
 ---
 
@@ -43,7 +43,7 @@ const multiline = code?.includes("\n") ?? false;
 	data-demo={demo}
 	class:list={[
 		"block bg-surface rounded-2xl not-content",
-		size === "full" && "h-full min-h-60"
+		size === "full" && "h-full min-h-60",
 	]}
 >
 	{(size === "full" || size === "large" || size === "compact") && (
@@ -56,25 +56,51 @@ const multiline = code?.includes("\n") ?? false;
 					size === "compact" && "h-40",
 				]}
 			>
-				<div class:list={["absolute top-0 left-0 right-0 flex flex-row justify-between", size !== "compact" ? "m-5" : "m-4"]}>
+				<div
+					class:list={[
+						"absolute top-0 left-0 right-0 flex flex-row justify-between",
+						size !== "compact" ? "m-5" : "m-4",
+					]}
+				>
 					<p class="text-sm font-mono font-normal tracking-wide whitespace-nowrap uppercase text-subtle">
 						Live Demo
 					</p>
 					<div class="text-sm hidden motion-reduce:flex flex-row gap-3 items-center">
 						<span class="max-sm:hidden px-2.5 py-1 inline-flex flex-row gap-2 items-center bg-raised rounded-full whitespace-nowrap">
 							<span class="inline-block size-1.5 rounded-full bg-yellow-500"></span>
-							<span class="font-mono text-xs tracking-wider">Reduced motion</span>
+							<span class="font-mono text-xs tracking-wider">
+								Reduced motion
+							</span>
 						</span>
-						<Switch label="Play effects" class="whitespace-nowrap" data-play-effects />
+						<Switch
+							label="Play effects"
+							class="whitespace-nowrap"
+							data-play-effects
+						/>
 					</div>
 				</div>
-				
-				{type === "button"
-					? <DemoButton label={label} icon={icon} size={size === "compact" ? "compact" : "large"} />
-					: <DemoArea label={label} icon={icon} size={size === "compact" ? "compact" : "large"} />}
+
+				{type === "button" ? (
+					<DemoButton
+						label={label}
+						icon={icon}
+						size={size === "compact" ? "compact" : "large"}
+					/>
+				) : (
+					<DemoArea
+						label={label}
+						icon={icon}
+						size={size === "compact" ? "compact" : "large"}
+					/>
+				)}
 			</div>
 			{!hideCode && code && !multiline && (
-				<div class:list={["-mt-11 z-10 flex flex-row items-center", size !== "compact" ? "px-4 py-3" : "px-3 py-2.5"]}>
+				<div
+					class:list={[
+						"-mt-11 z-10 flex flex-row items-center",
+						size !== "compact" ? "px-4 py-3" : "px-3 py-2.5",
+					]}
+				>
 					<code class="text-muted text-sm">{code}</code>
 				</div>
 			)}
@@ -84,32 +110,29 @@ const multiline = code?.includes("\n") ?? false;
 		<div class="px-5 py-4 flex flex-row items-center gap-4">
 			{code && !multiline && <code class="text-muted text-sm">{code}</code>}
 			<div class="ml-auto mr-0 shrink-0">
-				{type === "button"
-					? <DemoButton label={label} icon={icon} size="compact" />
-					: <DemoArea label={label} icon={icon} size="compact" />}
+				{type === "button" ? (
+					<DemoButton label={label} icon={icon} size="compact" />
+				) : (
+					<DemoArea label={label} icon={icon} size="compact" />
+				)}
 			</div>
 		</div>
 	)}
-	{!hideCode && code && multiline && <Code code={code} lang="ts" />}
+	{!hideCode && code && multiline && <Code code={code} lang="js" />}
 </live-demo>
 
 <script>
 import "../../scripts/motion";
-import type { Demo } from "../../demos/types";
 
-const modules = import.meta.glob<{ run: Demo }>("../../demos/*.demo.{js,ts}");
+import { loadDemo } from "../../demos/loaders";
 
 class LiveDemo extends HTMLElement {
 	connectedCallback() {
-		const module =
-			modules[`../../demos/${this.dataset.demo}.demo.ts`] ??
-			modules[`../../demos/${this.dataset.demo}.demo.js`];
-
-		const ready = module();
+		const demoPromise = loadDemo(this.dataset.demo!);
 		const target = this.querySelector("[data-demo-target]")! as HTMLElement;
 		target.addEventListener("click", async (event) => {
-			const { run } = await ready;
-			run({ target, event });
+			const demo = await demoPromise;
+			demo({ target, event });
 		});
 	}
 }

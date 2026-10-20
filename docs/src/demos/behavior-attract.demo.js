@@ -44,7 +44,7 @@ export const run = ({ target }) => {
 			lifetime: range(3, 4),
 		},
 		// #endregion
-		behaviors: [attract({ x: 200, y: 30 }, 100), scale(0.25, 1)],
+		behaviors: [attract({ x: 60, y: -40 }, 100), scale(0.25, 1)],
 	});
 	// #endregion
 };

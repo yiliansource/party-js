@@ -71,7 +71,7 @@ const effect = confetti(button);
 effect.pause(); // freezes the particles where they are
 effect.resume(); // continues where it left off
 effect.stop(); // removes the particles immediately
-effect.finished; // a promise that resolves once all particles are gone
+effect.finished; // a promise that resolves once the effect has ended
 ```
 
 `stop()` is useful when the element the confetti belongs to goes away, for example when your component unmounts.

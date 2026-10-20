@@ -1,9 +1,9 @@
 ---
 import { Code } from "@astrojs/starlight/components";
 
-import { demoCode } from "../../demos/regions";
+import { demoSnippet } from "../../demos/sources";
 
-const sources = import.meta.glob<string>("../../demos/*.demo.ts", {
+const sources = import.meta.glob<string>("../../demos/*.demo.{js,ts}", {
 	query: "?raw",
 	import: "default",
 	eager: true,
@@ -14,7 +14,7 @@ const tabs = [
 	{ demo: "confetti-options", label: "With options" },
 ].map((t) => ({
 	...t,
-	code: demoCode(sources[`../../demos/${t.demo}.demo.ts`]) ?? "",
+	code: demoSnippet(t.demo) ?? "",
 }));
 ---
 
@@ -48,7 +48,7 @@ const tabs = [
 			aria-labelledby={`tab-${t.demo}`}
 			class:list={[i !== 0 && "hidden"]}
 		>
-			<Code code={t.code} lang="ts" />
+			<Code code={t.code} lang="js" />
 		</div>
 	))}
 	<slot />

@@ -1,4 +1,4 @@
-// #region demo
+// #region import
 import { createEffect, drag, emissionTarget, emitFrom, fade, gravity, pick, range, scale } from "party-js";
 // #endregion
 import type { Demo } from "./types";
