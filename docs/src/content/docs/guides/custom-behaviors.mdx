@@ -4,7 +4,7 @@ description: Build your own behaviors to manipulate particles while your effects
 ---
 
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
-import { BubblesIcon, MinusIcon, PaletteIcon } from "@lucide/astro";
+import { BubblesIcon, MagnetIcon, MinusIcon, PaletteIcon } from "@lucide/astro";
 
 The built-in behaviors cover gravity, drag, fading and scaling. For anything else, like wind, wobbling or color-related transformations, you can write your own. This guide builds a bubble effect step by step: bubbles that rise from a button and sway from side to side on their way up. It assumes you know how [behaviors work](/concepts/behaviors/), and how to set up an effect with [`createEffect()`](/api/custom_effects/createeffect/).
 
@@ -34,7 +34,7 @@ const breeze = (particle, ctx) => {
 The new velocity is a new object, built from the old one. That's the way the built-in behaviors change values, and it keeps your behavior from accidentally changing a value that's shared with something else.
 
 :::tip
-When using TypeScript, give the returned function the [`Behavior`](/api/behaviors/behavior/) type, and the particle and context are typed for you.
+When using TypeScript, give the function the [`Behavior`](/api/behaviors/behavior/) type, and the particle and context are typed for you.
 :::
 
 ## Taking options
@@ -55,6 +55,7 @@ Two notes on the implementation:
 
 - **The key is a `Symbol`**, created inside the outer function. Every call of `sway()` creates a new one, so two sways in the same effect, or another behavior that stores data, never overwrite each other's values. A string key like `"phase"` could clash.
 - **The phase comes from `ctx.rng`**, the effect's random number generator, and not from `Math.random()`, to keep the effect [reproducible](/concepts/samplers/#reproducible-randomness).
+- **Per-particle values live on the particle**, not in variables of the outer function. `sway(200)` is called once, and the behavior it returns then runs for every particle of the effect, so a variable would be shared by all of them.
 
 ## More examples
 
@@ -80,7 +81,7 @@ It keeps the particle's current opacity, and `fade()` only changes the opacity, 
 
 A behavior can also push particles towards a point, here with a constant acceleration of `strength` px/s².
 
-<LiveDemo demo="behavior-attract" size="compact" label="Color shift" icon={PaletteIcon} />
+<LiveDemo demo="behavior-attract" size="compact" label="Attracted particles" icon={MagnetIcon} />
 
 Like the floor, the `point` is in particle space, relative to the origin.
 
