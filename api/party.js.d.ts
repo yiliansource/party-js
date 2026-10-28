@@ -81,7 +81,7 @@ interface CreateLightingOptions {
 
 interface CustomShape {
 	type: "custom";
-	draw: (ctx: CanvasRenderingContext2D) => void;
+	draw: (ctx: CanvasRenderingContext2D, particle: Particle) => void;
 }
 
 interface DiskEmissionShape {

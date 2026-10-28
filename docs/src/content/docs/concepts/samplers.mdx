@@ -78,8 +78,8 @@ The context has three fields:
 To build a sampler that is based on options, wrap it in an outer function that takes in the options, and returns the sampler itself. All built-in samplers are written this way. For example, a sampler that picks an integer in a given range:
 
 ```js
-const roundedInt = (min, max) => (ctx) =>
-	Math.round(min + ctx.rng() * (max - min));
+const randomInt = (min, max) => (ctx) =>
+   	Math.floor(min + ctx.rng() * (max - min + 1));
 ```
 
 You don't need to clone objects your sampler returns. party.js copies vectors, colors and shapes before they're used, so returning the same object for every particle is safe.

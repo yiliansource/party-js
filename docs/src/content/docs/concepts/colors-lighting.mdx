@@ -1,0 +1,95 @@
+---
+title: Colors & lighting
+description: How particles are colored and lit.
+---
+
+import { FlipHorizontal2Icon, SparkleIcon, SunIcon, PaletteIcon } from "@lucide/astro";
+import LiveDemo from "../../../components/demo/LiveDemo.astro";
+
+Wherever party.js takes a color, you can pass a CSS color string:
+
+- hex colors, like `#ff5a5f`, `#f00` or `#ff000080`,
+- the `rgb()`, `hsl()`, `oklab()` and `oklch()` functions, like `rgb(255 90 95)` or `oklch(0.7 0.15 20)`.
+
+Named colors like `red` or `transparent` aren't supported, to save on bundle size.
+
+Strings are converted with [`color()`](/api/utilities/color-1/), which you can also call yourself. It returns a [`Color`](/api/utilities/color/), an object in the **Oklab** color space. Oklab is designed to match how we perceive colors: equal steps in it look like equal steps to the eye. That's why party.js uses it internally. Colors blend smoothly, without muddy or overly bright spots in between, and [lighting](#lighting) can make a color darker or brighter without changing its hue.
+
+```js
+import { color } from "party-js";
+
+color("#ff5a5f"); // { l: 0.69, a: 0.19, b: 0.08, alpha: 1 }, rounded
+```
+
+A `Color` has a lightness `l`, from 0 (black) to 1 (white), two coordinates `a` and `b` that describe its hue and how intense it is, and an `alpha` for its opacity. You'll rarely need to touch them directly, except when you change a particle's color in a [custom behavior](/concepts/behaviors/#custom-behaviors).
+
+## Picking colors
+
+Colors work like any other [sampled value](/concepts/samplers/). The built-in effects take a list of colors and pick one for each particle, and three samplers give you more control:
+
+- [`pick(colors, weights?)`](/api/samplers/pick/) picks one of the given colors, optionally with weighted chances.
+- [`gradient(colors)`](/api/samplers/gradient/) picks a random color along a gradient, including the colors in between.
+- [`randomHue({ l, c })`](/api/samplers/randomhue/) picks a color with a random hue, but a fixed lightness `l` and intensity (chroma) `c`.
+
+A gradient blends its colors in Oklch, the polar form of Oklab, which goes around the color wheel. Between two colors, it passes through the hues in between, instead of a dull gray:
+
+<LiveDemo demo="colors-gradient" size="compact" label="Fire a gradient" icon={PaletteIcon} />
+
+The colors of a gradient are spaced evenly by default. To make some of them more common, place them yourself with **stops**. A wider gap between two stops means more particles get a color from that part of the gradient:
+
+```js
+// mostly pinks, with a short blend into gold at the end
+gradient([
+	{ offset: 0, color: "#ff5a5f" },
+	{ offset: 0.8, color: "#ff8fa3" },
+	{ offset: 1, color: "#ffb400" },
+]);
+```
+
+`randomHue()` makes the most of Oklab: since all of its colors share the same lightness, none of them stands out, which is hard to get right with `hsl()`. Lightnesses from 0.6 to 0.8, and chromas from 0.1 to 0.2 give vivid, even mixes. Much higher chromas go beyond what a screen can show, and get clipped, which can shift their hue a little.
+
+## Lighting
+
+A turning piece of paper also catches the light differently: it's brightest when it faces the light, and darker when it's tilted away. party.js imitates this by adjusting the color of each particle on every frame, depending on how directly its face points towards the light.
+
+How strongly a particle faces the light is a number from -1 to 1, the **lighting coefficient**. It's 1 when the front of the particle faces the light directly, 0 when the light hits it edge-on, and -1 when its back faces the light. An effect's `lighting` option turns this number into a color.
+
+By default, effects use [`createLighting()`](/api/custom_effects/createlighting/). It multiplies the particle's lightness by a factor between `ambient`, for particles hit edge-on, and `peak`, for particles facing the light, from either side. With the default values of 0.5 and 1, a particle facing the light is drawn in its own color, and one seen edge-on at half its lightness.
+
+A `peak` above 1 makes particles brighter than their own color when they face the light, which makes them flash as they turn. Confetti uses a `peak` of 1.5. Here, the squares from above use a strong contrast:
+
+<LiveDemo demo="rendering-lighting" label="Flip lit squares" icon={SunIcon} />
+
+Since lighting only changes the lightness, and party.js stores colors in the [Oklab color space](/concepts/colors-lighting/), a lit particle keeps its hue. A red piece of confetti gets darker or brighter, but never turns brown or pink.
+
+:::tip
+You can pass `lighting: null` to turn lighting off, and draw particles in exactly their own color.
+:::
+
+### The light's direction
+
+By default, the light comes from the front, from where the viewer is. The `light` option changes its direction, as a vector in particle space, where +x points right, +y up and +z towards the viewer. Its length doesn't matter:
+
+```js
+createEffect({
+	// ...
+	light: { x: -1, y: 1, z: 1 }, // from the top left, in front of the canvas
+});
+```
+
+The direction is a [live value](/api/custom_effects/live/), so it's read again on every frame. Pass a function, and the light can move while the effect runs, for example to follow the cursor.
+
+### Custom lighting
+
+The `lighting` option takes any function that receives the particle's color and its lighting coefficient, and returns the color to draw:
+
+<LiveDemo demo="rendering-glint" size="compact" label="Fire gold" icon={SparkleIcon} />
+
+`glint` darkens particles that are tilted away, like the default lighting, but makes particles that face the light almost directly flash white. Raising the coefficient to a high power keeps the flash short: 0.9 to the power of 16 is less than 0.2.
+
+The coefficient tells the front and the back of a particle apart, so your function can treat them differently. The default lighting ignores the sign, since paper looks the same from both sides, but a material with a different back side could darken it, or give it a different color altogether.
+
+Two things to keep in mind:
+
+- **Return a new color.** The color your function receives belongs to the particle. Changing it would change the particle itself, and the lighting would apply again on the next frame.
+- **Keep it quick.** The function runs for every particle on every frame.

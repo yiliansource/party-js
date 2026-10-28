@@ -1,0 +1,116 @@
+---
+title: Create a custom effect
+description: Build your own effects with createEffect(), from a single burst to a fountain that runs until you stop it.
+---
+
+import { DropletsIcon, MousePointerClickIcon, SquareIcon } from "@lucide/astro";
+import LiveDemo from "../../../components/demo/LiveDemo.astro";
+
+`confetti()` and `sparkles()` are built on the same function you can use yourself: [`createEffect()`](/api/custom_effects/createeffect/). This guide builds a custom effect step by step, from a few dots at the cursor to a fountain of particles that runs until you stop it. It assumes you know the [parts of an effect](/concepts/effects/#anatomy-of-an-effect), and how [samplers](/concepts/samplers/) produce values for each particle.
+
+## The smallest effect
+
+An effect needs to know where it happens, when to emit particles, and what they look like. Everything else is optional:
+
+<LiveDemo demo="effect-minimal" type="area" size="compact" label="Click anywhere" icon={MousePointerClickIcon} />
+
+- **`origin`** is where the effect happens, here the point you clicked. On the default fullscreen canvas, it's in page coordinates, the same ones `event.pageX` and `event.pageY` use.
+- **`schedule`** emits a single burst of 20 particles, right when the effect starts.
+- **`particleInit`** describes each particle as it spawns. `size`, `color`, `shape` and `lifetime` are required. Here, the particles also get a velocity: [`cone()`](/api/samplers/cone/) points them upwards, with a deviation of 180 degrees to either side, so in every direction.
+
+The position, orientation and spin of a particle are optional. Without them, particles start at the origin, face the viewer, and don't spin.
+
+## Bursting out of an element
+
+Most effects belong to an element, like a button that was clicked. [`emissionTarget()`](/api/custom_effects/emissiontarget-1/) measures an element and returns two things: its center as the `origin`, and its area as a `shape` to emit from. Passed to [`emitFrom()`](/api/custom_effects/emitfrom/), the area spreads the particles over the whole element, the same way the built-in effects do.
+
+From there, a few more samplers and [behaviors](/concepts/behaviors/) make the particles tumble and fall:
+
+<LiveDemo demo="effect-element" size="compact" label="Burst" icon={SquareIcon} />
+
+- [`randomOrientation()`](/api/samplers/randomorientation/) and [`randomSpin()`](/api/samplers/randomspin/) turn each particle in a random direction, and spin it around a random axis. That's what makes the flat shapes [look three-dimensional](/concepts/shapes/#from-3d-to-2d).
+- `gravity()` pulls the particles down, `scale()` grows them in quickly, and `fade()` fades them out at the end of their life.
+
+`emissionTarget()` measures the element once, when it's called. If the page scrolls afterwards, the particles stay where they were on the page, like the built-in effects do.
+
+## From bursts to streams
+
+A burst emits all of its particles at once. A **rate** emits them continuously instead, a number of particles per second. Together with `loops: Infinity`, the schedule never ends, so the effect runs until you stop it:
+
+<LiveDemo demo="effect-fountain" size="compact" label="Toggle fountain" icon={DropletsIcon} />
+
+[`createEffect()`](/api/custom_effects/createeffect/) returns a handle to the running effect, the same one the built-in effects return. `stop()` ends the effect and removes its particles right away. To let the particles that are already in the air finish their flight, give the schedule a fixed `duration` instead, and let the effect end by itself.
+
+The [schedule](/concepts/effects/#the-schedule) can do more: several bursts at different times, repeated loops, or a rate that changes while the effect runs.
+
+## Making it reusable
+
+To use your effect like a built-in one, wrap it in a function that takes a target and options, and returns the effect:
+
+```js
+import { createEffect, emissionTarget, emitFrom, pick } from "party-js";
+
+export function fountain(target, options = {}) {
+	const { rate = 40, colors = ["#7dd3fc", "#38bdf8", "#0ea5e9"] } = options;
+	const { origin, shape } = emissionTarget(target);
+
+	return createEffect({
+		origin,
+		schedule: { rate, loops: Infinity },
+		particleInit: {
+			position: emitFrom(shape),
+			color: pick(colors),
+			// ...
+		},
+		// ...
+	});
+}
+
+const effect = fountain(button, { rate: 60 });
+```
+
+`emissionTarget()` accepts an element or a point, just like `confetti()`, so `fountain()` does too. Returning the effect lets the caller pause it, stop it, or wait for it to end with its [`finished`](/api/effects/effect/#finished) promise.
+
+:::tip
+In TypeScript, use the [`EffectTarget`](/api/effects/effecttarget/) type for the target, and return an [`Effect`](/api/effects/effect/).
+:::
+
+## Following an element
+
+The `origin` can also be a function. party.js calls it again on every frame, so the effect can follow an element that moves:
+
+```js
+createEffect({
+	origin: () => emissionTarget(badge).origin,
+	// ...
+});
+```
+
+All particles are positioned relative to the origin, so when it moves, the whole effect moves with it, including the particles already in the air. That fits effects that belong to an element, like sparkles around a badge that slides in. It doesn't leave a trail behind a moving element.
+
+Measuring an element on every frame isn't free, so use this for effects that need it, not for every burst.
+
+## Drawing on your own canvas
+
+By default, effects draw on a fullscreen canvas that party.js manages for you. To draw [somewhere else](/concepts/effects/#the-canvas), for example behind your content, pass your own canvas. Its coordinates start at its top-left corner, so pass the canvas to `emissionTarget()` as well, and it converts the origin for you:
+
+```js
+const canvas = document.querySelector("#background");
+const { origin, shape } = emissionTarget(button, canvas);
+
+createEffect({
+	canvas,
+	origin,
+	particleInit: {
+		position: emitFrom(shape),
+		// ...
+	},
+	// ...
+});
+```
+
+## Things to keep in mind
+
+- **Effects need a browser.** `createEffect()` throws a [`PartyJSError`](/api/utilities/partyjserror/) during server-side rendering. Start effects from event handlers, or after your component has mounted.
+- **Reduced motion is respected.** When the user has asked their system for [reduced motion](/quickstart/#reduced-motion), custom effects are skipped like the built-in ones. If your particles carry information the user would otherwise miss, pass `reducedMotion: "play"`.
+- **Seeds make effects repeatable.** Pass a `seed`, and the effect looks the same every time. See [Reproducible randomness](/concepts/samplers/#reproducible-randomness).

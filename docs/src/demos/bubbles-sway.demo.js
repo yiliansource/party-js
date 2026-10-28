@@ -20,7 +20,11 @@ const sway = (strength) => {
 			particle.data.set(phase, ctx.rng() * 2 * Math.PI);
 		},
 		update(particle, ctx) {
-			const offset = Number(particle.data.get(phase));
+			// #region omit
+			/** @type {number} */
+			// @ts-expect-error: particle.data stores unknown values
+			// #endregion
+			const offset = particle.data.get(phase);
 			const push = Math.cos(particle.age * 3 + offset) * strength * ctx.dt;
 			particle.velocity = {
 				...particle.velocity,

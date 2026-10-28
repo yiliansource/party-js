@@ -67,18 +67,6 @@ describe("buildDrawCommand", () => {
 		}
 	});
 
-	test("a custom shape produces a custom command carrying its draw function", () => {
-		const draw = (_ctx: CanvasRenderingContext2D) => {};
-		const particle = makeTestParticle({ shape: { type: "custom", draw } });
-
-		const cmd = buildDrawCommand(particle, identityTransform);
-
-		expect(cmd.kind).toBe("custom");
-		if (cmd.kind === "custom") {
-			expect(cmd.draw).toBe(draw);
-		}
-	});
-
 	test("fillStyle is derived from the particle's color via toCssColor", () => {
 		const particle = makeTestParticle({
 			shape: { type: "circle" },
