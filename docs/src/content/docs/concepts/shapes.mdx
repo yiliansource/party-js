@@ -1,0 +1,99 @@
+---
+title: Shapes
+description: How particles are shaped.
+---
+
+import { HeartIcon, ImageIcon, LightbulbIcon, ZapIcon } from "@lucide/astro";
+import { FlipHorizontal2Icon, PaletteIcon, PlusIcon, ShapesIcon, SmileIcon } from "@lucide/astro";
+import LiveDemo from "../../../components/demo/LiveDemo.astro";
+
+Every particle is drawn as a shape, filled with a color. party.js comes with a few shapes that cover most effects, like squares, circles and stars, and lets you bring your own, from a simple path to anything you can draw on a canvas. This page explains how shapes are sized and placed, which ones are built in, how to add your own, and how party.js handles colors.
+
+## Shape space
+
+All shapes are drawn in the same coordinate system, called **shape space**. A shape fits into a box of 1 by 1, centered at (0, 0), so it reaches from -0.5 to 0.5 in both directions. Like on a regular canvas, +y points down.
+
+When a particle is drawn, this box is scaled to the particle's `size` in pixels, rotated by its orientation, and moved to its position. A circle with a `size` of 10 is 10 pixels wide, and so is a square. Shapes that aren't as wide as they are tall, like a narrow strip, fill the box in their longer direction.
+
+## Built-in shapes
+
+### Primitives
+
+| Shape | Looks like |
+| --- | --- |
+| [`{ type: "square" }`](/api/particles/squareshape/) | A square, or a rectangle with an `aspectRatio`. `cornerRadius` rounds its corners. |
+| [`{ type: "circle" }`](/api/particles/circleshape/) | A circle. |
+| [`{ type: "star" }`](/api/particles/starshape/) | A star with 5 `points`, or as many as you like. |
+| [`{ type: "polygon" }`](/api/particles/polygonshape/) | A regular polygon with the given number of `sides`. |
+
+`confetti()` uses rounded squares and circles by default, and `sparkles()` uses stars. Confetti's `shapes` option takes a list to pick from:
+
+<LiveDemo demo="shapes-builtin" size="compact" label="Fire shapes" icon={ShapesIcon} />
+
+A square's `aspectRatio` is its width divided by its height, so 0.4 makes a tall strip, and 2 a wide one. Its `cornerRadius` is measured in shape space too: 0.5 turns a square into a circle, and anything larger is clamped to that.
+
+Like other values, shapes are checked before they're used. A polygon with 2 sides or a negative corner radius throws a [`PartyJSError`](/api/utilities/partyjserror/), either when the effect is created, or for shapes that come from a sampler, when a particle spawns.
+
+### Paths
+
+For any shape you can describe as an outline, use a [`Path2D`](https://developer.mozilla.org/docs/Web/API/Path2D). The path has to be drawn in shape space, inside the 1 by 1 box around (0, 0):
+
+<LiveDemo demo="shapes-path" size="compact" label="Fire plus signs" icon={PlusIcon} />
+
+`Path2D` also understands SVG path data, which makes icons a good source of shapes. Most icons are drawn on a larger grid, like 24 by 24 pixels, so they need to be scaled into the box first:
+
+```js
+// an icon from a 24x24 grid, moved to (0, 0) and scaled to a size of 1
+const icon = new Path2D();
+icon.addPath(new Path2D("M12 2 L22 22 L2 22 Z"), new DOMMatrix().scale(1 / 24).translate(-12, -12));
+```
+
+Create the path once and reuse it for every particle, instead of creating a new one in a sampler. party.js does the same for its built-in shapes.
+
+:::caution
+Only create paths once, and reuse them for every particle. A sampler that creates a new path every time it's called builds the same shape over and over, which wastes time and memory.
+
+Also, `Path2D` only exists in the browser. If your page is rendered on the server, creating a path at the top level of a module throws there. Create it in an event handler, or the first time an effect starts.
+:::
+
+### Text
+
+:::caution
+TODO: Rewrite as built-in.
+:::
+
+### Images
+
+:::caution
+TODO: Rewrite as built-in.
+:::
+
+With `drawImage()`, particles can be pictures, like your logo. Load the image once, ahead of time, and draw it into the 1 by 1 box:
+
+<LiveDemo demo="shapes-image" size="compact" label="Fire logos" icon={ImageIcon} />
+
+An image isn't drawn with the `fillStyle`, so it keeps its own colors: it isn't lit, and it doesn't fade out. Until the image has loaded, the particles are simply not drawn, which is why it's loaded ahead of time.
+
+## Custom drawing functions
+
+A custom shape draws the particle with your own function, using the canvas' [context](https://developer.mozilla.org/docs/Web/API/CanvasRenderingContext2D). The context is already set up when your function is called: it's moved, rotated and scaled into shape space, and its `fillStyle` is the particle's lit color, including its opacity. Here, each particle is drawn as three circles, which makes it look like it glows:
+
+<LiveDemo demo="shapes-glow" size="compact" label="Light up" icon={LightbulbIcon} />
+
+`globalAlpha` is multiplied with the opacity of the `fillStyle`, so the glow still fades out with the particle. You don't need to reset anything you change, like `globalAlpha` here: the context is saved before your function is called, and restored afterwards.
+
+Keep custom drawing functions quick, they run for every particle, on every frame. Prepare anything you can, like images or gradients, outside of the function.
+
+## From 3D to 2D
+
+Each particle has a position, a size, and an orientation in 3D. When it's drawn, party.js takes its shape from [shape space](#shape-space), scales it to the particle's size, turns it by its orientation, and then looks at the result straight from the front:
+
+- **Its position** becomes a point on the canvas, measured from the effect's origin. Particle space has +y pointing up, the canvas has it pointing down, so party.js flips it.
+- **Its depth is ignored.** There's no perspective, so a particle doesn't get smaller as it moves away, and particles don't hide each other based on their depth. Particles are drawn in the order they spawned, so newer ones end up on top.
+- **Its orientation** decides how the flat shape lies in space. Facing you, it's drawn as it is. As it turns away, it gets narrower, until it's only a line when you see it edge-on, and then it shows its back side.
+
+Here, a row of squares turns around the vertical axis, each one a little further than the one before:
+
+<LiveDemo demo="rendering-flip" label="Flip squares" icon={FlipHorizontal2Icon} />
+
+This is all it takes for confetti to look three-dimensional. [`randomSpin()`](/api/samplers/randomspin/) gives each piece its own axis to spin around, and the squashing does the rest.

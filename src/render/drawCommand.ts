@@ -23,7 +23,7 @@ export type DrawCommand =
 	  };
 
 export function buildDrawCommand(
-	particle: Pick<Particle, "shape" | "color">,
+	particle: Particle,
 	transform: ProjectedTransform,
 	lightingCoefficient?: number,
 	lighting?: LightingFn | null,
@@ -35,9 +35,10 @@ export function buildDrawCommand(
 	const fillStyle = formatColor(color);
 
 	if (particle.shape.type === "custom") {
+		const drawFn = particle.shape.draw;
 		return {
 			kind: "custom",
-			draw: particle.shape.draw,
+			draw: (ctx) => drawFn(ctx, particle),
 			transform,
 			fillStyle,
 		};

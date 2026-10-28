@@ -16,12 +16,6 @@ interface Props {
 	icon?: AstroIconComponent;
 }
 
-const sources = import.meta.glob<string>("../../demos/*.demo.{js,ts}", {
-	query: "?raw",
-	import: "default",
-	eager: true,
-});
-
 const {
 	demo,
 	type = "button",
@@ -30,10 +24,6 @@ const {
 	label = "Click me",
 	icon,
 } = Astro.props;
-const source =
-	sources[`../../demos/${demo}.demo.ts`] ??
-	sources[`../../demos/${demo}.demo.js`];
-if (source === undefined) throw new Error(`[LiveDemo] unknown demo "${demo}"`);
 
 const code = demoSnippet(demo);
 const multiline = code?.includes("\n") ?? false;

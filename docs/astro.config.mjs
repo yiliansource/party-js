@@ -57,6 +57,9 @@ export default defineConfig({
 			titleDelimiter: "—",
 			editLink: { baseUrl: `${site.repoUrl}/edit/v3/docs/` },
 			lastUpdated: true,
+			tableOfContents: {
+				maxHeadingLevel: 4,
+			},
 			head: [
 				{
 					tag: "meta",

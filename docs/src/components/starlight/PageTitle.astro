@@ -40,7 +40,7 @@ const playground = Astro.locals.playground;
 		>
 			{titleParts.map((part, i) => <>{i > 0 && <wbr />}{part}</>)}
 		</h1>
-		{description && <p class="mt-5 text-xl text-muted">{description}</p>}
+		{description && <p class="mt-5 text-xl text-muted leading-relaxed">{description}</p>}
 	</div>
 	{playground && <div class="ml-auto mt-auto">
 		<PlaygroundTabs active={playground} />

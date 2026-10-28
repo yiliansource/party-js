@@ -3,12 +3,6 @@ import { Code } from "@astrojs/starlight/components";
 
 import { demoSnippet } from "../../demos/sources";
 
-const sources = import.meta.glob<string>("../../demos/*.demo.{js,ts}", {
-	query: "?raw",
-	import: "default",
-	eager: true,
-});
-
 const tabs = [
 	{ demo: "confetti-basic", label: "One line" },
 	{ demo: "confetti-options", label: "With options" },

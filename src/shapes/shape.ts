@@ -1,3 +1,4 @@
+import type { Particle } from "../particle";
 import type { CircleShape } from "./circle";
 import type { PolygonShape } from "./polygon";
 import type { SquareShape } from "./square";
@@ -52,9 +53,9 @@ export interface PathShape {
 export interface CustomShape {
 	type: "custom";
 	/**
-	 * Draws the shape in shape space.
+	 * Draws the particle's shape in shape space.
 	 */
-	draw: (ctx: CanvasRenderingContext2D) => void;
+	draw: (ctx: CanvasRenderingContext2D, particle: Particle) => void;
 }
 
 /**
