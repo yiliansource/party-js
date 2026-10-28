@@ -1,6 +1,7 @@
 ---
 title: Samplers & randomness
 description: How different values for particles are picked, and how to write your own samplers.
+sidebar: { order: 2 }
 ---
 
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
@@ -79,7 +80,7 @@ To build a sampler that is based on options, wrap it in an outer function that t
 
 ```js
 const randomInt = (min, max) => (ctx) =>
-   	Math.floor(min + ctx.rng() * (max - min + 1));
+	Math.floor(min + ctx.rng() * (max - min + 1));
 ```
 
 You don't need to clone objects your sampler returns. party.js copies vectors, colors and shapes before they're used, so returning the same object for every particle is safe.

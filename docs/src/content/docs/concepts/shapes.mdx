@@ -1,13 +1,13 @@
 ---
 title: Shapes
 description: How particles are shaped.
+sidebar: { order: 4 }
 ---
 
-import { HeartIcon, ImageIcon, LightbulbIcon, ZapIcon } from "@lucide/astro";
-import { FlipHorizontal2Icon, PaletteIcon, PlusIcon, ShapesIcon, SmileIcon } from "@lucide/astro";
+import { ImageIcon, LightbulbIcon, TrianglesCenterlineDashedHorizontalIcon, PlusIcon, ShapesIcon } from "@lucide/astro";
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
 
-Every particle is drawn as a shape, filled with a color. party.js comes with a few shapes that cover most effects, like squares, circles and stars, and lets you bring your own, from a simple path to anything you can draw on a canvas. This page explains how shapes are sized and placed, which ones are built in, how to add your own, and how party.js handles colors.
+Every particle is drawn as a shape, filled with a color. party.js comes with a few shapes that cover most effects, like squares, circles and stars, and lets you bring your own, from a simple path to anything you can draw on a canvas. This page explains how shapes are sized and placed, which ones are built in and how to add your own.
 
 ## Shape space
 
@@ -47,8 +47,6 @@ For any shape you can describe as an outline, use a [`Path2D`](https://developer
 const icon = new Path2D();
 icon.addPath(new Path2D("M12 2 L22 22 L2 22 Z"), new DOMMatrix().scale(1 / 24).translate(-12, -12));
 ```
-
-Create the path once and reuse it for every particle, instead of creating a new one in a sampler. party.js does the same for its built-in shapes.
 
 :::caution
 Only create paths once, and reuse them for every particle. A sampler that creates a new path every time it's called builds the same shape over and over, which wastes time and memory.
@@ -94,6 +92,6 @@ Each particle has a position, a size, and an orientation in 3D. When it's drawn,
 
 Here, a row of squares turns around the vertical axis, each one a little further than the one before:
 
-<LiveDemo demo="rendering-flip" label="Flip squares" icon={FlipHorizontal2Icon} />
+<LiveDemo demo="rendering-flip" label="Flip squares" icon={TrianglesCenterlineDashedHorizontalIcon} />
 
 This is all it takes for confetti to look three-dimensional. [`randomSpin()`](/api/samplers/randomspin/) gives each piece its own axis to spin around, and the squashing does the rest.

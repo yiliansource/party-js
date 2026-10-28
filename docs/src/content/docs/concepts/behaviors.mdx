@@ -1,9 +1,10 @@
 ---
 title: Behaviors
 description: How particles change while they're alive.
+sidebar: { order: 3 }
 ---
 
-import { AudioWaveformIcon, BubblesIcon, MagnetIcon, MinusIcon, PaletteIcon } from "@lucide/astro";
+import { AudioWaveformIcon, BubblesIcon } from "@lucide/astro";
 
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
 
@@ -26,7 +27,7 @@ createEffect({
 
 Functions like `gravity()` don't change anything themselves. Instead they return the behavior, which is then called during the simulation loop.
 
-The built-in effects use the same behaviors. [`confetti()`](/api/effects/confetti/) applies downwards force with `gravity()`, slows them with `drag()`, grows them in with `scale()` and fades them out with `fade()`. Their impact on the particles can be tuned via their parameters.
+The built-in effects use the same behaviors. [`confetti()`](/api/effects/confetti/) applies downwards force with `gravity()`, slows them with `drag()`, grows them in with `scale()` and fades them out with `fade()`. Their impact on the particles can be tuned via their parameters. Built-in effects commonly expose those parameters as options, for example [ConfettiOptions.gravity](/api/effects/confettioptions/#gravity).
 
 :::note
 Built-in effects do not accept behaviors of their own, to avoid behaviors unexpectedly interfering with each other. To add behaviors, build the effect with [`createEffect()`](/api/custom_effects/createeffect/) instead.
@@ -134,7 +135,7 @@ const breeze = (particle, ctx) => {
 
 `ctx.dt` is the length of the step, in seconds. Anything that's meant to happen *per second* should be multiplied by it to keep effects framerate-independent. Here, the breeze adds 100 pixels per second to the speed, every second. Without `dt`, it would add 100 on every step, 120 times a second.
 
-The new velocity is a new object, built from the old one which keeps your behavior from accidentally changing a value that's shared with something else.
+The new velocity is a new object, built from the old one, which keeps your behavior from accidentally changing a value that's shared with something else.
 
 :::tip
 When using TypeScript, give the function the [`Behavior`](/api/behaviors/behavior/) type, and the particle and context are typed for you.

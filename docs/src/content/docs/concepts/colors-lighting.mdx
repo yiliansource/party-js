@@ -1,9 +1,10 @@
 ---
 title: Colors & lighting
 description: How particles are colored and lit.
+sidebar: { order: 5 }
 ---
 
-import { FlipHorizontal2Icon, SparkleIcon, SunIcon, PaletteIcon } from "@lucide/astro";
+import { SparkleIcon, SunIcon, PaletteIcon } from "@lucide/astro";
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
 
 Wherever party.js takes a color, you can pass a CSS color string:
@@ -50,17 +51,17 @@ gradient([
 
 ## Lighting
 
-A turning piece of paper also catches the light differently: it's brightest when it faces the light, and darker when it's tilted away. party.js imitates this by adjusting the color of each particle on every frame, depending on how directly its face points towards the light.
+A turning piece of paper is brightest when it faces the light, and darker when it's tilted away. party.js imitates this by adjusting the color of each particle on every frame, depending on how directly its face points towards the light.
 
 How strongly a particle faces the light is a number from -1 to 1, the **lighting coefficient**. It's 1 when the front of the particle faces the light directly, 0 when the light hits it edge-on, and -1 when its back faces the light. An effect's `lighting` option turns this number into a color.
 
 By default, effects use [`createLighting()`](/api/custom_effects/createlighting/). It multiplies the particle's lightness by a factor between `ambient`, for particles hit edge-on, and `peak`, for particles facing the light, from either side. With the default values of 0.5 and 1, a particle facing the light is drawn in its own color, and one seen edge-on at half its lightness.
 
-A `peak` above 1 makes particles brighter than their own color when they face the light, which makes them flash as they turn. Confetti uses a `peak` of 1.5. Here, the squares from above use a strong contrast:
+A `peak` above 1 makes particles brighter than their own color when they face the light, which makes them flash as they turn. Confetti uses a `peak` of 1.5.
 
 <LiveDemo demo="rendering-lighting" label="Flip lit squares" icon={SunIcon} />
 
-Since lighting only changes the lightness, and party.js stores colors in the [Oklab color space](/concepts/colors-lighting/), a lit particle keeps its hue. A red piece of confetti gets darker or brighter, but never turns brown or pink.
+Since lighting only changes the lightness, and party.js stores colors in the Oklab color space, a lit particle keeps its hue. A red piece of confetti gets darker or brighter, but never turns brown or pink.
 
 :::tip
 You can pass `lighting: null` to turn lighting off, and draw particles in exactly their own color.

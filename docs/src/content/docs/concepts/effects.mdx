@@ -1,6 +1,7 @@
 ---
-title: Effects
-description: How effects work and what happens in between calling an effect and the last particle disappearing.
+title: How effects work
+description: What happens in between calling an effect and the last particle disappearing.
+sidebar: { order: 1 }
 ---
 
 import { PaintbrushVerticalIcon } from "@lucide/astro";
@@ -80,7 +81,7 @@ Every [particle](/api/particles/particle/) has a position, velocity, orientation
 
 Dead particles are removed at the end of the step. A particle can't be revived, and it doesn't get a final update after its last step.
 
-Because behaviors run before the movement, a behavior that changes the velocity takes effect in the very same step. And because they run in order, the order can matter when one behavior reads a value that another one changes. [Behaviors & physics](/concepts/behaviors/) explains the built-in behaviors, and [Custom behaviors](/concepts/behaviors/#custom-behaviors) how to write your own.
+Because behaviors run before the movement, a behavior that changes the velocity takes effect in the very same step. And because they run in order, the order can matter when one behavior reads a value that another one changes. [Built-in behaviors](/concepts/behaviors/#built-in-behaviors) explains the built-in behaviors, and [Custom behaviors](/concepts/behaviors/#custom-behaviors) how to write your own.
 
 ## Time and the simulation loop
 
