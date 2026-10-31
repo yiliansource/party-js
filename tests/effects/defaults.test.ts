@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
 import { confetti } from "@/effects/confetti";
-import { withDefaults } from "@/effects/defaults";
+import { withDefaults } from "@/effects/options";
 import { sparkles } from "@/effects/sparkles";
 
 import { type FakeBrowser, stubBrowser } from "../browser";

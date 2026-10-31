@@ -8,14 +8,13 @@ import { createRng } from "../random/rng";
 import {
 	cone,
 	gradient,
-	pick,
 	range,
 	type Sampler,
 	type SamplerFn,
 } from "../samplers";
-import { withDefaults } from "./defaults";
 import { createEffect, type Effect } from "./effect";
 import type { ReducedMotion } from "./motion";
+import { pickOrSampler, withDefaults } from "./options";
 
 /**
  * Options for {@link sparkles | sparkles()}.
@@ -119,9 +118,7 @@ export function sparkles(
 			angularVelocity: randomZSpin(360, 720),
 			size: o.size,
 			lifetime: o.lifetime,
-			color: Array.isArray(o.colors)
-				? pick(o.colors.map(color))
-				: o.colors,
+			color: pickOrSampler(o.colors, color),
 			shape: { type: "star" },
 		},
 		behaviors: [scale(0.3, 0), fade(0, 0.5)],

@@ -2,7 +2,14 @@ import type { ParticleShape } from "party-js";
 
 import { HEART_PATH_D } from "../defaults";
 
-export type ShapeType = "square" | "circle" | "star" | "polygon" | "path";
+export type ShapeType =
+	| "square"
+	| "circle"
+	| "star"
+	| "polygon"
+	| "path"
+	| "text"
+	| "image";
 
 export interface ShapeDraft {
 	type: ShapeType;
@@ -10,6 +17,8 @@ export interface ShapeDraft {
 	star: { points: number };
 	polygon: { sides: number };
 	path: { d: string };
+	text: { text: string; font: string };
+	image: { image: string };
 }
 
 export const SHAPE_DEFAULTS = {
@@ -23,6 +32,8 @@ export const createShapeDraft = (type: ShapeType = "circle"): ShapeDraft => ({
 	star: { ...SHAPE_DEFAULTS.star },
 	polygon: { sides: 5 },
 	path: { d: HEART_PATH_D },
+	text: { text: "🎉", font: "" },
+	image: { image: "" },
 });
 
 export function toParticleShape(draft: ShapeDraft): ParticleShape {
@@ -37,5 +48,13 @@ export function toParticleShape(draft: ShapeDraft): ParticleShape {
 			return { type: "polygon", ...draft.polygon };
 		case "path":
 			return { type: "path", path: new Path2D(draft.path.d) };
+		case "text":
+			return {
+				type: "text",
+				text: draft.text.text,
+				font: draft.text.font !== "" ? draft.text.font : undefined,
+			};
+		case "image":
+			return { type: "image", image: draft.image.image };
 	}
 }

@@ -37,7 +37,10 @@ const tokens = computed(() => shapeCode(draft));
 						<code>custom</code>
 						shape allows you to draw shapes using your own canvas
 						code. See
-						<a href="/guides/custom-shapes/">Custom shapes</a>.
+						<a href="/concepts/shapes/#custom-drawing-functions">
+							Custom shapes
+						</a>
+						.
 					</PanelText>
 				</ShapeEditor>
 			</Panel>

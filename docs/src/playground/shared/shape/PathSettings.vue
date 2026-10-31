@@ -7,7 +7,7 @@ const d = defineModel<string>("d", { required: true });
 
 <template>
 	<div class="flex flex-col gap-2">
-		<TextareaField v-model="d" label="SVG path" />
+		<TextareaField v-model="d" label="SVG path" class="font-mono" />
 		<PanelText>
 			In shape units: the shape fills the box from <code>-0.5</code> to
 			<code>0.5</code>, with y pointing down.

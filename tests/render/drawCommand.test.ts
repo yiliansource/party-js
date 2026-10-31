@@ -1,13 +1,14 @@
 import { describe, expect, test } from "bun:test";
 
 import { format as formatColor } from "@/color/format";
-import { buildDrawCommand } from "@/render/drawCommand";
+import type { Particle } from "@/particle";
 import { circlePath } from "@/shapes/circle";
 import { polygonPath } from "@/shapes/polygon";
 import { squarePath } from "@/shapes/square";
 import { starPath } from "@/shapes/star";
 
 import { makeTestParticle } from "../helpers";
+import { ensureDrawCommand } from "./helpers";
 
 const identityTransform = { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 };
 
@@ -15,7 +16,7 @@ describe("buildDrawCommand", () => {
 	test("passes the transform through unchanged", () => {
 		const particle = makeTestParticle({ shape: { type: "circle" } });
 
-		const cmd = buildDrawCommand(particle, identityTransform);
+		const cmd = ensureDrawCommand(particle, identityTransform);
 
 		expect(cmd.transform).toBe(identityTransform);
 	});
@@ -46,7 +47,7 @@ describe("buildDrawCommand", () => {
 
 		for (const { shape, expected } of cases) {
 			const particle = makeTestParticle({ shape });
-			const cmd = buildDrawCommand(particle, identityTransform);
+			const cmd = ensureDrawCommand(particle, identityTransform);
 
 			expect(cmd.kind).toBe("path");
 			if (cmd.kind === "path") {
@@ -59,11 +60,26 @@ describe("buildDrawCommand", () => {
 		const path = circlePath();
 		const particle = makeTestParticle({ shape: { type: "path", path } });
 
-		const cmd = buildDrawCommand(particle, identityTransform);
+		const cmd = ensureDrawCommand(particle, identityTransform);
 
 		expect(cmd.kind).toBe("path");
 		if (cmd.kind === "path") {
 			expect(cmd.path).toBe(path);
+		}
+	});
+
+	test("a custom shape produces a custom command carrying its draw function", () => {
+		const draw = (
+			_ctx: CanvasRenderingContext2D,
+			_particle: Particle,
+		) => {};
+		const particle = makeTestParticle({ shape: { type: "custom", draw } });
+
+		const cmd = ensureDrawCommand(particle, identityTransform);
+
+		expect(cmd.kind).toBe("custom");
+		if (cmd.kind === "custom") {
+			expect(cmd.draw).toBe(draw);
 		}
 	});
 
@@ -73,7 +89,7 @@ describe("buildDrawCommand", () => {
 			color: { l: 0.5, a: 0.1, b: -0.1, alpha: 0.7 },
 		});
 
-		const cmd = buildDrawCommand(particle, identityTransform);
+		const cmd = ensureDrawCommand(particle, identityTransform);
 
 		expect(cmd.kind).toBe("path");
 		if (cmd.kind === "path") {

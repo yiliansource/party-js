@@ -52,6 +52,16 @@ function shapeEntries(draft: ShapeDraft): Entry[] {
 					],
 				],
 			];
+		case "text":
+			return [
+				type,
+				["text", [string(draft.text.text)]],
+				...(draft.text.font === ""
+					? []
+					: ([["font", [string(draft.text.font)]]] as Entry[])),
+			];
+		case "image":
+			return [type, ["src", [string(draft.image.image)]]];
 	}
 }
 

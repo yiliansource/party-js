@@ -81,7 +81,7 @@ interface CreateLightingOptions {
 
 interface CustomShape {
 	type: "custom";
-	draw: (ctx: CanvasRenderingContext2D, particle: Particle) => void;
+	draw: (ctx: CanvasRenderingContext2D, particle: Readonly<Particle>) => void;
 }
 
 interface DiskEmissionShape {
@@ -141,7 +141,12 @@ interface GradientStop {
 
 declare function gravity(strength: number): Behavior;
 
-type LightingFn = (color: Color, coefficient: number) => Color;
+interface ImageShape {
+	type: "image";
+	image: string | CanvasImageSource;
+}
+
+type LightingFn = (color: Readonly<Color>, coefficient: number) => Color;
 
 declare function linear(): Easing;
 
@@ -173,7 +178,7 @@ interface ParticleInit {
 	lifetime: Sampler<number>;
 }
 
-type ParticleShape = SquareShape | CircleShape | StarShape | PolygonShape | PathShape | CustomShape;
+type ParticleShape = SquareShape | CircleShape | StarShape | PolygonShape | PathShape | TextShape | ImageShape | CustomShape;
 
 declare class PartyJSError extends Error {
 	constructor(message: string);
@@ -270,6 +275,12 @@ interface StarShape {
 	points?: number;
 }
 
+interface TextShape {
+	type: "text";
+	text: string;
+	font?: string;
+}
+
 interface Vec2 {
 	x: number;
 	y: number;
@@ -315,6 +326,7 @@ export {
 	gradient,
 	type GradientStop,
 	gravity,
+	type ImageShape,
 	type LightingFn,
 	linear,
 	type Live,
@@ -348,6 +360,7 @@ export {
 	spread,
 	type SquareShape,
 	type StarShape,
+	type TextShape,
 	type Vec2,
 	type Vec3,
 };

@@ -48,5 +48,16 @@ export function validateShape(shape: ParticleShape, where: string): void {
 					shape.cornerRadius,
 				);
 			break;
+		case "text": {
+			const s = "a non-empty string";
+			if (typeof shape.text !== "string" || shape.text === "")
+				throw invalidOption(`${where}.text`, s, shape.text);
+			if (
+				shape.font !== undefined &&
+				(typeof shape.font !== "string" || shape.font === "")
+			)
+				throw invalidOption(`${where}.font`, s, shape.font);
+			break;
+		}
 	}
 }

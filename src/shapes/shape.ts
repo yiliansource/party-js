@@ -1,8 +1,10 @@
 import type { Particle } from "../particle";
 import type { CircleShape } from "./circle";
+import type { ImageShape } from "./image";
 import type { PolygonShape } from "./polygon";
 import type { SquareShape } from "./square";
 import type { StarShape } from "./star";
+import type { TextShape } from "./text";
 
 /**
  * A shape determined by a {@link Path2D}.
@@ -27,6 +29,8 @@ export interface PathShape {
  * The function is called once per particle on every frame. Before it is called, the context is transformed
  * into shape space (centered at (0, 0), with +y pointing down, rotated according to the particle's `orientation`,
  * with 1 unit being equal to the particle's size) and `fillStyle` is set to the particle's (lit) color.
+ *
+ * The function also receives the particle being drawn, so the drawing can depend on it.
  *
  * You are free to modify any context state, since it is saved and restored around each call. Nothing will be drawn
  * unless your function does so, for example via `ctx.fill()`.
@@ -53,9 +57,15 @@ export interface PathShape {
 export interface CustomShape {
 	type: "custom";
 	/**
-	 * Draws the particle's shape in shape space.
+	 * Draws the particle, in shape space.
+	 *
+	 * @param ctx - The canvas' context, already transformed into shape space, with `fillStyle` set to the particle's
+	 * lit color.
+	 * @param particle - The particle being drawn. Read it to draw something that depends on the particle, like its
+	 * `age`, or its opacity for drawings that don't use `fillStyle`. This should never modify the particle,
+	 * such changes should be done via a {@link Behavior} instead.
 	 */
-	draw: (ctx: CanvasRenderingContext2D, particle: Particle) => void;
+	draw: (ctx: CanvasRenderingContext2D, particle: Readonly<Particle>) => void;
 }
 
 /**
@@ -76,4 +86,6 @@ export type ParticleShape =
 	| StarShape
 	| PolygonShape
 	| PathShape
+	| TextShape
+	| ImageShape
 	| CustomShape;
