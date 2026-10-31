@@ -6,7 +6,6 @@ import { createLighting } from "../render";
 import {
 	cone,
 	evaluateSampler,
-	pick,
 	randomHue,
 	randomOrientation,
 	randomSpin,
@@ -15,9 +14,9 @@ import {
 	type SamplerContext,
 } from "../samplers";
 import type { ParticleShape } from "../shapes";
-import { withDefaults } from "./defaults";
 import { createEffect, type Effect } from "./effect";
 import type { ReducedMotion } from "./motion";
+import { pickOrSampler, withDefaults } from "./options";
 
 /**
  * Options for {@link confetti | confetti()}.
@@ -167,10 +166,8 @@ export function confetti(
 			angularVelocity: randomSpin(180, 360),
 			size: o.size,
 			lifetime: o.lifetime,
-			color: Array.isArray(o.colors)
-				? pick(o.colors.map(color))
-				: o.colors,
-			shape: Array.isArray(o.shapes) ? pick(o.shapes) : o.shapes,
+			color: pickOrSampler(o.colors, color),
+			shape: pickOrSampler(o.shapes),
 		},
 		behaviors: [
 			gravity(gravityStrength),

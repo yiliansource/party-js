@@ -38,6 +38,6 @@ export function drawParticles(
 			coefficient,
 			lighting,
 		);
-		executeDrawCommand(ctx, command);
+		if (command !== null) executeDrawCommand(ctx, command);
 	}
 }

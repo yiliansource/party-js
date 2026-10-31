@@ -13,7 +13,7 @@ const { label } = defineProps<{
 			spellcheck="false"
 			autocapitalize="off"
 			autocomplete="off"
-			class="px-3 py-2 resize-y overflow-y-scroll min-h-24 font-mono text-sm bg-field rounded-xl rounded-r-sm
+			class="px-3 py-2 resize-y overflow-y-scroll min-h-24 text-sm bg-field rounded-xl rounded-r-sm
                 shadow-[inset_0_0_0_1px_var(--color-field-line)]
                 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600"
 		></textarea>

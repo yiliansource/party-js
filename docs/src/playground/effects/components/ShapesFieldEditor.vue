@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { PlusIcon, XIcon } from "@lucide/vue";
+import { type LucideIcon, PlusIcon, TypeIcon, XIcon } from "@lucide/vue";
 import { circlePath } from "party-js/internal/shapes/circle";
 import { polygonPath } from "party-js/internal/shapes/polygon";
 import { squarePath } from "party-js/internal/shapes/square";
@@ -28,47 +28,55 @@ const changed = computed(() => !isDefault(field, value.value));
 
 interface ShapeDisplay {
 	label: string;
-	path: Path2D;
+	icon: Path2D | LucideIcon;
 }
 
 const shapeDisplays = computed(() => value.value.map(toShapeDisplay));
 
 function toShapeDisplay(draft: ShapeDraft): ShapeDisplay {
-	if (draft.type === "square") {
-		return {
-			label:
-				draft.square.aspectRatio < 1
-					? "Strip"
-					: draft.square.cornerRadius === 0
-						? "Square"
-						: "Rounded square",
-			path: squarePath(
-				draft.square.aspectRatio,
-				draft.square.cornerRadius,
-			),
-		};
-	} else if (draft.type === "circle") {
-		return {
-			label: "Circle",
-			path: circlePath(),
-		};
-	} else if (draft.type === "star") {
-		return {
-			label: `${draft.star.points}-point star`,
-			path: starPath(draft.star.points),
-		};
-	} else if (draft.type === "polygon") {
-		return {
-			label: `${draft.polygon.sides}-gon`,
-			path: polygonPath(draft.polygon.sides),
-		};
-	} else if (draft.type === "path") {
-		return {
-			label: "Path",
-			path: new Path2D(draft.path.d),
-		};
+	switch (draft.type) {
+		case "square":
+			return {
+				label:
+					draft.square.aspectRatio < 1
+						? "Strip"
+						: draft.square.cornerRadius === 0
+							? "Square"
+							: "Rounded square",
+				icon: squarePath(
+					draft.square.aspectRatio,
+					draft.square.cornerRadius,
+				),
+			};
+		case "circle":
+			return {
+				label: "Circle",
+				icon: circlePath(),
+			};
+		case "star":
+			return {
+				label: `${draft.star.points}-point star`,
+				icon: starPath(draft.star.points),
+			};
+		case "polygon":
+			return {
+				label: `${draft.polygon.sides}-gon`,
+				icon: polygonPath(draft.polygon.sides),
+			};
+		case "path":
+			return {
+				label: "Path",
+				icon: new Path2D(draft.path.d),
+			};
+		case "text":
+			return {
+				label: draft.text.text,
+				icon: TypeIcon,
+			};
+
+		default:
+			throw new Error("invalid shape draft type");
 	}
-	throw new Error("invalid shape draft type");
 }
 
 const selectedIndex = ref<number | null>(null);
@@ -87,6 +95,9 @@ function removeShape(index: number) {
 	if (selectedIndex.value === index) selectedIndex.value = null;
 	else if (selectedIndex.value > index) selectedIndex.value--;
 }
+
+const isPath = (icon: ShapeDisplay["icon"]): icon is Path2D =>
+	icon instanceof Path2D;
 </script>
 
 <template>
@@ -106,7 +117,13 @@ function removeShape(index: number) {
 					:aria-pressed="selectedIndex === index"
 					@click="selectedIndex = selectedIndex === index ? null : index"
 				>
-					<ShapeIcon :path="display.path" class="size-4!" />
+					<ShapeIcon
+						:path="display.icon"
+						class="size-4!"
+						v-if="isPath(display.icon)"
+					/>
+					<component :is="display.icon" class="size-4" v-else />
+
 					<span class="font-medium text-sm">{{ display.label }}</span>
 				</button>
 				<button

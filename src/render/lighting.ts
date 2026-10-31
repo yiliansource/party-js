@@ -15,7 +15,7 @@ import * as vec3 from "../math/vec3";
  *
  * @group Custom effects
  */
-export type LightingFn = (color: Color, coefficient: number) => Color;
+export type LightingFn = (color: Readonly<Color>, coefficient: number) => Color;
 
 /**
  * Options for {@link createLighting | createLighting()}.

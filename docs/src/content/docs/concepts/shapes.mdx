@@ -1,36 +1,36 @@
 ---
 title: Shapes
-description: How particles are shaped.
+description: How particles obtain their drawn shape.
 sidebar: { order: 4 }
 ---
 
-import { ImageIcon, LightbulbIcon, TrianglesCenterlineDashedHorizontalIcon, PlusIcon, ShapesIcon } from "@lucide/astro";
+import { CircleIcon, FaceSlightlySmilingIcon, ImageIcon, LightbulbIcon, PlusIcon, ShapesIcon, TrianglesCenterlineDashedVerticalIcon, TypeIcon } from "@lucide/astro";
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
 
-Every particle is drawn as a shape, filled with a color. party.js comes with a few shapes that cover most effects, like squares, circles and stars, and lets you bring your own, from a simple path to anything you can draw on a canvas. This page explains how shapes are sized and placed, which ones are built in and how to add your own.
+The way a particle is drawn depends on its _shape_. party.js ships with a few shapes that cover most effects, like squares, circles and stars. You can also add your own shapes, including paths, images and custom draw functions. This page explains how shapes are sized and placed, which ones are built in and how to add your own.
 
 ## Shape space
 
-All shapes are drawn in the same coordinate system, called **shape space**. A shape fits into a box of 1 by 1, centered at (0, 0), so it reaches from -0.5 to 0.5 in both directions. Like on a regular canvas, +y points down.
+All shapes are drawn in the same coordinate system, called **shape space**. A shape fits into a 1x1 box, centered at (0, 0), so it reaches from -0.5 to 0.5 in both directions. Like on a regular canvas, +y points down.
 
-When a particle is drawn, this box is scaled to the particle's `size` in pixels, rotated by its orientation, and moved to its position. A circle with a `size` of 10 is 10 pixels wide, and so is a square. Shapes that aren't as wide as they are tall, like a narrow strip, fill the box in their longer direction.
+When a particle is drawn, this box is scaled to the particle's `size` in pixels, rotated by its orientation, and moved to its position. For example, a circle with a `size` of 10 will be drawn as 10 pixels wide, as would a square. Shapes that aren't as wide as they are tall, like a narrow strip, fill the box in their longer direction.
 
 ## Built-in shapes
+
+The most common shapes for effects are built-in, and easily be used and configured.
 
 ### Primitives
 
 | Shape | Looks like |
 | --- | --- |
-| [`{ type: "square" }`](/api/particles/squareshape/) | A square, or a rectangle with an `aspectRatio`. `cornerRadius` rounds its corners. |
-| [`{ type: "circle" }`](/api/particles/circleshape/) | A circle. |
-| [`{ type: "star" }`](/api/particles/starshape/) | A star with 5 `points`, or as many as you like. |
-| [`{ type: "polygon" }`](/api/particles/polygonshape/) | A regular polygon with the given number of `sides`. |
+| [`square`](/api/particles/squareshape/) | A square, or a rectangle with an `aspectRatio`. `cornerRadius` rounds its corners. |
+| [`circle`](/api/particles/circleshape/) | A circle. |
+| [`star`](/api/particles/starshape/) | A star with 5 `points`, or as many as you like. |
+| [`polygon`](/api/particles/polygonshape/) | A regular polygon with the given number of `sides`. |
 
 `confetti()` uses rounded squares and circles by default, and `sparkles()` uses stars. Confetti's `shapes` option takes a list to pick from:
 
 <LiveDemo demo="shapes-builtin" size="compact" label="Fire shapes" icon={ShapesIcon} />
-
-A square's `aspectRatio` is its width divided by its height, so 0.4 makes a tall strip, and 2 a wide one. Its `cornerRadius` is measured in shape space too: 0.5 turns a square into a circle, and anything larger is clamped to that.
 
 Like other values, shapes are checked before they're used. A polygon with 2 sides or a negative corner radius throws a [`PartyJSError`](/api/utilities/partyjserror/), either when the effect is created, or for shapes that come from a sampler, when a particle spawns.
 
@@ -40,7 +40,7 @@ For any shape you can describe as an outline, use a [`Path2D`](https://developer
 
 <LiveDemo demo="shapes-path" size="compact" label="Fire plus signs" icon={PlusIcon} />
 
-`Path2D` also understands SVG path data, which makes icons a good source of shapes. Most icons are drawn on a larger grid, like 24 by 24 pixels, so they need to be scaled into the box first:
+Icons are also a good source of shapes. Most icons are drawn on a larger grid, like 24 by 24 pixels, so they need to be scaled into the box first:
 
 ```js
 // an icon from a 24x24 grid, moved to (0, 0) and scaled to a size of 1
@@ -56,8 +56,16 @@ Also, `Path2D` only exists in the browser. If your page is rendered on the serve
 
 ### Text
 
+Single characters or plain text can also be used as a shape.
+
+<LiveDemo demo="shapes-text" size="compact" label="Fire text" icon={TypeIcon} />
+
+You can also use emojis, however they will not be affected by the particle's `color` or lighting. Opacity works fine though.
+
+<LiveDemo demo="shapes-emoji" size="compact" label="Fire emojis" icon={FaceSlightlySmilingIcon} />
+
 :::caution
-TODO: Rewrite as built-in.
+Emoji may wobble slightly while a particle rotates, depending on the browser, because browsers typically snap emoji to the pixel grid. At the sizes and speeds of typical effects it shouldn't be noticeable.
 :::
 
 ### Images
@@ -80,6 +88,12 @@ A custom shape draws the particle with your own function, using the canvas' [con
 
 `globalAlpha` is multiplied with the opacity of the `fillStyle`, so the glow still fades out with the particle. You don't need to reset anything you change, like `globalAlpha` here: the context is saved before your function is called, and restored afterwards.
 
+Your function also receives the particle being drawn, so the drawing can change with it. Here, each particle is a ring that gets thinner as it ages:
+
+<LiveDemo demo="shapes-ring" size="compact" label="Thinning rings" icon={CircleIcon} />
+
+Only read from the particle. Drawing happens once per frame, not once per simulation step, so to change particles, write a [behavior](/concepts/behaviors/#custom-behaviors).
+
 Keep custom drawing functions quick, they run for every particle, on every frame. Prepare anything you can, like images or gradients, outside of the function.
 
 ## From 3D to 2D
@@ -92,6 +106,4 @@ Each particle has a position, a size, and an orientation in 3D. When it's drawn,
 
 Here, a row of squares turns around the vertical axis, each one a little further than the one before:
 
-<LiveDemo demo="rendering-flip" label="Flip squares" icon={TrianglesCenterlineDashedHorizontalIcon} />
-
-This is all it takes for confetti to look three-dimensional. [`randomSpin()`](/api/samplers/randomspin/) gives each piece its own axis to spin around, and the squashing does the rest.
+<LiveDemo demo="rendering-flip" label="Flip squares" icon={TrianglesCenterlineDashedVerticalIcon} />

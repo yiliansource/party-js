@@ -1,6 +1,7 @@
 import { format as formatColor } from "../color/format";
 import type { Particle } from "../particle/particle";
 import { circlePath } from "../shapes/circle";
+import { fitImage, resolveImage } from "../shapes/image";
 import { polygonPath } from "../shapes/polygon";
 import type { ParticleShape } from "../shapes/shape";
 import { squarePath } from "../shapes/square";
@@ -16,8 +17,27 @@ export type DrawCommand =
 			fillStyle: string;
 	  }
 	| {
+			kind: "text";
+			text: string;
+			font: string;
+			transform: ProjectedTransform;
+			fillStyle: string;
+	  }
+	| {
+			kind: "image";
+			image: CanvasImageSource;
+			width: number;
+			height: number;
+			alpha: number;
+			transform: ProjectedTransform;
+	  }
+	| {
 			kind: "custom";
-			draw: (ctx: CanvasRenderingContext2D) => void;
+			particle: Readonly<Particle>;
+			draw: (
+				ctx: CanvasRenderingContext2D,
+				particle: Readonly<Particle>,
+			) => void;
 			transform: ProjectedTransform;
 			fillStyle: string;
 	  };
@@ -27,33 +47,56 @@ export function buildDrawCommand(
 	transform: ProjectedTransform,
 	lightingCoefficient?: number,
 	lighting?: LightingFn | null,
-): DrawCommand {
+): DrawCommand | null {
 	const color =
 		lightingCoefficient !== undefined && lighting != null
 			? lighting(particle.color, lightingCoefficient)
 			: particle.color;
 	const fillStyle = formatColor(color);
 
-	if (particle.shape.type === "custom") {
-		const drawFn = particle.shape.draw;
-		return {
-			kind: "custom",
-			draw: (ctx) => drawFn(ctx, particle),
-			transform,
-			fillStyle,
-		};
+	const shape = particle.shape;
+	switch (shape.type) {
+		case "text":
+			return {
+				kind: "text",
+				text: shape.text,
+				font: shape.font ?? "sans-serif",
+				transform,
+				fillStyle,
+			};
+		case "image": {
+			const image = resolveImage(shape.image);
+			if (!image) return null;
+			const [width, height] = fitImage(image);
+			return {
+				kind: "image",
+				image,
+				width,
+				height,
+				alpha: particle.color.alpha,
+				transform,
+			};
+		}
+		case "custom":
+			return {
+				kind: "custom",
+				particle,
+				draw: shape.draw,
+				transform,
+				fillStyle,
+			};
+		default:
+			return {
+				kind: "path",
+				path: resolveShapePath(shape),
+				transform,
+				fillStyle,
+			};
 	}
-
-	return {
-		kind: "path",
-		path: resolveShapePath(particle.shape),
-		transform,
-		fillStyle,
-	};
 }
 
 function resolveShapePath(
-	shape: Exclude<ParticleShape, { type: "custom" }>,
+	shape: Exclude<ParticleShape, { type: "custom" | "text" | "image" }>,
 ): Path2D {
 	switch (shape.type) {
 		case "square":

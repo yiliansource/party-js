@@ -4,6 +4,7 @@ import { executeDrawCommand } from "@/render/canvas";
 import type { DrawCommand } from "@/render/drawCommand";
 import { squarePath } from "@/shapes/square";
 
+import { makeTestParticle } from "../helpers";
 import { createTestContext } from "./helpers";
 
 function squareCommand(
@@ -70,10 +71,11 @@ describe("executeDrawCommand", () => {
 
 		const command: DrawCommand = {
 			kind: "custom",
-			transform: { a: 20, b: 0, c: 0, d: 20, e: 50, f: 50 },
+			particle: makeTestParticle(),
 			draw: (c) => {
 				c.fillRect(-0.5, -0.5, 1, 1);
 			},
+			transform: { a: 20, b: 0, c: 0, d: 20, e: 50, f: 50 },
 			fillStyle: "#ff0000",
 		};
 
@@ -88,11 +90,12 @@ describe("executeDrawCommand", () => {
 
 		const command: DrawCommand = {
 			kind: "custom",
-			transform: { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 },
+			particle: makeTestParticle(),
 			draw: (c) => {
 				c.globalAlpha = 0.25;
 				c.scale(7, 7);
 			},
+			transform: { a: 1, b: 0, c: 0, d: 1, e: 0, f: 0 },
 			fillStyle: "#ff0000",
 		};
 

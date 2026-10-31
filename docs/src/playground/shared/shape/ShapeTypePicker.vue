@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { type LucideIcon, TypeIcon } from "@lucide/vue";
 import { circlePath } from "party-js/internal/shapes/circle";
 import { polygonPath } from "party-js/internal/shapes/polygon";
 import { squarePath } from "party-js/internal/shapes/square";
@@ -12,7 +13,7 @@ import type { ShapeType } from "./draft";
 interface ShapeOption {
 	type: ShapeType;
 	label: string;
-	path: Path2D;
+	icon: Path2D | LucideIcon;
 }
 
 const model = defineModel<ShapeType>({ required: true });
@@ -23,33 +24,46 @@ const options: ShapeOption[] = [
 	{
 		type: "square",
 		label: "Square",
-		path: squarePath(1, 0.1),
+		icon: squarePath(1, 0.1),
 	},
 	{
 		type: "circle",
 		label: "Circle",
-		path: circlePath(),
+		icon: circlePath(),
 	},
 	{
 		type: "star",
 		label: "Star",
-		path: starPath(5),
+		icon: starPath(5),
 	},
 	{
 		type: "polygon",
 		label: "Polygon",
-		path: polygonPath(5),
+		icon: polygonPath(5),
 	},
 	{
 		type: "path",
 		label: "Path",
-		path: new Path2D(HEART_PATH_D),
+		icon: new Path2D(HEART_PATH_D),
 	},
+	{
+		type: "text",
+		label: "Text",
+		icon: TypeIcon,
+	},
+	// {
+	// 	type: "image",
+	// 	label: "Image",
+	// 	icon: ImageIcon,
+	// },
 ];
+
+const isPath = (icon: ShapeOption["icon"]): icon is Path2D =>
+	icon instanceof Path2D;
 </script>
 
 <template>
-	<fieldset class="p-0 flex flex-row gap-2">
+	<fieldset class="p-0 grid grid-cols-5 gap-1">
 		<legend class="sr-only">Shape type</legend>
 		<label
 			v-for="option in options"
@@ -68,7 +82,8 @@ const options: ShapeOption[] = [
 				:value="option.type"
 				class="sr-only"
 			>
-			<ShapeIcon :path="option.path" />
+			<ShapeIcon :path="option.icon" v-if="isPath(option.icon)" />
+			<component :is="option.icon" v-else />
 			<span class="text-xs font-semibold">{{ option.label }}</span>
 		</label>
 	</fieldset>

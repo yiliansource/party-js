@@ -17,7 +17,7 @@ export const run: Demo = ({ target: button }) => {
 			// #region collapse
 			position: emitFrom(shape),
 			velocity: cone(90, 30, range(40, 100)),
-			size: range(16, 28),
+			size: range(8, 28),
 			color: pick(["#fde68a", "#bef264", "#a5f3fc"]),
 			lifetime: range(2, 3),
 			// #endregion
