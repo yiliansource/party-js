@@ -90,7 +90,7 @@ interface DiskEmissionShape {
 	radius: number;
 }
 
-declare function drag(coefficient: number): Behavior;
+declare function drag(rate: Sampler<number>, edgeRatio?: number): Behavior;
 
 type Easing = (t: number) => number;
 

@@ -5,7 +5,8 @@ import type { EmissionShape } from "./shape";
 /**
  * What an effect bursts out of: an element on the page, or a point.
  *
- * For an element, particles are emitted from the whole area. For a point, they spawn exactly there, in page
+ * For an element, particles burst out of its area, and each effect decides how much of it they use: sparkles
+ * spawn across the whole element, confetti from its middle. For a point, they spawn exactly there, in page
  * coordinates, i.e. in pixels from the top-left corner of the document, with +y pointing down. Either way,
  * the position is read only once, when the effect starts; moving or scrolling afterwards does not move
  * the effect.

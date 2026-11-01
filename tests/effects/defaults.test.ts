@@ -67,7 +67,8 @@ describe("built-in effects with undefined options", () => {
 			{ x: 0, y: 0 },
 			{ shapes: undefined, colors: undefined, count: undefined },
 		);
-		browser.runFor(5000);
+		// longer than the longest default lifetime (4s), so the effect ends and doesn't leak into other tests
+		browser.runFor(6000);
 
 		expect(browser.reportedErrors).toEqual([]);
 		expect(browser.particlesDrawn).toBeGreaterThan(0);

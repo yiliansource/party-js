@@ -21,7 +21,7 @@ import { createEffect, drag, fade, gravity, scale } from "party-js";
 
 createEffect({
 	// ...
-	behaviors: [gravity(800), drag(0.003), scale(0.2, 0), fade(0, 1)],
+	behaviors: [gravity(800), drag(5), scale(0.2, 0), fade(0, 1)],
 });
 ```
 
@@ -49,7 +49,7 @@ Behaviors don't run on dead particles. Once a particle's `age` reaches its `life
 | Behavior | Description |
 | --- | --- |
 | [`gravity(strength)`](/api/behaviors/gravity/) | Pulls particles down with constant acceleration. |
-| [`drag(coefficient)`](/api/behaviors/drag/) | Slows particles down, the more the faster they move. |
+| [`drag(rate, edgeRatio?)`](/api/behaviors/drag/) | Slows particles down in proportion to their speed, and optionally makes them flutter like paper. |
 | [`fade(in, out, ease?)`](/api/behaviors/fade/) | Fades particles in after they spawn, and out before they die. |
 | [`scale(in, out, ease?)`](/api/behaviors/scale/) | Grows particles from nothing after they spawn, and shrinks them away before they die. |
 
@@ -59,20 +59,34 @@ Behaviors don't run on dead particles. Once a particle's `age` reaches its `life
 
 `gravity(strength)` adds `strength` pixels per second to the particle's downward speed, every second. Confetti uses 800 by default. A negative strength pulls particles up instead, for example to make bubbles rise.
 
-`drag(coefficient)` works against the particle's movement, in every direction. It's implemented as [quadratic drag](http://hyperphysics.phy-astr.gsu.edu/hbase/Mechanics/quadvfall.html), the same kind of air resistance a real piece of paper feels: it grows with the square of the speed. A fast particle slows down quickly, while a slow one is hardly affected. That's why a burst of confetti shoots out, loses most of its speed in a moment, and then drifts down slowly.
+`drag(rate)` works against the particle's movement, in every direction. Every second, the particle loses the fraction `rate` of its velocity, so drag is strongest while a particle is fast: a burst slows down sharply at first, then more and more gently. That's how a burst of confetti can shoot out fast and still come to a stop within a few hundred pixels.
 
-The two can work together to make a falling particle speed up until it reaches a steady speed, its **terminal velocity**. If you know how fast particles should fall at most, you can calculate the drag coefficient from it, just like `confetti()` does behind the scenes:
+Together, the two make a falling particle speed up until it reaches a steady speed, its **terminal velocity**, of `strength / rate`. If you know how fast particles should fall at most, you can calculate the rate from it, just like `confetti()` does behind the scenes:
 
 ```js
 const g = 800; // px/s²
-const terminalVelocity = 500; // px/s
+const terminalVelocity = 160; // px/s
 
-const behaviors = [gravity(g), drag(g / terminalVelocity ** 2)];
+const behaviors = [gravity(g), drag(g / terminalVelocity)];
 ```
 
-:::caution
-The drag coefficient is measured in 1/px, so sensible values are tiny, usually between 0.0005 and 0.02. A value like `drag(1)` stops particles almost instantly.
+:::tip
+Since the same rate decides both, particles that fall slowly also don't fly as far. To keep a slow fall and still cover more distance, launch the particles faster.
 :::
+
+The rate is measured in 1/s, and sensible values usually lie between 2 and 10. It's [sampled](/concepts/samplers/) once for each particle, so you can also pass something like `drag(range(4, 6))`. The particles then fall at slightly different speeds, and a cloud of them stretches out as it falls, instead of coming down as a block.
+
+#### Fluttering
+
+A piece of paper doesn't fall straight down. It meets more resistance when it moves face-on than when it moves edge-on, so while it's tilted, part of its fall turns into a sideways glide. As it tumbles, the tilt flips and the glide changes direction, and the paper sways from side to side.
+
+The optional second argument of `drag()`, `edgeRatio`, simulates this. It sets how much drag a particle feels when it moves edge-on, relative to when it moves face-on:
+
+```js
+const behaviors = [gravity(800), drag(800 / 160, 0.4)];
+```
+
+With the default of 1, drag is the same in every direction. Values between 0.3 and 0.5 give a paper-like flutter, which is what `confetti()` uses, and lower values make particles glide far to the side. The face is the plane of the particle's shape, so fluttering needs particles that tumble, for example with [`randomSpin()`](/api/samplers/randomspin/).
 
 ### Fading and scaling
 
@@ -111,7 +125,7 @@ fade(0.2, 0.5, cubicIn);
 
 Behaviors run in the order they're listed in, and each one sees the changes of the ones before it. Whether that matters depends on how a behavior changes a value:
 
-- Some behaviors **change** a value step by step. `gravity()` and `drag()` add to the velocity the particle already has, so their changes build up over time.
+- Some behaviors **change** a value step by step. `gravity()` and `drag()` adjust the velocity the particle already has, so their changes build up over time.
 - Others **set** a value from scratch on every step. `scale()` calculates the size from the starting size and the particle's age, and `fade()` does the same for the opacity. Whatever happened to the value before is overwritten.
 
 For behaviors of the first kind, the order barely matters. Behaviors of the second kind replace the changes of everything listed before them. For example, here is a behavior that makes particles pulse:
@@ -160,6 +174,20 @@ A couple of notes on the implementation:
 - **The key is a `Symbol`**, created inside the outer function. Every call of `sway()` creates a new one, so two sways in the same effect, or another behavior that stores data, never overwrite each other's values. A string key like `"phase"` could clash.
 - **The phase comes from `ctx.rng`**, the effect's random number generator, and not from `Math.random()`, to keep the effect [reproducible](/concepts/samplers/#reproducible-randomness).
 - **Per-particle values live on the particle**, not in variables of the outer function. `sway(200)` is called once, and the behavior it returns then runs for every particle of the effect, so a variable would be shared by all of them.
+
+### Quadratic drag
+
+As a last example, here's quadratic drag, where air resistance grows with the square of the speed, as it does for real objects. The built-in `drag()` is linear instead, so that a slow fall doesn't force a short flight:
+
+```js
+const quadraticDrag = (coefficient) => (particle, ctx) => {
+	const { x, y, z } = particle.velocity;
+	const factor = 1 / (1 + coefficient * Math.hypot(x, y, z) * ctx.dt);
+	particle.velocity = { x: x * factor, y: y * factor, z: z * factor };
+};
+```
+
+Dividing by `1 + ...` instead of subtracting keeps a fast particle from overshooting and reversing direction in a single step. Together with gravity, the terminal velocity is `Math.sqrt(strength / coefficient)`, so to fall at most `v` pixels per second, use `quadraticDrag(strength / v ** 2)`. The coefficient is measured in 1/px, so sensible values are tiny, usually between 0.0005 and 0.02.
 
 ### Things to keep in mind
 

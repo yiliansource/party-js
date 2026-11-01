@@ -89,7 +89,7 @@ You don't need to clone objects your sampler returns. party.js copies vectors, c
 
 All particles that spawn in the same simulation step form a **batch**. A burst is one batch, and so are several particles of a continuous stream that happen to spawn in the same step. While sampling a particle's values, `ctx.batch` tells you its position in the batch (`index`) and how many particles the batch has (`size`).
 
-Batches let a sampler coordinate the particles of a burst instead of treating each one on its own. As an example, [`spread()`](/api/samplers/spread/) uses this to split its range into one equal slice per particle in the batch, and give each particle a random value within its own slice. A burst then always covers the whole range evenly, without the clumps and gaps that independent random values can produce. [`cone()`](/api/samplers/cone/) uses `spread()` for its angle, which is why a burst of confetti always fans out evenly.
+Batches let a sampler coordinate the particles of a burst instead of treating each one on its own. As an example, [`spread()`](/api/samplers/spread/) uses this to split its range into one equal slice per particle in the batch, and give each particle a random value within its own slice. A burst then always covers the whole range evenly, without the clumps and gaps that independent random values can produce. [`cone()`](/api/samplers/cone/) uses `spread()` for its angle, which is why a burst of sparkles always fans out evenly.
 
 You can use batches in your own samplers too. Here, the particles of each burst are placed on a perfect ring:
 

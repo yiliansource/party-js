@@ -39,7 +39,7 @@ export const run = ({ target: button }) => {
 			shape: { type: "square", aspectRatio: 0.6 },
 			lifetime: range(2, 3),
 		},
-		behaviors: [gravity(800), drag(800 / 400 ** 2), fade(0, 1)],
+		behaviors: [gravity(800), drag(800 / 400), fade(0, 1)],
 		// #endregion
 		lighting: glint,
 	});
