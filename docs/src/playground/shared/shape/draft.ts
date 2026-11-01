@@ -1,6 +1,6 @@
 import type { ParticleShape } from "party-js";
 
-import { HEART_PATH_D } from "../defaults";
+import { DEFAULT_IMAGE_URL, HEART_PATH_D } from "../defaults";
 
 export type ShapeType =
 	| "square"
@@ -33,7 +33,7 @@ export const createShapeDraft = (type: ShapeType = "circle"): ShapeDraft => ({
 	polygon: { sides: 5 },
 	path: { d: HEART_PATH_D },
 	text: { text: "🎉", font: "" },
-	image: { image: "" },
+	image: { image: DEFAULT_IMAGE_URL },
 });
 
 export function toParticleShape(draft: ShapeDraft): ParticleShape {
@@ -55,6 +55,6 @@ export function toParticleShape(draft: ShapeDraft): ParticleShape {
 				font: draft.text.font !== "" ? draft.text.font : undefined,
 			};
 		case "image":
-			return { type: "image", image: draft.image.image };
+			return { type: "image", image: draft.image.image.trim() };
 	}
 }

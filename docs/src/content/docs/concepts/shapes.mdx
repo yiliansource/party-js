@@ -7,7 +7,7 @@ sidebar: { order: 4 }
 import { CircleIcon, FaceSlightlySmilingIcon, ImageIcon, LightbulbIcon, PlusIcon, ShapesIcon, TrianglesCenterlineDashedVerticalIcon, TypeIcon } from "@lucide/astro";
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
 
-The way a particle is drawn depends on its _shape_. party.js ships with a few shapes that cover most effects, like squares, circles and stars. You can also add your own shapes, including paths, images and custom draw functions. This page explains how shapes are sized and placed, which ones are built in and how to add your own.
+The way a particle is drawn depends on its _shape_. party.js ships with a few shapes that cover most effects, like squares, circles and stars, as well as text and images. You can also add your own shapes, as paths or custom draw functions. This page explains how shapes are sized and placed, which ones are built in and how to add your own.
 
 ## Shape space
 
@@ -70,15 +70,21 @@ Emoji may wobble slightly while a particle rotates, depending on the browser, be
 
 ### Images
 
-:::caution
-TODO: Rewrite as built-in.
-:::
-
-With `drawImage()`, particles can be pictures, like your logo. Load the image once, ahead of time, and draw it into the 1 by 1 box:
+Particles can also be pictures, like your logo. Give the image shape a URL, and party.js loads the image for you:
 
 <LiveDemo demo="shapes-image" size="compact" label="Fire logos" icon={ImageIcon} />
 
-An image isn't drawn with the `fillStyle`, so it keeps its own colors: it isn't lit, and it doesn't fade out. Until the image has loaded, the particles are simply not drawn, which is why it's loaded ahead of time.
+An image keeps its aspect ratio, with its longer side filling the box. It also keeps its own colors: it fades out with the particle, but isn't tinted by its `color` or lit.
+
+Until the image has loaded, its particles simply aren't drawn. Loading starts when the first particle spawns, so a large image can miss the first burst. To show it right away, preload it in your page's `<head>`:
+
+```html
+<link rel="preload" as="image" href="/logo.png" />
+```
+
+Instead of a URL, you can also pass anything a canvas can draw, like an `<img>` that has already loaded, a `<canvas>` or an `ImageBitmap`. If you pass an SVG as an `<img>`, give it a `width` and `height`, since some browsers report a size of 0 otherwise.
+
+Each URL is only loaded once, and kept for later effects. If it can't be loaded, party.js reports it once in the console, and the effect plays without those particles.
 
 ## Custom drawing functions
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import PanelText from "../ui/PanelText.vue";
 import CircleSettings from "./CircleSettings.vue";
 import type { ShapeDraft } from "./draft";
+import ImageSettings from "./ImageSettings.vue";
 import PathSettings from "./PathSettings.vue";
 import PolygonSettings from "./PolygonSettings.vue";
 import SquareSettings from "./SquareSettings.vue";
@@ -31,5 +31,9 @@ const { draft } = defineProps<{ draft: ShapeDraft }>();
 		v-else-if="draft.type === 'text'"
 		v-model:text="draft.text.text"
 		v-model:font="draft.text.font"
+	/>
+	<ImageSettings
+		v-else-if="draft.type === 'image'"
+		v-model:image="draft.image.image"
 	/>
 </template>
