@@ -1,4 +1,4 @@
-import { PartyJSError } from "../errors";
+import { invalidOption, PartyJSError } from "../errors";
 import type { SamplerFn } from "./types";
 
 /**
@@ -25,41 +25,35 @@ import type { SamplerFn } from "./types";
  */
 export function pick<T>(arr: T[], weights?: number[]): SamplerFn<T> {
 	if (arr.length === 0)
-		throw new PartyJSError("pick() needs at least one value to pick from");
-
-	if (weights === undefined) {
+		throw invalidOption("pick() values", "a non-empty array", arr);
+	if (weights === undefined)
 		return (ctx) => arr[Math.floor(ctx.rng() * arr.length)];
-	} else {
-		if (arr.length !== weights.length)
-			throw new PartyJSError(
-				`pick() got ${arr.length} values, but ${weights.length} weights`,
-			);
 
-		for (let i = 0; i < weights.length; i++) {
-			if (weights[i] < 0)
-				throw new PartyJSError(
-					`pick() weights must be at least 0, got ${weights[i]} at index ${i}`,
-				);
+	if (weights.length !== arr.length)
+		throw invalidOption(
+			"pick() weights",
+			`one number per value (${arr.length})`,
+			weights,
+		);
+	weights.forEach((weight, i) => {
+		if (!(weight >= 0))
+			throw invalidOption(`pick() weights[${i}]`, "at least 0", weight);
+	});
+	const total = weights.reduce((a, b) => a + b, 0);
+	if (total === 0)
+		throw invalidOption(
+			"pick() weights",
+			"above 0 for at least one value",
+			weights,
+		);
+
+	return (ctx) => {
+		let t = ctx.rng() * total;
+		for (let i = 0; i < arr.length; i++) {
+			t -= weights[i];
+			if (t < 0) return arr[i];
 		}
-
-		const totalWeight = weights.reduce((a, b) => a + b, 0);
-		if (totalWeight === 0)
-			throw new PartyJSError("pick() weights must not all be zero");
-
-		return (ctx) => {
-			const t = ctx.rng() * totalWeight;
-			let acc = 0;
-			for (let i = 0; i < arr.length; i++) {
-				const w = weights[i];
-				if (acc + w > t) {
-					return arr[i];
-				}
-				acc += w;
-			}
-
-			throw new PartyJSError(
-				"internal error in pick(), please report this",
-			);
-		};
-	}
+		// only reachable through floating-point rounding, at the very end of the range
+		return arr[arr.length - 1];
+	};
 }
