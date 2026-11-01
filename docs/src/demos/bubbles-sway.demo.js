@@ -55,7 +55,7 @@ export const run = ({ target: button }) => {
 			lifetime: range(2, 3),
 		},
 		// #endregion
-		behaviors: [gravity(-300), drag(0.01), sway(200), scale(0.3, 0), fade(0, 1)],
+		behaviors: [gravity(-300), drag(1.7), sway(200), scale(0.3, 0), fade(0, 1)],
 	});
 	// #endregion
 };

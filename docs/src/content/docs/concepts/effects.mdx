@@ -63,7 +63,7 @@ Each time the schedule emits particles, they're created ("spawned") one after an
 
 Positions and velocities are in **particle space**: pixels relative to the origin, with +x pointing right and +y pointing **up**. That's the opposite of the page, where +y points down. Particles also have a z coordinate, which lets them rotate in 3D, but it doesn't change where they're drawn.
 
-Particles that spawn in the same simulation step, such as all particles of a burst, form a [batch](/concepts/samplers/#batches). Samplers can use this to spread the particles of a burst evenly, as for example the confetti does.
+Particles that spawn in the same simulation step, such as all particles of a burst, form a [batch](/concepts/samplers/#batches). Samplers can use this to spread the particles of a burst evenly, as for example the sparkles do.
 
 Right after a particle's values are sampled, each [behavior](/concepts/behaviors/) that has an `init` function is called, for example to remember the particle's starting size.
 

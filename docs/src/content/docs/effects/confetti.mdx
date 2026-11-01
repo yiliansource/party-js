@@ -11,7 +11,7 @@ import { PartyPopperIcon } from "@lucide/astro";
 
 ## Usage
 
-Pass the element the confetti should come from. Particles spawn across its whole area rather than from a single point, so a wide button gets a wide burst.
+Pass the element the confetti should come from. The confetti shoots out of the middle of the element, fast and mostly along its `angle`. Drag slows it down within a fraction of a second, and it then flutters down slowly like paper, swaying as it tumbles.
 
 ```js
 import { confetti, range } from "party-js";
