@@ -5,6 +5,7 @@ import { type Vec3, zero as vec3Zero } from "../math/vec3";
 import type { Particle } from "../particle/particle";
 import { evaluateSampler } from "../samplers/helpers";
 import type { Sampler, SamplerContext } from "../samplers/types";
+import { resolveImage } from "../shapes/image";
 import type { ParticleShape } from "../shapes/shape";
 import { validateShape } from "../shapes/validate";
 
@@ -111,8 +112,9 @@ export function resolveParticleInit(init: ParticleInit): ResolvedParticleInit {
 		color(resolved.color); // throws if the color is invalid
 	}
 
-	if (typeof resolved.shape !== "function")
+	if (typeof resolved.shape !== "function") {
 		validateShape(resolved.shape, "particleInit.shape");
+	}
 
 	if (typeof resolved.lifetime === "number" && resolved.lifetime <= 0)
 		throw invalidOption(
@@ -131,6 +133,9 @@ export function spawnParticle(
 	const shape = evaluateSampler(init.shape, ctx);
 	if (typeof init.shape === "function")
 		validateShape(shape, "particleInit.shape");
+
+	// starts loading an image URL now, so it has a head start before the particle is first drawn
+	if (shape.type === "image") resolveImage(shape.image);
 
 	return {
 		position: own(evaluateSampler(init.position, ctx)),

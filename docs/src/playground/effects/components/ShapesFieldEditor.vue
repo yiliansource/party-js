@@ -1,5 +1,11 @@
 <script setup lang="ts">
-import { type LucideIcon, PlusIcon, TypeIcon, XIcon } from "@lucide/vue";
+import {
+	ImageIcon,
+	type LucideIcon,
+	PlusIcon,
+	TypeIcon,
+	XIcon,
+} from "@lucide/vue";
 import { circlePath } from "party-js/internal/shapes/circle";
 import { polygonPath } from "party-js/internal/shapes/polygon";
 import { squarePath } from "party-js/internal/shapes/square";
@@ -72,6 +78,11 @@ function toShapeDisplay(draft: ShapeDraft): ShapeDisplay {
 			return {
 				label: draft.text.text,
 				icon: TypeIcon,
+			};
+		case "image":
+			return {
+				label: "Image",
+				icon: ImageIcon,
 			};
 
 		default:

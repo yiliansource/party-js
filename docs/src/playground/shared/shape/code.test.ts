@@ -75,13 +75,35 @@ describe("shapeLiteral", () => {
 		).toBe('{ type: "path", path: new Path2D("M0 0 L0.5 0.5 \\"x") }');
 	});
 
-	test.each(["square", "circle", "star", "polygon", "path"] as const)(
-		"a %s is a valid object literal",
-		(type) => {
-			const text = code({ type, path: { d: 'M0 0 "quoted"' } });
-			expect(() => new Function(`return (${text});`)).not.toThrow();
+	test("text writes its font only when one is set", () => {
+		expect(code({ type: "text", text: { text: "★", font: "" } })).toBe(
+			'{ type: "text", text: "★" }',
+		);
+		expect(code({ type: "text", text: { text: "★", font: "serif" } })).toBe(
+			'{ type: "text", text: "★", font: "serif" }',
+		);
+	});
+
+	test("an image is written with its URL as `image`, matching the shape's field", () => {
+		expect(code({ type: "image", image: { image: " /logo.png " } })).toBe(
+			'{ type: "image", image: "/logo.png" }',
+		);
+	});
+
+	test.each<Partial<ShapeDraft>>([
+		{ type: "square", square: { aspectRatio: 0.5, cornerRadius: 0.1 } },
+		{ type: "star", star: { points: 7 } },
+		{ type: "polygon", polygon: { sides: 6 } },
+		{ type: "path", path: { d: 'M0 0 "quoted"' } },
+		{
+			type: "text",
+			text: { text: 'say "hi"', font: '"Comic Sans MS", serif' },
 		},
-	);
+		{ type: "image", image: { image: '/a "b".png' } },
+	])("a $type is a valid object literal", (draft) => {
+		const text = code(draft);
+		expect(() => new Function(`return (${text});`)).not.toThrow();
+	});
 
 	test("tokens are colored like the docs' code blocks", () => {
 		const kindOf = (tokens: Token[], text: string) =>

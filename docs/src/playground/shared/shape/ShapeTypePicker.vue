@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type LucideIcon, TypeIcon } from "@lucide/vue";
+import { ImageIcon, type LucideIcon, TypeIcon } from "@lucide/vue";
 import { circlePath } from "party-js/internal/shapes/circle";
 import { polygonPath } from "party-js/internal/shapes/polygon";
 import { squarePath } from "party-js/internal/shapes/square";
@@ -51,11 +51,11 @@ const options: ShapeOption[] = [
 		label: "Text",
 		icon: TypeIcon,
 	},
-	// {
-	// 	type: "image",
-	// 	label: "Image",
-	// 	icon: ImageIcon,
-	// },
+	{
+		type: "image",
+		label: "Image",
+		icon: ImageIcon,
+	},
 ];
 
 const isPath = (icon: ShapeOption["icon"]): icon is Path2D =>
