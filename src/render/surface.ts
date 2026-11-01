@@ -110,9 +110,7 @@ function createSurface(
 ): Surface {
 	const maybeCtx = canvas.getContext("2d");
 	if (!maybeCtx)
-		throw new PartyJSError(
-			"couldn't get a 2D context from the canvas - it may already be used with a different context type, such as WebGL",
-		);
+		throw new PartyJSError("failed to get a 2D context from the canvas");
 	const ctx: CanvasRenderingContext2D = maybeCtx;
 
 	const layers: Layer[] = [];

@@ -28,7 +28,9 @@ export class PartyJSError extends Error {
  * Quotes strings, so that, for example, `"5"` and `5` can be told apart.
  */
 const show = (value: unknown): string =>
-	typeof value === "string" ? JSON.stringify(value) : String(value);
+	typeof value === "string" || Array.isArray(value)
+		? JSON.stringify(value)
+		: String(value);
 
 /**
  * Builds the error for an option whose value breaks a rule, in the form "`where` must be `rule`, got `value`".
@@ -36,7 +38,7 @@ const show = (value: unknown): string =>
 export function invalidOption(
 	where: string,
 	rule: string,
-	value: unknown,
+	value?: unknown,
 ): PartyJSError {
 	return new PartyJSError(`${where} must be ${rule}, got ${show(value)}`);
 }
@@ -46,8 +48,6 @@ export function invalidOption(
  */
 export function assertBrowser(): void {
 	if (typeof document === "undefined") {
-		throw new PartyJSError(
-			"effects need a browser: start them from an event handler or after your component has mounted, not during server-side rendering",
-		);
+		throw new PartyJSError("effects can only run in a browser");
 	}
 }

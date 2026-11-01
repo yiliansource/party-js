@@ -41,13 +41,15 @@ export interface PathShape {
  *
  * @example
  * ```ts
- * const heart: CustomShape = {
+ * const ring: CustomShape = {
  *     type: "custom",
- *     draw(ctx) {
- *         ctx.font = "1px sans-serif";
- *         ctx.textAlign = "center";
- *         ctx.textBaseline = "middle";
- *         ctx.fillText("♥", 0, 0);
+ *     draw(ctx, particle) {
+ *         const progress = particle.age / particle.lifetime;
+ *         ctx.strokeStyle = ctx.fillStyle;
+ *         ctx.lineWidth = 0.2 * (1 - progress);
+ *         ctx.beginPath();
+ *         ctx.arc(0, 0, 0.4, 0, 2 * Math.PI);
+ *         ctx.stroke();
  *     },
  * };
  * ```

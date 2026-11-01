@@ -61,8 +61,7 @@ export function color(input: string | Color): Color {
 	const parsed = parse(input);
 	if (!parsed)
 		throw new PartyJSError(
-			`invalid color "${input}": expected a hex color, or an rgb(), hsl(), oklab() or oklch() function. ` +
-				`Named colors aren't supported`,
+			`invalid color "${input}" (named colors are not supported)`,
 		);
 	return parsed;
 }
