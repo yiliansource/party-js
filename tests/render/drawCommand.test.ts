@@ -40,6 +40,10 @@ describe("buildDrawCommand", () => {
 				expected: () => starPath(7),
 			},
 			{
+				shape: { type: "star" as const, points: 4, innerRadius: 0.22 },
+				expected: () => starPath(4, 0.22),
+			},
+			{
 				shape: { type: "polygon" as const, sides: 6 },
 				expected: () => polygonPath(6),
 			},

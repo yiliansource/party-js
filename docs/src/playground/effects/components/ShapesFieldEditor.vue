@@ -62,7 +62,7 @@ function toShapeDisplay(draft: ShapeDraft): ShapeDisplay {
 		case "star":
 			return {
 				label: `${draft.star.points}-point star`,
-				icon: starPath(draft.star.points),
+				icon: starPath(draft.star.points, draft.star.innerRadius),
 			};
 		case "polygon":
 			return {

@@ -89,7 +89,7 @@ effect.stop(); // or .pause(), or .resume()
 | Effect                                               | Description                                         |
 | ---------------------------------------------------- | --------------------------------------------------- |
 | [`confetti`](https://party.js.org/effects/confetti/) | Paper-like confetti that bursts in an upwards cone. |
-| [`sparkles`](https://party.js.org/effects/sparkles/) | Spinning, golden stars that fade out quickly.       |
+| [`sparkles`](https://party.js.org/effects/sparkles/) | Golden sparkles that burst outwards and glint.      |
 
 Still not customizable enough? [`createEffect`](https://party.js.org/guides/custom-effects/) allows you to configure the emitter, particle setup and behaviors directly (it's what the built-in effects are built on). The [playgrounds](https://party.js.org/playgrounds/effects/) let you try shapes, particles and effects live in the browser.
 

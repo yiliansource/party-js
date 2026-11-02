@@ -22,7 +22,7 @@ The position, orientation and spin of a particle are optional. Without them, par
 
 ## Bursting out of an element
 
-Most effects belong to an element, like a button that was clicked. [`emissionTarget()`](/api/custom_effects/emissiontarget-1/) measures an element and returns two things: its center as the `origin`, and its area as a `shape` to emit from. Passed to [`emitFrom()`](/api/custom_effects/emitfrom/), the area spreads the particles over the whole element, the same way `sparkles()` does.
+Most effects belong to an element, like a button that was clicked. [`emissionTarget()`](/api/custom_effects/emissiontarget-1/) measures an element and returns two things: its center as the `origin`, and its area as a `shape` to emit from. Passed to [`emitFrom()`](/api/custom_effects/emitfrom/), the area spreads the particles over the whole element.
 
 From there, a few more samplers and [behaviors](/concepts/behaviors/) make the particles tumble and fall:
 

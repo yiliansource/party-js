@@ -11,7 +11,7 @@ import {
 	type SamplerContext,
 } from "party-js";
 
-import { createShapeDraft } from "../shared/shape/draft";
+import { createShapeDraft, SHAPE_DEFAULTS } from "../shared/shape/draft";
 import { type Token, toText } from "../shared/tokens";
 import {
 	createEffectDraft,
@@ -239,7 +239,10 @@ describe("effectCode", () => {
 		draft.lifetime = { form: "fixed", value: 0.1 + 0.2 };
 		draft.colors = { form: "randomHue", l: 0.7, c: 0.1 };
 		draft.shapes = [
-			{ ...createShapeDraft("star"), star: { points: 6 } },
+			{
+				...createShapeDraft("star"),
+				star: { ...SHAPE_DEFAULTS.star, points: 6 },
+			},
 			createShapeDraft("polygon"),
 		];
 

@@ -11,3 +11,4 @@ export { type Easing, linear, sineIn, sineInOut, sineOut } from "./easing";
 export { fade } from "./fade";
 export { gravity } from "./gravity";
 export { scale } from "./scale";
+export { type TwinkleOptions, twinkle } from "./twinkle";

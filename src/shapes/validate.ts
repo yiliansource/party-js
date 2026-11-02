@@ -25,6 +25,16 @@ export function validateShape(shape: ParticleShape, where: string): void {
 					"an integer of at least 3",
 					shape.points,
 				);
+
+			if (
+				shape.innerRadius !== undefined &&
+				!(shape.innerRadius > 0 && shape.innerRadius <= 1)
+			)
+				throw invalidOption(
+					`${where}.innerRadius`,
+					"greater than 0 and at most 1",
+					shape.innerRadius,
+				);
 			break;
 
 		case "square":

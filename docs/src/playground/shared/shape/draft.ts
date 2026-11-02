@@ -1,4 +1,5 @@
 import type { ParticleShape } from "party-js";
+import { DEFAULT_STAR_INNER_RADIUS } from "party-js/internal/shapes/star";
 
 import { DEFAULT_IMAGE_URL, HEART_PATH_D } from "../defaults";
 
@@ -14,7 +15,7 @@ export type ShapeType =
 export interface ShapeDraft {
 	type: ShapeType;
 	square: { aspectRatio: number; cornerRadius: number };
-	star: { points: number };
+	star: { points: number; innerRadius: number };
 	polygon: { sides: number };
 	path: { d: string };
 	text: { text: string; font: string };
@@ -23,7 +24,7 @@ export interface ShapeDraft {
 
 export const SHAPE_DEFAULTS = {
 	square: { aspectRatio: 1, cornerRadius: 0 },
-	star: { points: 5 },
+	star: { points: 5, innerRadius: DEFAULT_STAR_INNER_RADIUS },
 } as const;
 
 export const createShapeDraft = (type: ShapeType = "circle"): ShapeDraft => ({
@@ -43,7 +44,9 @@ export function toParticleShape(draft: ShapeDraft): ParticleShape {
 		case "circle":
 			return { type: "circle" };
 		case "star":
-			return { type: "star", ...draft.star };
+			return draft.star.innerRadius === SHAPE_DEFAULTS.star.innerRadius
+				? { type: "star", points: draft.star.points }
+				: { type: "star", ...draft.star };
 		case "polygon":
 			return { type: "polygon", ...draft.polygon };
 		case "path":

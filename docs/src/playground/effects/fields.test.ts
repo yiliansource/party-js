@@ -5,7 +5,7 @@ import { type Color, color, type Sampler, type SamplerContext } from "party-js";
 
 import { MIXED_COLORS } from "../shared/color";
 import { snapToStep } from "../shared/number";
-import { createShapeDraft } from "../shared/shape/draft";
+import { createShapeDraft, SHAPE_DEFAULTS } from "../shared/shape/draft";
 import { toText } from "../shared/tokens";
 import {
 	colorsOption,
@@ -156,7 +156,10 @@ describe("shapesOption", () => {
 	test("each draft becomes a shape with only its own type's settings", () => {
 		expect(
 			shapesOption([
-				{ ...createShapeDraft("star"), star: { points: 6 } },
+				{
+					...createShapeDraft("star"),
+					star: { ...SHAPE_DEFAULTS.star, points: 6 },
+				},
 				createShapeDraft("circle"),
 			]),
 		).toEqual([{ type: "star", points: 6 }, { type: "circle" }]);

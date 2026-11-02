@@ -19,6 +19,17 @@ describe("validateShape", () => {
 		expect(() =>
 			validateShape({ type: "star", points: NaN }, "star"),
 		).toThrow();
+		for (const innerRadius of [0, 1.5, NaN]) {
+			expect(() =>
+				validateShape({ type: "star", innerRadius }, "star"),
+			).toThrow();
+		}
+		expect(() =>
+			validateShape(
+				{ type: "star", points: 4, innerRadius: 0.22 },
+				"star",
+			),
+		).not.toThrow();
 	});
 
 	test("validates square shapes", () => {

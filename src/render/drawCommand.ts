@@ -104,7 +104,7 @@ function resolveShapePath(
 		case "circle":
 			return circlePath();
 		case "star":
-			return starPath(shape.points);
+			return starPath(shape.points, shape.innerRadius);
 		case "polygon":
 			return polygonPath(shape.sides);
 		case "path":
