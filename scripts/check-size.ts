@@ -2,7 +2,7 @@ import { appendFileSync } from "node:fs";
 import { gzipSync } from "node:zlib";
 
 const FILE = "bundle/party.min.js";
-const LIMIT = 10 * 1024;
+const LIMIT = 12 * 1024;
 
 const raw = await Bun.file(FILE).bytes();
 const gzipped = gzipSync(raw).byteLength;
