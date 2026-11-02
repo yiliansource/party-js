@@ -42,6 +42,7 @@ export class Emitter {
 
 	private scheduleState: ScheduleState = initialScheduleState;
 	private spawnedCount = 0;
+	private ended = false;
 
 	constructor(options: EmitterOptions) {
 		this.schedule = resolveSchedule(options.schedule);
@@ -51,20 +52,23 @@ export class Emitter {
 	}
 
 	public get isExpired(): boolean {
-		return isScheduleExpired(this.schedule, this.scheduleState);
+		return (
+			this.ended || isScheduleExpired(this.schedule, this.scheduleState)
+		);
 	}
 
 	public get isDone(): boolean {
 		return this.isExpired && this.particles.length === 0;
 	}
 
+	public end(): void {
+		this.ended = true;
+	}
+
 	public tick(dt: number): void {
-		const { state, spawnCount } = advanceSchedule(
-			this.schedule,
-			this.scheduleState,
-			dt,
-			this.rng,
-		);
+		const { state, spawnCount } = this.ended
+			? { state: this.scheduleState, spawnCount: 0 }
+			: advanceSchedule(this.schedule, this.scheduleState, dt, this.rng);
 		this.scheduleState = state;
 
 		for (let i = 0; i < spawnCount; i++) {

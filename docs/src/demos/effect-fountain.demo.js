@@ -17,9 +17,9 @@ let fountain;
 /** @type {Demo} */
 export const run = ({ target: button }) => {
 	// #region demo
-	// the first click starts the fountain, the second one stops it
+	// the first click starts the fountain, the second one turns it off and lets the last drops fall
 	if (fountain) {
-		fountain.stop();
+		fountain.end();
 		fountain = undefined;
 	} else {
 		const { origin, shape } = emissionTarget(button);

@@ -214,6 +214,35 @@ describe("advanceSchedule", () => {
 		expect(spawnCount).toBe(10);
 	});
 
+	test("a live rate of 0 pauses the stream, without a catch-up burst once it's raised again", () => {
+		let rate = 20;
+		const schedule = resolveSchedule({
+			loops: Number.POSITIVE_INFINITY,
+			rate: () => rate,
+		});
+		let state = initialScheduleState;
+		const run = (seconds: number) => {
+			let total = 0;
+			for (let i = 0; i < seconds * 120; i++) {
+				const result = advanceSchedule(schedule, state, 1 / 120, rng);
+				state = result.state;
+				total += result.spawnCount;
+			}
+			return total;
+		};
+
+		// about 20 per second, give or take one from floating-point rounding of the steps
+		expect(run(1)).toBeCloseTo(20, -1);
+
+		rate = 0;
+		expect(run(5)).toBe(0);
+
+		rate = 20;
+		const { spawnCount } = advanceSchedule(schedule, state, 1 / 120, rng);
+		expect(spawnCount).toBe(0);
+		expect(run(1)).toBeCloseTo(20, -1);
+	});
+
 	test("spawning stops for good once a finite loop count is exhausted", () => {
 		const schedule: ResolvedEmissionSchedule = {
 			duration: 1,

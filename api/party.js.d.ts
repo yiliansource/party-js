@@ -97,6 +97,7 @@ type Easing = (t: number) => number;
 interface Effect {
 	readonly finished: Promise<EffectResult>;
 	stop(): void;
+	end(): void;
 	pause(): void;
 	resume(): void;
 }
