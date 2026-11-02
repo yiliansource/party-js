@@ -2,7 +2,7 @@
 import { describe, expect, test } from "bun:test";
 
 import { shapeLiteral } from "../shared/shape/code";
-import { createShapeDraft } from "../shared/shape/draft";
+import { createShapeDraft, SHAPE_DEFAULTS } from "../shared/shape/draft";
 import { toText } from "../shared/tokens";
 import { shapeCode } from "./code";
 
@@ -11,7 +11,7 @@ describe("shapeCode", () => {
 		const draft = {
 			...createShapeDraft(),
 			type: "star" as const,
-			star: { points: 6 },
+			star: { ...SHAPE_DEFAULTS.star, points: 6 },
 		};
 		const code = toText(shapeCode(draft));
 

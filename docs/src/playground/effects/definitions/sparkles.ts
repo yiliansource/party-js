@@ -12,7 +12,7 @@ const { numeric, colors } = fieldsFor<SparkleOptions>();
 export const sparklesDefinition = {
 	id: "sparkles",
 	label: "Sparkles",
-	description: "Golden, spinning stars that burst outwards.",
+	description: "Golden sparkles that burst outwards and glint.",
 	call: "sparkles",
 	groups: [
 		{ id: "burst", label: "Burst" },
@@ -39,18 +39,19 @@ export const sparklesDefinition = {
 			step: 10,
 			unit: "px/s",
 			forms: NUMERIC_FORMS,
-			default: { form: "range", min: 150, max: 250 },
+			default: { form: "range", min: 250, max: 480 },
 		}),
 		numeric({
 			key: "size",
 			label: "Size",
+			hint: "The size of the largest sparkles. Most are smaller.",
 			group: "look",
 			min: 2,
-			max: 40,
+			max: 60,
 			step: 1,
 			unit: "px",
 			forms: NUMERIC_FORMS,
-			default: { form: "range", min: 16, max: 22 },
+			default: { form: "fixed", value: 24 },
 		}),
 		numeric({
 			key: "lifetime",
@@ -61,7 +62,7 @@ export const sparklesDefinition = {
 			step: 0.1,
 			unit: "s",
 			forms: NUMERIC_FORMS,
-			default: { form: "range", min: 0.5, max: 1 },
+			default: { form: "range", min: 0.7, max: 1.4 },
 		}),
 		colors({
 			key: "colors",

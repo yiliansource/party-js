@@ -21,6 +21,7 @@ const { draft } = defineProps<{ draft: ShapeDraft }>();
 	<StarSettings
 		v-else-if="draft.type === 'star'"
 		v-model:points="draft.star.points"
+		v-model:inner-radius="draft.star.innerRadius"
 	/>
 	<PolygonSettings
 		v-else-if="draft.type === 'polygon'"

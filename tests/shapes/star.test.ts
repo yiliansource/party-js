@@ -11,7 +11,19 @@ describe("buildStarPath", () => {
 		}
 	});
 
+	test("stays inside unit box with any inner radius", () => {
+		for (const innerRadius of [0.05, 0.22, 0.5, 1]) {
+			expect(exceedsUnitBox(buildStarPath(4, innerRadius))).toBe(false);
+		}
+	});
+
 	test("throws if points < 3", () => {
 		expect(() => buildStarPath(2)).toThrow();
+	});
+
+	test("throws if the inner radius is not greater than 0 and at most 1", () => {
+		for (const innerRadius of [0, -0.5, 1.5, Number.NaN]) {
+			expect(() => buildStarPath(4, innerRadius)).toThrow();
+		}
 	});
 });

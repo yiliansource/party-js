@@ -274,12 +274,22 @@ interface SquareShape {
 interface StarShape {
 	type: "star";
 	points?: number;
+	innerRadius?: number;
 }
 
 interface TextShape {
 	type: "text";
 	text: string;
 	font?: string;
+}
+
+declare function twinkle(options?: TwinkleOptions): Behavior;
+
+interface TwinkleOptions {
+	glints?: number;
+	length?: number;
+	size?: number;
+	brightness?: number;
 }
 
 interface Vec2 {
@@ -362,6 +372,8 @@ export {
 	type SquareShape,
 	type StarShape,
 	type TextShape,
+	twinkle,
+	type TwinkleOptions,
 	type Vec2,
 	type Vec3,
 };

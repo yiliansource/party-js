@@ -19,7 +19,7 @@ describe("shapeLiteral", () => {
 			code({
 				type: "circle",
 				square: { aspectRatio: 0.5, cornerRadius: 0.3 },
-				star: { points: 7 },
+				star: { ...SHAPE_DEFAULTS.star, points: 7 },
 			}),
 		).toBe('{ type: "circle" }');
 	});
@@ -34,9 +34,12 @@ describe("shapeLiteral", () => {
 	});
 
 	test("changed settings are written in a fixed order", () => {
-		expect(code({ type: "star", star: { points: 4 } })).toBe(
-			'{ type: "star", points: 4 }',
-		);
+		expect(
+			code({ type: "star", star: { ...SHAPE_DEFAULTS.star, points: 4 } }),
+		).toBe('{ type: "star", points: 4 }');
+		expect(
+			code({ type: "star", star: { points: 4, innerRadius: 0.22 } }),
+		).toBe('{ type: "star", points: 4, innerRadius: 0.22 }');
 		expect(
 			code({
 				type: "square",
@@ -92,7 +95,7 @@ describe("shapeLiteral", () => {
 
 	test.each<Partial<ShapeDraft>>([
 		{ type: "square", square: { aspectRatio: 0.5, cornerRadius: 0.1 } },
-		{ type: "star", star: { points: 7 } },
+		{ type: "star", star: { ...SHAPE_DEFAULTS.star, points: 7 } },
 		{ type: "polygon", polygon: { sides: 6 } },
 		{ type: "path", path: { d: 'M0 0 "quoted"' } },
 		{
@@ -121,7 +124,7 @@ describe("shapeLiteral", () => {
 		const star = shapeLiteral({
 			...createShapeDraft(),
 			type: "star",
-			star: { points: 4 },
+			star: { ...SHAPE_DEFAULTS.star, points: 4 },
 		});
 		expect(kindOf(star, "4")).toBe("value");
 	});

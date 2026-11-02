@@ -17,17 +17,33 @@ export interface StarShape {
 	 * @defaultValue 5
 	 */
 	points?: number;
+	/**
+	 * How far the inner corners between the points are from the center, relative to the points themselves, from
+	 * just above 0 (thin, spiky points) to 1 (no points at all). The default gives the proportions of a classic
+	 * five-pointed star.
+	 *
+	 * @defaultValue 0.382
+	 */
+	innerRadius?: number;
 }
 
-const INNER_TO_OUTER_RATIO = 1 / ((1 + Math.sqrt(5)) / 2) ** 2;
+export const DEFAULT_STAR_INNER_RADIUS = 1 / ((1 + Math.sqrt(5)) / 2) ** 2;
 
 const resolve = createShapeCache();
 
-export function starPath(points: number = 5): Path2D {
-	return resolve(`${points}`, () => buildStarPath(points));
+export function starPath(
+	points = 5,
+	innerRadius = DEFAULT_STAR_INNER_RADIUS,
+): Path2D {
+	return resolve(`${points}:${innerRadius}`, () =>
+		buildStarPath(points, innerRadius),
+	);
 }
 
-export function buildStarPath(points: number): Path2D {
+export function buildStarPath(
+	points: number,
+	innerRadius = DEFAULT_STAR_INNER_RADIUS,
+): Path2D {
 	if (!Number.isInteger(points) || points < 3) {
 		throw invalidOption(
 			"star shape's points",
@@ -36,7 +52,15 @@ export function buildStarPath(points: number): Path2D {
 		);
 	}
 
+	if (!(innerRadius > 0 && innerRadius <= 1)) {
+		throw invalidOption(
+			"star shape's innerRadius",
+			"greater than 0 and at most 1",
+			innerRadius,
+		);
+	}
+
 	return buildRegularPolygonPath(points * 2, (i) =>
-		i % 2 === 0 ? 1 : INNER_TO_OUTER_RATIO,
+		i % 2 === 0 ? 1 : innerRadius,
 	);
 }

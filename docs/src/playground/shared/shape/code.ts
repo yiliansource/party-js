@@ -34,6 +34,11 @@ function shapeEntries(draft: ShapeDraft): Entry[] {
 					draft.star.points,
 					SHAPE_DEFAULTS.star.points,
 				),
+				...numeric(
+					"innerRadius",
+					draft.star.innerRadius,
+					SHAPE_DEFAULTS.star.innerRadius,
+				),
 			];
 		case "polygon":
 			return [type, ...numeric("sides", draft.polygon.sides)];

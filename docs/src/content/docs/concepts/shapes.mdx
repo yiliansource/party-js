@@ -21,14 +21,14 @@ The most common shapes for effects are built-in, and easily be used and configur
 
 ### Primitives
 
-| Shape | Looks like |
+| Shape | Description |
 | --- | --- |
 | [`square`](/api/particles/squareshape/) | A square, or a rectangle with an `aspectRatio`. `cornerRadius` rounds its corners. |
 | [`circle`](/api/particles/circleshape/) | A circle. |
-| [`star`](/api/particles/starshape/) | A star with 5 `points`, or as many as you like. |
+| [`star`](/api/particles/starshape/) | A star with 5 `points`, or as many as you like. `innerRadius` makes its points thinner or wider. |
 | [`polygon`](/api/particles/polygonshape/) | A regular polygon with the given number of `sides`. |
 
-`confetti()` uses circles, rounded squares and thin, rounded strips by default, and `sparkles()` uses stars. Confetti's `shapes` option takes a list to pick from:
+`confetti()` uses circles, rounded squares and thin, rounded strips by default, and `sparkles()` uses slim, four-pointed stars. Confetti's `shapes` option takes a list to pick from:
 
 <LiveDemo demo="shapes-builtin" size="compact" label="Fire shapes" icon={ShapesIcon} />
 

@@ -52,6 +52,7 @@ Behaviors don't run on dead particles. Once a particle's `age` reaches its `life
 | [`drag(rate, edgeRatio?)`](/api/behaviors/drag/) | Slows particles down in proportion to their speed, and optionally makes them flutter like paper. |
 | [`fade(in, out, ease?)`](/api/behaviors/fade/) | Fades particles in after they spawn, and out before they die. |
 | [`scale(in, out, ease?)`](/api/behaviors/scale/) | Grows particles from nothing after they spawn, and shrinks them away before they die. |
+| [`twinkle(options?)`](/api/behaviors/twinkle/) | Makes particles glint occasionally, growing a little and flashing towards white. |
 
 ### Gravity and drag
 
@@ -120,6 +121,18 @@ An easing is just a function that turns a progress from 0 to 1 into the eased va
 const cubicIn = (t) => t ** 3;
 fade(0.2, 0.5, cubicIn);
 ```
+
+### Twinkling
+
+`twinkle()` makes particles glint occasionally: for a short moment, a particle grows a little and its color flashes towards white, then it settles back to how it was. Each particle glints a few times during its life, at random moments, so a group of them seems to sparkle. That's what gives [`sparkles()`](/effects/sparkles/) its shimmer.
+
+```js
+twinkle({ glints: 1.5, length: 0.22, size: 0.25, brightness: 0.6 });
+```
+
+`glints` sets how many glints a particle catches per second, on average, and `length` how long each one lasts, in seconds. `size` is how much the particle grows at the peak of a glint, so `0.25` makes it 25% larger, and `brightness` how far its color moves towards white, from 0 to 1. The values above are the defaults, so `twinkle()` on its own looks the same.
+
+The glint is applied on top of the particle's size and color. Since `scale()` sets the size from scratch on every step, list `twinkle()` after it, as explained [below](#the-order-of-behaviors).
 
 ## The order of behaviors
 

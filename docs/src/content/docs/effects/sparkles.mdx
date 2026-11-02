@@ -1,6 +1,6 @@
 ---
 title: Sparkles
-description: Golden, spinning stars that burst outwards.
+description: Golden sparkles that burst outwards and glint.
 api: [sparkles, SparkleOptions]
 ---
 
@@ -11,7 +11,9 @@ import { SparklesIcon } from "@lucide/astro";
 
 ## Usage
 
-Pass the element the sparkles should burst out of. Particles spawn across its whole area rather than from a single point.
+Pass the element the sparkles should burst out of. They appear in four quick bursts from the middle of the element, shoot outwards, and then hover for a moment while they settle. Occasionally, a sparkle briefly grows and flashes towards white.
+
+Most sparkles are small, with a few big ones among them. The `size` option sets the size of the largest ones:
 
 ```js
 import { range, sparkles } from "party-js";
@@ -19,9 +21,11 @@ import { range, sparkles } from "party-js";
 button.addEventListener("click", () => {
     sparkles(button, {
         count: range(40, 60),
-        size: range(5, 10),
+        size: 16,
     });
 });
 ```
+
+The glints come from the [`twinkle()`](/api/behaviors/twinkle/) behavior, which you can use in your [own effects](/guides/custom-effects/) too.
 
 You can find a complete list of options and their defaults in the [reference](/api/effects/sparkleoptions/).
