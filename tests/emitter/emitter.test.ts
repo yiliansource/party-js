@@ -104,6 +104,72 @@ describe("Emitter", () => {
 		expect(emitter.isDone).toBe(false);
 	});
 
+	describe("end()", () => {
+		const stream = {
+			duration: 1,
+			loops: Number.POSITIVE_INFINITY,
+			rate: 100,
+			bursts: [{ time: 0.5, count: 10 }],
+		};
+
+		test("stops spawning, including bursts that haven't fired yet", () => {
+			const emitter = new Emitter({
+				schedule: stream,
+				particleInit: { ...staticInit, lifetime: 10 },
+				rng: createRng(1),
+			});
+			emitter.tick(0.1);
+			const before = emitter.particles.length;
+			expect(before).toBeGreaterThan(0);
+
+			emitter.end();
+			emitter.tick(1);
+
+			expect(emitter.particles.length).toBe(before);
+		});
+
+		test("keeps simulating the particles that are alive until they die", () => {
+			let updates = 0;
+			const emitter = new Emitter({
+				schedule: stream,
+				particleInit: { ...staticInit, lifetime: 0.5 },
+				rng: createRng(1),
+				behaviors: [
+					() => {
+						updates++;
+					},
+				],
+			});
+			emitter.tick(0.1);
+
+			emitter.end();
+			const updatesBefore = updates;
+			emitter.tick(0.1);
+
+			expect(updates).toBeGreaterThan(updatesBefore);
+			expect(emitter.isDone).toBe(false);
+
+			emitter.tick(1);
+			expect(emitter.particles.length).toBe(0);
+		});
+
+		test("expires a schedule that would otherwise run forever", () => {
+			const emitter = new Emitter({
+				schedule: stream,
+				particleInit: { ...staticInit, lifetime: 0.1 },
+				rng: createRng(1),
+			});
+			emitter.tick(0.1);
+			expect(emitter.isExpired).toBe(false);
+
+			emitter.end();
+			expect(emitter.isExpired).toBe(true);
+
+			emitter.tick(1);
+			expect(emitter.isDone).toBe(true);
+		});
+	});
+
 	test("isDone once expired and empty", () => {
 		const emitter = new Emitter({
 			schedule: {

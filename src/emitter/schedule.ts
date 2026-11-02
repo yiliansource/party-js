@@ -53,14 +53,17 @@ export interface EmissionSchedule {
 	 */
 	duration?: number;
 	/**
-	 * How many loops the schedule runs. Use `Infinity` for an effect that runs until it's stopped.
+	 * How many loops the schedule runs. Use `Infinity` for an effect that runs until it's
+	 * {@link Effect.end | ended} or {@link Effect.stop | stopped}.
 	 *
 	 * @defaultValue 1
 	 */
 	loops?: number;
 	/**
 	 * How many particles to emit per second, continuously. This is read on every simulation step, so a function
-	 * can speed the stream up or slow it down, or (for example) make it dependent on the screen size.
+	 * can speed the stream up or slow it down, or (for example) make it dependent on the screen size. While it's 0,
+	 * the stream pauses, and it picks up at the same pace once the rate is raised again, without making up for the
+	 * time in between.
 	 *
 	 * @defaultValue 0
 	 */
@@ -227,8 +230,8 @@ export function advanceSchedule(
 		}
 	}
 
-	let emissionTimer = state.emissionTimer + dt;
 	const rate = resolveLive(schedule.rate);
+	let emissionTimer = rate > 0 ? state.emissionTimer + dt : 0;
 	if (rate > 0) {
 		const delay = 1 / rate;
 		while (emissionTimer >= delay) {

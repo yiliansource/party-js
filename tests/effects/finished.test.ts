@@ -123,6 +123,108 @@ describe("Effect.finished", () => {
 	});
 });
 
+describe("Effect.end", () => {
+	// a stream that never ends by itself, of particles that live for 100ms
+	const stream = () =>
+		options({
+			schedule: { rate: 50, loops: Number.POSITIVE_INFINITY },
+			particleInit: {
+				size: 10,
+				color: "#ff5a5f",
+				shape: { type: "circle" },
+				lifetime: 0.1,
+			},
+		});
+
+	test('lets the particles that are alive finish, then resolves with "completed"', async () => {
+		const effect = createEffect(stream());
+		browser.runFor(500);
+
+		effect.end();
+		// the particles in the air are still drawn after end()
+		const drawnBefore = browser.particlesDrawn;
+		browser.runFrame(516);
+		expect(browser.particlesDrawn).toBeGreaterThan(drawnBefore);
+		expect(await isSettled(effect.finished)).toBe(false);
+
+		for (let time = 532; time <= 800; time += 16) browser.runFrame(time);
+
+		expect(await effect.finished).toBe("completed");
+	});
+
+	test("stops emitting, so the effect ends even though its schedule runs forever", async () => {
+		const effect = createEffect(stream());
+		browser.runFor(500);
+
+		effect.end();
+		for (let time = 516; time <= 800; time += 16) browser.runFrame(time);
+		const drawnAfterEnd = browser.particlesDrawn;
+		for (let time = 816; time <= 1200; time += 16) browser.runFrame(time);
+
+		expect(await effect.finished).toBe("completed");
+		expect(browser.particlesDrawn).toBe(drawnAfterEnd);
+	});
+
+	test('resolves with "stopped" when stopped before the particles have expired', async () => {
+		const effect = createEffect(stream());
+		browser.runFor(500);
+
+		effect.end();
+		effect.stop();
+
+		expect(await effect.finished).toBe("stopped");
+	});
+
+	test("keeps the particles of a paused effect frozen until it's resumed", async () => {
+		const effect = createEffect(stream());
+		browser.runFor(500);
+		effect.pause();
+
+		effect.end();
+		for (let time = 516; time <= 1000; time += 16) browser.runFrame(time);
+		expect(await isSettled(effect.finished)).toBe(false);
+
+		effect.resume();
+		for (let time = 1016; time <= 1400; time += 16) browser.runFrame(time);
+
+		expect(await effect.finished).toBe("completed");
+	});
+
+	test("ends an effect whose particles have all expired, even while it's paused", async () => {
+		const effect = createEffect(
+			options({
+				schedule: { rate: 1, loops: Number.POSITIVE_INFINITY },
+			}),
+		);
+		browser.runFrame(0);
+		effect.pause();
+
+		effect.end();
+		browser.runFrame(16);
+
+		expect(await effect.finished).toBe("completed");
+	});
+
+	test("does nothing when called again, or after the effect has ended", async () => {
+		const effect = createEffect(options());
+		runUntilDone();
+
+		effect.end();
+		effect.end();
+
+		expect(await effect.finished).toBe("completed");
+	});
+
+	test("does nothing on a skipped effect", async () => {
+		browser.prefersReducedMotion = true;
+		const effect = createEffect(stream());
+
+		effect.end();
+
+		expect(await effect.finished).toBe("completed");
+	});
+});
+
 describe("Effect.finished on a skipped effect", () => {
 	beforeEach(() => {
 		browser.prefersReducedMotion = true;

@@ -41,11 +41,11 @@ const double = { bursts: [{ count: 30 }, { time: 0.5, count: 30 }] };
 // a steady stream of 20 particles per second, for three seconds
 const stream = { duration: 3, rate: 20 };
 
-// a stream that runs until the effect is stopped
+// a stream that runs until the effect is ended or stopped
 const endless = { loops: Infinity, rate: 20 };
 ```
 
-A burst's `count` can be a [sampler](/concepts/samplers/), which is sampled each time the burst fires. The `rate` can be a [live value](/api/custom_effects/live/) instead, which is read again on every simulation step, so a stream can speed up, slow down, or depend on the size of the window.
+A burst's `count` can be a [sampler](/concepts/samplers/), which is sampled each time the burst fires. The `rate` can be a [live value](/api/custom_effects/live/) instead, which is read again on every simulation step, so a stream can speed up, slow down, or depend on the size of the window. While it's 0, the stream pauses, and when it rises again, the stream picks up at that pace, without making up for the particles it skipped.
 
 ```js
 // emit between 20 and 40 particles each burst
@@ -126,9 +126,9 @@ if (result === "completed") {
 
 The promise resolves with:
 
-- `"completed"`, when the effect ended by itself.
+- `"completed"`, when the effect ended by itself. That includes an effect you called [`end()`](/api/effects/effect/#end) on, which stops emitting new particles, and ends once the ones that are alive have died.
 - `"stopped"`, when you called [`stop()`](/api/effects/effect/#stop), which removes all particles right away. The same happens when the effect throws an error while running, for example from a custom behavior. The error is still reported in the console, and other effects keep running.
 
-The promise never rejects. An effect whose schedule loops forever only ends when it's stopped, and a paused effect doesn't end until it's resumed.
+The promise never rejects. An effect whose schedule loops forever only ends when you end or stop it, and a paused effect with particles left doesn't end until it's resumed.
 
 When the user has asked their system for [reduced motion](/quickstart/#reduced-motion), effects are skipped by default. A skipped effect draws nothing, and its `finished` promise resolves with `"completed"` right away, so code that waits for an effect keeps working.

@@ -13,7 +13,9 @@ import { type ReducedMotion, shouldSkip } from "./motion";
 
 /**
  * The result of a completed effect, either `"completed"` if it ended by itself or `"stopped"` if it ended early.
- * An effect that is skipped due to reduced motion will still have `"completed"` as its result.
+ * An effect that was told to wind down with {@link Effect.end | end()} also ends by itself, once its last particle
+ * has expired, so its result is `"completed"` too. An effect that is skipped due to reduced motion will still have
+ * `"completed"` as its result.
  *
  * @summary The result of a completed effect.
  *
@@ -26,7 +28,8 @@ export type EffectResult = "completed" | "stopped";
  * effects, such as {@link confetti | confetti()}.
  *
  * An effect starts as soon as it's created, and ends by itself once its schedule is finished and the last particle
- * has expired (i.e. died). You can use this handle to pause it, or to end it early.
+ * has expired (i.e. died). You can use this handle to pause it, to let it wind down early with
+ * {@link Effect.end | end()}, or to stop it right away with {@link Effect.stop | stop()}.
  *
  * @summary A handle to control a running effect.
  *
@@ -35,15 +38,16 @@ export type EffectResult = "completed" | "stopped";
  * const effect = confetti(button);
  * effect.pause();
  * effect.resume();
- * effect.stop();
+ * effect.stop(); // removes the particles right away
  * ```
  *
  * @group Effects
  */
 export interface Effect {
 	/**
-	 * Settles once the effect is over: with `"completed"` when it ended by itself, or with `"stopped"` when it
-	 * ended early, because {@link Effect.stop | stop()} was called or it threw while running. Never rejects.
+	 * Settles once the effect is over: with `"completed"` when it ended by itself, including after
+	 * {@link Effect.end | end()}, or with `"stopped"` when it ended early, because {@link Effect.stop | stop()} was
+	 * called or it threw while running. Never rejects.
 	 */
 	readonly finished: Promise<EffectResult>;
 	/**
@@ -51,9 +55,19 @@ export interface Effect {
 	 * the effect can't be resumed afterwards. Calling it again has no effect.
 	 *
 	 * The canvas the effect was drawn on is removed (or, if you provided it, cleared) once no other effect is
-	 * drawing on it.
+	 * drawing on it. To let the particles finish their lifetime instead, use {@link Effect.end | end()}.
 	 */
 	stop(): void;
+	/**
+	 * Stops the effect from emitting new particles, and lets the ones that are already alive finish their
+	 * lifetime. The effect then ends by itself, and the `finished` promise resolves as `"completed"`. Useful to
+	 * turn off an effect that runs forever, like a stream with `loops: Infinity`.
+	 *
+	 * On a paused effect, the remaining particles stay frozen until it's resumed. Calling
+	 * {@link Effect.stop | stop()} afterwards still removes them right away. Calling it again, or after the effect
+	 * has ended, has no effect.
+	 */
+	end(): void;
 	/**
 	 * Freezes the effect: particles stop moving and stay visible where they are. Calling it while already paused
 	 * has no effect.
@@ -158,6 +172,7 @@ function skippedEffect(): Effect {
 	return {
 		finished,
 		stop: () => settle("stopped"),
+		end() {},
 		pause() {},
 		resume() {},
 	};
@@ -244,6 +259,10 @@ export function createEffect(options: CreateEffectOptions): Effect {
 		stop: () => {
 			handle.detach();
 			settle("stopped");
+		},
+		end: () => {
+			emitter.end();
+			handle.wake();
 		},
 		pause: () => {
 			paused = true;

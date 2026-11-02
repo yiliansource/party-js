@@ -1,12 +1,12 @@
 ---
 title: Create a custom effect
-description: Build your own effects with createEffect(), from a single burst to a fountain that runs until you stop it.
+description: Build your own effects with createEffect(), from a single burst to a toggleable fountain.
 ---
 
 import { DropletsIcon, MousePointerClickIcon, SquareIcon } from "@lucide/astro";
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
 
-`confetti()` and `sparkles()` are built on the same function you can use yourself: [`createEffect()`](/api/custom_effects/createeffect/). This guide builds a custom effect step by step, from a few dots at the cursor to a fountain of particles that runs until you stop it. It assumes you know the [parts of an effect](/concepts/effects/#anatomy-of-an-effect), and how [samplers](/concepts/samplers/) produce values for each particle.
+`confetti()` and `sparkles()` are built on the same function you can use yourself: [`createEffect()`](/api/custom_effects/createeffect/). This guide builds a custom effect step by step, from a few dots at the cursor position to a fountain of particles that can be toggled on and off. It assumes you know the [parts of an effect](/concepts/effects/#anatomy-of-an-effect), and how [samplers](/concepts/samplers/) produce values for each particle.
 
 ## The smallest effect
 
@@ -35,11 +35,11 @@ From there, a few more samplers and [behaviors](/concepts/behaviors/) make the p
 
 ## From bursts to streams
 
-A burst emits all of its particles at once. A **rate** emits them continuously instead, a number of particles per second. Together with `loops: Infinity`, the schedule never ends, so the effect runs until you stop it:
+A burst emits all of its particles at once. A **rate** emits them continuously instead, a number of particles per second. Together with `loops: Infinity`, the schedule never ends, so the effect runs until you end it:
 
 <LiveDemo demo="effect-fountain" size="compact" label="Toggle fountain" icon={DropletsIcon} />
 
-[`createEffect()`](/api/custom_effects/createeffect/) returns a handle to the running effect, the same one the built-in effects return. `stop()` ends the effect and removes its particles right away. To let the particles that are already in the air finish their flight, give the schedule a fixed `duration` instead, and let the effect end by itself.
+[`createEffect()`](/api/custom_effects/createeffect/) returns a handle to the running effect, the same one the built-in effects return. Its [`end()`](/api/effects/effect/#end) method stops the fountain from emitting, and lets the particles that are already in the air finish their flight. Once the last one is gone, the effect ends by itself. To remove the particles right away instead, use [`stop()`](/api/effects/effect/#stop).
 
 The [schedule](/concepts/effects/#the-schedule) can do more: several bursts at different times, repeated loops, or a rate that changes while the effect runs.
 
