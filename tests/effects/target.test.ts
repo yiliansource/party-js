@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, test } from "bun:test";
 
-import { emissionTarget } from "@/emitter/target";
+import { measureTarget } from "@/effects/target";
 import { PartyJSError } from "@/errors";
 
 import { type FakeBrowser, stubBrowser } from "../browser";
@@ -41,34 +41,34 @@ function scrollTo(x: number, y: number) {
 	Object.assign(window, { scrollX: x, scrollY: y });
 }
 
-describe("emissionTarget", () => {
+describe("measureTarget", () => {
 	describe("with an element", () => {
 		test("the origin is the element's center, in page coordinates", () => {
 			scrollTo(30, 400);
-			const { origin } = emissionTarget(element(100, 50, 80, 40));
+			const { origin } = measureTarget(element(100, 50, 80, 40));
 			expect(origin).toEqual({ x: 170, y: 470 });
 		});
 
 		test("the shape covers the element's whole area", () => {
-			const { shape } = emissionTarget(element(100, 50, 80, 40));
+			const { area: shape } = measureTarget(element(100, 50, 80, 40));
 			expect(shape).toEqual({ type: "rect", width: 80, height: 40 });
 		});
 	});
 
 	describe("with a point", () => {
 		test("the origin is the point", () => {
-			const { origin } = emissionTarget({ x: 120, y: 340 });
+			const { origin } = measureTarget({ x: 120, y: 340 });
 			expect(origin).toEqual({ x: 120, y: 340 });
 		});
 
 		test("the shape is a single point", () => {
-			const { shape } = emissionTarget({ x: 120, y: 340 });
+			const { area: shape } = measureTarget({ x: 120, y: 340 });
 			expect(shape).toEqual({ type: "disk", radius: 0 });
 		});
 
 		test("does not keep a reference to the given point", () => {
 			const point = { x: 120, y: 340 };
-			const { origin } = emissionTarget(point);
+			const { origin } = measureTarget(point);
 			point.x = 0;
 			expect(origin.x).toBe(120);
 		});
@@ -77,7 +77,7 @@ describe("emissionTarget", () => {
 	describe("with a canvas", () => {
 		test("an element's origin is measured from the canvas' top-left corner", () => {
 			scrollTo(30, 400);
-			const { origin } = emissionTarget(
+			const { origin } = measureTarget(
 				element(100, 50, 80, 40),
 				canvas(20, 10),
 			);
@@ -86,7 +86,7 @@ describe("emissionTarget", () => {
 
 		test("a point is converted from page coordinates", () => {
 			scrollTo(0, 400);
-			const { origin } = emissionTarget(
+			const { origin } = measureTarget(
 				{ x: 120, y: 500 },
 				canvas(20, 10),
 			);
@@ -94,7 +94,7 @@ describe("emissionTarget", () => {
 		});
 
 		test("the canvas' border is not part of its drawing area", () => {
-			const { origin } = emissionTarget(
+			const { origin } = measureTarget(
 				element(100, 50, 80, 40),
 				canvas(20, 10, 4),
 			);
@@ -102,7 +102,7 @@ describe("emissionTarget", () => {
 		});
 
 		test("does not change the shape", () => {
-			const { shape } = emissionTarget(
+			const { area: shape } = measureTarget(
 				element(100, 50, 80, 40),
 				canvas(20, 10),
 			);
@@ -112,6 +112,6 @@ describe("emissionTarget", () => {
 
 	test("throws a PartyJSError outside a browser", () => {
 		browser.restore();
-		expect(() => emissionTarget({ x: 0, y: 0 })).toThrow(PartyJSError);
+		expect(() => measureTarget({ x: 0, y: 0 })).toThrow(PartyJSError);
 	});
 });

@@ -1,22 +1,20 @@
 import { drag, gravity, scale, twinkle } from "../behavior";
 import { type Color, color } from "../color";
-import { type EffectTarget, emissionTarget, emitFrom } from "../emitter";
-import { fromAxisAngle, type Quat } from "../math/quat";
 import { lerp } from "../math/scalar";
-import { unitZ, type Vec3 } from "../math/vec3";
-import { createRng } from "../random/rng";
+import { unitZ } from "../math/vec3";
 import {
 	cone,
 	evaluateSampler,
 	gradient,
+	randomOrientation,
+	randomSpin,
 	range,
 	type Sampler,
-	type SamplerContext,
-	type SamplerFn,
 } from "../samplers";
-import { createEffect, type Effect } from "./effect";
-import type { ReducedMotion } from "./motion";
+import { burstFrom } from "./burst";
+import { type BaseEffectOptions, createEffect, type Effect } from "./effect";
 import { pickOrSampler, withDefaults } from "./options";
+import type { EffectTarget } from "./target";
 
 /**
  * Options for {@link sparkles | sparkles()}.
@@ -25,7 +23,7 @@ import { pickOrSampler, withDefaults } from "./options";
  *
  * @group Effects
  */
-export interface SparkleOptions {
+export interface SparklesOptions extends BaseEffectOptions {
 	/**
 	 * How many sparkles are emitted in total. They're split into four quick bursts over the first 0.3 seconds, so
 	 * the sparkles don't all appear at once. Sampled once, and rounded to the nearest integer.
@@ -64,14 +62,6 @@ export interface SparkleOptions {
 	 * @defaultValue gradient(["oklch(0.7 0.15 70)", "oklch(0.95 0.15 70)"])
 	 */
 	colors?: string[] | Sampler<string | Color>;
-	/**
-	 * What happens when the user has asked their system for reduced motion: `"skip"` doesn't play the sparkles,
-	 * `"play"` plays them anyway. See {@link ReducedMotion} for more information.
-	 *
-	 * Without this option, the default set with {@link setDefaultReducedMotion | setDefaultReducedMotion()} is used,
-	 * which is `"skip"` unless you changed it.
-	 */
-	reducedMotion?: ReducedMotion;
 }
 
 const SPARKLE_DEFAULTS = {
@@ -80,7 +70,7 @@ const SPARKLE_DEFAULTS = {
 	size: 24,
 	lifetime: range(0.7, 1.4),
 	colors: gradient(["oklch(0.7 0.15 70)", "oklch(0.95 0.15 70)"]),
-} satisfies Required<Omit<SparkleOptions, "reducedMotion">>;
+} satisfies Required<Omit<SparklesOptions, keyof BaseEffectOptions>>;
 
 const BURSTS = 4;
 const BURST_INTERVAL = 0.1;
@@ -98,7 +88,7 @@ const MIN_SIZE_FACTOR = 0.2;
  * @summary Bursts twinkling golden sparkles out in all directions.
  *
  * @param target - The target the sparkles burst out of. Its position and size are read once, when the effect starts.
- * @param options - Overrides of the default options. See {@link SparkleOptions} for all fields.
+ * @param options - Overrides of the default options. See {@link SparklesOptions} for all fields.
  * @returns A handle to the running effect.
  *
  * @example
@@ -110,17 +100,13 @@ const MIN_SIZE_FACTOR = 0.2;
  */
 export function sparkles(
 	target: EffectTarget,
-	options?: SparkleOptions,
+	options?: SparklesOptions,
 ): Effect {
 	const o = withDefaults(SPARKLE_DEFAULTS, options);
 
-	const rng = createRng();
-	const resolveCtx: SamplerContext = { rng, index: 0 };
-	const { origin, shape } = emissionTarget(target);
+	const { rng, ctx, origin, position } = burstFrom(target, o);
 
-	const total = Math.round(evaluateSampler(o.count, resolveCtx));
-	const radius =
-		shape.type === "rect" ? Math.min(shape.width, shape.height) / 4 : 0;
+	const total = Math.round(evaluateSampler(o.count, ctx));
 
 	return createEffect({
 		origin,
@@ -132,10 +118,10 @@ export function sparkles(
 		},
 		rng,
 		particleInit: {
-			position: emitFrom({ type: "disk", radius }),
+			position,
 			velocity: cone(0, 180, o.startVelocity),
-			orientation: randomZRotation(),
-			angularVelocity: randomZSpin(30, 90),
+			orientation: randomOrientation(unitZ),
+			angularVelocity: randomSpin(30, 90, unitZ),
 			size: (ctx) =>
 				evaluateSampler(o.size, ctx) *
 				lerp(MIN_SIZE_FACTOR, 1, ctx.rng() ** 2.5),
@@ -146,16 +132,6 @@ export function sparkles(
 		behaviors: [gravity(60), drag(5), scale(0.05, 0.25), twinkle()],
 		lighting: null,
 		reducedMotion: o.reducedMotion,
+		canvas: o.canvas,
 	});
-}
-
-function randomZSpin(min: number, max: number): SamplerFn<Vec3> {
-	return (ctx) => {
-		const direction = ctx.rng() < 0.5 ? -1 : 1;
-		return { x: 0, y: 0, z: direction * lerp(min, max, ctx.rng()) };
-	};
-}
-
-function randomZRotation(): SamplerFn<Quat> {
-	return (ctx) => fromAxisAngle(unitZ, ctx.rng() * Math.PI * 2);
 }

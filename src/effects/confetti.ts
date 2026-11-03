@@ -1,8 +1,6 @@
 import { drag, fade, gravity, scale } from "../behavior";
 import { type Color, color } from "../color";
-import { type EffectTarget, emissionTarget, emitFrom } from "../emitter";
 import type { Vec3 } from "../math/vec3";
-import { createRng } from "../random/rng";
 import { createLighting } from "../render";
 import {
 	evaluateSampler,
@@ -11,13 +9,13 @@ import {
 	randomSpin,
 	range,
 	type Sampler,
-	type SamplerContext,
 	type SamplerFn,
 } from "../samplers";
 import type { ParticleShape } from "../shapes";
-import { createEffect, type Effect } from "./effect";
-import type { ReducedMotion } from "./motion";
+import { burstFrom } from "./burst";
+import { type BaseEffectOptions, createEffect, type Effect } from "./effect";
 import { pickOrSampler, withDefaults } from "./options";
+import type { EffectTarget } from "./target";
 
 /**
  * Options for {@link confetti | confetti()}.
@@ -26,7 +24,7 @@ import { pickOrSampler, withDefaults } from "./options";
  *
  * @group Effects
  */
-export interface ConfettiOptions {
+export interface ConfettiOptions extends BaseEffectOptions {
 	/**
 	 * How many pieces of confetti are emitted simultaneously at the start of the effect.
 	 * Sampled once and rounded to the nearest integer.
@@ -102,14 +100,6 @@ export interface ConfettiOptions {
 	 * @defaultValue range(130, 220)
 	 */
 	drag?: Sampler<number>;
-	/**
-	 * What happens when the user has asked their system for reduced motion: `"skip"` doesn't play the confetti,
-	 * `"play"` plays it anyway. See {@link ReducedMotion} for more information.
-	 *
-	 * Without this option, the default set with {@link setDefaultReducedMotion | setDefaultReducedMotion()} is used,
-	 * which is `"skip"` unless you changed it.
-	 */
-	reducedMotion?: ReducedMotion;
 }
 
 /**
@@ -144,7 +134,7 @@ const CONFETTI_DEFAULTS = {
 	],
 	gravity: 800,
 	drag: range(130, 220),
-} satisfies Required<Omit<ConfettiOptions, "reducedMotion">>;
+} satisfies Required<Omit<ConfettiOptions, keyof BaseEffectOptions>>;
 
 /**
  * Fires a burst of confetti in a cone, upwards by default, from the specified target.
@@ -172,16 +162,11 @@ export function confetti(
 ): Effect {
 	const o = withDefaults(CONFETTI_DEFAULTS, options);
 
-	const rng = createRng();
-	const resolveCtx: SamplerContext = { rng, index: 0 };
-	const { origin, shape } = emissionTarget(target);
+	const { rng, ctx, origin, position } = burstFrom(target, o);
 
-	const angle = evaluateSampler(o.angle, resolveCtx);
-	const spread = evaluateSampler(o.spread, resolveCtx);
-	const gravityStrength = evaluateSampler(o.gravity, resolveCtx);
-	// the middle of an element, rather than its whole area, so the confetti shoots out of a single spot
-	const radius =
-		shape.type === "rect" ? Math.min(shape.width, shape.height) / 4 : 0;
+	const angle = evaluateSampler(o.angle, ctx);
+	const spread = evaluateSampler(o.spread, ctx);
+	const gravityStrength = evaluateSampler(o.gravity, ctx);
 
 	return createEffect({
 		origin,
@@ -190,7 +175,7 @@ export function confetti(
 		},
 		rng,
 		particleInit: {
-			position: emitFrom({ type: "disk", radius }),
+			position,
 			velocity: jet(angle, spread, o.startVelocity),
 			orientation: randomOrientation(),
 			angularVelocity: randomSpin(180, 360),
@@ -210,6 +195,7 @@ export function confetti(
 		],
 		lighting: createLighting({ ambient: 0.5, peak: 1.5 }),
 		reducedMotion: o.reducedMotion,
+		canvas: o.canvas,
 	});
 }
 

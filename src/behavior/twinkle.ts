@@ -1,5 +1,6 @@
 import type { Color } from "../color/color";
 import { invalidOption } from "../errors";
+import type { Particle } from "../particle";
 import type { Behavior } from "./behavior";
 
 /**
@@ -101,7 +102,7 @@ export function twinkle(options: TwinkleOptions = {}): Behavior {
 			brightness,
 		);
 
-	const STATE = Symbol("twinkle");
+	const stateMap = new WeakMap<Particle, TwinkleState>();
 	// the glint is a bell curve, and nearly all of it lies within two standard deviations to either side
 	const sigma = length / 4;
 
@@ -119,10 +120,10 @@ export function twinkle(options: TwinkleOptions = {}): Behavior {
 				size: particle.size,
 				color: particle.color,
 			};
-			particle.data.set(STATE, state);
+			stateMap.set(particle, state);
 		},
 		update(particle) {
-			const state = particle.data.get(STATE) as TwinkleState;
+			const state = stateMap.get(particle) as TwinkleState;
 
 			// whatever another behavior has set since the last step becomes the new base, so the glint isn't
 			// applied twice when nothing resets the value, and isn't lost when something does

@@ -112,7 +112,6 @@ function particleAtOrigin(): Particle {
 		shape: { type: "custom", draw() {} },
 		age: 0,
 		lifetime: 1,
-		data: new Map(),
 	};
 }
 

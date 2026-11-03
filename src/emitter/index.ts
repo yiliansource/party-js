@@ -7,8 +7,3 @@ export {
 	type RectEmissionShape,
 } from "./shape";
 export type { ParticleInit } from "./spawn";
-export {
-	type EffectTarget,
-	type EmissionTarget,
-	emissionTarget,
-} from "./target";

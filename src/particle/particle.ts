@@ -60,10 +60,4 @@ export interface Particle {
 	 * How long the particle lives, in seconds. It's removed (i.e. it dies) once `age` reaches this value.
 	 */
 	lifetime: number;
-	/**
-	 * Storage for behaviors that need to remember something per particle, for example an initial value.
-	 * It is recommended to use a `Symbol` created in the behavior's factory function as the key,
-	 * so that two behaviors never overwrite each other's entries. See {@link BehaviorObject}.
-	 */
-	data: Map<symbol, unknown>;
 }

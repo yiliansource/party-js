@@ -1,3 +1,6 @@
+import { invalidOption } from "../errors";
+import type { Vec3 } from "../math";
+import * as vec3 from "../math/vec3";
 import type { Sampler, SamplerContext, SamplerFn } from "./types";
 
 /**
@@ -27,4 +30,11 @@ export function evaluateSampler<T>(
 	return typeof sampler === "function"
 		? (sampler as SamplerFn<T>)(ctx)
 		: sampler;
+}
+
+export function requireAxis(axis: Vec3, where: string): Vec3 {
+	const n = vec3.normalize(axis);
+	if (n.x === 0 && n.y === 0 && n.z === 0)
+		throw invalidOption(where, "a non-zero vector", axis);
+	return n;
 }

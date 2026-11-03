@@ -1,17 +1,17 @@
 // #region import
-import { cone, createEffect, emissionTarget, emitFrom, fade, gravity, pick, randomOrientation, randomSpin, range } from "party-js";
+import { cone, createEffect, emitFrom, fade, gravity, measureTarget, pick, randomOrientation, randomSpin, range } from "party-js";
 // #endregion
 import type { Demo } from "./types";
 
 export const run: Demo = ({ target: button }) => {
 	// #region demo
-	const { origin, shape } = emissionTarget(button);
+	const { origin, area } = measureTarget(button);
 
 	createEffect({
 		origin,
 		schedule: { bursts: [{ count: 30 }] },
 		particleInit: {
-			position: emitFrom(shape),
+			position: emitFrom(area),
 			velocity: cone(90, 30, range(200, 400)),
 			orientation: randomOrientation(),
 			angularVelocity: randomSpin(90, 270),

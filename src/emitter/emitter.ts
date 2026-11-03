@@ -85,8 +85,8 @@ export class Emitter {
 			const initCtx: BehaviorInitContext = {
 				rng: this.rng,
 			};
-			for (const behaviour of this.behaviors) {
-				initBehavior(behaviour, particle, initCtx);
+			for (const behavior of this.behaviors) {
+				initBehavior(behavior, particle, initCtx);
 			}
 
 			this.particles.push(particle);

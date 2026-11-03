@@ -94,7 +94,6 @@ export function makeTestParticle(overrides: Partial<Particle> = {}): Particle {
 		shape: { type: "circle" },
 		age: 0,
 		lifetime: 1,
-		data: new Map(),
 		...overrides,
 	};
 }

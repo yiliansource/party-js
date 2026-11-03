@@ -6,6 +6,12 @@
 // If you changed the API on purpose, run "bun run build && bun run api --update"
 // and commit this file together with the change.
 
+interface BaseEffectOptions {
+	reducedMotion?: ReducedMotion;
+	canvas?: HTMLCanvasElement;
+	seed?: number;
+}
+
 type Behavior = BehaviorUpdate | BehaviorObject;
 
 type BehaviorInit = (particle: Particle, ctx: BehaviorInitContext) => void;
@@ -43,7 +49,7 @@ declare function cone(angle: number, deviation: number, speed: Sampler<number>):
 
 declare function confetti(target: EffectTarget, options?: ConfettiOptions): Effect;
 
-interface ConfettiOptions {
+interface ConfettiOptions extends BaseEffectOptions {
 	count?: Sampler<number>;
 	angle?: Sampler<number>;
 	spread?: Sampler<number>;
@@ -54,22 +60,18 @@ interface ConfettiOptions {
 	shapes?: ParticleShape[] | Sampler<ParticleShape>;
 	gravity?: Sampler<number>;
 	drag?: Sampler<number>;
-	reducedMotion?: ReducedMotion;
 }
 
 declare function createEffect(options: CreateEffectOptions): Effect;
 
-interface CreateEffectOptions {
+interface CreateEffectOptions extends BaseEffectOptions {
 	origin: Live<Vec2>;
 	schedule: EmissionSchedule;
 	particleInit: ParticleInit;
 	behaviors?: Behavior[];
-	canvas?: HTMLCanvasElement;
 	light?: Live<Vec3>;
 	lighting?: LightingFn | null;
-	seed?: number;
 	rng?: Rng;
-	reducedMotion?: ReducedMotion;
 }
 
 declare function createLighting(options?: CreateLightingOptions): LightingFn;
@@ -120,13 +122,6 @@ interface EmissionSchedule {
 
 type EmissionShape = DiskEmissionShape | RectEmissionShape;
 
-declare function emissionTarget(target: EffectTarget, canvas?: HTMLCanvasElement): EmissionTarget;
-
-interface EmissionTarget {
-	origin: Vec2;
-	shape: EmissionShape;
-}
-
 declare function emitFrom(shape: Live<EmissionShape>): SamplerFn<Vec3>;
 
 declare function evaluateSampler<T>(sampler: Sampler<T>, ctx: SamplerContext): T;
@@ -153,6 +148,13 @@ declare function linear(): Easing;
 
 type Live<T> = T | (() => T);
 
+interface MeasuredTarget {
+	origin: Vec2;
+	area: EmissionShape;
+}
+
+declare function measureTarget(target: EffectTarget, canvas?: HTMLCanvasElement): MeasuredTarget;
+
 declare function normal(mean: number, stdDev: number): SamplerFn<number>;
 
 interface Particle {
@@ -165,7 +167,6 @@ interface Particle {
 	shape: ParticleShape;
 	age: number;
 	lifetime: number;
-	data: Map<symbol, unknown>;
 }
 
 interface ParticleInit {
@@ -212,9 +213,9 @@ interface RandomHueOptions {
 	alpha?: number;
 }
 
-declare function randomOrientation(): SamplerFn<Quat>;
+declare function randomOrientation(axis?: Readonly<Vec3>): SamplerFn<Quat>;
 
-declare function randomSpin(min: number, max: number): SamplerFn<Vec3>;
+declare function randomSpin(min: number, max: number, axis?: Readonly<Vec3>): SamplerFn<Vec3>;
 
 declare function range(min: number, max: number): SamplerFn<number>;
 
@@ -252,16 +253,15 @@ declare function sineInOut(): Easing;
 
 declare function sineOut(): Easing;
 
-interface SparkleOptions {
+declare function sparkles(target: EffectTarget, options?: SparklesOptions): Effect;
+
+interface SparklesOptions extends BaseEffectOptions {
 	count?: Sampler<number>;
 	startVelocity?: Sampler<number>;
 	size?: Sampler<number>;
 	lifetime?: Sampler<number>;
 	colors?: string[] | Sampler<string | Color>;
-	reducedMotion?: ReducedMotion;
 }
-
-declare function sparkles(target: EffectTarget, options?: SparkleOptions): Effect;
 
 declare function spread(center: number, deviation: number): SamplerFn<number>;
 
@@ -304,6 +304,7 @@ interface Vec3 {
 }
 
 export {
+	type BaseEffectOptions,
 	type Behavior,
 	type BehaviorInit,
 	type BehaviorInitContext,
@@ -325,12 +326,11 @@ export {
 	drag,
 	type Easing,
 	type Effect,
+	type EffectResult,
 	type EffectTarget,
 	type EmissionBurst,
 	type EmissionSchedule,
 	type EmissionShape,
-	emissionTarget,
-	type EmissionTarget,
 	emitFrom,
 	evaluateSampler,
 	fade,
@@ -341,6 +341,8 @@ export {
 	type LightingFn,
 	linear,
 	type Live,
+	type MeasuredTarget,
+	measureTarget,
 	normal,
 	type Particle,
 	type ParticleInit,
@@ -366,8 +368,8 @@ export {
 	sineIn,
 	sineInOut,
 	sineOut,
-	type SparkleOptions,
 	sparkles,
+	type SparklesOptions,
 	spread,
 	type SquareShape,
 	type StarShape,

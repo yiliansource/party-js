@@ -2,7 +2,7 @@
 // #region import
 import { createEffect } from "party-js";
 // #endregion
-import { emissionTarget, pick, randomOrientation, randomSpin, range, scale } from "party-js";
+import { measureTarget, pick, randomOrientation, randomSpin, range, scale } from "party-js";
 
 /** @import { Demo } from "./types" */
 /** @import { SamplerFn, Vec3 } from "party-js" */
@@ -25,7 +25,7 @@ const ring = (radius) => (ctx) => {
 
 /** @type {Demo} */
 export const run = ({ target }) => {
-	const { origin } = emissionTarget(target);
+	const { origin } = measureTarget(target);
 
 	// #region demo
 	createEffect({

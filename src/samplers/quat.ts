@@ -1,8 +1,15 @@
-import type { Quat } from "../math/quat";
+import type { Vec3 } from "../math";
+import { fromAxisAngle, type Quat } from "../math/quat";
+import { requireAxis } from "./helpers";
 import type { SamplerFn } from "./types";
 
 /**
- * Creates a sampler for random rotations, with each orientation being equally likely.
+ * Creates a sampler for random rotations. If no axis is provided then each orientation is equally likely,
+ * otherwise the rotation is only created around the given axis.
+ *
+ * For example, rotations around +z keep flat shapes facing the viewer, only turning them within the screen plane.
+ *
+ * @param axis - Optionally, the axis to create the rotation around.
  *
  * @summary Picks a random rotation.
  *
@@ -10,7 +17,12 @@ import type { SamplerFn } from "./types";
  *
  * @group Samplers
  */
-export function randomOrientation(): SamplerFn<Quat> {
+export function randomOrientation(axis?: Readonly<Vec3>): SamplerFn<Quat> {
+	if (axis) {
+		const fixed = requireAxis(axis, "randomOrientation() axis");
+		return (ctx) => fromAxisAngle(fixed, ctx.rng() * 2 * Math.PI);
+	}
+
 	return (ctx) => {
 		const x1 = ctx.rng();
 		const x2 = ctx.rng();

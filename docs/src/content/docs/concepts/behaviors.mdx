@@ -178,15 +178,14 @@ To make the strength adjustable, wrap the behavior in a function that takes the 
 
 A breeze pushes every bubble the same way. To make them sway from side to side instead, each bubble can follow a wave over time, `Math.cos(particle.age * 3)`. But then all bubbles would sway in sync, which would look too stiff. To solve this, we assign each bubble a random **phase** when it spawns, which it can store and access later on.
 
-For that, a behavior can be an object instead of a function. Its `init` function runs once for each particle, right after it spawns, and its `update` function runs on every step, like a plain behavior function would. Each particle has a [`data`](/api/particles/particle/#data) map, where behaviors can store values of their own:
+For that, a behavior can be an object instead of a function. Its `init` function runs once for each particle, right after it spawns, and its `update` function runs on every step, like a plain behavior function would. We can use a `WeakMap` to store per-particle data in the behavior:
 
 <LiveDemo demo="bubbles-sway" size="compact" label="Swaying bubbles" icon={BubblesIcon} />
 
 A couple of notes on the implementation:
 
-- **The key is a `Symbol`**, created inside the outer function. Every call of `sway()` creates a new one, so two sways in the same effect, or another behavior that stores data, never overwrite each other's values. A string key like `"phase"` could clash.
+- **The lookup is a `WeakMap`**, created inside the outer function. Every call of `sway()` creates a new one, so two sways in the same effect never overwrite each other's values. Also, a particle's entry is cleaned up along with the particle after it has expired.
 - **The phase comes from `ctx.rng`**, the effect's random number generator, and not from `Math.random()`, to keep the effect [reproducible](/concepts/samplers/#reproducible-randomness).
-- **Per-particle values live on the particle**, not in variables of the outer function. `sway(200)` is called once, and the behavior it returns then runs for every particle of the effect, so a variable would be shared by all of them.
 
 ### Quadratic drag
 

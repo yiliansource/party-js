@@ -2,7 +2,7 @@
 // #region import
 import { createEffect } from "party-js";
 // #endregion
-import { cone, drag, emissionTarget, emitFrom, fade, gravity, randomOrientation, randomSpin, range } from "party-js";
+import { cone, drag, emitFrom, fade, gravity, measureTarget, randomOrientation, randomSpin, range } from "party-js";
 
 /** @import { Demo } from "./types" */
 /** @import { LightingFn } from "party-js" */
@@ -22,7 +22,7 @@ const glint = (color, coefficient) => {
 
 /** @type {Demo} */
 export const run = ({ target: button }) => {
-	const { origin, shape } = emissionTarget(button);
+	const { origin, area } = measureTarget(button);
 
 	// #region demo
 	createEffect({
@@ -30,7 +30,7 @@ export const run = ({ target: button }) => {
 		origin,
 		schedule: { bursts: [{ count: range(40, 60) }] },
 		particleInit: {
-			position: emitFrom(shape),
+			position: emitFrom(area),
 			velocity: cone(90, 40, range(400, 700)),
 			orientation: randomOrientation(),
 			angularVelocity: randomSpin(180, 360),

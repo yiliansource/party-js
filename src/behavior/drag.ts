@@ -1,5 +1,6 @@
 import * as quat from "../math/quat";
 import * as vec3 from "../math/vec3";
+import type { Particle } from "../particle";
 import { evaluateSampler } from "../samplers/helpers";
 import type { Sampler } from "../samplers/types";
 import type { Behavior } from "./behavior";
@@ -37,30 +38,30 @@ import type { Behavior } from "./behavior";
  * @group Behaviors
  */
 export function drag(rate: Sampler<number>, edgeRatio = 1): Behavior {
-	const RATE = Symbol("drag.rate");
+	const rateMap = new WeakMap<Particle, number>();
 	// chosen so that the face-on and edge-on rates average out to `rate` over all orientations,
 	// since a direction lies along the normal with weight 1/3, and in the plane with weight 2/3
 	const faceScale = 3 / (1 + 2 * edgeRatio);
 
 	return {
 		init(particle, ctx) {
-			particle.data.set(
-				RATE,
+			rateMap.set(
+				particle,
 				evaluateSampler(rate, { rng: ctx.rng, index: 0 }),
 			);
 		},
 		update(particle, ctx) {
-			const c = particle.data.get(RATE) as number;
+			const r = rateMap.get(particle) as number;
 			if (edgeRatio === 1) {
 				particle.velocity = vec3.scale(
 					particle.velocity,
-					Math.exp(-c * ctx.dt),
+					Math.exp(-r * ctx.dt),
 				);
 				return;
 			}
 
-			const faceDecay = Math.exp(-c * faceScale * ctx.dt);
-			const edgeDecay = Math.exp(-c * faceScale * edgeRatio * ctx.dt);
+			const faceDecay = Math.exp(-r * faceScale * ctx.dt);
+			const edgeDecay = Math.exp(-r * faceScale * edgeRatio * ctx.dt);
 			const normal = quat.basis(particle.orientation).z;
 			const along = vec3.scale(
 				normal,
