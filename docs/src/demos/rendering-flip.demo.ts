@@ -1,11 +1,11 @@
 // #region import
 import { createEffect } from "party-js";
 // #endregion
-import { emissionTarget, scale } from "party-js";
+import { measureTarget, scale } from "party-js";
 import type { Demo } from "./types";
 
 export const run: Demo = ({ target: button }) => {
-	const { origin } = emissionTarget(button);
+	const { origin } = measureTarget(button);
 
 	// #region demo
 	createEffect({

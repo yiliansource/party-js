@@ -2,7 +2,7 @@
 // #region import
 import { createEffect, drag, fade, gravity, scale } from "party-js";
 // #endregion
-import { emissionTarget, range, emitFrom, pick } from "party-js";
+import { emitFrom, measureTarget, pick, range } from "party-js";
 
 /** @import { Demo } from "./types" */
 /** @import { Behavior } from "party-js" */
@@ -22,7 +22,7 @@ const breeze = (strength) => (particle, ctx) => {
 
 /** @type {Demo} */
 export const run = ({ target: button }) => {
-	const { origin, shape } = emissionTarget(button);
+	const { origin, area } = measureTarget(button);
 
 	// #region demo
 	createEffect({
@@ -30,7 +30,7 @@ export const run = ({ target: button }) => {
 		origin,
 		schedule: { bursts: [{ count: range(15, 25) }] },
 		particleInit: {
-			position: emitFrom(shape),
+			position: emitFrom(area),
 			size: range(8, 16),
 			color: pick(["#7dd3fc", "#a5b4fc", "#99f6e4"]),
 			shape: { type: "circle" },

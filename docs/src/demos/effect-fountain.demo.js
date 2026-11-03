@@ -1,6 +1,6 @@
 // @ts-check
 // #region import
-import { createEffect, emissionTarget } from "party-js";
+import { createEffect, measureTarget } from "party-js";
 // #endregion
 import { cone, emitFrom, fade, gravity, pick, randomOrientation, randomSpin, range, scale } from "party-js";
 
@@ -22,14 +22,14 @@ export const run = ({ target: button }) => {
 		fountain.end();
 		fountain = undefined;
 	} else {
-		const { origin, shape } = emissionTarget(button);
+		const { origin, area } = measureTarget(button);
 
 		fountain = createEffect({
 			origin,
 			schedule: { rate: 40, loops: Infinity },
 			// #region collapse
 			particleInit: {
-				position: emitFrom(shape),
+				position: emitFrom(area),
 				velocity: cone(90, 15, range(400, 600)),
 				orientation: randomOrientation(),
 				angularVelocity: randomSpin(90, 360),

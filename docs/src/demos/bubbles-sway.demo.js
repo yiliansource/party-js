@@ -2,7 +2,7 @@
 // #region import
 import { createEffect, drag, fade, gravity, scale } from "party-js";
 // #endregion
-import { emissionTarget, emitFrom, pick, range } from "party-js";
+import { emitFrom, measureTarget, pick, range } from "party-js";
 
 /** @import { Demo } from "./types" */
 /** @import { Behavior } from "party-js" */
@@ -14,17 +14,16 @@ import { emissionTarget, emitFrom, pick, range } from "party-js";
 // #region demo
 // pushes each particle from side to side, starting at a random point of the swing
 const sway = (strength) => {
-	const phase = Symbol("sway.phase");
+	const phaseMap = new WeakMap();
 	return {
 		init(particle, ctx) {
-			particle.data.set(phase, ctx.rng() * 2 * Math.PI);
+			phaseMap.set(particle, ctx.rng() * 2 * Math.PI);
 		},
 		update(particle, ctx) {
 			// #region omit
 			/** @type {number} */
-			// @ts-expect-error: particle.data stores unknown values
 			// #endregion
-			const offset = particle.data.get(phase);
+			const offset = phaseMap.get(particle);
 			const push = Math.cos(particle.age * 3 + offset) * strength * ctx.dt;
 			particle.velocity = {
 				...particle.velocity,
@@ -37,7 +36,7 @@ const sway = (strength) => {
 
 /** @type {Demo} */
 export const run = ({ target: button }) => {
-	const { origin, shape } = emissionTarget(button);
+	const { origin, area } = measureTarget(button);
 
 	// #region demo
 	createEffect({
@@ -45,7 +44,7 @@ export const run = ({ target: button }) => {
 		origin,
 		schedule: { bursts: [{ count: range(15, 25) }] },
 		particleInit: {
-			position: emitFrom(shape),
+			position: emitFrom(area),
 			velocity: { x: 0, y: 0, z: 0 },
 			orientation: { x: 0, y: 0, z: 0, w: 1 },
 			angularVelocity: { x: 0, y: 0, z: 0 },

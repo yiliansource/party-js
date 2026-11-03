@@ -1,6 +1,6 @@
+import type { EmissionShape } from "../emitter/shape";
 import { assertBrowser } from "../errors";
 import type { Vec2 } from "../math/vec2";
-import type { EmissionShape } from "./shape";
 
 /**
  * What an effect bursts out of: an element on the page, or a point.
@@ -24,13 +24,13 @@ export type EffectTarget = HTMLElement | Vec2;
 
 /**
  * Where an effect happens and which area its particles spawn from, as returned by
- * {@link emissionTarget | emissionTarget()}.
+ * {@link measureTarget | measureTarget()}.
  *
  * @summary An effect's origin and the area its particles spawn from.
  *
  * @group Custom effects
  */
-export interface EmissionTarget {
+export interface MeasuredTarget {
 	/**
 	 * The effect's origin, for {@link CreateEffectOptions.origin}: the target's center, in page coordinates,
 	 * or in the canvas' coordinates if a canvas was given.
@@ -40,13 +40,12 @@ export interface EmissionTarget {
 	 * The area particles spawn from, relative to the `origin`, for {@link emitFrom | emitFrom()}: the element's
 	 * whole area, or a single point.
 	 */
-	shape: EmissionShape;
+	area: EmissionShape;
 }
 
 /**
- * Turns an element or a point into an origin and an emission area for {@link createEffect | createEffect()},
- * the same way the built-in effects like {@link confetti | confetti()} do. Use it to make a custom effect burst
- * out of an element.
+ * Turns an element or a point into an origin and an emission area for {@link createEffect | createEffect()}.
+ * Use it to make a custom effect burst out of an element.
  *
  * The target is measured once, when this function is called. Moving or scrolling afterwards does not
  * move the effect.
@@ -62,13 +61,13 @@ export interface EmissionTarget {
  *
  * @example
  * ```ts
- * const { origin, shape } = emissionTarget(button);
+ * const { origin, area } = measureTarget(button);
  *
  * createEffect({
  *     origin,
  *     schedule: { bursts: [{ count: 30 }] },
  *     particleInit: {
- *         position: emitFrom(shape),
+ *         position: emitFrom(area),
  *         // ...
  *     },
  * });
@@ -76,10 +75,10 @@ export interface EmissionTarget {
  *
  * @group Custom effects
  */
-export function emissionTarget(
+export function measureTarget(
 	target: EffectTarget,
 	canvas?: HTMLCanvasElement,
-): EmissionTarget {
+): MeasuredTarget {
 	assertBrowser();
 
 	// where the coordinate system starts, in page coordinates: the canvas' drawing area, inside its border
@@ -99,12 +98,12 @@ export function emissionTarget(
 				x: rect.left + rect.width / 2 + window.scrollX - offset.x,
 				y: rect.top + rect.height / 2 + window.scrollY - offset.y,
 			},
-			shape: { type: "rect", width: rect.width, height: rect.height },
+			area: { type: "rect", width: rect.width, height: rect.height },
 		};
 	}
 
 	return {
 		origin: { x: target.x - offset.x, y: target.y - offset.y },
-		shape: { type: "disk", radius: 0 },
+		area: { type: "disk", radius: 0 },
 	};
 }

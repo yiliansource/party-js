@@ -1,5 +1,11 @@
 import type { Behavior } from "./behavior";
 import { type Easing, linear } from "./easing";
+import { type EnvelopeTarget, envelope } from "./envelope";
+
+const size: EnvelopeTarget = {
+	read: (p) => p.size,
+	write: (p, v) => (p.size = v),
+};
 
 /**
  * Creates a behavior that grows a particle from 0 to its sampled size and shrinks it back
@@ -24,23 +30,5 @@ export function scale(
 	outDuration: number,
 	ease?: Easing,
 ): Behavior {
-	const BASE_SIZE = Symbol("scale.baseSize");
-	const easeFn = ease ?? linear();
-
-	return {
-		init(particle) {
-			particle.data.set(BASE_SIZE, particle.size);
-		},
-		update(particle) {
-			const base = particle.data.get(BASE_SIZE) as number;
-			const remaining = particle.lifetime - particle.age;
-
-			const inFactor =
-				inDuration > 0 ? Math.min(particle.age / inDuration, 1) : 1;
-			const outFactor =
-				outDuration > 0 ? Math.min(remaining / outDuration, 1) : 1;
-
-			particle.size = base * easeFn(Math.min(inFactor, outFactor));
-		},
-	};
+	return envelope(size, inDuration, outDuration, ease);
 }

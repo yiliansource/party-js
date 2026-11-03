@@ -147,6 +147,5 @@ export function spawnParticle(
 		shape: own(shape),
 		age: 0,
 		lifetime: evaluateSampler(init.lifetime, ctx),
-		data: new Map(),
 	};
 }

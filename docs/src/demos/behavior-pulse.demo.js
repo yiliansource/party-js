@@ -2,7 +2,7 @@
 // #region import
 import { createEffect, scale } from "party-js";
 // #endregion
-import { emissionTarget, emitFrom, pick, range } from "party-js";
+import { emitFrom, measureTarget, pick, range } from "party-js";
 
 /** @import { Demo } from "./types" */
 /** @import { Behavior } from "party-js" */
@@ -16,7 +16,7 @@ const pulse = (particle) => {
 
 /** @type {Demo} */
 export const run = ({ target }) => {
-	const { origin, shape } = emissionTarget(target);
+	const { origin, area } = measureTarget(target);
 
 	// #region demo
 	createEffect({
@@ -24,7 +24,7 @@ export const run = ({ target }) => {
 		origin,
 		schedule: { bursts: [{ count: range(10, 20) }] },
 		particleInit: {
-			position: emitFrom(shape),
+			position: emitFrom(area),
 			velocity: { x: 0, y: 0, z: 0 },
 			size: 16,
 			color: pick(["#ffb400", "#00a699"]),

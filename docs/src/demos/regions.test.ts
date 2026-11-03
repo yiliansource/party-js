@@ -241,7 +241,7 @@ describe("demoCode", () => {
 			const code = demoCode(
 				source(
 					"export const run: Demo = ({ target }) => {",
-					"\tconst { origin } = emissionTarget(target);",
+					"\tconst { origin } = measureTarget(target);",
 					"",
 					"\t// #region demo",
 					"\tcreateEffect({",

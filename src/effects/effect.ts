@@ -88,7 +88,7 @@ export interface Effect {
  *
  * @group Custom effects
  */
-export interface CreateEffectOptions {
+export interface CreateEffectOptions extends BaseEffectOptions {
 	/**
 	 * The point particle positions are measured from. Read again on every frame, so a function can
 	 * make the whole effect follow something or, for example, react to the window size.
@@ -97,7 +97,7 @@ export interface CreateEffectOptions {
 	 * pixels from the top-left of the document, with +y pointing down. With a `canvas`, it's in that canvas'
 	 * coordinate system instead, i.e. pixels from its top-left corner.
 	 *
-	 * To start the effect at an element, use {@link emissionTarget | emissionTarget()}, which also handles
+	 * To start the effect at an element, use {@link measureTarget | measureTarget()}, which also handles
 	 * the conversion to a canvas’ coordinates.
 	 */
 	origin: Live<Vec2>;
@@ -115,12 +115,6 @@ export interface CreateEffectOptions {
 	 */
 	behaviors?: Behavior[];
 	/**
-	 * A canvas to draw onto. If none is provided, party.js draws onto a fullscreen canvas it shares between all
-	 * effects, and removes it once no effect is using it anymore. See `origin` for how the coordinates behave
-	 * when a canvas is supplied, versus when not.
-	 */
-	canvas?: HTMLCanvasElement;
-	/**
 	 * The direction that light comes from, in particle space. The vector's length does not matter.
 	 * This value is read every frame. The default value points straight from the viewer.
 	 *
@@ -135,14 +129,19 @@ export interface CreateEffectOptions {
 	 */
 	lighting?: LightingFn | null;
 	/**
-	 * A seed for the effect's random number generator. The same seed with the same options produces the same
-	 * visuals each time. Without one, a random seed is generated and every run of the effect looks different.
-	 */
-	seed?: number;
-	/**
 	 * A random number generator to use instead of the built-in one. This takes precedence over `seed`.
 	 */
 	rng?: Rng;
+}
+
+/**
+ * Shared options for built-in and custom effects.
+ *
+ * @summary Shared options for effects.
+ *
+ * @group Effects
+ */
+export interface BaseEffectOptions {
 	/**
 	 * What the effect does when the user has asked their system for reduced motion. A skipped effect draws nothing,
 	 * and the `finished` promise on the effect handle resolves as "completed" after `createEffect()` returns,
@@ -152,6 +151,18 @@ export interface CreateEffectOptions {
 	 * which is `"skip"` unless you changed it.
 	 */
 	reducedMotion?: ReducedMotion;
+	/**
+	 * A canvas to draw onto. If none is provided, party.js draws onto a fullscreen canvas it shares between all
+	 * effects, and removes it once no effect is using it anymore. If provided, positions are measured from the
+	 * canvas' top-left corner: the built-in effects measure their target relative to it, and a custom effect's
+	 * origin is given in its coordinates (see {@link measureTarget | measureTarget()}).
+	 */
+	canvas?: HTMLCanvasElement;
+	/**
+	 * A seed for the effect's random number generator. The same seed with the same options produces the same
+	 * visuals each time. Without one, a random seed is generated and every run of the effect looks different.
+	 */
+	seed?: number;
 }
 
 function createFinished(): [

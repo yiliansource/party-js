@@ -38,8 +38,9 @@ export interface BehaviorUpdateContext {
  *
  * Called once per particle right after it has been constructed, but before its first update.
  * Initializations are called in the order that the behaviors are listed in.
- * A common use case is to store initial particle data in {@link Particle.data} or to choose
- * a random initial value for a behavior via the random number generator.
+ *
+ * A common use case is to remember initial particle data or to choose a random initial value for a behavior via
+ * the random number generator.
  *
  * @param particle - The new particle.
  * @param ctx - The context supplied to the initialization, including the random number generator.
@@ -74,22 +75,21 @@ export type BehaviorUpdate = (
 /**
  * A behavior that can also perform initialization when the particle is spawned.
  *
- * This can be used to store initial state in {@link Particle.data} under a {@link Symbol}.
- * Symbols should be created in your behavior's factory function, to ensure that two behavior instances
- * do not overwrite each other.
+ * To remember something per particle, create a {@link WeakMap} keyed by particle inside your behavior's
+ * factory function, so that every instance of the behavior gets its own map.
  *
  * @summary A behavior with an optional setup step for each particle.
  *
  * @example
  * ```ts
  * const shrink = (): Behavior => {
- *     const startSize = Symbol("startSize");
+ *     const startSize = new WeakMap<Particle, number>();
  *     return {
  *         init(particle) {
- *             particle.data.set(startSize, particle.size);
+ *             startSize.set(particle, particle.size);
  *         },
  *         update(particle) {
- *             const start = particle.data.get(startSize) as number;
+ *             const start = startSize.get(particle) as number;
  *             particle.size = start * (1 - particle.age / particle.lifetime);
  *         },
  *     };

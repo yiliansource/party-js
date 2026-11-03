@@ -1,11 +1,11 @@
 // #region import
 import { createEffect } from "party-js";
 // #endregion
-import { cone, emissionTarget, emitFrom, fade, pick, range } from "party-js";
+import { cone, emitFrom, fade, measureTarget, pick, range } from "party-js";
 import type { Demo } from "./types";
 
 export const run: Demo = ({ target: button }) => {
-	const { origin, shape } = emissionTarget(button);
+	const { origin, area } = measureTarget(button);
 
 	// #region demo
 	createEffect({
@@ -15,7 +15,7 @@ export const run: Demo = ({ target: button }) => {
 		// #endregion
 		particleInit: {
 			// #region collapse
-			position: emitFrom(shape),
+			position: emitFrom(area),
 			velocity: cone(90, 30, range(40, 100)),
 			size: range(16, 28),
 			color: pick(["#fde68a", "#bef264", "#a5f3fc"]),

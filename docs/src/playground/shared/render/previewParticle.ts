@@ -16,6 +16,5 @@ export function previewParticle(
 		shape,
 		age: 0,
 		lifetime: Number.POSITIVE_INFINITY,
-		data: new Map(),
 	};
 }

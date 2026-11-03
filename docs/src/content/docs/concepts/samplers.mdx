@@ -113,7 +113,7 @@ The simulation runs in [fixed steps](/concepts/effects/#time-and-the-simulation-
 
 If you need more control, pass your own generator as `rng` instead. It's any function that returns a number from 0 (inclusive) to 1 (exclusive), like `Math.random()` does. When both are given, `rng` takes precedence over `seed`.
 
-The built-in effects don't take a seed, and always look a little different.
+The built-in effects can take a `seed` too: `confetti(button, { seed: 1 })`.
 
 ## Combining samplers
 

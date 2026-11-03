@@ -22,7 +22,7 @@ The position, orientation and spin of a particle are optional. Without them, par
 
 ## Bursting out of an element
 
-Most effects belong to an element, like a button that was clicked. [`emissionTarget()`](/api/custom_effects/emissiontarget-1/) measures an element and returns two things: its center as the `origin`, and its area as a `shape` to emit from. Passed to [`emitFrom()`](/api/custom_effects/emitfrom/), the area spreads the particles over the whole element.
+Most effects belong to an element, like a button that was clicked. [`measureTarget()`](/api/custom_effects/measuretarget/) measures an element and returns two things: its center as the `origin`, and its `area` to emit from. Passed to [`emitFrom()`](/api/custom_effects/emitfrom/), the area spreads the particles over the whole element.
 
 From there, a few more samplers and [behaviors](/concepts/behaviors/) make the particles tumble and fall:
 
@@ -31,7 +31,7 @@ From there, a few more samplers and [behaviors](/concepts/behaviors/) make the p
 - [`randomOrientation()`](/api/samplers/randomorientation/) and [`randomSpin()`](/api/samplers/randomspin/) turn each particle in a random direction, and spin it around a random axis. That's what makes the flat shapes [look three-dimensional](/concepts/shapes/#from-3d-to-2d).
 - `gravity()` pulls the particles down, `scale()` grows them in quickly, and `fade()` fades them out at the end of their life.
 
-`emissionTarget()` measures the element once, when it's called. If the page scrolls afterwards, the particles stay where they were on the page, like the built-in effects do.
+`measureTarget()` measures the element once, when it's called. If the page scrolls afterwards, the particles stay where they were on the page, like the built-in effects do.
 
 ## From bursts to streams
 
@@ -48,17 +48,17 @@ The [schedule](/concepts/effects/#the-schedule) can do more: several bursts at d
 To use your effect like a built-in one, wrap it in a function that takes a target and options, and returns the effect:
 
 ```js
-import { createEffect, emissionTarget, emitFrom, pick } from "party-js";
+import { createEffect, measureTarget, emitFrom, pick } from "party-js";
 
 export function fountain(target, options = {}) {
 	const { rate = 40, colors = ["#7dd3fc", "#38bdf8", "#0ea5e9"] } = options;
-	const { origin, shape } = emissionTarget(target);
+	const { origin, area } = measureTarget(target);
 
 	return createEffect({
 		origin,
 		schedule: { rate, loops: Infinity },
 		particleInit: {
-			position: emitFrom(shape),
+			position: emitFrom(area),
 			color: pick(colors),
 			// ...
 		},
@@ -69,7 +69,7 @@ export function fountain(target, options = {}) {
 const effect = fountain(button, { rate: 60 });
 ```
 
-`emissionTarget()` accepts an element or a point, just like `confetti()`, so `fountain()` does too. Returning the effect lets the caller pause it, stop it, or wait for it to end with its [`finished`](/api/effects/effect/#finished) promise.
+`measureTarget()` accepts an element or a point, just like `confetti()`, so `fountain()` does too. Returning the effect lets the caller pause it, stop it, or wait for it to end with its [`finished`](/api/effects/effect/#finished) promise.
 
 :::tip
 In TypeScript, use the [`EffectTarget`](/api/effects/effecttarget/) type for the target, and return an [`Effect`](/api/effects/effect/).
@@ -81,7 +81,7 @@ The `origin` can also be a function. party.js calls it again on every frame, so 
 
 ```js
 createEffect({
-	origin: () => emissionTarget(badge).origin,
+	origin: () => measureTarget(badge).origin,
 	// ...
 });
 ```
@@ -92,17 +92,17 @@ Measuring an element on every frame isn't free, so use this for effects that nee
 
 ## Drawing on your own canvas
 
-By default, effects draw on a fullscreen canvas that party.js manages for you. To draw [somewhere else](/concepts/effects/#the-canvas), for example behind your content, pass your own canvas. Its coordinates start at its top-left corner, so pass the canvas to `emissionTarget()` as well, and it converts the origin for you:
+By default, effects draw on a fullscreen canvas that party.js manages for you. To draw [somewhere else](/concepts/effects/#the-canvas), for example behind your content, pass your own canvas. Its coordinates start at its top-left corner, so pass the canvas to `measureTarget()` as well, and it converts the origin for you:
 
 ```js
 const canvas = document.querySelector("#background");
-const { origin, shape } = emissionTarget(button, canvas);
+const { origin, area } = measureTarget(button, canvas);
 
 createEffect({
 	canvas,
 	origin,
 	particleInit: {
-		position: emitFrom(shape),
+		position: emitFrom(area),
 		// ...
 	},
 	// ...

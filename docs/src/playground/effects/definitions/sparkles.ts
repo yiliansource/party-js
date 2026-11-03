@@ -1,4 +1,4 @@
-import { type SparkleOptions, sparkles } from "party-js";
+import { type SparklesOptions, sparkles } from "party-js";
 
 import {
 	COLOR_FORMS,
@@ -7,7 +7,7 @@ import {
 	NUMERIC_FORMS,
 } from "../schema";
 
-const { numeric, colors } = fieldsFor<SparkleOptions>();
+const { numeric, colors } = fieldsFor<SparklesOptions>();
 
 export const sparklesDefinition = {
 	id: "sparkles",
@@ -80,4 +80,4 @@ export const sparklesDefinition = {
 			...options,
 			reducedMotion: "play",
 		}),
-} satisfies EffectDefinition<SparkleOptions>;
+} satisfies EffectDefinition<SparklesOptions>;

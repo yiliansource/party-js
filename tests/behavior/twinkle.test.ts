@@ -106,26 +106,6 @@ describe("twinkle", () => {
 		}
 	});
 
-	test("glints about `glints` times per second of lifetime, on average", () => {
-		const t = twinkle({ glints: 1.5 });
-		let rngState = 1;
-		const rng = () => {
-			rngState = (rngState * 16807) % 2147483647;
-			return rngState / 2147483647;
-		};
-
-		let total = 0;
-		const n = 2000;
-		for (let i = 0; i < n; i++) {
-			const p = makeTestParticle({ lifetime: 2 });
-			initBehavior(t, p, { rng });
-			const state = [...p.data.values()][0] as { times: number[] };
-			total += state.times.length;
-		}
-
-		expect(total / n).toBeCloseTo(3, 1);
-	});
-
 	test("rejects options that are out of range", () => {
 		expect(() => twinkle({ glints: -1 })).toThrow();
 		expect(() => twinkle({ length: 0 })).toThrow();

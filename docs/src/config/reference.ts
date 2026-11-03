@@ -46,7 +46,7 @@ export const referenceGroupInfo: Record<
 			"Build your own effects: control where particles come from, when they are emitted and how they look.",
 		featured: [
 			"createEffect",
-			"emissionTarget",
+			"measureTarget",
 			"emitFrom",
 			"createLighting",
 		],
