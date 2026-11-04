@@ -46,11 +46,13 @@ const shapes: (GlyphData & { selected?: boolean })[] = [
 		))}
 	</div>
 	<div
-		class="flex-1 grid place-items-center rounded-xl bg-surface overflow-hidden"
+		class="flex-1 grid place-items-center rounded-xl bg-surface overflow-hidden perspective-[400px]"
 	>
 		<Glyph
 			key="star"
-			class="size-28 text-coral rotate-14 not-motion-reduce:transition-transform not-motion-reduce:duration-500 group-hover:rotate-50"
+			class="size-28 text-coral transform-[rotate(14deg)]
+				group-hover:transform-[rotateY(50deg)_rotateX(28deg)_rotate(46deg)] group-hover:brightness-72
+				not-motion-reduce:transition-[transform,filter] not-motion-reduce:duration-800 not-motion-reduce:ease-[cubic-bezier(0.34,1.3,0.64,1)]"
 		/>
 	</div>
 </div>

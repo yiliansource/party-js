@@ -208,6 +208,7 @@ export default defineConfig({
 						plugin: [
 							"typedoc-plugin-mdn-links",
 							"./typedoc/reference-frontmatter.mjs",
+							"./typedoc/unique-slugs.mjs",
 						],
 						useCodeBlocks: true,
 						formatWithPrettier: true,

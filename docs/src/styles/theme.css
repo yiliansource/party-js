@@ -58,6 +58,7 @@
 	--pj-line-strong: var(--color-gray-600);
 	--pj-surface: var(--color-gray-800);
 	--pj-raised: var(--color-gray-700);
+	--pj-raised-hover: var(--color-gray-600);
 	--pj-hover: var(--color-gray-700);
 	--pj-primary: var(--color-white);
 	--pj-primary-fg: var(--color-gray-900);
@@ -85,6 +86,7 @@
 	--pj-line-strong: var(--color-gray-300);
 	--pj-surface: var(--color-gray-100);
 	--pj-raised: var(--color-white);
+	--pj-raised-hover: var(--color-gray-200);
 	--pj-hover: var(--color-gray-200);
 	--pj-primary: var(--color-gray-900);
 	--pj-primary-fg: var(--color-white);
@@ -117,6 +119,7 @@
 	--color-line-strong: var(--pj-line-strong);
 	--color-surface: var(--pj-surface);
 	--color-raised: var(--pj-raised);
+	--color-raised-hover: var(--pj-raised-hover);
 	--color-hover: var(--pj-hover);
 	--color-primary: var(--pj-primary);
 	--color-primary-fg: var(--pj-primary-fg);

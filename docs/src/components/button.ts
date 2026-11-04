@@ -18,7 +18,7 @@ const variants: Record<ButtonVariant, string> = {
 		"bg-page text-fg ring-1 ring-inset ring-line-strong hover:bg-hover",
 	accent: "bg-coral text-ink hover:bg-accent-400",
 	ghost: "bg-surface text-muted hover:bg-hover hover:text-fg",
-	raised: "bg-raised text-fg hover:bg-hover",
+	raised: "bg-raised text-fg hover:bg-raised-hover",
 };
 
 const sizes: Record<ButtonSize, string> = {

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { RotateCcwIcon } from "@lucide/vue";
-import { computed, reactive } from "vue";
+import { computed, reactive, watch } from "vue";
 
 import CodeBlock from "../shared/ui/CodeBlock.vue";
 import Panel from "../shared/ui/Panel.vue";
@@ -8,14 +8,23 @@ import PanelText from "../shared/ui/PanelText.vue";
 import SegmentedControl from "../shared/ui/SegmentedControl.vue";
 import EffectPreviewStage from "./components/EffectPreviewStage.vue";
 import OptionsEditor from "./components/OptionsEditor.vue";
-import { EFFECT_IDS, EFFECTS, type EffectId } from "./definitions";
+import { EFFECT_IDS, EFFECTS } from "./definitions";
 import { createEffectDraft, effectCode, hasChanges } from "./effect";
-import { createEffectsState } from "./state";
+import { createEffectsState, effectFromUrl } from "./state";
 
-const state = reactive(createEffectsState());
+const state = reactive(createEffectsState(effectFromUrl()));
 const definition = computed(() => EFFECTS[state.effect]);
 const draft = computed(() => state.drafts[state.effect]);
 const tokens = computed(() => effectCode(definition.value, draft.value));
+
+watch(
+	() => state.effect,
+	(effect) => {
+		const url = new URL(location.href);
+		url.searchParams.set("effect", effect);
+		history.replaceState(history.state, "", url);
+	},
+);
 
 function resetAll() {
 	state.drafts[state.effect] = createEffectDraft(definition.value);

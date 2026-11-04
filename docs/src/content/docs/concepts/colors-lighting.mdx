@@ -14,7 +14,7 @@ Wherever party.js takes a color, you can pass a CSS color string:
 
 Named colors like `red` or `transparent` aren't supported, to save on bundle size.
 
-Strings are converted with [`color()`](/api/utilities/color-1/), which you can also call yourself. It returns a [`Color`](/api/utilities/color/), an object in the **Oklab** color space. Oklab is designed to match how we perceive colors: equal steps in it look like equal steps to the eye. That's why party.js uses it internally. Colors blend smoothly, without muddy or overly bright spots in between, and [lighting](#lighting) can make a color darker or brighter without changing its hue.
+Strings are converted with [`color()`](/api/utilities/color/), which you can also call yourself. It returns a [`Color`](/api/utilities/color-type/), an object in the **Oklab** color space. Oklab is designed to match how we perceive colors: equal steps in it look like equal steps to the eye. That's why party.js uses it internally. Colors blend smoothly, without muddy or overly bright spots in between, and [lighting](#lighting) can make a color darker or brighter without changing its hue.
 
 ```js
 import { color } from "party-js";

@@ -1,0 +1,43 @@
+---
+import { ArrowRightIcon } from "@lucide/astro";
+
+import {
+	type PlaygroundKey,
+	playgroundInformation,
+} from "../config/playgrounds";
+import { sections } from "../config/sections";
+import type { EffectId } from "../playground/effects/definitions";
+import Glyph from "./Glyph.astro";
+
+type Props =
+	| { playground: "effects"; effect?: EffectId }
+	| { playground: Exclude<PlaygroundKey, "effects"> };
+
+const props = Astro.props;
+const info = playgroundInformation[props.playground];
+const query =
+	"effect" in props && props.effect ? `?effect=${props.effect}` : "";
+const href = `/${info.slug}/${query}`;
+---
+
+<p>
+	<a
+		href={href}
+		class="px-5 py-4 flex flex-row items-center gap-3 bg-surface hover:bg-hover rounded-2xl no-underline text-subtle"
+	>
+		<span class="grid place-content-center size-10 bg-hover rounded-lg">
+			<Glyph
+				key={sections.playground.glyph}
+				class="size-5"
+				style={{ color: sections.playground.accent }}
+			/>
+		</span>
+		<span class="flex flex-col">
+			<span class="mb-0.5 text-xs">{sections.playground.label}</span>
+			<span class="text-[15px] text-fg font-semibold leading-none">
+				<slot>Try it in the {info.title.toLowerCase()} playground</slot>
+			</span>
+		</span>
+		<ArrowRightIcon size={20} class="mr-0 ml-auto" />
+	</a>
+</p>
