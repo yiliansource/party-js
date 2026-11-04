@@ -2,9 +2,9 @@ name: CI
 
 on:
     push:
-        branches: [v3]
+        branches: [main]
     pull_request:
-        branches: [v3]
+        branches: [main]
     workflow_dispatch:
 
 permissions:
@@ -81,11 +81,10 @@ jobs:
             - run: bun run --cwd docs test
             - run: bun run --cwd docs check
             - run: bun run --cwd docs build
-            - uses: actions/upload-artifact@v7
+            - uses: actions/upload-pages-artifact@v5
+              if: github.event_name != 'pull_request'
               with:
-                  name: docs-dist
                   path: docs/dist
-                  retention-days: 1
 
     deploy:
         needs: [library, docs]
@@ -96,16 +95,14 @@ jobs:
             && (needs.library.result == 'success' || needs.library.result == 'skipped')
         runs-on: ubuntu-latest
         permissions:
-            contents: read
-            deployments: write
+            pages: write
+            id-token: write
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        concurrency:
+            group: pages
+            cancel-in-progress: false
         steps:
-            - uses: actions/download-artifact@v8
-              with:
-                  name: docs-dist
-                  path: docs/dist
-            - uses: cloudflare/wrangler-action@v4
-              with:
-                  apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-                  accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-                  command: pages deploy docs/dist --project-name=party-js-v3
-                  gitHubToken: ${{ secrets.GITHUB_TOKEN }}
+            - id: deployment
+              uses: actions/deploy-pages@v5

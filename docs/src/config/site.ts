@@ -8,15 +8,15 @@ export const site = {
 	name: "party.js",
 	tagline:
 		"Out-of-the-box confetti and sparkles — and the particle engine behind them.",
-	url: "https://party-js-v3.pages.dev/",
+	url: "https://party.js.org/",
 	repoUrl: repoUrl,
 	issuesUrl: `${repoUrl}/issues`,
 	npm: "https://www.npmjs.com/package/party-js",
-	v2Docs: "https://party.js.org/",
+	v2Docs: "https://party-js-v2.pages.dev/",
 	version: pkg.version,
 	author: pkg.author,
 	license: pkg.license,
-	licenseUrl: `${repoUrl}/blob/v3/LICENSE`,
+	licenseUrl: `${repoUrl}/blob/main/LICENSE`,
 } as const;
 
 interface SocialLink {

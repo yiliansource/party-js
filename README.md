@@ -1,8 +1,8 @@
 <p align="center">
 	<a href="https://party.js.org">
 		<picture>
-    		<source media="(prefers-color-scheme: dark)" srcset=".github/assets/lockup-stacked-dark.svg">
-    		<img alt="party.js" src=".github/assets/lockup-stacked.svg" width="300">
+    		<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/lockup-stacked-dark.svg">
+			<img alt="party.js" src="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/lockup-stacked.svg" width="300">
 		</picture>
 	</a>
 </p>
@@ -14,7 +14,7 @@
 <p align="center">
 	<a href="https://www.npmjs.com/package/party-js"><img alt="npm version" src="https://img.shields.io/npm/v/party-js?style=flat-square&color=FF5A5F&labelColor=1A1A1A"></a>
 	<a href="https://www.npmjs.com/package/party-js"><img alt="npm downloads" src="https://img.shields.io/npm/dm/party-js?style=flat-square&color=FFB400&labelColor=1A1A1A"></a>
-	<a href="https://github.com/yiliansource/party-js/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/yiliansource/party-js/ci.yml?branch=v3&style=flat-square&label=ci&color=00A699&labelColor=1A1A1A"></a>
+	<a href="https://github.com/yiliansource/party-js/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/yiliansource/party-js/ci.yml?branch=main&style=flat-square&label=ci&color=00A699&labelColor=1A1A1A"></a>
 	<a href="https://bundlephobia.com/package/party-js"><img alt="minzipped size" src="https://img.shields.io/bundlephobia/minzip/party-js?style=flat-square&label=size&color=7B61FF&labelColor=1A1A1A"></a>
 	<a href="./LICENSE"><img alt="MIT license" src="https://img.shields.io/github/license/yiliansource/party-js?style=flat-square&color=6B6B73&labelColor=1A1A1A"></a>
 </p>
@@ -34,11 +34,6 @@
 party.js allows you to add various particle effects to your website, such as confetti or sparkles. With just a few lines of code, clicking a button can produce a rain of confetti, rewarding your users with visual feedback to a successful action. Effects have plenty of randomization options, so no two button presses are alike.
 
 If the built-in effects are not enough, the library exposes everything you need from the underlying particle engine to build your own effects!
-
-> [!NOTE]
-> This is the README for **v3** of the library, a complete rewrite from scratch. It is still in development and not yet published to npm. The badges above are based on the current v2 release.
->
-> If you are looking for v2, check out the [`main` branch](https://github.com/yiliansource/party-js/tree/main).
 
 ## Installation
 
