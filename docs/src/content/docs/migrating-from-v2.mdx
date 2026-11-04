@@ -1,0 +1,457 @@
+---
+title: Migrating from v2
+description: How to upgrade your code from v2 to v3.
+---
+
+import PlaygroundLink from "../../components/PlaygroundLink.astro";
+
+v3 is a complete rewrite of the library. Most of the API changed, but if you only used the built-in effects, upgrading takes a few minutes: `party.confetti(button)` still works. This page goes through everything that changed and shows the v3 equivalent of each v2 feature.
+
+If you need to look something up for v2, its documentation is archived at [party-js-v2.pages.dev](https://party-js-v2.pages.dev).
+
+## Summary
+
+- **Particles are drawn on a canvas.** v2 created one DOM element per particle. v3 draws all particles onto a single canvas on top of the page, which is more performant. Particles are no longer HTML elements.
+- **No more namespaces exports.** `party.variation.range()` becomes `range()`, and there's no default export anymore.
+- **Variations are now samplers.** They work the same way, but they receive a context, and arrays are no longer picked from automatically (except on built-in effects).
+- **Colors are strings.** The `Color` class is gone, and you can pass any hex, `rgb()`, `hsl()`, `oklab()` or `oklch()` string.
+- **Shapes are objects.** `"roundedSquare"` becomes `{ type: "square", cornerRadius: 0.3 }`.
+- **Effects return a handle.** Instead of an `Emitter`, you get an [`Effect`](/api/effects/effect/) you can stop, pause and await.
+- **No global scene or settings.** Everything is configured per effect, and custom effects are created with [`createEffect()`](/api/custom_effects/createeffect/).
+- **Modules are replaced by behaviors.** `ModuleBuilder` is gone, and particles are changed with plain functions instead.
+- **Sizes are in pixels.** A v2 size of `1` scaled the shape's own size, a v3 size of `10` is 10 pixels.
+
+## Installing and importing
+
+Update the package to v3:
+
+```sh
+npm install party-js@3
+```
+
+v3 is published as an ES module only, without a CommonJS build or a default export. Import the functions you use by name:
+
+```js title="v2"
+import party from "party-js";
+// or
+const party = require("party-js");
+
+party.confetti(button);
+```
+
+```js title="v3"
+import { confetti } from "party-js";
+
+confetti(button);
+```
+
+If you'd rather keep the `party.` prefix everywhere, `import * as party from "party-js"` gives you a namespace object with the same functions.
+
+The script tag works like before. The bundle still lives at `bundle/party.min.js` and puts everything on a global `party` object, so only the version in the URL changes:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/party-js@3/bundle/party.min.js"></script>
+```
+
+All functions are available directly on the global, so `party.variation.range(20, 40)` becomes `party.range(20, 40)`. See [Installation](/installation/) for more ways to load the library.
+
+## Using the built-in effects
+
+`confetti()` and `sparkles()` still take a target and an options object, and an element as the target works exactly like before:
+
+```js
+button.addEventListener("click", () => confetti(button));
+```
+
+### Targets
+
+v2 accepted elements, mouse events, and `Rect` and `Circle` objects. v3 accepts an element or a point, in page coordinates:
+
+```js title="v2"
+document.addEventListener("click", (event) => {
+	party.confetti(event);
+});
+
+party.confetti(new party.Rect(200, 300));
+```
+
+```js title="v3"
+document.addEventListener("click", (event) => {
+	confetti({ x: event.pageX, y: event.pageY });
+});
+
+confetti({ x: 200, y: 300 });
+```
+
+To emit from a larger area, like the whole screen with `party.Rect.fromScreen()`, write a [custom effect](/guides/custom-effects/) and spawn its particles with [`emitFrom()`](/api/custom_effects/emitfrom/) and a `rect` shape.
+
+### Confetti options
+
+| v2 | v3 | Notes |
+| --- | --- | --- |
+| `count` | `count` | The default is now 15-30 instead of 20-40. |
+| `spread` | `spread` | Still the deviation in degrees, to either side. Most of the confetti now flies close to the center of the cone. |
+| `speed` | `startVelocity` | Confetti is now slowed down by drag, so v2 values don't carry over. The default is 800-1500 px/s. |
+| `size` | `size` | Now in pixels. v2 shapes were 10 pixels, so multiply by 10: `size: 1` becomes `size: 10`. |
+| `color` | `colors` | An array of color strings, or a sampler. See [Colors](#colors). |
+| `shapes` | `shapes` | Shape objects instead of names. See [Shapes](#shapes). |
+| `rotation` | – | Confetti is always turned randomly, and spins as it falls. |
+| `modules` | – | The built-in effects don't take behaviors. Use [`createEffect()`](#custom-effects) instead. |
+| – | `angle` | The direction of the burst, 90 (up) by default. |
+| – | `lifetime` | How long each piece lives, 2-4 seconds by default. |
+| – | `gravity` | The strength of gravity for this effect, 800 by default. |
+| – | `drag` | The speed at which falling confetti stops accelerating. |
+
+Since the physics changed, the easiest way to recreate a tuned v2 effect is to start from the v3 defaults and adjust them in the effects playground:
+
+<PlaygroundLink playground="effects" effect="confetti" />
+
+### Sparkles options
+
+| v2 | v3 | Notes |
+| --- | --- | --- |
+| `count` | `count` | Now split into four quick bursts. |
+| `speed` | `startVelocity` | Sparkles are now slowed down by drag, so v2 values don't carry over. |
+| `size` | `size` | Now the size of the largest sparkles, in pixels. Most are smaller. |
+| `lifetime` | `lifetime` | Unchanged. |
+| `color` | `colors` | An array of color strings, or a sampler. |
+| `shapes`, `rotation`, `modules` | – | Sparkles are always four-pointed stars. Build a [custom effect](#custom-effects) for other shapes. |
+
+### Controlling an effect
+
+v2 returned the `Emitter` that played the effect. v3 returns an [`Effect`](/api/effects/effect/) handle:
+
+```js
+const effect = confetti(button);
+
+effect.stop(); // removes all particles right away
+effect.end(); // stops emitting, and lets the particles finish
+effect.pause();
+effect.resume();
+await effect.finished; // resolves once the effect is over
+```
+
+There's no `party.scene` anymore, so `party.scene.current.clearEmitters()` and `clearParticles()` have no direct equivalent. Keep the handles of the effects you want to stop, and call `stop()` on them.
+
+## Variations become samplers
+
+Variations are now called [samplers](/concepts/samplers/). Like before, an option takes either a fixed value or a function that produces a new value every time it's called.
+
+| v2 | v3 |
+| --- | --- |
+| `party.variation.range(min, max)` | `range(min, max)` |
+| `party.variation.skew(value, amount)` | `range(value - amount, value + amount)` |
+| `party.variation.skewRelative(value, percentage)` | `range(value * (1 - percentage), value * (1 + percentage))` |
+| `party.variation.gradientSample(gradient)` | `gradient(colors)`, see [Colors](#colors) |
+| `party.variation.splineSample(spline)` | – |
+| `party.variation.evaluateVariation(variation)` | `evaluateSampler(sampler, ctx)` |
+| An array, like `[10, 20, 30]` | `pick([10, 20, 30])` |
+| A function, like `() => 10` | A function that takes a context, like `(ctx) => 10`, see [Custom samplers](/concepts/samplers/#writing-your-own-sampler) |
+
+v3 also brings new samplers, like [`normal()`](/api/samplers/normal/), [`spread()`](/api/samplers/spread/) and [`randomHue()`](/api/samplers/randomhue/), see [Samplers & randomness](/concepts/samplers/).
+
+## Colors
+
+The `Color` class is gone. Wherever party.js takes a color, pass a CSS color string instead:
+
+| v2 | v3 |
+| --- | --- |
+| `party.Color.fromHex("#ff5a5f")` | `"#ff5a5f"` |
+| `party.Color.fromHsl(50, 100, 70)` | `"hsl(50 100% 70%)"` |
+| `new party.Color(255, 90, 95)` | `"rgb(255 90 95)"` |
+| `party.Color.white` | `"#fff"` |
+| `color.mix(other, 0.5)` | `gradient([color, other])` to sample in between |
+
+Named colors like `"red"` aren't supported, to keep the library small. If you need a color object, for example in a [custom behavior](/concepts/behaviors/#custom-behaviors), [`color()`](/api/utilities/color/) converts a string into one. Colors are stored in the Oklab color space now, not RGB.
+
+Gradients are created with [`gradient()`](/api/samplers/gradient/), which returns a sampler directly:
+
+```js title="v2"
+party.confetti(button, {
+	color: party.variation.gradientSample(
+		party.Gradient.simple(party.Color.fromHex("#ffa68d"), party.Color.fromHex("#fd3a84")),
+	),
+});
+```
+
+```js title="v3"
+confetti(button, {
+	colors: gradient(["#ffa68d", "#fd3a84"]),
+});
+```
+
+Gradient keys with a `time` become stops with an `offset`: `{ time: 0.8, value: color }` is now `{ offset: 0.8, color: "#ff8fa3" }`. v3 blends colors in Oklch instead of RGB, so gradients appear more uniform.
+
+A random hue, which v2's confetti did with `Color.fromHsl(random.randomRange(0, 360), 100, 70)`, is now [`randomHue()`](/api/samplers/randomhue/). It keeps the lightness of all hues equal, which `hsl()` can't:
+
+```js
+confetti(button, { colors: randomHue({ l: 0.7, c: 0.15 }) });
+```
+
+See [Colors & lighting](/concepts/colors-lighting/) for more.
+
+## Shapes
+
+Since particles are drawn on a canvas, shapes are no longer HTML. The names of the v2 shapes become objects:
+
+| v2 | v3 |
+| --- | --- |
+| `"square"` | `{ type: "square" }` |
+| `"rectangle"` | `{ type: "square", aspectRatio: 0.6 }` |
+| `"roundedSquare"` | `{ type: "square", cornerRadius: 0.3 }` |
+| `"roundedRectangle"` | `{ type: "square", aspectRatio: 0.6, cornerRadius: 0.3 }` |
+| `"circle"` | `{ type: "circle" }` |
+| `"star"` | `{ type: "star" }` |
+
+```js title="v2"
+party.confetti(button, { shapes: ["star", "roundedSquare"] });
+```
+
+```js title="v3"
+confetti(button, {
+	shapes: [{ type: "star" }, { type: "square", cornerRadius: 0.3 }],
+});
+```
+
+Custom shapes registered in `party.resolvableShapes`, and HTML elements passed as shapes, need to be rebuilt with one of the new shape types:
+
+- An SVG `<path>` becomes a [`path`](/concepts/shapes/#paths) shape. Its `d` attribute works with `new Path2D(d)`, but it has to be scaled into the 1 by 1 box shapes are drawn in. The [hearts example](#example-hearts) below shows how.
+- An emoji or a character becomes a [`text`](/concepts/shapes/#text) shape.
+- An `<img>` becomes an [`image`](/concepts/shapes/#images) shape.
+- Anything else can be drawn with a [`custom`](/concepts/shapes/#custom-drawing-functions) shape and the canvas API.
+
+There are new primitives as well, like stars with any number of points and regular polygons.
+
+<PlaygroundLink playground="shapes" />
+
+## Global settings
+
+`party.settings` is gone. Instead, settings are applied locally:
+
+| v2 | v3 |
+| --- | --- |
+| `settings.gravity` | Set per effect, with confetti's `gravity` option or the [`gravity()`](/api/behaviors/gravity/) behavior. |
+| `settings.respectReducedMotion` | Still respected by default. To play effects anyway, call [`setDefaultReducedMotion("play")`](/api/effects/setdefaultreducedmotion/), or pass `reducedMotion: "play"` to a single effect. |
+| `settings.zIndex` | Not needed: the canvas is shown above all other content, including dialogs. To draw somewhere else, [pass your own canvas](/concepts/effects/#the-canvas). |
+| `settings.debug` | Removed. |
+
+`party.forceInit()` is gone too, as there is nothing to initialize: the canvas is created when the first effect starts, and removed again once the last one ends.
+
+## Custom effects
+
+In v2, custom effects were created with `party.scene.current.createEmitter()`, split into emitter, emission and renderer options. In v3, they're created with [`createEffect()`](/api/custom_effects/createeffect/), which describes an effect with four main options: an `origin`, a `schedule`, a `particleInit` for each particle's starting values, and a list of `behaviors`. [How an effect works](/concepts/effects/) explains them in detail.
+
+### Option by option
+
+| v2 | v3 |
+| --- | --- |
+| `emitterOptions.duration` | `schedule.duration`, now 1 second by default instead of 5. |
+| `emitterOptions.loops` | `schedule.loops`. Use `Infinity` instead of `-1` to loop forever. |
+| `emitterOptions.useGravity` | Add [`gravity()`](/api/behaviors/gravity/) to `behaviors`. v3 particles don't fall unless told to do so. |
+| `emitterOptions.modules` | `behaviors`, see [Modules become behaviors](#modules-become-behaviors). |
+| `emitterOptions.maxParticles` | Removed. |
+| `emitterOptions.despawningRules` | Removed. Particles die once their `age` reaches their `lifetime`, and other rules can be implemented via [behaviors](/concepts/behaviors/). |
+| `emissionOptions.rate` | `schedule.rate`, now 0 by default instead of 10, so `rate: 0` isn't needed for bursts. |
+| `emissionOptions.bursts` | `schedule.bursts`. A burst's `time` is optional now, and `probability` was removed. |
+| `emissionOptions.sourceSampler` | `origin` and `particleInit.position`, see [below](#positions-and-directions). |
+| `emissionOptions.angle` and `initialSpeed` | `particleInit.velocity`, for example with [`cone()`](/api/samplers/cone/). |
+| `emissionOptions.initialLifetime` | `particleInit.lifetime`, now required. |
+| `emissionOptions.initialSize` | `particleInit.size` in pixels, now required. |
+| `emissionOptions.initialColor` | `particleInit.color`, now required. |
+| `emissionOptions.initialRotation` | `particleInit.orientation`, for example with [`randomOrientation()`](/api/samplers/randomorientation/). |
+| `rendererOptions.shapeFactory` | `particleInit.shape`, now required. |
+| `rendererOptions.applyLighting` | `lighting`, see [Lighting](/concepts/colors-lighting/#lighting). Pass `null` to turn it off. |
+| `rendererOptions.applyColor`, `applyOpacity`, `applyTransform` | Removed. To change how particles are drawn, use a [custom shape](/concepts/shapes/#custom-drawing-functions). |
+
+Spinning particles no longer need a module: give them an `angularVelocity`, in degrees per second around an axis, for example with [`randomSpin()`](/api/samplers/randomspin/).
+
+### Positions and directions
+
+v2 emitted particles at absolute positions on the page. In v3, an effect has an `origin`, and particle positions are relative to it. [`measureTarget()`](/api/custom_effects/measuretarget/) turns an element or a point into an origin and an area, and [`emitFrom()`](/api/custom_effects/emitfrom/) spreads the particles over that area:
+
+```js title="v2"
+party.scene.current.createEmitter({
+	emissionOptions: {
+		sourceSampler: party.sources.dynamicSource(button),
+		// ...
+	},
+});
+```
+
+```js title="v3"
+const { origin, area } = measureTarget(button);
+
+createEffect({
+	origin,
+	particleInit: {
+		position: emitFrom(area),
+		// ...
+	},
+	// ...
+});
+```
+
+Positions, velocities and angles are now in particle space, where +y points **up**, not down like on the page. An angle of 90 points up, so v2 angles need their sign flipped: v2's `-90` is `90` in v3.
+
+```js title="v2"
+emissionOptions: {
+	angle: party.variation.skew(-90, 45),
+	initialSpeed: party.variation.range(300, 600),
+},
+```
+
+```js title="v3"
+particleInit: {
+	velocity: cone(90, 45, range(300, 600)),
+},
+```
+
+### Modules become behaviors
+
+v2 modules were built with `ModuleBuilder` and were very limited. In v3, a [behavior](/concepts/behaviors/) is a function that receives the particle on every simulation step, and can change anything about it. The common modules have built-in replacements:
+
+| v2 module | v3 behavior |
+| --- | --- |
+| Growing the size from 0 at the start | [`scale(inDuration, 0)`](/api/behaviors/scale/) |
+| Shrinking the size to 0 at the end | [`scale(0, outDuration)`](/api/behaviors/scale/) |
+| Fading out the opacity at the end | [`fade(0, outDuration)`](/api/behaviors/fade/) |
+| Rotating at a constant speed | `particleInit.angularVelocity`, no behavior needed |
+
+Anything else becomes a [custom behavior](/concepts/behaviors/#custom-behaviors). The particle has an `age`, which counts up from 0, and a `lifetime`, which stays the same. v2's `lifetime` counted down instead, so its `"lifetime"` factor is `particle.age` in v3, and its `"relativeLifetime"` factor is `particle.age / particle.lifetime`.
+
+A module marked `.relative()` worked relative to the particle's starting value. In v3, a behavior that needs the starting value stores it when the particle spawns, using an `init` function:
+
+```js title="v2"
+new party.ModuleBuilder()
+	.drive("size")
+	.by((t) => 1 - t)
+	.through("relativeLifetime")
+	.relative()
+	.build();
+```
+
+```js title="v3"
+const shrink = () => {
+	const startSize = new WeakMap();
+	return {
+		init: (particle) => startSize.set(particle, particle.size),
+		update: (particle) => {
+			particle.size = startSize.get(particle) * (1 - particle.age / particle.lifetime);
+		},
+	};
+};
+```
+
+Opacity is no longer a separate property. It's the `alpha` of the particle's color, which is what [`fade()`](/api/behaviors/fade/) changes.
+
+### Example: hearts
+
+To put it all together, here is the hearts effect from the v2 documentation, and the same effect in v3:
+
+```js title="v2"
+const heartPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+heartPath.setAttribute("d", "M316.722,29.761c66.852,0,121.053,54.202,121.053,121.041c0,110.478-218.893,257.212-218.893,257.212S0,266.569,0,150.801 C0,67.584,54.202,29.761,121.041,29.761c40.262,0,75.827,19.745,97.841,49.976C240.899,49.506,276.47,29.761,316.722,29.761z");
+
+const heartShape = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+heartShape.setAttribute("viewBox", "0 0 512 512");
+heartShape.setAttribute("height", "20");
+heartShape.setAttribute("width", "20");
+heartShape.appendChild(heartPath);
+
+party.scene.current.createEmitter({
+	emitterOptions: {
+		loops: 1,
+		useGravity: false,
+		modules: [
+			new party.ModuleBuilder()
+				.drive("size")
+				.by((t) => 0.5 + 0.3 * (Math.cos(t * 10) + 1))
+				.build(),
+			new party.ModuleBuilder()
+				.drive("rotation")
+				.by((t) => new party.Vector(0, 0, 100).scale(t))
+				.relative()
+				.build(),
+		],
+	},
+	emissionOptions: {
+		rate: 0,
+		bursts: [{ time: 0, count: party.variation.skew(20, 10) }],
+		sourceSampler: party.sources.dynamicSource(button),
+		angle: party.variation.range(0, 360),
+		initialSpeed: 400,
+		initialColor: party.variation.gradientSample(
+			party.Gradient.simple(party.Color.fromHex("#ffa68d"), party.Color.fromHex("#fd3a84")),
+		),
+	},
+	rendererOptions: {
+		shapeFactory: heartShape,
+		applyLighting: undefined,
+	},
+});
+```
+
+```js title="v3"
+import { cone, createEffect, emitFrom, fade, gradient, measureTarget, range } from "party-js";
+
+let heart;
+
+// the heart from above, moved to (0, 0) and scaled into the 1x1 box
+function heartPath() {
+	const path = new Path2D();
+	path.addPath(
+		new Path2D("M316.722,29.761c66.852,0,121.053,54.202,121.053,121.041c0,110.478-218.893,257.212-218.893,257.212S0,266.569,0,150.801 C0,67.584,54.202,29.761,121.041,29.761c40.262,0,75.827,19.745,97.841,49.976C240.899,49.506,276.47,29.761,316.722,29.761z"),
+		new DOMMatrix().scale(1 / 438).translate(-219, -219),
+	);
+	return path;
+}
+
+// replaces the size module: pulses between 10 and 22 pixels
+const pulse = (particle) => {
+	particle.size = 20 * (0.5 + 0.3 * (Math.cos(particle.age * 10) + 1));
+};
+
+export function hearts(target) {
+	heart ??= heartPath();
+	const { origin, area } = measureTarget(target);
+
+	return createEffect({
+		origin,
+		schedule: { bursts: [{ count: range(10, 30) }] },
+		particleInit: {
+			position: emitFrom(area),
+			velocity: cone(0, 180, 400),
+			angularVelocity: { x: 0, y: 0, z: 100 },
+			size: 20,
+			color: gradient(["#ffa68d", "#fd3a84"]),
+			shape: { type: "path", path: heart },
+			lifetime: 2,
+		},
+		behaviors: [pulse, fade(0, 0.5)],
+		lighting: null,
+	});
+}
+```
+
+A few things changed on the way:
+
+- The path is created once, the first time the effect runs, since `Path2D` doesn't exist during server-side rendering.
+- `useGravity: false` needs no replacement, since v3 particles only fall with `gravity()`.
+- `cone(0, 180, 400)` points right, and fans out by 180 degrees to either side, so in every direction, like v2's `range(0, 360)`.
+- The v2 hearts lived for 5 seconds, but were usually off-screen long before. Here they live for 2 seconds, and fade out over the last half.
+
+[Create a custom effect](/guides/custom-effects/) walks through building effects like this step by step.
+
+## Removed utilities
+
+v3 no longer exports its helpers. If you used them, here's what to use instead:
+
+- **`party.math`**: use `Math` directly, or a few lines of your own for `lerp()` and `clamp()`.
+- **`party.random`**: inside samplers and behaviors, use `ctx.rng()` instead of `Math.random()`. `pick()` is now a [sampler](/api/samplers/pick/).
+- **`party.Vector`**, **`party.Rect`**, **`party.Circle`**: vectors and points are plain objects, like `{ x: 10, y: 20 }`.
+- **`party.Gradient`**, **`party.NumericSpline`**: use [`gradient()`](/api/samplers/gradient/) for colors. To shape a value over time, use an [easing](/concepts/behaviors/#easing) or a custom behavior.
+- **`party.util`**, **`party.Emitter`**, **`party.Particle`**: removed. `Particle` is still available as a [type](/api/particles/particle/).
+
+## Server-side rendering
+
+Like v2, v3 can be imported on the server, but effects can only run in the browser. Calling an effect during server-side rendering throws a [`PartyJSError`](/api/utilities/partyjserror/), so start effects from event handlers or after your component has mounted. See [With a framework](/installation/#with-a-framework) for examples.
