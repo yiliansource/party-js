@@ -38,7 +38,8 @@
 		"lint:fix": "biome check --write",
 		"size": "bun run scripts/check-size.ts",
 		"api": "bun run scripts/check-api.ts",
-		"prepare": "lefthook install"
+		"prepare": "lefthook install",
+		"prepublishOnly": "bun run build && bun run size && bun run api"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "2.5.14",
