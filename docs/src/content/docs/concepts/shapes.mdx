@@ -6,6 +6,7 @@ sidebar: { order: 4 }
 
 import { CircleIcon, FaceSlightlySmilingIcon, ImageIcon, LightbulbIcon, PlusIcon, ShapesIcon, TrianglesCenterlineDashedVerticalIcon, TypeIcon } from "@lucide/astro";
 import LiveDemo from "../../../components/demo/LiveDemo.astro";
+import PlaygroundLink from "../../../components/PlaygroundLink.astro";
 
 The way a particle is drawn depends on its _shape_. party.js ships with a few shapes that cover most effects, like squares, circles and stars, as well as text and images. You can also add your own shapes, as paths or custom draw functions. This page explains how shapes are sized and placed, which ones are built in and how to add your own.
 
@@ -18,6 +19,8 @@ When a particle is drawn, this box is scaled to the particle's `size` in pixels,
 ## Built-in shapes
 
 The most common shapes for effects are built-in, and easily be used and configured.
+
+<PlaygroundLink playground="shapes" />
 
 ### Primitives
 

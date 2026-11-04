@@ -83,12 +83,17 @@ const github = socials.find((s) => s.icon === "github")!;
 import {
 	cone,
 	createEffect,
+	createLighting,
+	drag,
 	emitFrom,
+	evaluateSampler,
 	fade,
+	gravity,
 	pick,
 	randomOrientation,
 	randomSpin,
 	range,
+	sineOut,
 } from "party-js";
 
 import "../../scripts/motion";
@@ -104,7 +109,7 @@ const effect = createEffect({
 	canvas,
 	schedule: {
 		loops: Number.POSITIVE_INFINITY,
-		rate: () => (window.innerWidth < 640 ? 2 : 4),
+		rate: () => Math.max(2, window.innerWidth / 540),
 	},
 	particleInit: {
 		position: emitFrom(() => ({
@@ -115,9 +120,9 @@ const effect = createEffect({
 		})),
 		velocity: cone(-90, 0, range(60, 120)),
 		orientation: randomOrientation(),
-		angularVelocity: randomSpin(80, 160),
-		size: range(12, 20),
-		lifetime: 8,
+		angularVelocity: randomSpin(90, 200),
+		size: range(10, 20),
+		lifetime: range(8, 9),
 		color: pick(["#ff5a5f", "#ffb400", "#00a699", "#7b61ff"]),
 		shape: pick([
 			{ type: "circle" },
@@ -133,8 +138,12 @@ const effect = createEffect({
 			{ type: "star" },
 		]),
 	},
-	behaviors: [fade(0, 1)],
-	lighting: null,
+	behaviors: [
+		gravity(300),
+		drag((ctx) => 300 / evaluateSampler(range(50, 100), ctx), 0.4),
+		fade(0.3, 2, sineOut()),
+	],
+	lighting: createLighting({ ambient: 0.8, peak: 1.1 }),
 });
 
 const toggle = document.querySelector<HTMLButtonElement>("#confetti-toggle")!;

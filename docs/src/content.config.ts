@@ -32,6 +32,7 @@ export const collections = {
 		schema: docsSchema({
 			extend: z.object({
 				api: z.array(z.string()).optional(),
+				playground: z.array(z.string()).optional(),
 				reference: referenceSchema,
 			}),
 		}),
