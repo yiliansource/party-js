@@ -107,82 +107,233 @@ describe("textLayout", () => {
 	});
 });
 
+/**
+ * Glyph measurements at 100px, as `measureText` reports them for left-aligned text on the alphabetic baseline: how far
+ * the ink reaches left of, right of, above and below the point the text is drawn at. Negative values mean the ink
+ * stops short of that side, like the "—" that sits above the baseline. They're made up but shaped like real glyphs, so
+ * the layout is checked without depending on the fonts of the machine running the tests.
+ */
+const GLYPHS: Record<
+	string,
+	{ left: number; right: number; ascent: number; descent: number }
+> = {
+	// small, and floating above the baseline
+	"*": { left: -1, right: 38, ascent: 69, descent: -33 },
+	A: { left: 0, right: 67, ascent: 69, descent: 0 },
+	// a descender, so the ink isn't centered on the baseline or the line box
+	g: { left: -4, right: 49, ascent: 52, descent: 19 },
+	// a symbol whose ink overhangs the left of where it's drawn
+	"★": { left: 6, right: 82, ascent: 73, descent: 4 },
+	// wider than tall
+	Wy: { left: 1, right: 128, ascent: 69, descent: 21 },
+	// sits on the middle of the line
+	"—": { left: 0, right: 100, ascent: 29, descent: -22 },
+	// much taller than wide
+	"|": { left: -9, right: 17, ascent: 74, descent: 21 },
+};
+
+type Matrix = [number, number, number, number, number, number];
+
+function multiply(m: Matrix, n: Matrix): Matrix {
+	return [
+		m[0] * n[0] + m[2] * n[1],
+		m[1] * n[0] + m[3] * n[1],
+		m[0] * n[2] + m[2] * n[3],
+		m[1] * n[2] + m[3] * n[3],
+		m[0] * n[4] + m[2] * n[5] + m[4],
+		m[1] * n[4] + m[3] * n[5] + m[5],
+	];
+}
+
+interface FakeTextContext {
+	ctx: CanvasRenderingContext2D;
+	/** The context's text settings at every `measureText` call. */
+	measured: { font: string; textAlign: string; textBaseline: string }[];
+	/** Every `fillText` call, with the context's state at the time. */
+	drawn: {
+		text: string;
+		font: string;
+		textAlign: string;
+		textBaseline: string;
+		fillStyle: string;
+		/** The box the glyph's ink covers on the canvas. */
+		ink: { left: number; right: number; top: number; bottom: number };
+	}[];
+}
+
+/**
+ * A stand-in for a canvas context that measures text with {@link GLYPHS} and records where text is drawn, instead of
+ * rendering it with a real font.
+ */
+function createFakeTextContext(): FakeTextContext {
+	const drawn: FakeTextContext["drawn"] = [];
+	const measured: FakeTextContext["measured"] = [];
+	const stack: Matrix[] = [];
+	let matrix: Matrix = [1, 0, 0, 1, 0, 0];
+
+	const fontSize = (font: string): number => {
+		const match = /([\d.]+)px/.exec(font);
+		if (!match) throw new Error(`no px size in font "${font}"`);
+		return Number(match[1]);
+	};
+	const glyph = (text: string) => {
+		const metrics = GLYPHS[text];
+		if (!metrics)
+			throw new Error(`no test metrics for ${JSON.stringify(text)}`);
+		return metrics;
+	};
+
+	const fake = {
+		font: "10px sans-serif",
+		textAlign: "start",
+		textBaseline: "alphabetic",
+		textRendering: "auto",
+		fillStyle: "#000000",
+		save() {
+			stack.push(matrix);
+		},
+		restore() {
+			matrix = stack.pop() ?? matrix;
+		},
+		transform(
+			a: number,
+			b: number,
+			c: number,
+			d: number,
+			e: number,
+			f: number,
+		) {
+			matrix = multiply(matrix, [a, b, c, d, e, f]);
+		},
+		scale(x: number, y: number) {
+			matrix = multiply(matrix, [x, 0, 0, y, 0, 0]);
+		},
+		measureText(text: string) {
+			measured.push({
+				font: fake.font,
+				textAlign: fake.textAlign,
+				textBaseline: fake.textBaseline,
+			});
+			const k = fontSize(fake.font) / 100;
+			const g = glyph(text);
+			return {
+				actualBoundingBoxLeft: g.left * k,
+				actualBoundingBoxRight: g.right * k,
+				actualBoundingBoxAscent: g.ascent * k,
+				actualBoundingBoxDescent: g.descent * k,
+			};
+		},
+		fillText(text: string, x: number, y: number) {
+			const k = fontSize(fake.font) / 100;
+			const g = glyph(text);
+			const corners = [
+				[x - g.left * k, y - g.ascent * k],
+				[x + g.right * k, y - g.ascent * k],
+				[x - g.left * k, y + g.descent * k],
+				[x + g.right * k, y + g.descent * k],
+			].map(([px, py]) => [
+				matrix[0] * px + matrix[2] * py + matrix[4],
+				matrix[1] * px + matrix[3] * py + matrix[5],
+			]);
+			const xs = corners.map(([px]) => px);
+			const ys = corners.map(([, py]) => py);
+			drawn.push({
+				text,
+				font: fake.font,
+				textAlign: fake.textAlign,
+				textBaseline: fake.textBaseline,
+				fillStyle: fake.fillStyle,
+				ink: {
+					left: Math.min(...xs),
+					right: Math.max(...xs),
+					top: Math.min(...ys),
+					bottom: Math.max(...ys),
+				},
+			});
+		},
+	};
+
+	return {
+		ctx: fake as unknown as CanvasRenderingContext2D,
+		measured,
+		drawn,
+	};
+}
+
 describe("executeDrawCommand with a text command", () => {
-	// a 100px box, centered on a 200px canvas, spans 50 to 150 on both axes. glyph metrics differ between fonts and
-	// platforms, and the edges are antialiased, so positions are checked to within a few pixels.
+	// a 100px box centered on (100, 100) spans 50 to 150 on both axes
 	const SIZE = 200;
 	const box = { a: 100, b: 0, c: 0, d: 100, e: 100, f: 100 };
-	// the test canvas measures glyphs snapped to the pixel grid, which can differ from the drawn outline by about a pixel.
-	// small glyphs like "*" are scaled up the most to fill the box, so that error grows to a few pixels. a broken layout,
-	// like centering on the font's line height, is off by well over 10px, so this still catches it.
-	const TOLERANCE = 5;
 
-	// "g" has a descender and "—" sits on the middle of the line, so neither is centered by the font's line box alone
-	test.each(["*", "A", "g", "★", "Wy", "—"])(
+	/** Draws the text with the fake context and returns the single glyph it drew. */
+	function drawFake(text: string, transform = box, fillStyle = "#ff0000") {
+		const fake = createFakeTextContext();
+		executeDrawCommand(fake.ctx, {
+			kind: "text",
+			text,
+			font: "test-font",
+			transform,
+			fillStyle,
+		});
+		expect(fake.drawn).toHaveLength(1);
+		return fake.drawn[0];
+	}
+
+	test.each(["*", "A", "g", "★", "Wy", "—", "|"])(
 		"%p fills the box in its longer direction, centered",
 		(text) => {
-			const canvas = createTestContext(SIZE, SIZE);
+			const { ink } = drawFake(text);
 
-			executeDrawCommand(canvas.ctx, textCommand(text, box));
-
-			const ink = inkBounds(canvas, SIZE);
-			expect(ink).not.toBeNull();
-			if (!ink) return;
-
-			const width = ink.right - ink.left + 1;
-			const height = ink.bottom - ink.top + 1;
-			expect(Math.max(width, height)).toBeGreaterThanOrEqual(
-				100 - 2 * TOLERANCE,
-			);
-			expect(ink.left).toBeGreaterThanOrEqual(50 - TOLERANCE);
-			expect(ink.right).toBeLessThanOrEqual(150 + TOLERANCE);
-			expect(ink.top).toBeGreaterThanOrEqual(50 - TOLERANCE);
-			expect(ink.bottom).toBeLessThanOrEqual(150 + TOLERANCE);
-			expect(
-				Math.abs((ink.left + ink.right) / 2 - 100),
-			).toBeLessThanOrEqual(TOLERANCE);
-			expect(
-				Math.abs((ink.top + ink.bottom) / 2 - 100),
-			).toBeLessThanOrEqual(TOLERANCE);
+			const width = ink.right - ink.left;
+			const height = ink.bottom - ink.top;
+			expect(Math.max(width, height)).toBeCloseTo(100);
+			expect((ink.left + ink.right) / 2).toBeCloseTo(100);
+			expect((ink.top + ink.bottom) / 2).toBeCloseTo(100);
 		},
 	);
 
+	test("draws with the font settings it measured with", () => {
+		// the layout is only right if the text is drawn exactly as it was measured. measurements are cached per text and
+		// font, so a font no other test uses makes sure this one measures.
+		const fake = createFakeTextContext();
+		executeDrawCommand(fake.ctx, {
+			kind: "text",
+			text: "g",
+			font: "settings-test-font",
+			transform: box,
+			fillStyle: "#ff0000",
+		});
+
+		expect(fake.measured).toHaveLength(1);
+		expect(fake.drawn).toHaveLength(1);
+		const { text, font, textAlign, textBaseline } = fake.drawn[0];
+		expect(text).toBe("g");
+		expect({ font, textAlign, textBaseline }).toEqual(fake.measured[0]);
+		expect(font).toBe("100px settings-test-font");
+	});
+
 	test("rotates with the transform around the particle's position", () => {
-		const canvas = createTestContext(SIZE, SIZE);
-
 		// a quarter turn: a tall glyph becomes wide
-		executeDrawCommand(
-			canvas.ctx,
-			textCommand("|", { a: 0, b: 100, c: -100, d: 0, e: 100, f: 100 }),
-		);
+		const { ink } = drawFake("|", {
+			a: 0,
+			b: 100,
+			c: -100,
+			d: 0,
+			e: 100,
+			f: 100,
+		});
 
-		const ink = inkBounds(canvas, SIZE);
-		expect(ink).not.toBeNull();
-		if (!ink) return;
-		expect(ink.right - ink.left).toBeGreaterThan(ink.bottom - ink.top);
-		expect(Math.abs((ink.left + ink.right) / 2 - 100)).toBeLessThanOrEqual(
-			TOLERANCE,
-		);
-		expect(Math.abs((ink.top + ink.bottom) / 2 - 100)).toBeLessThanOrEqual(
-			TOLERANCE,
-		);
+		expect(ink.right - ink.left).toBeCloseTo(100);
+		expect(ink.bottom - ink.top).toBeLessThan(50);
+		expect((ink.left + ink.right) / 2).toBeCloseTo(100);
+		expect((ink.top + ink.bottom) / 2).toBeCloseTo(100);
 	});
 
 	test("is filled with the fillStyle, including its opacity", () => {
-		const opaque = createTestContext(SIZE, SIZE);
-		const translucent = createTestContext(SIZE, SIZE);
-
-		executeDrawCommand(opaque.ctx, textCommand("A", box, "#ff0000"));
-		executeDrawCommand(
-			translucent.ctx,
-			textCommand("A", box, "rgb(255 0 0 / 0.5)"),
+		expect(drawFake("A", box, "#ff0000").fillStyle).toBe("#ff0000");
+		expect(drawFake("A", box, "rgb(255 0 0 / 0.5)").fillStyle).toBe(
+			"rgb(255 0 0 / 0.5)",
 		);
-
-		const pixel = findCoveredPixel(opaque, SIZE);
-		expect(pixel).not.toBeNull();
-		if (!pixel) return;
-		expect(opaque.pixelAt(pixel.x, pixel.y)).toEqual([255, 0, 0, 255]);
-		expect(translucent.pixelAt(pixel.x, pixel.y)[3]).toBeCloseTo(128, -1);
 	});
 
 	test("draws nothing for empty text, without throwing", () => {
@@ -238,18 +389,3 @@ describe("validateShape with a text shape", () => {
 		).toThrow();
 	});
 });
-
-/**
- * A pixel the text covers fully, so its color isn't mixed with the background by antialiasing.
- */
-function findCoveredPixel(
-	{ pixelAt }: CanvasTestContext,
-	size: number,
-): { x: number; y: number } | null {
-	for (let y = 0; y < size; y++) {
-		for (let x = 0; x < size; x++) {
-			if (pixelAt(x, y)[3] === 255) return { x, y };
-		}
-	}
-	return null;
-}
