@@ -114,9 +114,9 @@ function onPointerCancel() {
 	>
 		<div
 			class="relative h-full bg-bar-fill"
-			:style="{ 
+			:style="{
 				left: `${fractionLo * 100}%`,
-				width: `${(fractionHi - fractionLo) * 100}%`
+				width: `${(fractionHi - fractionLo) * 100}%`,
 			}"
 			aria-hidden="true"
 		>

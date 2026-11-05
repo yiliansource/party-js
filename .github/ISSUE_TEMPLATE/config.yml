@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Documentation
-    url: https://party.js.org
-    about: Guides, effects and the full API reference.
-  - name: Migrating from v2
-    url: https://party.js.org/migrating-from-v2/
-    about: What changed in v3, and how to update your code.
+    - name: Documentation
+      url: https://party.js.org
+      about: Guides, effects and the full API reference.
+    - name: Migrating from v2
+      url: https://party.js.org/migrating-from-v2/
+      about: What changed in v3, and how to update your code.

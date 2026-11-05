@@ -2,38 +2,38 @@ name: Docs issue
 description: Something on party.js.org is wrong, unclear or missing.
 labels: [documentation]
 body:
-  - type: input
-    id: page
-    attributes:
-      label: Page
-      description: The URL of the page, or of the closest page if something is missing.
-      placeholder: https://party.js.org/guides/custom-effects/
-    validations:
-      required: true
+    - type: input
+      id: page
+      attributes:
+          label: Page
+          description: The URL of the page, or of the closest page if something is missing.
+          placeholder: https://party.js.org/guides/custom-effects/
+      validations:
+          required: true
 
-  - type: dropdown
-    id: kind
-    attributes:
-      label: What kind of problem is it?
-      options:
-        - Something is wrong or outdated
-        - Something is unclear
-        - Something is missing
-        - A demo or playground doesn't work
-        - A typo or broken link
-    validations:
-      required: true
+    - type: dropdown
+      id: kind
+      attributes:
+          label: What kind of problem is it?
+          options:
+              - Something is wrong or outdated
+              - Something is unclear
+              - Something is missing
+              - A demo or playground doesn't work
+              - A typo or broken link
+      validations:
+          required: true
 
-  - type: textarea
-    id: description
-    attributes:
-      label: What's the problem?
-      description: Quote the part of the page you mean, if it helps.
-    validations:
-      required: true
+    - type: textarea
+      id: description
+      attributes:
+          label: What's the problem?
+          description: Quote the part of the page you mean, if it helps.
+      validations:
+          required: true
 
-  - type: textarea
-    id: suggestion
-    attributes:
-      label: How could it be better?
-      description: Optionally, a suggested wording, an example you'd like to see, or a link to a related issue.
+    - type: textarea
+      id: suggestion
+      attributes:
+          label: How could it be better?
+          description: Optionally, a suggested wording, an example you'd like to see, or a link to a related issue.

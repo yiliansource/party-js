@@ -98,7 +98,9 @@ const multiline = code?.includes("\n") ?? false;
 	)}
 	{size === "row" && (
 		<div class="px-5 py-4 flex flex-row items-center gap-4">
-			{code && !multiline && <code class="text-muted text-sm">{code}</code>}
+			{code && !multiline && (
+				<code class="text-muted text-sm">{code}</code>
+			)}
 			<div class="ml-auto mr-0 shrink-0">
 				{type === "button" ? (
 					<DemoButton label={label} icon={icon} size="compact" />

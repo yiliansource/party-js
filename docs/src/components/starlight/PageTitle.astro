@@ -21,28 +21,40 @@ const playground = Astro.locals.playground;
 <div class="flex flex-col gap-4 lg:flex-row">
 	<div class="mt-4 flex flex-col min-w-0">
 		{sectionKey && (
-		    <p class="mb-3 flex flex-row flex-wrap items-center gap-x-2 gap-y-3 font-mono text-sm tracking-wider text-subtle uppercase">
+			<p class="mb-3 flex flex-row flex-wrap items-center gap-x-2 gap-y-3 font-mono text-sm tracking-wider text-subtle uppercase">
 				<GlyphLabel section={sectionKey} />
-		    	{reference && (
-		    		<>
-		    			<span aria-hidden="true">/</span>
-		    			<span class="whitespace-nowrap">{referenceGroup}</span>
-		    			<span class="ml-1 px-3 py-1 -my-1 rounded-lg bg-surface text-muted whitespace-nowrap">
-		    				{kindLabel[reference.kind]}
-		    			</span>
-		    		</>
-		    	)}
-		    </p>
-    	)}
+				{reference && (
+					<>
+						<span aria-hidden="true">/</span>
+						<span class="whitespace-nowrap">{referenceGroup}</span>
+						<span class="ml-1 px-3 py-1 -my-1 rounded-lg bg-surface text-muted whitespace-nowrap">
+							{kindLabel[reference.kind]}
+						</span>
+					</>
+				)}
+			</p>
+		)}
 		<h1
 			id="_top"
-			class:list={["text-fg text-4xl sm:text-5xl wrap-break-word scroll-mt-[100vh]", reference && "font-mono"]}
+			class:list={[
+				"text-fg text-4xl sm:text-5xl wrap-break-word scroll-mt-[100vh]",
+				reference && "font-mono",
+			]}
 		>
-			{titleParts.map((part, i) => <>{i > 0 && <wbr />}{part}</>)}
+			{titleParts.map((part, i) => (
+				<>
+					{i > 0 && <wbr />}
+					{part}
+				</>
+			))}
 		</h1>
-		{description && <p class="mt-5 text-xl text-muted leading-relaxed">{description}</p>}
+		{description && (
+			<p class="mt-5 text-xl text-muted leading-relaxed">{description}</p>
+		)}
 	</div>
-	{playground && <div class="ml-auto mt-auto">
-		<PlaygroundTabs active={playground} />
-	</div>}
+	{playground && (
+		<div class="ml-auto mt-auto">
+			<PlaygroundTabs active={playground} />
+		</div>
+	)}
 </div>

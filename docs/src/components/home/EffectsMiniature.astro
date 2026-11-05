@@ -52,7 +52,12 @@ const burst = pieces.map(([, , x, y, rotation], i) => ({
 	<div class="basis-[38%] shrink-0 flex flex-col gap-2.5">
 		{bars.map((bar) => (
 			<div class="flex flex-col gap-1.5">
-				<span class:list={["h-1.5 rounded-full bg-line-strong", bar.label]} />
+				<span
+					class:list={[
+						"h-1.5 rounded-full bg-line-strong",
+						bar.label,
+					]}
+				/>
 				<span class="relative h-4.5 rounded-md bg-field shadow-[inset_0_0_0_1px_var(--color-field-line)] overflow-hidden">
 					<span
 						class="absolute inset-y-0 bg-bar-fill left-(--from) right-(--right) group-hover:left-(--hover-from) group-hover:right-(--hover-right)
@@ -81,7 +86,8 @@ const burst = pieces.map(([, , x, y, rotation], i) => ({
 					"absolute rotate-(--r)",
 					"group-hover:rotate-(--rh) group-hover:translate-x-(--dx) group-hover:translate-y-(--dy) group-hover:scale-(--s)",
 					"not-motion-reduce:transition-transform not-motion-reduce:duration-600 not-motion-reduce:delay-(--d) not-motion-reduce:ease-[cubic-bezier(0.34,1.56,0.64,1)]",
-					size, color,
+					size,
+					color,
 				]}
 				style={{ left: `${x}%`, top: `${y}%`, ...burst[i] }}
 			/>

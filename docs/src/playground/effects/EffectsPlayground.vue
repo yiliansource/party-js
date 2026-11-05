@@ -50,7 +50,7 @@ const effectChoices = EFFECT_IDS.map((id) => ({
 						label="Effect"
 						:model-value="state.effect"
 						:options="effectChoices"
-						@update:model-value="(v) => state.effect = v"
+						@update:model-value="(v) => (state.effect = v)"
 					/>
 					<PanelText v-if="definition.description">
 						{{ definition.description }}

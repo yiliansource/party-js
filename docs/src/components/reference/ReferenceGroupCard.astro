@@ -27,12 +27,17 @@ const { id, group, description, count, featured } = Astro.props;
 	<p class="text-[15px] leading-relaxed text-muted">{description}</p>
 	<div class="mt-auto pt-2 flex flex-wrap gap-1.5">
 		{featured.map((entry) => (
-			<a href={`/${entry.id}/`} class="px-2.5 py-0.5 rounded-md bg-surface hover:bg-hover font-mono text-[13.5px] font-medium text-fg no-underline">
+			<a
+				href={`/${entry.id}/`}
+				class="px-2.5 py-0.5 rounded-md bg-surface hover:bg-hover font-mono text-[13.5px] font-medium text-fg no-underline"
+			>
 				{entry.data.title}
 			</a>
 		))}
-		{count - featured.length > 0 && <span class="px-2.5 py-0.5 text-[13.5px] text-subtle">
-			+{count - featured.length}&nbsp;more
-		</span>}
+		{count - featured.length > 0 && (
+			<span class="px-2.5 py-0.5 text-[13.5px] text-subtle">
+				+{count - featured.length}&nbsp;more
+			</span>
+		)}
 	</div>
 </section>

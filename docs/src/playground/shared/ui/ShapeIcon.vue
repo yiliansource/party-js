@@ -10,7 +10,11 @@ const mask = computed(() => pathMask(path));
 <template>
 	<span
 		class="block size-5 bg-current"
-		:style="{ maskImage: mask, maskSize: 'contain', maskRepeat: 'no-repeat' }"
+		:style="{
+			maskImage: mask,
+			maskSize: 'contain',
+			maskRepeat: 'no-repeat',
+		}"
 		aria-hidden="true"
 	></span>
 </template>

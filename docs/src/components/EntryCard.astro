@@ -21,14 +21,14 @@ const sectionData = section ? sections[section] : null;
 	class="px-5 py-4 flex flex-row items-center gap-3 bg-surface hover:bg-hover rounded-2xl no-underline text-subtle"
 >
 	{sectionData && (
-	<span class="grid place-content-center size-10 bg-hover rounded-lg">
-		<Glyph
-			key={sectionData.glyph}
-			class="size-5"
-			style={{ color: sectionData.accent }}
-		/>
-	</span>
-)}
+		<span class="grid place-content-center size-10 bg-hover rounded-lg">
+			<Glyph
+				key={sectionData.glyph}
+				class="size-5"
+				style={{ color: sectionData.accent }}
+			/>
+		</span>
+	)}
 	<span class="flex flex-col">
 		{section && <span class="mb-0.5 text-xs">{sectionLabel(section)}</span>}
 		<span class="text-[15px] text-fg font-semibold leading-none"

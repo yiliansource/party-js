@@ -40,9 +40,9 @@ const groups = referenceGroups.map((group) => {
 
 <StarlightPage
 	frontmatter={{
-	title: referenceOverview.title,
-	description: referenceOverview.description
-}}
+		title: referenceOverview.title,
+		description: referenceOverview.description,
+	}}
 	headings={groups.map((g) => ({ depth: 2, slug: g.id, text: g.group }))}
 >
 	<div

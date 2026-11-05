@@ -15,7 +15,7 @@ const innerRadius = defineModel<number>("innerRadius", { required: true });
 			:min="0.05"
 			:max="1"
 			:step="0.01"
-			:format="v => v.toFixed(2)"
+			:format="(v) => v.toFixed(2)"
 		/>
 	</div>
 </template>
