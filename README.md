@@ -86,33 +86,11 @@ effect.stop(); // or .pause(), or .resume()
 | [`confetti`](https://party.js.org/effects/confetti/) | Paper-like confetti that bursts in an upwards cone. |
 | [`sparkles`](https://party.js.org/effects/sparkles/) | Golden sparkles that burst outwards and glint.      |
 
-Still not customizable enough? [`createEffect`](https://party.js.org/guides/custom-effects/) allows you to configure the emitter, particle setup and behaviors directly (it's what the built-in effects are built on). The [playgrounds](https://party.js.org/playgrounds/effects/) let you try shapes, particles and effects live in the browser.
-
-## Development
-
-The repository uses [bun](https://bun.sh).
-
-```sh
-bun install          # install dependencies
-bun run test         # run the test suite
-bun run typecheck    # type-check without emitting
-bun run lint         # lint using Biome
-bun run build        # build dist/ (ESM + types) and bundle/ (IIFE)
-```
-
-### Docs
-
-The docs live in `docs/` and are built using Astro and Starlight.
-
-```sh
-cd docs && bun install && bun run dev
-```
+Still not customizable enough? [`createEffect`](https://party.js.org/guides/custom-effects/) allows you to configure the emitter, particle setup and behaviors directly (it's what the built-in effects are built on). The [playgrounds](https://party.js.org/playgrounds/effects/) let you try shapes and effects live in the browser.
 
 ## Contributing
 
-Bug reports, ideas and pull requests are welcome! For anything larger than a small fix, please [open an issue](https://github.com/yiliansource/party-js/issues) first, so we can discuss.
-
-Make sure `bun run lint`, `bun run typecheck` and `bun run test` pass before opening a pull request, those will be verified by the CI pipeline.
+Bug reports, ideas and pull requests are welcome! See [CONTRIBUTING.md](./CONTRIBUTING.md) for how to set up the repository, how to work with it and the contribution guidelines.
 
 ## License
 
