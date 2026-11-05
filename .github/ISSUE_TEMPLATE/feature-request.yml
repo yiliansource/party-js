@@ -1,0 +1,67 @@
+name: Feature request
+description: Suggest a new effect, option or improvement.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea! A lot can already be built with [custom effects](https://party.js.org/guides/custom-effects/), so it's worth checking whether that covers your case.
+
+        party.js keeps its bundle small, so a large feature may fit better as a guide in the docs than in the library itself. But feel free to suggest it so we can discuss!
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What do you want to do?
+      description: Describe the use case or problem, not only the solution. What are you building, and where does party.js get in the way?
+      placeholder: I want confetti to rain down from the top of the screen when a form is submitted, but ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: What would you like party.js to do?
+      description: |
+        How you imagine it working. A code sample of the API you'd like to write would be great:
+
+        ```js
+        confetti(button, { ... });
+        ```
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which part of party.js is this about?
+      options:
+        - Built-in effects (confetti, sparkles)
+        - A new built-in effect
+        - Custom effects and behaviors
+        - Shapes
+        - Samplers and randomness
+        - Colors and lighting
+        - Rendering and performance
+        - TypeScript types
+        - Docs or playgrounds
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What have you tried instead?
+      description: Workarounds you're using now, or other approaches you considered.
+
+  - type: dropdown
+    id: contribute
+    attributes:
+      label: Would you like to work on this?
+      options:
+        - Yes, I'd like to open a pull request
+        - Maybe, with some guidance
+        - "No"
+    validations:
+      required: true
