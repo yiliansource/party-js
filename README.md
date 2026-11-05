@@ -15,7 +15,7 @@
 	<a href="https://www.npmjs.com/package/party-js"><img alt="npm version" src="https://img.shields.io/npm/v/party-js?style=flat-square&color=FF5A5F&labelColor=1A1A1A"></a>
 	<a href="https://www.npmjs.com/package/party-js"><img alt="npm downloads" src="https://img.shields.io/npm/dm/party-js?style=flat-square&color=FFB400&labelColor=1A1A1A"></a>
 	<a href="https://github.com/yiliansource/party-js/actions/workflows/ci.yml"><img alt="CI status" src="https://img.shields.io/github/actions/workflow/status/yiliansource/party-js/ci.yml?branch=main&style=flat-square&label=ci&color=00A699&labelColor=1A1A1A"></a>
-	<a href="https://bundlephobia.com/package/party-js"><img alt="minzipped size" src="https://img.shields.io/bundlephobia/minzip/party-js?style=flat-square&label=size&color=7B61FF&labelColor=1A1A1A"></a>
+	<a href="https://bundlejs.com/?q=party-js"><img alt="minzipped size" src="https://img.shields.io/bundlejs/size/party-js?format=minzip&style=flat-square&label=size&color=7B61FF&labelColor=1A1A1A"></a>
 	<a href="./LICENSE"><img alt="MIT license" src="https://img.shields.io/github/license/yiliansource/party-js?style=flat-square&color=6B6B73&labelColor=1A1A1A"></a>
 </p>
 
