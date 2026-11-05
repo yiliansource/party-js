@@ -30,6 +30,8 @@ updates:
       prefix: chore
       include: scope
     groups:
+      api-reference:
+        patterns: ["typedoc", "typedoc-*", "starlight-typedoc"]
       docs:
         update-types: [minor, patch]
 
