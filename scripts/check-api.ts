@@ -54,7 +54,13 @@ function printReport(dts: string): string {
 			statement.exportClause &&
 			ts.isNamedExports(statement.exportClause)
 		) {
-			exports.push(...statement.exportClause.elements.map(print));
+			// `export type { A }` lists A the same as `export { type A }`, so the report doesn't depend on which one the bundler emits
+			const prefix = statement.isTypeOnly ? "type " : "";
+			exports.push(
+				...statement.exportClause.elements.map(
+					(e) => prefix + print(e),
+				),
+			);
 			continue;
 		}
 		declarations.push({
