@@ -152,7 +152,7 @@ toggle.addEventListener("click", () => {
 	const paused = toggle.dataset.paused !== "true";
 
 	toggle.dataset.paused = String(paused);
-	toggleText.innerText = `${paused ? "Resume" : "Pause"} confetti`;
+	toggleText.textContent = `${paused ? "Resume" : "Pause"} confetti`;
 
 	if (paused) effect.pause();
 	else effect.resume();

@@ -27,7 +27,12 @@ const { items, depth = 0, code = false, codeSections } = Astro.props;
 			</a>
 
 			{item.children.length > 0 && (
-				<Astro.self items={item.children} depth={depth + 1} code={codeSections?.has(item.text) ?? false} codeSections={codeSections} />
+				<Astro.self
+					items={item.children}
+					depth={depth + 1}
+					code={codeSections?.has(item.text) ?? false}
+					codeSections={codeSections}
+				/>
 			)}
 		</li>
 	))}

@@ -37,7 +37,10 @@ const footerLinks = [
 	</span>
 	<span class="ml-auto flex flex-row gap-5 items-center">
 		{footerLinks.map((l) => (
-			<a href={l.href} class="text-inherit no-underline hover:underline hover:text-muted">
+			<a
+				href={l.href}
+				class="text-inherit no-underline hover:underline hover:text-muted"
+			>
 				{l.label}
 			</a>
 		))}

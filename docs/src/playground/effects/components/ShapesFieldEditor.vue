@@ -126,7 +126,9 @@ const isPath = (icon: ShapeDisplay["icon"]): icon is Path2D =>
 					class="py-1.5 px-2.5 flex flex-row items-center gap-2 cursor-pointer rounded-xl
 						focus-visible:outline-2 focus-visible:-outline-offset-4 focus-visible:outline-accent-600"
 					:aria-pressed="selectedIndex === index"
-					@click="selectedIndex = selectedIndex === index ? null : index"
+					@click="
+						selectedIndex = selectedIndex === index ? null : index
+					"
 				>
 					<ShapeIcon
 						:path="display.icon"

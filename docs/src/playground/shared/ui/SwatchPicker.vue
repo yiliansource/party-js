@@ -24,7 +24,7 @@ const name = useId();
 				v-for="option in options"
 				:key="option.value"
 				:title="option.label"
-				:style="{ 'background': option.swatch }"
+				:style="{ background: option.swatch }"
 				class="relative inline-block size-7 rounded-full cursor-pointer
 					shadow-[inset_0_0_0_1px_rgb(0_0_0/0.12)]
 					has-checked:shadow-[0_0_0_2px_var(--color-surface),0_0_0_4px_var(--color-fg)]

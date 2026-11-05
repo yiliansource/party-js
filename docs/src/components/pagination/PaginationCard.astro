@@ -37,7 +37,10 @@ const isPrev = type === "prev";
 		<span>{isPrev ? "Previous" : "Next"}</span>
 	</span>
 	<span
-		class:list={["text-lg font-medium leading-tight", sectionKey === "reference" && "font-mono"]}
+		class:list={[
+			"text-lg font-medium leading-tight",
+			sectionKey === "reference" && "font-mono",
+		]}
 	>
 		{link.label}
 	</span>

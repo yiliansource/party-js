@@ -28,11 +28,17 @@ const { glyph, glyphColor, label, title, description } = Astro.props;
 			>
 				{title}
 			</h2>
-			{description && <p class="mt-2 max-w-2xl text-muted leading-relaxed text-lg">{description}</p>}
+			{description && (
+				<p class="mt-2 max-w-2xl text-muted leading-relaxed text-lg">
+					{description}
+				</p>
+			)}
 		</div>
 		<slot></slot>
 	</div>
-	{Astro.slots.has("side") && <div class="flex-1 flex flex-col">
-		<slot name="side"></slot>
-	</div>}
+	{Astro.slots.has("side") && (
+		<div class="flex-1 flex flex-col">
+			<slot name="side"></slot>
+		</div>
+	)}
 </section>

@@ -20,10 +20,11 @@ const { class: className, ...attrs } = link.attrs;
 		"group-data-[section=reference]:min-h-7.5 group-data-[section=reference]:font-mono group-data-[section=reference]:text-[13.5px]",
 		tree
 			? [
-				"relative pl-3",
-				"before:absolute before:top-1.25 before:bottom-1.25 before:-left-2.5 before:w-0.5 before:rounded-full",
-				"aria-[current=page]:before:bg-coral",
-			] : "pl-8",
+					"relative pl-3",
+					"before:absolute before:top-1.25 before:bottom-1.25 before:-left-2.5 before:w-0.5 before:rounded-full",
+					"aria-[current=page]:before:bg-coral",
+				]
+			: "pl-8",
 		className,
 	]}
 >

@@ -13,7 +13,7 @@ const cornerRadius = defineModel<number>("cornerRadius", { required: true });
 			:min="0.1"
 			:max="1"
 			:step="0.05"
-			:format="v => v.toFixed(2)"
+			:format="(v) => v.toFixed(2)"
 		/>
 		<BarField
 			v-model="cornerRadius"
@@ -21,7 +21,7 @@ const cornerRadius = defineModel<number>("cornerRadius", { required: true });
 			:min="0"
 			:max="0.5"
 			:step="0.01"
-			:format="v => v.toFixed(2)"
+			:format="(v) => v.toFixed(2)"
 		/>
 	</div>
 </template>

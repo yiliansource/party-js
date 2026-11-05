@@ -22,7 +22,7 @@ const {
 		:class="[
 			'flex flex-row border-field-line bg-field mr-auto',
 			size === 'md' && 'p-1 gap-1 border-2 rounded-xl',
-			size === 'sm' && 'p-0.5 gap-px border rounded-xl'
+			size === 'sm' && 'p-0.5 gap-px border rounded-xl',
 		]"
 	>
 		<legend class="sr-only">{{ label }}</legend>
@@ -37,7 +37,7 @@ const {
 				'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600',
 				'text-muted bg-transparent hover:text-fg aria-pressed:text-fg aria-pressed:bg-raised aria-pressed:shadow-sm',
 				size === 'md' && 'px-4 py-2 text-sm',
-				size === 'sm' && 'px-3 py-1.5 text-xs'
+				size === 'sm' && 'px-3 py-1.5 text-xs',
 			]"
 		>
 			{{ option.label }}

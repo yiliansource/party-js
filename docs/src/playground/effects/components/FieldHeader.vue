@@ -26,7 +26,7 @@ const { label, changed, onReset } = defineProps<{
 			:class="[
 				'p-1.5 rounded-lg text-subtle bg-transparent hover:bg-raised cursor-pointer grid place-items-center',
 				'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-600',
-				!changed && 'invisible'
+				!changed && 'invisible',
 			]"
 			@click="onReset"
 		>

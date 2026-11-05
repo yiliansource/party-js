@@ -40,8 +40,8 @@ export function buildSquarePath(
 	aspectRatio: number = 1,
 	cornerRadius: number = 0,
 ): Path2D {
-	const width = aspectRatio < 1 ? aspectRatio : 1;
-	const height = aspectRatio > 1 ? 1 / aspectRatio : 1;
+	const width = Math.min(aspectRatio, 1);
+	const height = Math.min(1 / aspectRatio, 1);
 
 	const halfWidth = width / 2;
 	const halfHeight = height / 2;

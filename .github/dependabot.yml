@@ -1,50 +1,50 @@
 version: 2
 
 updates:
-  - package-ecosystem: bun
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-      time: "06:00"
-      timezone: Europe/Vienna
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: chore
-      include: scope
-    groups:
-      tooling:
-        update-types: [minor, patch]
+    - package-ecosystem: bun
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+          time: "06:00"
+          timezone: Europe/Vienna
+      cooldown:
+          default-days: 7
+      commit-message:
+          prefix: chore
+          include: scope
+      groups:
+          tooling:
+              update-types: [minor, patch]
 
-  - package-ecosystem: bun
-    directory: /docs
-    schedule:
-      interval: weekly
-      day: monday
-      time: "06:00"
-      timezone: Europe/Vienna
-    cooldown:
-      default-days: 7
-    commit-message:
-      prefix: chore
-      include: scope
-    groups:
-      api-reference:
-        patterns: ["typedoc", "typedoc-*", "starlight-typedoc"]
-      docs:
-        update-types: [minor, patch]
+    - package-ecosystem: bun
+      directory: /docs
+      schedule:
+          interval: weekly
+          day: monday
+          time: "06:00"
+          timezone: Europe/Vienna
+      cooldown:
+          default-days: 7
+      commit-message:
+          prefix: chore
+          include: scope
+      groups:
+          api-reference:
+              patterns: ["typedoc", "typedoc-*", "starlight-typedoc"]
+          docs:
+              update-types: [minor, patch]
 
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: weekly
-      day: monday
-      time: "06:00"
-      timezone: Europe/Vienna
-    commit-message:
-      prefix: ci
-      include: scope
-    groups:
-      actions:
-        patterns: ["*"]
+    - package-ecosystem: github-actions
+      directory: /
+      schedule:
+          interval: weekly
+          day: monday
+          time: "06:00"
+          timezone: Europe/Vienna
+      commit-message:
+          prefix: ci
+          include: scope
+      groups:
+          actions:
+              patterns: ["*"]

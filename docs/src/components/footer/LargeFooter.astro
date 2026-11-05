@@ -109,15 +109,22 @@ const columns: FooterLinkColumn[] = [
 				{columns.map((col) => (
 					<div>
 						<p class="mb-1 text-fg font-semibold">
-							<GlyphLabel glyph={col.glyph} color={col.glyphColor} glyphClass="size-3">
+							<GlyphLabel
+								glyph={col.glyph}
+								color={col.glyphColor}
+								glyphClass="size-3"
+							>
 								{col.label}
 							</GlyphLabel>
 						</p>
 						<ul class="pl-0 list-none flex flex-col gap-1">
 							{col.items.map((item) => (
 								<li>
-									<a href={item.href} class="text-inherit no-underline font-normal
-										hover:underline hover:text-fg">
+									<a
+										href={item.href}
+										class="text-inherit no-underline font-normal
+										hover:underline hover:text-fg"
+									>
 										{item.label}
 									</a>
 								</li>
