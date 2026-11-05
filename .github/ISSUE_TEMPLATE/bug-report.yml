@@ -1,0 +1,114 @@
+name: Bug report
+description: Something in party.js doesn't work the way it should.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this! Before you start:
+
+        - **Nothing shows up at all?** Check whether your system asks for reduced motion. party.js skips effects by default in that case, see [Reduced motion](https://party.js.org/quickstart/#reduced-motion).
+        - **Upgrading from v2?** A lot of the API changed, see [Migrating from v2](https://party.js.org/migrating-from-v2/).
+        - Please search the [existing issues](https://github.com/yiliansource/party-js/issues?q=is%3Aissue) first.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A short description of the bug. Include the full error message if there is one (errors thrown by party.js start with `[party-js]`).
+      placeholder: Calling confetti() on a button inside a dialog throws "[party-js] ..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: How can it be reproduced?
+      description: |
+        A link to a minimal reproduction (CodePen, StackBlitz, a small repository) helps the most. Otherwise, paste the smallest piece of code that shows the problem.
+      placeholder: |
+        https://codepen.io/...
+
+        or:
+
+        ```js
+        import { confetti } from "party-js";
+
+        const button = document.querySelector("#my-button");
+        button.addEventListener("click", () => confetti(button));
+        ```
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: party.js version
+      description: The exact version you're using, from your lockfile or `npm ls party-js`.
+      placeholder: 3.0.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: install
+    attributes:
+      label: How do you load party.js?
+      options:
+        - From npm, with a bundler (Vite, webpack, ...)
+        - As an ES module from a CDN
+        - With a script tag (the global party object)
+        - Other (please describe below)
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Framework and environment
+      description: Your framework and bundler, and whether the code also runs on the server (SSR).
+      placeholder: Plain HTML / React 19 with Vite, client only / Next.js 16 with SSR
+    validations:
+      required: true
+
+  - type: input
+    id: browsers
+    attributes:
+      label: Browser and operating system
+      description: Where you saw the bug. If you tried other browsers, mention whether it happens there too.
+      placeholder: Firefox 145 on Windows 11, works in Chrome
+    validations:
+      required: true
+
+  - type: dropdown
+    id: reduced-motion
+    attributes:
+      label: Is reduced motion turned on in your system settings?
+      options:
+        - "No"
+        - "Yes"
+        - I don't know
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else?
+      description: Screenshots, screen recordings, console output, or anything else that might help.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before submitting
+      options:
+        - label: I searched the existing issues and didn't find this bug.
+          required: true
+        - label: I can reproduce this with the latest version of party.js.
+          required: true
