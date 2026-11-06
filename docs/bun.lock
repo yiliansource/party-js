@@ -35,7 +35,7 @@
         "prettier": "^3.9.10",
         "starlight-links-validator": "^0.27.0",
         "starlight-llms-txt": "^0.12.0",
-        "starlight-typedoc": "~0.23.1",
+        "starlight-typedoc": "~0.23.2",
         "typedoc": "~0.28.20",
         "typedoc-plugin-markdown": "~4.14.1",
         "typedoc-plugin-mdn-links": "~5.1.1",
@@ -1118,7 +1118,7 @@
 
     "starlight-llms-txt": ["starlight-llms-txt@0.12.0", "", { "dependencies": { "@astrojs/mdx": "^8.0.1", "@types/hast": "^3.0.5", "@types/micromatch": "^4.0.10", "github-slugger": "^2.0.0", "hast-util-select": "^6.0.4", "micromatch": "^4.0.8", "rehype-parse": "^9.0.1", "rehype-remark": "^10.0.1", "remark-gfm": "^4.0.1", "remark-stringify": "^11.0.0", "unified": "^11.0.5", "unist-util-remove": "^4.0.0" }, "peerDependencies": { "@astrojs/starlight": ">=0.41.0", "astro": "^7.0.0" } }, "sha512-ya4c0ZoiPUXuHDzd3AYCKh78Y3II3EToSE9Yp6uVN0c2UUKoNpqTjijhW86W/4toZzSUhWSnxeYs7QBcXNIPGg=="],
 
-    "starlight-typedoc": ["starlight-typedoc@0.23.1", "", { "dependencies": { "github-slugger": "^2.0.0" }, "peerDependencies": { "@astrojs/starlight": ">=0.39.0", "astro": ">=6.0.0", "typedoc": ">=0.28.0", "typedoc-plugin-markdown": ">=4.6.0" } }, "sha512-H45Mxv4mZ1xUMhUNjTR4CwKDgKKHZboQA5v5+vTVMdjlCX02Xo7veTB7+F/ivmMHPmQ7SV5auF2BTlU/EpQIoQ=="],
+    "starlight-typedoc": ["starlight-typedoc@0.23.2", "", { "dependencies": { "github-slugger": "^2.0.0" }, "peerDependencies": { "@astrojs/starlight": ">=0.39.0", "astro": ">=6.0.0", "typedoc": ">=0.28.0", "typedoc-plugin-markdown": ">=4.6.0" } }, "sha512-aErehRvL12eAhRAL8n68A6HgEOTd1+loT+tRfeq5UxECzMsThvqdFZaKyCam8b01uhMUDcOcEnqJGh5VnPzxyA=="],
 
     "std-env": ["std-env@4.3.0", "", {}, "sha512-OtU/EgQ1kIm5KwqQpBC6ZEMXrZRui11w8zgfTWp8cdO9B8OaPsbA8bTHO2P+HNo1VlUTGMVBwPhydu6poeXiag=="],
 
