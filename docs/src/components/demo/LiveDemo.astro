@@ -39,6 +39,7 @@ const multiline = code?.includes("\n") ?? false;
 	{(size === "full" || size === "large" || size === "compact") && (
 		<>
 			<div
+				data-llms-exclude
 				class:list={[
 					"relative grid place-items-center pointer-events-none *:pointer-events-auto",
 					size === "full" && "h-full min-h-60",
@@ -101,7 +102,7 @@ const multiline = code?.includes("\n") ?? false;
 			{code && !multiline && (
 				<code class="text-muted text-sm">{code}</code>
 			)}
-			<div class="ml-auto mr-0 shrink-0">
+			<div data-llms-exclude class="ml-auto mr-0 shrink-0">
 				{type === "button" ? (
 					<DemoButton label={label} icon={icon} size="compact" />
 				) : (
