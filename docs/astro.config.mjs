@@ -7,6 +7,7 @@ import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
 import starlightLinksValidator from "starlight-links-validator";
+import starlightLlmsTxt from "starlight-llms-txt";
 import starlightTypeDoc from "starlight-typedoc";
 
 import { codeTheme } from "./src/brand/code-theme.mjs";
@@ -183,6 +184,31 @@ export default defineConfig({
 				},
 			},
 			plugins: [
+				starlightLlmsTxt({
+					details:
+						"These docs cover party.js v3. Don't write v2 code, as most of the APIs no longer exist; the migration guide maps every v2 feature to its v3 equivalent.",
+					promote: [
+						"introduction",
+						"installation",
+						"quickstart",
+						"effects/**",
+						"concepts/**",
+						"guides/**",
+						"migrating-from-v2",
+					],
+					demote: ["index", "api/**"],
+					exclude: ["index"],
+					customSelectors: {
+						all: ["[data-llms-exclude]", ".sl-anchor-link"],
+					},
+					optionalLinks: [
+						{
+							label: "party.js v2 docs (archived)",
+							url: site.v2Docs,
+							description: "Only for projects that still use v2.",
+						},
+					],
+				}),
 				starlightLinksValidator({
 					exclude: ["/api/"],
 					failOnError: false,
