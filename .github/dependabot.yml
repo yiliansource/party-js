@@ -13,6 +13,7 @@ updates:
       commit-message:
           prefix: chore
           include: scope
+      labels: ["dependencies"]
       groups:
           tooling:
               update-types: [minor, patch]
@@ -29,6 +30,7 @@ updates:
       commit-message:
           prefix: chore
           include: scope
+      labels: ["dependencies"]
       groups:
           api-reference:
               patterns: ["typedoc", "typedoc-*", "starlight-typedoc"]
