@@ -76,6 +76,15 @@ export default defineConfig({
 						href: "/apple-touch-icon.png",
 					},
 				},
+				{
+					tag: "script",
+					attrs: {
+						"data-goatcounter":
+							"https://party-js.goatcounter.com/count",
+						async: true,
+						src: "https://gc.zgo.at/count.js",
+					},
+				},
 			],
 			sidebar: [
 				{
