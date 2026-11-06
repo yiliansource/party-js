@@ -6,6 +6,7 @@ import starlight from "@astrojs/starlight";
 import vue from "@astrojs/vue";
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "astro/config";
+import starlightChangelogs from "starlight-changelogs";
 import starlightLinksValidator from "starlight-links-validator";
 import starlightLlmsTxt from "starlight-llms-txt";
 import starlightTypeDoc from "starlight-typedoc";
@@ -94,6 +95,7 @@ export default defineConfig({
 						"installation",
 						"quickstart",
 						"migrating-from-v2",
+						{ label: "Changelog", link: "/changelog/" },
 					],
 				},
 				{
@@ -193,6 +195,7 @@ export default defineConfig({
 				},
 			},
 			plugins: [
+				starlightChangelogs(),
 				starlightLlmsTxt({
 					details:
 						"These docs cover party.js v3. Don't write v2 code, as most of the APIs no longer exist; the migration guide maps every v2 feature to its v3 equivalent.",
