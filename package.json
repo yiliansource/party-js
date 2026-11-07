@@ -38,6 +38,7 @@
 		"lint:fix": "biome check --write",
 		"size": "bun run scripts/check-size.ts",
 		"api": "bun run scripts/check-api.ts",
+		"record:demos": "bun run scripts/record-demos.ts",
 		"prepare": "lefthook install",
 		"prepublishOnly": "bun run build && bun run size && bun run api"
 	},
@@ -46,6 +47,7 @@
 		"@napi-rs/canvas": "^1.1.0",
 		"@types/bun": "^1.4.4",
 		"lefthook": "^2.2.2",
+		"playwright": "1.65.0",
 		"tsup": "^9.0.0",
 		"typescript": "~6.0.3"
 	}
