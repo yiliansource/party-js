@@ -42,15 +42,15 @@ The docs import party.js straight from `src/`, so changes to the library show up
 
 Run these from the repository root.
 
-| Command                | What it does                                                                                          |
-| ---------------------- | ----------------------------------------------------------------------------------------------------- |
-| `bun run test`         | Runs the test suite.                                                                                  |
-| `bun run typecheck`    | Type-checks without emitting.                                                                         |
-| `bun run lint`         | Lints and checks formatting with Biome. `bun run lint:fix` fixes what it can.                         |
-| `bun run build`        | Builds `dist/` (ES module and types) and `bundle/` (the minified script-tag build).                   |
-| `bun run size`         | Checks the gzipped size of `bundle/party.min.js`. **Needs a build.**                                  |
-| `bun run api`          | Checks the public API against `api/party.js.d.ts`. **Needs a build.**                                 |
-| `bun run record:demos` | Records the README demo GIFs into `.github/assets/`. Needs a build, gifski and Playwright’s Chromium. |
+| Command                | What it does                                                                                              |
+| ---------------------- | --------------------------------------------------------------------------------------------------------- |
+| `bun run test`         | Runs the test suite.                                                                                      |
+| `bun run typecheck`    | Type-checks without emitting.                                                                             |
+| `bun run lint`         | Lints and checks formatting with Biome. `bun run lint:fix` fixes what it can.                             |
+| `bun run build`        | Builds `dist/` (ES module and types) and `bundle/` (the minified script-tag build).                       |
+| `bun run size`         | Checks the gzipped size of `bundle/party.min.js`. **Needs a build.**                                      |
+| `bun run api`          | Checks the public API against `api/party.js.d.ts`. **Needs a build.**                                     |
+| `bun run record:demos` | Records the README demo GIFs into `.github/assets/`. **Needs a build, gifski and Playwright's Chromium.** |
 
 For the docs, `bun run --cwd docs test` runs the docs tests and `bun run --cwd docs check` type-checks the site.
 
@@ -116,7 +116,7 @@ The code shown on the docs is plain JavaScript, so keep TypeScript syntax (type 
 
 ### README demos
 
-The README shows demo GIFs for the built-in effects. To render them install [gifski](https://gif.ski/) on your PATH, install a headless browser with `bunx playwright install chromium` and use:
+The README shows demo GIFs for the built-in effects. To render them, create a build, install [gifski](https://gif.ski/) on your PATH, install a headless browser with `bunx playwright install chromium` and use:
 
 ```sh
 bun run record:demos
