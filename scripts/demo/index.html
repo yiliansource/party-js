@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>party.js — demos</title>
+	</head>
+	<body>
+		<main>
+			<button type="button"></button>
+			<canvas></canvas>
+		</main>
+	</body>
+	<script src="../../bundle/party.min.js"></script>
+	<script>
+	const id = new URLSearchParams(location.search).get("effect") ?? "confetti";
+	const seed = 42;
+
+	const main = document.querySelector("main");
+	main.classList.add(`effect-${id}`);
+
+	const canvas = document.querySelector("canvas");
+
+	const button = document.querySelector("button");
+	button.addEventListener("click", () => {
+		if (id === "confetti") {
+			party.confetti(button, { seed, canvas });
+		} else if (id === "sparkles") {
+			party.sparkles(button, { seed, canvas });
+		}
+	});
+	</script>
+	<style>
+	html,
+	body {
+		margin: 0;
+		padding: 0;
+	}
+
+	body {
+		height: 100dvh;
+	}
+
+	main {
+		position: relative;
+		display: grid;
+		place-items: center;
+		height: 100%;
+		background-color: #1a1a1a;
+		border-radius: 2em;
+		overflow: hidden;
+	}
+
+	main > button {
+		background-color: transparent;
+		width: 32px;
+		height: 32px;
+		border: 2px dashed #34343a;
+		border-radius: 0.7em;
+	}
+
+	canvas {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		pointer-events: none;
+	}
+	</style>
+</html>
