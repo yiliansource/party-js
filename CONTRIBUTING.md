@@ -36,20 +36,21 @@ The docs import party.js straight from `src/`, so changes to the library show up
 | `tests/`   | The test suite, mirroring the folder structure in `src/`.                                |
 | `docs/`    | The docs site at [party.js.org](https://party.js.org), built with Astro and Starlight.   |
 | `api/`     | `party.js.d.ts`, a generated snapshot of the public API. CI checks it against the build. |
-| `scripts/` | The bundle size and API report checks.                                                   |
+| `scripts/` | The bundle size, API report checks and the README demo GIF recorder.                     |
 
 ## Scripts
 
 Run these from the repository root.
 
-| Command             | What it does                                                                        |
-| ------------------- | ----------------------------------------------------------------------------------- |
-| `bun run test`      | Runs the test suite.                                                                |
-| `bun run typecheck` | Type-checks without emitting.                                                       |
-| `bun run lint`      | Lints and checks formatting with Biome. `bun run lint:fix` fixes what it can.       |
-| `bun run build`     | Builds `dist/` (ES module and types) and `bundle/` (the minified script-tag build). |
-| `bun run size`      | Checks the gzipped size of `bundle/party.min.js`. **Needs a build.**                |
-| `bun run api`       | Checks the public API against `api/party.js.d.ts`. **Needs a build.**               |
+| Command                | What it does                                                                                              |
+| ---------------------- | --------------------------------------------------------------------------------------------------------- |
+| `bun run test`         | Runs the test suite.                                                                                      |
+| `bun run typecheck`    | Type-checks without emitting.                                                                             |
+| `bun run lint`         | Lints and checks formatting with Biome. `bun run lint:fix` fixes what it can.                             |
+| `bun run build`        | Builds `dist/` (ES module and types) and `bundle/` (the minified script-tag build).                       |
+| `bun run size`         | Checks the gzipped size of `bundle/party.min.js`. **Needs a build.**                                      |
+| `bun run api`          | Checks the public API against `api/party.js.d.ts`. **Needs a build.**                                     |
+| `bun run record:demos` | Records the README demo GIFs into `.github/assets/`. **Needs a build, gifski and Playwright's Chromium.** |
 
 For the docs, `bun run --cwd docs test` runs the docs tests and `bun run --cwd docs check` type-checks the site.
 
@@ -112,6 +113,18 @@ export const run: Demo = ({ target: button }) => {
 - `omit`: code inside `import` or `demo` that's left out entirely.
 
 The code shown on the docs is plain JavaScript, so keep TypeScript syntax (type annotations, `as`, generics) outside the regions. Use a demo on a page with `<LiveDemo demo="<name>" />`.
+
+### README demos
+
+The README shows demo GIFs for the built-in effects. To render them, create a build, install [gifski](https://gif.ski/) on your PATH, install a headless browser with `bunx playwright install chromium` and use:
+
+```sh
+bun run record:demos
+```
+
+The demos run seeded and with a paused fake clock so they are deterministic. Re-record only when an effect's look changes, and commit the GIFs together with that change.
+
+For debugging purposes, `--keep-frames` prevents the rendered frames in the temporary directory from being deleted afterwards.
 
 ## Commit messages and pull requests
 

@@ -1,7 +1,7 @@
 <p align="center">
 	<a href="https://party.js.org">
 		<picture>
-    		<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/lockup-stacked-dark.svg">
+			<source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/lockup-stacked-dark.svg">
 			<img alt="party.js" src="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/lockup-stacked.svg" width="300">
 		</picture>
 	</a>
@@ -34,6 +34,27 @@
 party.js allows you to add various particle effects to your website, such as confetti or sparkles. With just a few lines of code, clicking a button can produce a rain of confetti, rewarding your users with visual feedback to a successful action. Effects have plenty of randomization options, so no two button presses are alike.
 
 If the built-in effects are not enough, the library exposes everything you need from the underlying particle engine to build your own effects!
+
+<table>
+	<tr>
+		<th>
+			<a href="https://party.js.org/effects/confetti/"><code>confetti</code></a>
+		</th>
+		<th>
+			<a href="https://party.js.org/effects/sparkles/"><code>sparkles</code></a>
+		</th>
+	</tr>
+	<tr>
+		<td>
+			<img src="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/confetti.gif" width="360" alt="Confetti bursting upwards from a button">
+			<p>Paper-like confetti that bursts in an upwards cone.</p>
+		</td>
+		<td>
+			<img src="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/sparkles.gif" width="360" alt="Sparkles around a button">
+			<p>Golden sparkles that burst outwards and glint.</p>
+		</td>
+	</tr>
+</table>
 
 ## Installation
 
@@ -78,13 +99,6 @@ Effects start playing once you call them and clean up themselves once they are d
 const effect = confetti(button);
 effect.stop(); // or .pause(), or .resume()
 ```
-
-### Built-in effects
-
-| Effect                                               | Description                                         |
-| ---------------------------------------------------- | --------------------------------------------------- |
-| [`confetti`](https://party.js.org/effects/confetti/) | Paper-like confetti that bursts in an upwards cone. |
-| [`sparkles`](https://party.js.org/effects/sparkles/) | Golden sparkles that burst outwards and glint.      |
 
 Still not customizable enough? [`createEffect`](https://party.js.org/guides/custom-effects/) allows you to configure the emitter, particle setup and behaviors directly (it's what the built-in effects are built on). The [playgrounds](https://party.js.org/playgrounds/effects/) let you try shapes and effects live in the browser.
 
