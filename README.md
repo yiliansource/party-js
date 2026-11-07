@@ -38,23 +38,19 @@ If the built-in effects are not enough, the library exposes everything you need 
 <table>
 	<tr>
 		<th>
-			<a href="https://party.js.org/effects/confetti/">
-				<code>confetti</code>
-			</a>
+			<a href="https://party.js.org/effects/confetti/"><code>confetti</code></a>
 		</th>
 		<th>
-			<a href="https://party.js.org/effects/sparkles/">
-				<code>sparkles</code>
-			</a>
+			<a href="https://party.js.org/effects/sparkles/"><code>sparkles</code></a>
 		</th>
 	</tr>
 	<tr>
 		<td>
-			<img src="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/confetti.gif" width="360" alt="Confetti bursting upwards from the center">
+			<img src="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/confetti.gif" width="360" alt="Confetti bursting upwards from a button">
 			<p>Paper-like confetti that bursts in an upwards cone.</p>
 		</td>
 		<td>
-			<img src="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/sparkles.gif" width="360" alt="Sparkles around the center">
+			<img src="https://raw.githubusercontent.com/yiliansource/party-js/main/.github/assets/sparkles.gif" width="360" alt="Sparkles around a button">
 			<p>Golden sparkles that burst outwards and glint.</p>
 		</td>
 	</tr>

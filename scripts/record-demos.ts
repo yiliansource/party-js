@@ -20,7 +20,7 @@ import { chromium } from "playwright";
 const repositoryRoot = join(import.meta.dirname, "..");
 
 const options: { id: string; frames: number }[] = [
-	{ id: "confetti", frames: 170 },
+	{ id: "confetti", frames: 130 },
 	{ id: "sparkles", frames: 100 },
 ];
 const keepFrames = process.argv.includes("--keep-frames");
@@ -56,26 +56,26 @@ try {
 			outputFileName,
 		);
 
+		const url = pathToFileURL(
+			join(import.meta.dirname, "demo", "index.html"),
+		);
+		url.searchParams.set("effect", option.id);
+
 		console.log(styleText("bold", outputFileName));
 
 		let t = performance.now();
+		const tmpDir = await mkdtemp(join(tmpdir(), "partyjs-demo-"));
 		const context = await browser.newContext({
 			viewport: { width: 480, height: 320 },
 			deviceScaleFactor: 1,
 			reducedMotion: "no-preference",
 		});
-		const page = await context.newPage();
-		await page.clock.install({ time: 0 });
-		await page.goto(
-			`${
-				pathToFileURL(join(import.meta.dirname, "demo", "index.html"))
-					.href
-			}?effect=${option.id}`,
-		);
-		await page.clock.pauseAt(10_000);
-
-		const tmpDir = await mkdtemp(join(tmpdir(), "partyjs-demo-"));
 		try {
+			const page = await context.newPage();
+			await page.clock.install({ time: 0 });
+			await page.goto(url.href);
+			await page.clock.pauseAt(10_000);
+
 			const framePaths: string[] = [];
 			async function takeScreenshot(i: number) {
 				const frameName = `${String(i).padStart(4, "0")}.png`;
