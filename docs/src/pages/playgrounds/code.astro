@@ -1,0 +1,19 @@
+---
+import PlaygroundPage from "../../components/PlaygroundPage.astro";
+import CodePlayground from "../../playground/code/CodePlayground.vue";
+---
+
+<PlaygroundPage playground="code">
+	<CodePlayground client:only="vue">
+		<div
+			slot="fallback"
+			class="grid grid-cols-[minmax(0,1fr)_600px] gap-y-4 gap-x-6"
+		>
+			<div class="h-120 rounded-2xl bg-surface animate-pulse"></div>
+			<div class="flex flex-col gap-4">
+				<div class="h-70 rounded-2xl bg-surface animate-pulse"></div>
+				<div class="h-30 rounded-2xl bg-surface animate-pulse"></div>
+			</div>
+		</div>
+	</CodePlayground>
+</PlaygroundPage>

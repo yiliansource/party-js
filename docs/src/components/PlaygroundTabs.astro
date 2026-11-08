@@ -1,5 +1,10 @@
 ---
-import { type AstroComponent, PartyPopperIcon, StarIcon } from "@lucide/astro";
+import {
+	type AstroComponent,
+	CodeIcon,
+	PartyPopperIcon,
+	StarIcon,
+} from "@lucide/astro";
 
 import {
 	type PlaygroundKey,
@@ -13,6 +18,7 @@ interface Props {
 const playgroundIconLookup: Record<PlaygroundKey, AstroComponent> = {
 	shapes: StarIcon,
 	effects: PartyPopperIcon,
+	code: CodeIcon,
 };
 const playgroundKeys = Object.keys(playgroundInformation) as PlaygroundKey[];
 

@@ -18,10 +18,10 @@ const guides = reference
 		)
 	: [];
 
-const isHomepage = entry.id === "";
+const useLargeFooter = entry.id === "";
 ---
 
-{isHomepage ? (
+{useLargeFooter ? (
 	<LargeFooter />
 ) : (
 	<footer class="flex flex-col grow mt-12">

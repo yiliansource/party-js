@@ -1,31 +1,16 @@
 ---
-import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
-
-import { playgroundInformation } from "../../config/playgrounds";
+import PlaygroundPage from "../../components/PlaygroundPage.astro";
 import ShapesPlayground from "../../playground/shapes/ShapesPlayground.vue";
-
-Astro.locals.playground = "shapes";
 ---
 
-<StarlightPage
-	frontmatter={{
-		title: playgroundInformation.shapes.title,
-		description: playgroundInformation.shapes.description,
-		template: "splash",
-		editUrl: false,
-		prev: false,
-		next: false,
-	}}
->
-	<div class="not-content" data-playground>
-		<ShapesPlayground client:only="vue">
-			<div
-				slot="fallback"
-				class="grid grid-cols-1 md:grid-cols-[340px_minmax(0,1fr)] gap-y-4 gap-x-6"
-			>
-				<div class="h-130 rounded-2xl bg-surface animate-pulse"></div>
-				<div class="h-120 rounded-2xl bg-surface animate-pulse"></div>
-			</div>
-		</ShapesPlayground>
-	</div>
-</StarlightPage>
+<PlaygroundPage playground="shapes">
+	<ShapesPlayground client:only="vue">
+		<div
+			slot="fallback"
+			class="grid grid-cols-1 md:grid-cols-[340px_minmax(0,1fr)] gap-y-4 gap-x-6"
+		>
+			<div class="h-130 rounded-2xl bg-surface animate-pulse"></div>
+			<div class="h-120 rounded-2xl bg-surface animate-pulse"></div>
+		</div>
+	</ShapesPlayground>
+</PlaygroundPage>

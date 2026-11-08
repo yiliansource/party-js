@@ -1,0 +1,33 @@
+---
+import StarlightPage from "@astrojs/starlight/components/StarlightPage.astro";
+
+import {
+	type PlaygroundKey,
+	playgroundInformation,
+} from "../config/playgrounds";
+
+type Props = {
+	playground: PlaygroundKey;
+};
+
+const { playground } = Astro.props;
+
+Astro.locals.playground = playground;
+
+const info = playgroundInformation[playground];
+---
+
+<StarlightPage
+	frontmatter={{
+		title: info.title,
+		description: info.description,
+		template: "splash",
+		editUrl: false,
+		prev: false,
+		next: false,
+	}}
+>
+	<div class="not-content" data-playground>
+		<slot></slot>
+	</div>
+</StarlightPage>

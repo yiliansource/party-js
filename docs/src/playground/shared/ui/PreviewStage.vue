@@ -34,8 +34,17 @@ const backgroundOptions: ControlOption<PreviewBackground>[] = [
 					:options="backgroundOptions"
 				/>
 			</div>
-			<div class="absolute bottom-0 right-0 flex flex-row items-center">
-				<slot name="footer"></slot>
+			<div
+				class="absolute bottom-0 left-0 flex flex-row items-center"
+				v-if="$slots['footer-left']"
+			>
+				<slot name="footer-left"></slot>
+			</div>
+			<div
+				class="absolute bottom-0 right-0 flex flex-row items-center"
+				v-if="$slots['footer-right']"
+			>
+				<slot name="footer-right"></slot>
 			</div>
 		</div>
 	</div>

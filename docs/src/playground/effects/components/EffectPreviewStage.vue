@@ -90,7 +90,7 @@ onBeforeUnmount(() => {
 		<template #actions>
 			<SwitchField v-model="repeat" label="Repeat" />
 		</template>
-		<template #footer>
+		<template #footer-right>
 			<Button
 				variant="accent"
 				label="Play effect"

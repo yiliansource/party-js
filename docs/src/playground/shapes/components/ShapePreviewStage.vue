@@ -82,7 +82,7 @@ function burst() {
 				<PauseIcon v-else :size="16" />
 			</button>
 		</template>
-		<template #footer>
+		<template #footer-right>
 			<Button
 				variant="accent"
 				label="Try it in a burst"

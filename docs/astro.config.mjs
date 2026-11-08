@@ -16,6 +16,7 @@ import { groupDirectory, referenceGroups } from "./src/config/reference";
 import { sections } from "./src/config/sections";
 import { site } from "./src/config/site";
 import { reference } from "./src/plugins/reference";
+import { partyJsTypes } from "./src/plugins/types";
 import { THEME_COLORS } from "./src/theme";
 
 // https://astro.build/config
@@ -31,7 +32,7 @@ export default defineConfig({
 		"/playgrounds": "/playgrounds/effects/",
 	},
 	vite: {
-		plugins: [tailwindcss()],
+		plugins: [tailwindcss(), partyJsTypes()],
 		resolve: {
 			alias: [
 				{
