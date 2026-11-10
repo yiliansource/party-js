@@ -15,6 +15,7 @@ import { codeTheme } from "./src/brand/code-theme.mjs";
 import { groupDirectory, referenceGroups } from "./src/config/reference";
 import { sections } from "./src/config/sections";
 import { site } from "./src/config/site";
+import { partyJsBundle } from "./src/plugins/bundle";
 import { reference } from "./src/plugins/reference";
 import { partyJsTypes } from "./src/plugins/types";
 import { THEME_COLORS } from "./src/theme";
@@ -32,7 +33,7 @@ export default defineConfig({
 		"/playgrounds": "/playgrounds/effects/",
 	},
 	vite: {
-		plugins: [tailwindcss(), partyJsTypes()],
+		plugins: [tailwindcss(), partyJsTypes(), partyJsBundle()],
 		resolve: {
 			alias: [
 				{

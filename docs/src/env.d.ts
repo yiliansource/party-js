@@ -10,6 +10,11 @@ declare module "virtual:party-js-types" {
 	export default declarations;
 }
 
+declare module "virtual:party-js-bundle" {
+	const source: string;
+	export default source;
+}
+
 declare module "monaco-editor/languages/definitions/javascript/javascript" {
 	import type { languages } from "monaco-editor";
 
