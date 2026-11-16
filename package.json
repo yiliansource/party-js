@@ -43,7 +43,7 @@
 		"prepublishOnly": "bun run build && bun run size && bun run api"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "2.6.4",
+		"@biomejs/biome": "2.6.6",
 		"@napi-rs/canvas": "^1.1.0",
 		"@types/bun": "^1.4.4",
 		"lefthook": "^2.2.2",
